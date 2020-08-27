@@ -1204,7 +1204,7 @@ type UnmarkIssueAsDuplicatePayload {
 
 
 
-type ReactionGroup {
+type ReactionGroup implements Node {
     users: [User]
     reaction: String!
 }
