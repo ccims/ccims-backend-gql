@@ -1,6 +1,45 @@
 CREATE TABLE issue_issue (
-    LIKE syncNode
+    LIKE syncNode,
+    title varchar(256),
+    created_at timestamp NOT NULL,
+    created_by id NOT NULL,
+    updated_at timestamp NOT NULL,
+    is_open bool NOT NULL DEFAULT true,
+    is_duplicate bool NOT NULL DEFAULT false,
+    category category,
+    start_date timestamp,
+    due_date timestamp,
+    estimated_time interval,
+    spent_time interval
 ) INHERITS (node);
+
+-- relattions for issue --
+
+CREATE TABLE relation_issue_linkedIssue (
+    issue_id id NOT NULL,
+    linked_issue_id NOT NULL,
+    PRIMARY KEY (issue_id, linked_issue_id)
+);
+
+CREATE TABLE relation_issue_asignee (
+    issue_id id NOT NULL,
+    assignee_id NOT NULL,
+    PRIMARY KEY (issue_id, assignee_id)
+);
+
+CREATE TABLE relation_issue_participant (
+    issue_id id NOT NULL,
+    participant_id id NOT NULL,
+    PRIMARY KEY (issue_id, participant_id)
+);
+
+CREATE TABLE relation_issue_label (
+    issue_id id NOT NULL,
+    label_id id NOT NULL,
+    PRIMARY KEY (issue_id, label_id)
+);
+
+-- end --
 
 CREATE TABLE issue_timelineItem (
     LIKE syncNode,
@@ -47,12 +86,11 @@ CREATE TABLE issue_timeline_comment (
     last_edited_at timestamp,
     edited_by id[],
     body varchar(65536) NOT NULL 
-    -- reactions are done via ReactionGroup
 ) INHERITS (node);
 
 CREATE TABLE issue_timeline_body (
     LIKE issue_timeline_comment,
-    initial_title text NOT NULL
+    initial_title varchar(256) NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE issue_timeline_deletedComment (
@@ -73,8 +111,8 @@ CREATE TABLE issue_timeline_unlabledEvent (
 
 CREATE TABLE issue_timeline_renamedTitleEvent (
     LIKE issue_timelineItem,
-    old_title text NOT NULL,
-    new_title text NOT NULL
+    old_title varchar(256) NOT NULL,
+    new_title varchar(256) NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE issue_timeline_priorityChangedEvent (

@@ -46,11 +46,15 @@ DROP TABLE IF EXISTS issue_timeline_wasLinkedEvent;
 DROP TABLE IF EXISTS issue_timeline_referencedByIssueEvent;
 DROP TABLE IF EXISTS issue_timeline_referencedByOtherEvent;
 DROP TABLE IF EXISTS issue_timelineItem;
-DROP TABLE IF EXISTS syncNode;
-DROP TABLE IF EXISTS node;
-
+DROP TABLE IF EXISTS relation_issue_label;
+DROP TABLE IF EXISTS relation_issue_participant;
+DROP TABLE IF EXISTS relation_issue_assignee;
+DROP TABLE IF EXISTS relation_issue_linkedIssue;
+DROP TABLE IF EXISTS issue_issue;
 
 -- Common
+DROP TABLE IF EXISTS syncNode;
+DROP TABLE IF EXISTS node;
 DROP TYPE IF EXISTS issue_type;
 DROP TYPE IF EXISTS priority;
 DROP TYPE IF EXISTS ims_type;
