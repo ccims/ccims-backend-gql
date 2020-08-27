@@ -6,7 +6,7 @@ CREATE TABLE issue_issue (
     updated_at timestamp NOT NULL,
     is_open bool NOT NULL DEFAULT true,
     is_duplicate bool NOT NULL DEFAULT false,
-    category category,
+    category issue_category,
     start_date timestamp,
     due_date timestamp,
     estimated_time interval,
@@ -17,13 +17,13 @@ CREATE TABLE issue_issue (
 
 CREATE TABLE relation_issue_linkedIssue (
     issue_id id NOT NULL,
-    linked_issue_id NOT NULL,
+    linked_issue_id id NOT NULL,
     PRIMARY KEY (issue_id, linked_issue_id)
 );
 
 CREATE TABLE relation_issue_asignee (
     issue_id id NOT NULL,
-    assignee_id NOT NULL,
+    assignee_id id NOT NULL,
     PRIMARY KEY (issue_id, assignee_id)
 );
 
@@ -188,8 +188,8 @@ CREATE TABLE issue_timeline_unmarkedAsDuplicateEvent (
 
 CREATE TABLE issue_timeline_categoryChangedEvent (
     LIKE issue_timelineItem,
-    old_category issue_type,
-    new_category issue_type
+    old_category issue_category,
+    new_category issue_category
 ) INHERITS (node);
 
 CREATE TABLE issue_timeline_closedEvent (
@@ -204,5 +204,5 @@ CREATE TABLE issue_reactionGroup (
     LIKE syncNode,
     origin id NOT NULL,
     reaction varchar(100) NOT NULL,
-    users: id[] NOT NULL
+    users id[] NOT NULL
 ) INHERITS (node);

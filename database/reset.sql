@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS issue_issue;
 -- Common
 DROP TABLE IF EXISTS syncNode;
 DROP TABLE IF EXISTS node;
-DROP TYPE IF EXISTS issue_type;
+DROP TYPE IF EXISTS issue_category;
 DROP TYPE IF EXISTS priority;
 DROP TYPE IF EXISTS ims_type;
 DROP DOMAIN IF EXISTS id;
