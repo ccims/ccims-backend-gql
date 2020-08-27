@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS Issue_ReactionGroup;
 DROP TABLE IF EXISTS Issue_Timeline_ReopenedEvent;
 DROP TABLE IF EXISTS Issue_Timeline_ClosedEvent;
 DROP TABLE IF EXISTS Issue_Timeline_CategoryChangedEvent;
@@ -19,6 +20,7 @@ DROP TABLE IF EXISTS Issue_Timeline_RenamedTitleEvent;
 DROP TABLE IF EXISTS Issue_Timeline_UnlabledEvent;
 DROP TABLE IF EXISTS Issue_Timeline_LabledEvent;
 DROP TABLE IF EXISTS Issue_Timeline_DeletedComment;
+DROP TABLE IF EXISTS Issue_Timeline_Body;
 DROP TABLE IF EXISTS Issue_Timeline_Comment;
 DROP TABLE IF EXISTS Issue_Timeline_UnlinkEvent;
 DROP TABLE IF EXISTS Issue_Timeline_LinkEvent;
