@@ -321,9 +321,15 @@ type Issue implements Comment & Node {
     body: String
     bodyRendered: String
     createdBy: User
-    editedBy: User
+    editedBy: [User]
     createdAt: Date!
-    editedAt: Date
+    """
+    Date when the core issue (title, body etc.) was last changed (comments and other events DO NOT count)
+    """
+    lastEditedAt: Date
+    """
+    Date when any update/activity was made to any part of the issue (including title, commens, reactions)
+    """
     updatedAt: Date
     isOpen: Boolean!
     isDuplicate: Boolean!
