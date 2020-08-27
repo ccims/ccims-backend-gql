@@ -1,9 +1,10 @@
 CREATE TABLE users
 (
     -- Inherited from table public.node: id id NOT NULL,
-    username character varying(100)[] NOT NULL,
-    displayname character varying(200)[] NOT NULL,
-    pw_hash character varying(200)[] NOT NULL
+    username character varying(100) NOT NULL,
+    displayname character varying(200) NOT NULL,
+    pw_hash character varying(200) NOT NULL,
+    email character varying(320)
 ) INHERITS (public.node);
 
 CREATE TABLE user_projects

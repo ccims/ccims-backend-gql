@@ -1,5 +1,6 @@
 -- IMS Tables
 DROP TABLE IF EXISTS user_ims_credentials;
+DROP TABLE IF EXISTS ims_systems;
 
 -- User Tables
 DROP TABLE IF EXISTS users;
@@ -48,4 +49,5 @@ DROP TABLE IF EXISTS syncNode;
 DROP TABLE IF EXISTS node;
 DROP TYPE IF EXISTS issue_type;
 DROP TYPE IF EXISTS priority;
+DROP TYPE IF EXISTS ims_type;
 DROP DOMAIN IF EXISTS id;
