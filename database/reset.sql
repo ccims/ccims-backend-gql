@@ -1,3 +1,11 @@
+-- IMS Tables
+DROP TABLE IF EXISTS user_ims_credentials;
+
+-- User Tables
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user_projects;
+
+-- Issue Tables
 DROP TABLE IF EXISTS Issue_Timeline_ReopenedEvent;
 DROP TABLE IF EXISTS Issue_Timeline_ClosedEvent;
 DROP TABLE IF EXISTS Issue_Timeline_CategoryChangedEvent;
@@ -30,6 +38,8 @@ DROP TABLE IF EXISTS Issue_TimelineItem;
 DROP TABLE IF EXISTS SyncNode;
 DROP TABLE IF EXISTS Node;
 
+
+-- Common
 DROP TYPE IF EXISTS issue_type;
 DROP TYPE IF EXISTS priority;
 DROP DOMAIN IF EXISTS id;
