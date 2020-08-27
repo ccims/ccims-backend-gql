@@ -21,7 +21,7 @@ CREATE TABLE relation_issue_linkedIssue (
     PRIMARY KEY (issue_id, linked_issue_id)
 );
 
-CREATE TABLE relation_issue_asignee (
+CREATE TABLE relation_issue_assignee (
     issue_id id NOT NULL,
     assignee_id id NOT NULL,
     PRIMARY KEY (issue_id, assignee_id)
