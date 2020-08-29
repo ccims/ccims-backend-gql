@@ -10,6 +10,5 @@ CREATE TABLE Node (
 );
 
 CREATE TABLE SyncNode (
-    -- to be done
-    -- metadata JSON ?????
+    metadata: JSON
 );
