@@ -10,12 +10,12 @@ export class CCIMSNode {
     private _isChanged: boolean;
     private _isDeleted: boolean;
 
-    constructor (type: NodeType, id: string) {
+    protected constructor (type: NodeType, id: string, isNew: boolean, isChanged: boolean, isDeleted: boolean) {
         this._id = id;
         this._type = type;
-        this._isNew = true;
-        this._isChanged = true;
-        this._isDeleted = false;
+        this._isNew = isNew;
+        this._isChanged = isChanged;
+        this._isDeleted = isDeleted;
     }
 
     /**
@@ -61,19 +61,6 @@ export class CCIMSNode {
      */
     protected markChanged(): void {
         this._isChanged = true;
-    }
-
-    /**
-     * marks theis node as not changed and not new
-     * WARNING: this should only be used by the database manager, calling
-     * this everywhere else, especially after creating new node will result in serious
-     * errors
-     * This MUST NOT be used to mark this node as deleted
-     */
-    protected markLoadedFromDatabase(isDeleted: boolean): void {
-        this._isChanged = false;
-        this._isNew = false;
-        this._isDeleted = isDeleted;
     }
 
     /**
