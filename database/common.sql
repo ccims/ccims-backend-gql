@@ -1,4 +1,4 @@
-CREATE DOMAIN id AS BIGINT;
+CREATE DOMAIN id AS varchar(32);
 
 
 CREATE TYPE issue_category AS ENUM ('Bug', 'FeatureRequest', 'General');
