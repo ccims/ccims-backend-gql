@@ -12,7 +12,7 @@ import { config } from "../../config";
  */
 export function loginHandler(secret?: string): core.RequestHandler {
     var handler = new LoginHandler(secret);
-    return (req: core.Request, res: core.Response, next: core.NextFunction) => {
+    return (req: core.Request, res: core.Response, next: core.NextFunction): void => {
         handler.handle.call(handler, req, res, next);
     };
 }
@@ -66,7 +66,122 @@ class LoginHandler {
      * @param next The next function to call the next middleware.\
      * UNUSED and won't be called, as this middleware will terminate the request in all cases
      */
-    public handle(req: core.Request, res: core.Response, next: core.NextFunction) {
+    public handle(req: core.Request, res: core.Response, next: core.NextFunction): void {
+        const userInfo: UserCredentials = req.body;
+    }
+}
 
+/**
+ * Class specifying the structure the user credentials provided on login must have.
+ * 
+ * This class also provides a static method for checking weather a given instance is valid
+ * 
+ * User credentials must have at least the following fields:
+ * - `username`: The plain text username of the user as string
+ * - `password`: The plain text password of the user as string
+ * - Optional: `client`: A `ClientInfo` providing more information on the connecting client
+ */
+class UserCredentials {
+
+    /**
+     * The plain text username of a user as string.\
+     * This can't be empty or undefined/null.
+     */
+    public username: string;
+
+    /**
+     * The plain text password of a user as string.\
+     * This can't be empty or undefined/null.
+     */
+    public password: string;
+
+    /**
+     * Information about the client the user is connecting with.\
+     * Can be undefined or a valid `ClientInfo` object but not null
+     */
+    public client: ClientInfo | undefined;
+
+    /**
+     * DON'T USE
+     */
+    private constructor() {
+        this.username = "";
+        this.password = "";
+    }
+
+    /**
+     * Checks weather the given object is a vald instance of `UserCredentials`
+     * 
+     * Returns true iff the provided object has (at least) the following structure:
+     * 
+     *    {
+     *       "username": "[USERNAME]",
+     *       "password": "[PASSWORD]",
+     *       "client": {
+     *          "name": "[HUMAN_READABLE_CLIENT_NAME]",
+     *       }
+     *    }
+     * 
+     * The client property is optional.
+     * 
+     * __NOTICE__: This doesn't check weather the credentials themselves are valid
+     * @param credentials The instance of `UserCredentials` to check
+     */
+    public static checkCredentialStructure(credentials: UserCredentials): boolean {
+        if (typeof credentials !== "object" || credentials === null) {
+            return false;
+        }
+        if (typeof credentials.username !== "string" || credentials.username.length <= 0) {
+            return false;
+        }
+        if (typeof credentials.password !== "string" || credentials.password.length <= 0) {
+            return false;
+        }
+        if (typeof credentials.client !== "object" || !ClientInfo.checkClientInfoStructure(credentials.client)) {
+            if (typeof credentials.client !== "undefined") {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * Class specifying the valid structure for the client information field in the user credentials
+ * 
+ * This class also provides a static method for checking weather a given instance is valid
+ * 
+ * Client information consists of at least the following fields
+ * - Optional: `name`: A human readable string representation of the name of the client software used to connect to the API
+ */
+class ClientInfo {
+
+    /**
+     * A human readable name (string) of the software used to connect to the API.\
+     * This can be a valid or empty string, undefined but not null
+     */
+    public name: string | undefined;
+
+    /**
+     * Checks weather the given object is a vald instance of `ClientInfo`
+     * 
+     * Returns true iff the provided object has (at least) the following structure:
+     * 
+     *    {
+     *       "name": "[HUMAN_READABLE_CLIENT_NAME]",
+     *    }
+     * 
+     * The name property is optional.
+     * 
+     * @param credentials The instance of `ClientInfo` to check
+     */
+    public static checkClientInfoStructure(info: ClientInfo): boolean {
+        if (typeof info !== "object" || info === null) {
+            return false;
+        }
+        if (typeof info.name !== "string" || typeof info.name !== "undefined") {
+            return false;
+        }
+        return true;
     }
 }
