@@ -1,6 +1,9 @@
 import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "./NodeCache";
 
+/**
+ * @param T the type for the result of the Command
+ */
 export abstract class DatabaseCommand<T> {
     /**
      * the result when the query was executed
@@ -13,7 +16,6 @@ export abstract class DatabaseCommand<T> {
 
     /**
      * overrite this method to generate the query
-     * @see getQueryConfig
      */
     protected abstract getQueryConfig(): QueryConfig; 
 
