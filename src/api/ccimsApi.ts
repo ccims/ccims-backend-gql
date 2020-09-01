@@ -3,6 +3,8 @@ import * as core from "express-serve-static-core";
 import { config } from "../config";
 import { loginHandler } from "./auth/login";
 import bodyParser from "body-parser";
+import cors from "cors";
+import { jwtVerifier } from "./auth/jwtVerifier";
 
 /**
  * The main class for the API part of ccims. It is the enty-point for the GraphQL-API to the frontend and other clients
@@ -25,7 +27,7 @@ export class CCIMSApi {
     private hostIface: string;
 
     /**
-     * Constructs the API server but doesn't start it yet. This will only prepare the server, start it using `start()`
+     * Constructs the API server and specifies the routes but doesn't start it yet. This will only prepare the server, start it using `start()`
      * 
      * @param port Port on which the API and login server will listen.\
      * If `undefined`, value from config will be used.
@@ -42,6 +44,26 @@ export class CCIMSApi {
             this.hostIface = "0.0.0.0";
         }
         this.server = express();
+        this.setupRoutes();
+    }
+
+    /**
+     * Specifies the routes and the behaviour of the server on those routes.
+     * 
+     * CORS-headers will be sent for all requests to allow usage of the server from all origins
+     * 
+     * Available routes:
+     * - POST to `/login`
+     *    - Valid user credentials in the body requires
+     *    - Creates and returns a new valid JWT on successfull user verification
+     * - POST to `/api`
+     *    - The main graphGL API
+     *    - Requires valid JWT in the `Authorization`header
+     */
+    private setupRoutes() {
+        this.server.use(cors());
+        this.server.post("/login", bodyParser.json(), loginHandler());
+        this.server.post("/api", jwtVerifier(), (req, res, next) => res.end("Verification successfull"));
     }
 
     /**
@@ -58,6 +80,5 @@ export class CCIMSApi {
         this.server.listen(this.port, this.hostIface, () => {
             console.log("API server started.");
         });
-        this.server.post("/login", bodyParser.json(), loginHandler());
     }
 }
