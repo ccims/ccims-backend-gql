@@ -1,5 +1,7 @@
 import * as core from "express-serve-static-core";
 import { config } from "../../config";
+import jwt from "jsonwebtoken";
+import { log } from "../../log";
 
 /**
  * Express middleware for generating and returning a JWT
@@ -68,6 +70,23 @@ class LoginHandler {
      */
     public handle(req: core.Request, res: core.Response, next: core.NextFunction): void {
         const userInfo: UserCredentials = req.body;
+        //TODO: Verify user credentials
+        log(5, "User login attempt");
+        log(7, userInfo);
+        if (UserCredentials.checkCredentialStructure(userInfo)) {
+            const webToken = jwt.sign({
+                name: userInfo.username,
+            }, this.secret, {
+                subject: "USER_ID",
+                issuer: "PROCESS_ID"
+            });
+            log(5, "Successfull login");
+            log(7, webToken);
+            res.status(200).json(webToken);
+            return;
+        }
+        log(3, "Failed login attempt");
+        res.status(401).end("Invalid user credential format",);
     }
 }
 
