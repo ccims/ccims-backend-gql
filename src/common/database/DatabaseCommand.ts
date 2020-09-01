@@ -4,6 +4,8 @@ import { NodeCache } from "./NodeCache";
 export abstract class DatabaseCommand<T> {
     /**
      * the result when the query was executed
+     * this MUST only be used by getResultInternal (read access)
+     * and the DatabaseManager (write access)
      */
     databaseResult: QueryResult | undefined;
 
