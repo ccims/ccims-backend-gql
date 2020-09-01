@@ -2,10 +2,10 @@
     "name": "ccims-backend",
     "version": "0.1.0",
     "description": "Backend for the Cross-Component Issue Management System",
-    "main": "out/index.js",
+    "main": "out/src/index.js",
     "scripts": {
         "database": "node scripts/database.js",
-        "start": "tsc && node out/index.js",
+        "start": "tsc && node out/src/index.js",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
