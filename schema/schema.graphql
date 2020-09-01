@@ -236,12 +236,13 @@ input ProjectFilter {
 
 
 #------------------------------Component------------------------------
-type Component implements Node {
+type Component implements Node & IssueLocation {
     id: ID!
     name: String!
     owner: User
     description: String
     issues(after: String, before: String, filterBy: IssueFilter, first: Int, last: Int): IssuePage
+    issuesOnLocation(after: String, before: String, filterBy: IssueFilter, first: Int, last: Int): IssuePage
     projects(after: String, before: String, filterBy: ProjectFilter, first: Int, last: Int): ProjectPage
     interfaces(after: String, before: String, filterBy: ComponentInterfaceFilter, first: Int, last: Int): ComponentInterfacePage
     consumedInterfaces(after: String, before: String, filterBy: ComponentInterfaceFilter, first: Int, last: Int): ComponentInterfacePage
@@ -265,12 +266,13 @@ input ComponentFilter {
     name: String
 }
 
-type ComponentInterface implements Node {
+type ComponentInterface implements Node & IssueLocation {
     id: ID!
     name: String!
     owner: User!
     description: String
     component: Component!
+    issuesOnLocation(after: String, before: String, filterBy: IssueFilter, first: Int, last: Int): IssuePage
     consumedBy(after: String, before: String, filterBy: ComponentFilter, first: Int, last: Int): ComponentPage
 }
 
@@ -445,7 +447,11 @@ input IssueFilter {
     """
     category: [IssueCategory!]
     """
-    The issue must have at least one of the issues with the given ids
+    If given, filters for issues which do/don't link other issues
+    """
+    linksIssues: Boolean
+    """
+    The issue must link at least one of the issues with the given ids
     """
     linkedIssues: [ID!]
     """
@@ -513,7 +519,8 @@ input IssueFilter {
 
 #------------------------------------------Issue timeline items---------------------------------------
 
-interface IssueTimelineItem {
+interface IssueTimelineItem implements Node {
+    id: ID!
     issue: Issue!
     createdBy: User
     createdAt: Date!
@@ -588,7 +595,8 @@ type IssueComment implements IssueTimelineItem & Comment & Node {
     id: ID!
     issue: Issue!
     createdBy: User
-    editedBy: User
+    editedBy: [User]
+    lastEditedAt: Date
     createdAt: Date!
     editedAt: Date
     body: String
@@ -1124,20 +1132,20 @@ type AddedToComponentEvent implements IssueTimelineItem & Node {
     component: Component!
 }
 
-input AddIssueToComponentInput (
+input AddIssueToComponentInput {
     clientMutationID: String
     issue: ID!
     componentToAdd: ID!
-)
+}
 
-type AddIssueToComponentPayload (
+type AddIssueToComponentPayload {
     clientMutationID: String
     issue: Issue
     addedComponent: Component
     event: AddedToComponentEvent
     componentEdge: ComponentEdge
     timelineEdge: IssueTimelineItemEdge
-)
+}
 
 type RemovedFromComponentEvent implements IssueTimelineItem & Node {
     id: ID!
@@ -1203,8 +1211,8 @@ type UnmarkIssueAsDuplicatePayload {
 }
 
 
-
 type ReactionGroup implements Node {
+    id: ID!
     users: [User]
     reaction: String!
 }
@@ -1501,7 +1509,10 @@ Example: `{"numbers"`: [1,2,3,4]}`
 scalar JSON
 
 #--------------------------------Union types-------------------------------------------------
-union IssueLocation = Component | ComponentInterface
+interface IssueLocation implements Node {
+    id: ID!
+    issuesOnLocation(after: String, before: String, filterBy: IssueFilter, first: Int, last: Int): IssuePage
+}
 
 type IssueLocationPage {
     nodes: [IssueLocation]
