@@ -82,7 +82,7 @@ class LoginHandler {
             });
             log(5, "Successfull login");
             log(7, webToken);
-            res.status(200).json(webToken);
+            res.status(200).json({ token: webToken });
             return;
         }
         log(3, "Failed login attempt");
