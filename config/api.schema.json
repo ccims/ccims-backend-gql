@@ -22,6 +22,11 @@
             "type": "string",
             "title": "JWT secret",
             "description": "The secret used for signing the JWTs used for authentication of clients"
+        },
+        "debugNoLogin": {
+            "type": "boolean",
+            "title": "Disables jwt verification",
+            "description": "If set to `true` the JWT verification for API calls will be disabled and anyone can make requests"
         }
     },
     "additionalProperties": false,
@@ -29,6 +34,7 @@
         "hostIface",
         "port",
         "jwtSecret",
+        "debugNoLogin",
         "$schema"
     ]
 }

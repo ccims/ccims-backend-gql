@@ -43,6 +43,8 @@ class JWTVerifier {
      * If header and token are valid and the user is a valid user, the provided `next` function will be called 
      * without further action to grant access to the restricted ressource
      * 
+     * __NOTICE__: If the `debugNoLogin` field in the `api.json` config file is set to `true`, the JWT and user verification will be __fully bypassed__
+     * 
      * @param req The request data provided by express.\
      * This must have a valid `Authorization: Bearer [JWT_TOKEN]` header.
      * @param res A valid express respone object. This will only be used in case, verification wasn't successfull.
@@ -50,6 +52,10 @@ class JWTVerifier {
      * This will be called once the provided JWT was sucessfully verified as a valid token
      */
     public handle(req: core.Request, res: core.Response, next: core.NextFunction) {
+        if (config.api.debugNoLogin) {
+            next();
+            return;
+        }
 
     }
 }
