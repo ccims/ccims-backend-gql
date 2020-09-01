@@ -1,4 +1,5 @@
 import { config } from "./config";
+import util from "util";
 
 /**
  * Logs the given message if the log level in the config is set at minimum to the given value
@@ -21,6 +22,10 @@ import { config } from "./config";
  */
 export function log(logLevel: number, text: any, ...args: any) {
     if (config.common.logLevel >= logLevel) {
-        console.log(text, args);
+        if (args.length > 0) {
+            console.log(text, args);
+        } else {
+            console.log(text);
+        }
     }
 }
