@@ -3,7 +3,21 @@ import { config } from "../../config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
 
-
+/**
+ * Express middleware for verifying a JWT given by the client
+ * 
+ * Initializes and returns a handler for verifying a given JWT to authorize a user to a restricted resource
+ * 
+ * The handler expects the request to contain a `Authorization` header field with the following content:
+ * 
+ *    Bearer [JWT_TOKEN]
+ * 
+ * If either this header isn't provided correctly or the token provided is invalid, the request will be responded to with a
+ * 401 status code and an error message speciying the reason
+ * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
+ * It must be the same as the one used for signing the JWT during login.\
+ * If empty or `undefined`, the secret from the config will be utilized.
+ */
 export function jwtVerifier(secret?: string): core.RequestHandler {
     var verifier = new JWTVerifier(secret);
     return (req: core.Request, res: core.Response, next: core.NextFunction) => {
@@ -11,6 +25,9 @@ export function jwtVerifier(secret?: string): core.RequestHandler {
     };
 }
 
+/**
+ * Class managing the JWT verification for use in the Express middleware
+ */
 class JWTVerifier {
 
     /**
