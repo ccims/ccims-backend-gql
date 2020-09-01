@@ -1,5 +1,7 @@
 import * as core from "express-serve-static-core";
 import { config } from "../../config";
+import jwt from "jsonwebtoken";
+import { log } from "../../log";
 
 
 export function jwtVerifier(secret?: string): core.RequestHandler {
@@ -56,6 +58,28 @@ class JWTVerifier {
             next();
             return;
         }
-
+        log(5, "JWT verifying");
+        if (req.headers.authorization) {
+            const token = req.headers.authorization.split(" ")[1];
+            jwt.verify(token, this.secret, (err, payload) => {
+                if (err) {
+                    log(3, "Token verification failed");
+                    res.status(401).end("Token invalid. Request new one");
+                } else {
+                    //TODO check username
+                    log(7, payload);
+                    if (typeof (payload as any).name === "string") {
+                        log(5, "User verified");
+                        next();
+                    } else {
+                        log(3, "Token has no name payload");
+                        res.status(401).end("Illegal token");
+                    }
+                }
+            });
+        } else {
+            log(3, "Auth header invalid");
+            res.status(401).end("No valid Authorization header present");
+        }
     }
 }
