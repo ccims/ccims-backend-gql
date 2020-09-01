@@ -5,7 +5,7 @@
     "main": "out/src/index.js",
     "scripts": {
         "database": "node scripts/database.js",
-        "start": "tsc && node out/src/index.js",
+        "start": "tsc && node out/index.js",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
