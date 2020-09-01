@@ -5,6 +5,9 @@ import { loginHandler } from "./auth/login";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { jwtVerifier } from "./auth/jwtVerifier";
+import { graphqlHandler } from "./graphqlHandler";
+
+
 
 /**
  * The main class for the API part of ccims. It is the enty-point for the GraphQL-API to the frontend and other clients
@@ -63,7 +66,7 @@ export class CCIMSApi {
     private setupRoutes() {
         this.server.use(cors());
         this.server.post("/login", bodyParser.json(), loginHandler());
-        this.server.post("/api", jwtVerifier(), (req, res, next) => res.end("Verification successfull"));
+        this.server.post("/api", jwtVerifier(), graphqlHandler());
     }
 
     /**
