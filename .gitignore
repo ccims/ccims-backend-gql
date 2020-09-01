@@ -1,6 +1,10 @@
 # Compiled JS Files
 out
 
+# Config directory
+config/*
+!config/[A-Za-z]*.schema.json
+
 # Logs
 logs
 *.log
