@@ -23,6 +23,7 @@
     "homepage": "https://github.com/ccims/ccims-backend-gql#readme",
     "dependencies": {
         "@types/jest": "^26.0.10",
+        "@types/pg": "^7.14.4",
         "jest": "^26.4.2",
         "pg": "^8.3.3",
         "ts-jest": "^26.3.0",
