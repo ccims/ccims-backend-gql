@@ -1,6 +1,6 @@
 import express from "express";
 import * as core from "express-serve-static-core";
-import { config } from "../config";
+import { config } from "../config/config";
 import { loginHandler } from "./auth/login";
 import bodyParser from "body-parser";
 import cors from "cors";
