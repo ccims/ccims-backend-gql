@@ -5,7 +5,7 @@
         "$schema": {
             "type": "string"
         },
-        "username": {
+        "user": {
             "type": "string",
             "title": "Database username",
             "description": "The username for the PostgreSQL Database in correct casing"

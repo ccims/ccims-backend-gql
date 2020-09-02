@@ -1,7 +1,7 @@
 import * as fs from "fs";
 
 export class PostgresConfig {
-    public readonly username: string;
+    public readonly user: string;
     public readonly password: string;
     public readonly database: string;
     public readonly server: string;
@@ -9,10 +9,10 @@ export class PostgresConfig {
 
     public constructor(filePath: string) {
         const file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
-        if (typeof file.username === "string") {
-            this.username = file.username;
+        if (typeof file.user === "string") {
+            this.user = file.user;
         } else {
-            this.username = "ccims";
+            this.user = "ccims";
         }
         if (typeof file.password === "string") {
             this.password = file.password;
