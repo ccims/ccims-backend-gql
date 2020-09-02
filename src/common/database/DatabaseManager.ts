@@ -2,6 +2,9 @@ import { CCIMSNode } from "../nodes/CCIMSNode";
 import { IdGenerator } from "../util/IdGenerator";
 import { NodeCache } from "./NodeCache";
 import { DatabaseCommand } from "./DatabaseCommand";
+import { Client } from "pg";
+import { config } from "../../config";
+import { log } from "../../log";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -14,6 +17,8 @@ export class DatabaseManager implements NodeCache {
 
     private pendingCommands: DatabaseCommand<any>[] = [];
 
+    private readonly pgClient: Client;
+
     /**
      * creates a new DatabaseManager with the specified id generator
      * normally, there should only be one DatabaseManager
@@ -21,6 +26,8 @@ export class DatabaseManager implements NodeCache {
      */
     public constructor (idGenerator: IdGenerator) {
         this.idGenerator = idGenerator;
+        this.pgClient = new Client(config.postgres);
+        this.pgClient.connect();
     }
 
     /**
@@ -48,6 +55,7 @@ export class DatabaseManager implements NodeCache {
      */
     public addCommand(command: DatabaseCommand<any>): void {
         this.pendingCommands.push(command);
+        command.subCommands.forEach(this.addCommand);
     }
 
     /**
@@ -55,11 +63,34 @@ export class DatabaseManager implements NodeCache {
      * after this, it is possible to get the result of each command
      */
     public async executePendingCommands(): Promise<void> {
-        //TODO add transaction
+        this.pgClient.query("BEGIN;");
         Promise.all(this.pendingCommands.map(async (command): Promise<void> => {
-            //TODO implementation
+            const commandConfig = command.getQueryConfig();
+            try {
+                const result = await this.pgClient.query(commandConfig);
+                command.databaseResult = result;
+            } catch {
+                log(2, "database command failed: " + commandConfig.text);          
+            }
         }));
+        this.pgClient.query("COMMIT;");
         this.pendingCommands = [];
+    }
+
+    /**
+     * saves all nodes in the cache and clears the cache
+     * WARNING: it is forbidden to use already existing nodes any longer!
+     * this will result in serious errors and may affect database consitency!
+     */
+    public async saveAndClearCache() {
+        await this.executePendingCommands();
+        this.nodes.forEach(node => {
+            if (node.isChanged()) {
+                this.addCommand(node.getSaveCommand());
+            }
+        });
+        await this.executePendingCommands();
+        this.nodes.clear();
     }
     
 }

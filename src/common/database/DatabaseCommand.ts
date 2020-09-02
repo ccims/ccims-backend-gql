@@ -5,6 +5,12 @@ import { NodeCache } from "./NodeCache";
  * @param T the type for the result of the Command
  */
 export abstract class DatabaseCommand<T> {
+
+    /**
+     *subCommands which are executed with this DatabaseCommand
+     */
+    public subCommands: DatabaseCommand<any>[] = [];
+
     /**
      * the result when the query was executed
      * this MUST only be used by getResultInternal (read access)
