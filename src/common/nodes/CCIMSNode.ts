@@ -1,10 +1,11 @@
 import { NodeType } from "./NodeType";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { DatabaseCommand } from "../database/DatabaseCommand";
 
 /**
  * Base class for all datatypes with an id, which are accessable via the api
  */
-export class CCIMSNode {
+export abstract class CCIMSNode {
     private _id: string;
     private _type: NodeType;
     private _isNew: boolean = false;
@@ -86,4 +87,10 @@ export class CCIMSNode {
     public get __typename(): string {
         return this._type;
     }
+
+    /**
+     * generates a DatabaseCommand which updates or inserts or deletes
+     * the node
+     */
+    public abstract getSaveCommand(): DatabaseCommand<void>;
 }
