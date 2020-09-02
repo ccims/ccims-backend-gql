@@ -10,14 +10,14 @@ export abstract class DatabaseCommand<T> {
      * this MUST only be used by getResultInternal (read access)
      * and the DatabaseManager (write access)
      */
-    databaseResult: QueryResult | undefined;
+    databaseResult?: QueryResult;
 
-    private result: T | undefined;
+    private result?: T;
 
     /**
      * overrite this method to generate the query
      */
-    protected abstract getQueryConfig(): QueryConfig; 
+    public abstract getQueryConfig(): QueryConfig; 
 
     /**
      * gets the result of this query as soon as it is available
@@ -30,7 +30,7 @@ export abstract class DatabaseCommand<T> {
             if (!this.databaseResult) {
                 throw new Error("no database result available");
             }
-            this.result = this.getResultInternal(nodeCache);
+            this.result = this.getResultInternal(nodeCache, this.databaseResult);
         }
         return this.result;
     }
@@ -41,6 +41,6 @@ export abstract class DatabaseCommand<T> {
      * it is guaranteed that databaseResult is NOT undefined
      * @param nodeCache nodeCache used to get / add nodes
      */
-    protected abstract getResultInternal(nodeCache: NodeCache): T
+    protected abstract getResultInternal(nodeCache: NodeCache, result: QueryResult): T
 
 }
