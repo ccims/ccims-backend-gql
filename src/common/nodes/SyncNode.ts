@@ -1,6 +1,7 @@
 import {CCIMSNode}  from "./CCIMSNode";
 import {NodeType} from "./NodeType";
 import {SyncMetadata} from "./SyncMetadata";
+import { DatabaseManager } from "../database/DatabaseManager";
 
 /**
  * 
@@ -8,15 +9,27 @@ import {SyncMetadata} from "./SyncMetadata";
 export abstract class SyncNode extends CCIMSNode {
     private _metadata: Map<string, SyncMetadata> | undefined;
 
-    protected constructor(type: NodeType, id: string, isNew: boolean, isChanged: boolean, isDeleted: boolean, metadata?: Map<string, SyncMetadata>) {
-            super(type, id, isNew, isChanged, isDeleted);
-            this._metadata = metadata;
+    private _lastChangedAt: Date;
+
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, lastChangedAt: Date, metadata?: Map<string, SyncMetadata>) {
+        super(type, databaseManager, id);
+        this._lastChangedAt = lastChangedAt;
+        this._metadata = metadata;
+    }
+
+    public get lastChangedAt(): Date {
+        return this._lastChangedAt;
+    }
+
+    public set lastChangedAt(value: Date) {
+        this._lastChangedAt = value;
+        this.markChanged();
     }
 
     /**
      * returnes true if this SyncNode was created with metadata, otherwise false
      */
-    get isMetadataPresent(): boolean {
+    public get isMetadataPresent(): boolean {
         return this._metadata != undefined;
     }
  
