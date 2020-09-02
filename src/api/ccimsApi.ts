@@ -1,11 +1,12 @@
 import express from "express";
 import * as core from "express-serve-static-core";
-import { config } from "../config/config";
-import { loginHandler } from "./auth/login";
+import { config } from "../config/Config";
+import { loginHandler } from "./auth/LoginHandler";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { jwtVerifier } from "./auth/jwtVerifier";
-import { graphqlHandler } from "./graphqlHandler";
+import { jwtVerifier } from "./auth/JWTVerifier";
+import { graphqlHandler } from "./GraphQLHandler";
+import { DatabaseManager } from "../common/database/DatabaseManager";
 
 
 
@@ -39,7 +40,7 @@ export class CCIMSApi {
      *  If empty, or `undefined`, the value in the config will be used.\
      * If 0.0.0.0 server will be bound to all availale interfaces.
      */
-    public constructor(port?: number, hostIface?: string) {
+    public constructor(dbManager: DatabaseManager, port?: number, hostIface?: string) {
         console.log("Initializing api");
         this.port = port || config.api.port;
         this.hostIface = hostIface || config.api.hostIface || "0.0.0.0";
@@ -47,7 +48,7 @@ export class CCIMSApi {
             this.hostIface = "0.0.0.0";
         }
         this.server = express();
-        this.setupRoutes();
+        this.setupRoutes(dbManager);
     }
 
     /**
@@ -63,10 +64,10 @@ export class CCIMSApi {
      *    - The main graphGL API
      *    - Requires valid JWT in the `Authorization`header
      */
-    private setupRoutes() {
+    private setupRoutes(dbManager: DatabaseManager) {
         this.server.use(cors());
         this.server.post("/login", bodyParser.json(), loginHandler());
-        this.server.post("/api", jwtVerifier(), graphqlHandler());
+        this.server.use("/api", jwtVerifier(), graphqlHandler(dbManager));
     }
 
     /**

@@ -2,11 +2,13 @@ import * as core from "express-serve-static-core";
 import { graphqlHTTP, GraphQLParams } from "express-graphql";
 import * as graphql from "graphql";
 import * as fs from "fs";
-import { config } from "../config/config";
-import { RootAPIResolver } from "./resolvers/RootApiResolver";
+import { config } from "../config/Config";
+import { RootAPIResolver } from "./resolvers/RootAPIResolver";
+import { DatabaseManager } from "../common/database/DatabaseManager";
+import ccimsSchema from "./resolvers/CCIMSSchema";
 
-export function graphqlHandler(): core.RequestHandler {
-    var handler = new GraphQLHandler();
+export function graphqlHandler(dbManager: DatabaseManager): core.RequestHandler {
+    var handler = new GraphQLHandler(dbManager);
     return (req: core.Request, res: core.Response, next: core.NextFunction): any => {
         return handler.handle.call(handler, req, res, next);
     }
@@ -14,17 +16,14 @@ export function graphqlHandler(): core.RequestHandler {
 
 class GraphQLHandler {
 
-    private schema: graphql.GraphQLSchema;
     private middleware: (req: core.Request, res: core.Response) => any;
 
-    public constructor() {
-        this.schema = graphql.buildSchema(fs.readFileSync(config.api.schemaLocation, { encoding: "utf-8" }));
+    public constructor(dbManager: DatabaseManager, numberRootResolvers?: number) {
         this.middleware = graphqlHTTP({
-            schema: this.schema,
+            schema: ccimsSchema,
             graphiql: {
                 headerEditorEnabled: true
-            },
-            rootValue: (req: core.Request, res: core.Response, params: GraphQLParams): RootAPIResolver => { return {}; }
+            }
         });
     }
 

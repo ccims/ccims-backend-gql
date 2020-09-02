@@ -1,7 +1,9 @@
 import * as core from "express-serve-static-core";
-import { config } from "../../config/config";
+import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
+import { User } from "../../common/nodes/User";
+import { ResolverContext } from "../ResolverContext";
 
 /**
  * Express middleware for verifying a JWT given by the client
@@ -70,7 +72,7 @@ class JWTVerifier {
      * @param next The next function to call the next middleware.\
      * This will be called once the provided JWT was sucessfully verified as a valid token
      */
-    public handle(req: core.Request, res: core.Response, next: core.NextFunction) {
+    public handle(req: ResolverContext, res: core.Response, next: core.NextFunction) {
         if (config.api.debugNoLogin) {
             next();
             return;
@@ -87,6 +89,8 @@ class JWTVerifier {
                     log(7, payload);
                     if (typeof (payload as any).name === "string") {
                         log(5, "User verified");
+                        //TODO: Load user
+                        req.user = {};
                         next();
                     } else {
                         log(3, "Token has no name payload");
