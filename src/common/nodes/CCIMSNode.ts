@@ -1,4 +1,5 @@
 import { NodeType } from "./NodeType";
+import { DatabaseManager } from "../database/DatabaseManager";
 
 /**
  * Base class for all datatypes with an id, which are accessable via the api
@@ -6,16 +7,15 @@ import { NodeType } from "./NodeType";
 export class CCIMSNode {
     private _id: string;
     private _type: NodeType;
-    private _isNew: boolean;
-    private _isChanged: boolean;
-    private _isDeleted: boolean;
+    private _isNew: boolean = false;
+    private _isChanged: boolean = false;
+    private _isDeleted: boolean = false;
+    protected databaseManager: DatabaseManager;
 
-    protected constructor (type: NodeType, id: string, isNew: boolean, isChanged: boolean, isDeleted: boolean) {
+    protected constructor (type: NodeType, databaseManager: DatabaseManager, id: string) {
         this._id = id;
         this._type = type;
-        this._isNew = isNew;
-        this._isChanged = isChanged;
-        this._isDeleted = isDeleted;
+        this.databaseManager = databaseManager;
     }
 
     /**
@@ -54,6 +54,14 @@ export class CCIMSNode {
      */
     public isDeleted(): boolean {
         return this._isDeleted;
+    }
+
+    /**
+     * marks this noda as new, and therefore also as changed
+     */
+    protected markNew(): void {
+        this._isNew = true;
+        this._isChanged = true;
     }
 
     /**
