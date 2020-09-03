@@ -5,7 +5,7 @@ import { QueryResultRow, QueryResult } from "pg";
 import { QueryPart } from "../QueryPart";
 import { ConditionSpecification } from "../ConditionSpecification";
 
-export abstract class NodeListQuery<T extends CCIMSNode> extends LoadListCommand<T> {
+export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
     
     /**
      * filter by a list of ids

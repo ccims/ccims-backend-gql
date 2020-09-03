@@ -86,7 +86,7 @@ export class DatabaseManager implements NodeCache {
         await this.executePendingCommands();
         this.nodes.forEach(node => {
             if (node.isChanged()) {
-                this.addCommand(node.getSaveCommand());
+                node.save();
             }
         });
         await this.executePendingCommands();
