@@ -2,10 +2,12 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLList }
 import GraphQLNode from "../GraphQLNode";
 import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
 import GraphQLProject from "../nodes/GraphQLProject";
+import GraphQLPage from "./GraphQLPage";
 
 export default new GraphQLObjectType({
     name: "ProjectPage",
     description: "A page of projects",
+    interfaces: [GraphQLPage],
     fields: {
         nodes: {
             type: GraphQLList(GraphQLProject),

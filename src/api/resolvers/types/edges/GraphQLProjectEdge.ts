@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from "graphql";
 import GraphQLNode from "../GraphQLNode";
+import GraphQLProject from "../nodes/GraphQLProject";
 
 export default new GraphQLObjectType({
     name: "ProjectEdge",

@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from "graphql";
 import node from "./query/node";
 import echo from "./query/echo";
+import projects from "./listQueries/projects";
 
 export default new GraphQLObjectType({
     name: "Query",
@@ -8,6 +9,6 @@ export default new GraphQLObjectType({
     fields: {
         node,
         echo,
-        projects: projetcs
+        projects
     }
 });
