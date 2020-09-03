@@ -1,12 +1,10 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLIssueFilter from "../types/filters/GraphQLIssueFilter";
-import GraphQLIssuePage from "../types/pages/GraphQLIssuePage";
+import { GraphQLFieldConfig, GraphQLInt, GraphQLString } from "graphql";
+import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
+import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 
-let issues: GraphQLFieldConfig<any, any, any> = {
+let participantOfIssues: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLIssuePage,
-    description: `All issues in this project, matching the given filter.\n
-    These are all issues regardless on which components/interfaces they are located.\n\n
-    If no filter is given, all issues will be returned`,
+    description: "Returns all issues this user is a participant of (e.g. through contibuting, being assigned etc.)",
     args: {
         after: {
             type: GraphQLString,
@@ -30,4 +28,4 @@ let issues: GraphQLFieldConfig<any, any, any> = {
         }
     }
 };
-export default issues;
+export default participantOfIssues;

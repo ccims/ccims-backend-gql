@@ -3,6 +3,7 @@ import GraphQLNode from "../GraphQLNode";
 import components from "../../listQueries/components";
 import users from "../../listQueries/users";
 import issues from "../../listQueries/issues";
+import GraphQLUser from "./GraphQLUser";
 
 export default new GraphQLObjectType({
     name: "Project",

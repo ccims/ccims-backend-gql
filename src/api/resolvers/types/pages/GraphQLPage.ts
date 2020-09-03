@@ -1,4 +1,5 @@
 import { GraphQLInterfaceType, GraphQLNonNull, GraphQLInt } from "graphql";
+import GraphQLPageInfo from "./GraphQLPageInfo";
 
 export default new GraphQLInterfaceType({
     name: "Page",
