@@ -1,17 +1,19 @@
 import { NodeType } from "./NodeType";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { DatabaseCommand } from "../database/DatabaseCommand";
+import { Saveable } from "./Saveable";
 
 /**
  * Base class for all datatypes with an id, which are accessable via the api
  */
-export abstract class CCIMSNode {
+export abstract class CCIMSNode implements Saveable {
     private _id: string;
     private _type: NodeType;
     private _isNew: boolean = false;
     private _isChanged: boolean = false;
     private _isDeleted: boolean = false;
     protected databaseManager: DatabaseManager;
+    private _saveables: Saveable[] = [];
 
     protected constructor (type: NodeType, databaseManager: DatabaseManager, id: string) {
         this._id = id;
@@ -89,8 +91,29 @@ export abstract class CCIMSNode {
     }
 
     /**
-     * generates a DatabaseCommand which updates or inserts or deletes
-     * the node
+     * registers a saveable, so it is saved when necessary
+     * @param saveable the Savable to add
      */
-    public abstract getSaveCommand(): DatabaseCommand<void>;
+    protected registerSaveable(saveable: Saveable): Saveable {
+        this._saveables.push(saveable);
+        return saveable;
+    }
+
+    /**
+     * saves this node
+     * this should not be overwritten by child classes
+     * @see getSaveCommandsInternal
+     */
+    public save(): void {
+        this._saveables.forEach(saveable => saveable.save());
+        if (this.isChanged()) {
+            this.databaseManager.addCommand(this.getSaveCommandsInternal());
+        }
+    }
+
+    /**
+     * this should be overwritten to generate a save command
+     * this method is only invoked if isChanged()
+     */
+    protected abstract getSaveCommandsInternal(): DatabaseCommand<any>;
 }
