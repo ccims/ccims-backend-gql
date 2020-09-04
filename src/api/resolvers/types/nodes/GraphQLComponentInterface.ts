@@ -1,16 +1,17 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLIssueLocation from "../GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLComponent from "./GraphQLComponent";
 import issuesOnLocation from "../../listQueries/issuesOnLocation";
 import consumedBy from "../../listQueries/consumedBy";
-
-export default new GraphQLObjectType({
+import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
+import { ResolverContext } from "../../../ResolverContext";
+let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
     name: "ComponentInterface",
     description: "An interface offered by a component which can be counsumed by other components",
     interfaces: [GraphQLNode, GraphQLIssueLocation],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this component interface"
@@ -29,5 +30,7 @@ export default new GraphQLObjectType({
         },
         issuesOnLocation,
         consumedBy
-    }
-});
+    })
+};
+let GraphQLComponentInterface = new GraphQLObjectType(componentInterfaceConfig);
+export default GraphQLComponentInterface

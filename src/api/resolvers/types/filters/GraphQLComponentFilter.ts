@@ -1,10 +1,10 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
 
-export default new GraphQLInputObjectType({
+let componentFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentFilter",
     description: "Filters for component matching the given properties",
-    fields: {
+    fields: () => ({
         name: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),
             description: "The name of the component must match any of the given strings"
@@ -21,5 +21,7 @@ export default new GraphQLInputObjectType({
             type: GraphQLList(GraphQLNonNull(GraphQLIMSType)),
             description: "The IMS type of a component must be one of the given ones"
         }
-    }
-});
+    })
+};
+let GraphQLComponentFilter = new GraphQLInputObjectType(componentFilterConfig);
+export default GraphQLComponentFilter;

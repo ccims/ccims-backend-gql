@@ -1,14 +1,16 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInterfaceType } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInterfaceType, GraphQLObjectTypeConfig, GraphQLInterfaceTypeConfig } from "graphql";
 import GraphQLIssue from "./GraphQLIssue";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLNode from "../GraphQLNode";
+import { IssueTimelineItem } from "../../../../common/nodes/IssueTimelineItem";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLInterfaceType({
+let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, ResolverContext> = {
     name: "IssueTimelineItem",
     description: "An event in the timeline of an issue wiht a date and a creator",
     interfaces: [GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this timeline item"
@@ -26,5 +28,7 @@ export default new GraphQLInterfaceType({
             type: GraphQLNonNull(GraphQLDate),
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         }
-    }
-});
+    })
+};
+let GraphQLIssueTimelineItem = new GraphQLInterfaceType(issueTimelineItemConfig);
+export default GraphQLIssueTimelineItem;

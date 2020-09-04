@@ -1,4 +1,4 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, GraphQLString, GraphQLID, GraphQLObjectType } from "graphql";
+import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLUser from "../GraphQLUser";
 import GraphQLDate from "../../../scalars/GraphQLDate";
 import reactions from "../../../listQueries/issue/reactions";
@@ -6,12 +6,14 @@ import GraphQLIssue from "../GraphQLIssue";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLComment from "../GraphQLComment";
 import GraphQLNode from "../../GraphQLNode";
+import { IssueComment } from "../../../../../common/nodes/timelineItems/IssueComment";
+import { ResolverContext } from "../../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
     name: "IssueComment",
     description: "A commemt on an issue. Not including th issue body itself",
     interfaces: [GraphQLIssueTimelineItem, GraphQLComment, GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this comment"
@@ -49,5 +51,7 @@ export default new GraphQLObjectType({
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
         reactions,
-    }
-});
+    })
+};
+let GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
+export default GraphQLIssueComment;

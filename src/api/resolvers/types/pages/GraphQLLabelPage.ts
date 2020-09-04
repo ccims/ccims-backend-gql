@@ -1,16 +1,15 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
-import GraphQLIssueEdge from "../edges/GraphQLIssueEdge";
-import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import GraphQLLabel from "../nodes/GraphQLLabel";
 import GraphQLLabelEdge from "../edges/GraphQLLabelEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "LabelPage",
     description: "A page of multiple labels",
     interfaces: [GraphQLPage],
-    fields: {
+    fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLLabel),
             description: "All labels on this page"
@@ -27,5 +26,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
-    }
-});
+    })
+};
+let GraphQLLabelPage = new GraphQLObjectType(labelPageConfig);
+export default GraphQLLabelPage;

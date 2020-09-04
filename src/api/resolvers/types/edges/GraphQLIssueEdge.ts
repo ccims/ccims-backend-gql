@@ -1,11 +1,11 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from "graphql";
-import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLIssue from "../nodes/GraphQLIssue";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueEdge",
     description: "An edge for an IssuePage to link a cursor to an element",
-    fields: {
+    fields: () => ({
         node: {
             type: GraphQLIssue,
             description: "The issue linked to by this edge"
@@ -14,5 +14,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: "The cursor for use in the pagination"
         }
-    }
-});
+    })
+};
+let GraphQLIssueEdge = new GraphQLObjectType(issueEdgeConfig);
+export default GraphQLIssueEdge;

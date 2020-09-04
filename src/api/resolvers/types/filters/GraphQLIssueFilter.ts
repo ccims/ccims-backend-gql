@@ -1,14 +1,14 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean } from "graphql";
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import GraphQLLabelFilter from "./GraphQLLabelFilter";
 
-export default new GraphQLInputObjectType({
+let issueFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueFilter",
     description: `Filters for Issues. All parameters given in this filter will be connected via _AND_\n\n
     Not specific issues in issue management systems but the issue in the ccims`,
-    fields: {
+    fields: () => ({
         title: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),
             description: "The title of the issue must match any of the given strings"
@@ -133,5 +133,7 @@ export default new GraphQLInputObjectType({
             type: GraphQLTimeSpan,
             description: "Matches all issues that have an actual spent time __lower or equal__ than the given one"
         }
-    }
-});
+    })
+};
+let GraphQLIssueFilter = new GraphQLInputObjectType(issueFilterConfig);
+export default GraphQLIssueFilter;

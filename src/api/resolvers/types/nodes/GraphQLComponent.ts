@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
@@ -8,12 +8,14 @@ import projects from "../../listQueries/projects";
 import interfaces from "../../listQueries/interfaces";
 import consumedInterfaces from "../../listQueries/consumedInterfaces";
 import GraphQLIssueLocation from "../GraphQLIssueLocation";
+import { Component } from "../../../../common/nodes/Component";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
     description: "A component known to ccims.\n\nA component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)",
     interfaces: [GraphQLNode, GraphQLIssueLocation],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this component"
@@ -40,5 +42,7 @@ export default new GraphQLObjectType({
         interfaces,
         consumedInterfaces
         //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
-    }
-});
+    })
+};
+let GraphQLComponent = new GraphQLObjectType(componentConfig);
+export default GraphQLComponent;

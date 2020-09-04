@@ -1,13 +1,11 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from "graphql";
-import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
-import GraphQLIssue from "../nodes/GraphQLIssue";
-import GraphQLComponent from "../nodes/GraphQLComponent";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLComponentInterface from "../nodes/GraphQLComponentInterface";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let componentInterfaceEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ComponentInterfaceEdge",
     description: "An edge for a ComponentInterfacePage to link a cursor to an element",
-    fields: {
+    fields: () => ({
         node: {
             type: GraphQLComponentInterface,
             description: "The interface linked to by this edge"
@@ -16,5 +14,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: "The cursor for use in the pagination"
         }
-    }
-});
+    })
+};
+let GraphQLComponentInterfaceEdge = new GraphQLObjectType(componentInterfaceEdgeConfig);
+export default GraphQLComponentInterfaceEdge;

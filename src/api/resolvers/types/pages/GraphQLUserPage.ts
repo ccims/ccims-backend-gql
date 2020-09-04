@@ -1,14 +1,15 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import GraphQLUser from "../nodes/GraphQLUser";
 import GraphQLUserEdge from "../edges/GraphQLUserEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let userPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UserPage",
     description: "A page of multiple users",
     interfaces: [GraphQLPage],
-    fields: {
+    fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLUser),
             description: "All users on this page"
@@ -25,5 +26,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
-    }
-});
+    })
+};
+let GraphQLUserPage = new GraphQLObjectType(userPageConfig);
+export default GraphQLUserPage;

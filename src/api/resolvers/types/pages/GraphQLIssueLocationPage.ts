@@ -1,16 +1,15 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
-import GraphQLIssueEdge from "../edges/GraphQLIssueEdge";
-import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import GraphQLIssueLocation from "../GraphQLIssueLocation";
 import GraphQLIssueLocationEdge from "../edges/GraphQLIssueLocationEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueLocationPage: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueLocationPage",
     description: "A page of multiple issue locations",
     interfaces: [GraphQLPage],
-    fields: {
+    fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLIssueLocation),
             description: "All issue locations on this page"
@@ -27,5 +26,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
-    }
-});
+    })
+};
+let GraphQLIssueLocationPage = new GraphQLObjectType(issueLocationPage);
+export default GraphQLIssueLocationPage;

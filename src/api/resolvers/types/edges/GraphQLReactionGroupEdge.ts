@@ -1,12 +1,13 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLProject from "../nodes/GraphQLProject";
 import GraphQLReactionGroup from "../nodes/GraphQLReactionGroup";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let reactionGroupEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ReactionGroupEdge",
     description: "An edge for a RecationGroupPage to link a cursor to an element",
-    fields: {
+    fields: () => ({
         node: {
             type: GraphQLReactionGroup,
             description: "The reaction group linked to by this edge"
@@ -15,5 +16,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: "The cursor for use in the pagination"
         }
-    }
-});
+    })
+};
+let GraphQLReactionGroupEdge = new GraphQLObjectType(reactionGroupEdgeConfig);
+export default GraphQLReactionGroupEdge;

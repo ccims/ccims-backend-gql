@@ -1,13 +1,15 @@
-import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLColor from "../../scalars/GraphQLColor";
 import projects from "../../listQueries/projects";
+import { Label } from "../../../../common/nodes/Label";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
     description: "A label assignable to issues. A label is per-project",
     interfaces: [GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this label"
@@ -25,5 +27,7 @@ export default new GraphQLObjectType({
             description: "The color of the label in the GUI"
         },
         projects
-    }
-})
+    })
+};
+let GraphQLLabel = new GraphQLObjectType(labelConfig);
+export default GraphQLLabel;

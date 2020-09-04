@@ -1,9 +1,10 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLInputObjectType({
+let userFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "UserFilter",
     description: "Filter for a user of the system. All parameters given in this filter will be connected via _AND_",
-    fields: {
+    fields: () => ({
         username: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),
             description: "Any of the strings must match the users username"
@@ -32,5 +33,7 @@ export default new GraphQLInputObjectType({
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The user must have written at least one of the comments with the given ids"
         }
-    }
-});
+    })
+};
+let GraphQLUserFilter = new GraphQLInputObjectType(userFilterConfig);
+export default GraphQLUserFilter;

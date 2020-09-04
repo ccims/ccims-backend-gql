@@ -1,18 +1,15 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
-import GraphQLIssueEdge from "../edges/GraphQLIssueEdge";
-import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
-import GraphQLIssueLocationEdge from "../edges/GraphQLIssueLocationEdge";
 import GraphQLIssueComment from "../nodes/timelineItems/GraphQLIssueComment";
 import GraphQLIssueCommentEdge from "../edges/GraphQLIssueCommentEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueCommentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueCommentPage",
     description: "A page of multiple issue comments",
     interfaces: [GraphQLPage],
-    fields: {
+    fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLIssueComment),
             description: "All issue comments on this page"
@@ -29,5 +26,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
-    }
-});
+    })
+};
+let GraphQLIssueCommentPage = new GraphQLObjectType(issueCommentPageConfig);
+export default GraphQLIssueCommentPage;

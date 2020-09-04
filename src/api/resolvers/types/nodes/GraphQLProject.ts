@@ -1,16 +1,18 @@
-import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import components from "../../listQueries/components";
 import users from "../../listQueries/users";
 import issues from "../../listQueries/issues";
 import GraphQLUser from "./GraphQLUser";
 import labels from "../../listQueries/labels";
+import { Project } from "../../../../common/nodes/Project";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
     description: "A project is a one unit in which the participating components colaborate",
     interfaces: [GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this project"
@@ -27,5 +29,7 @@ export default new GraphQLObjectType({
         },
         issues,
         labels
-    }
-});
+    })
+};
+let GraphQLProject = new GraphQLObjectType(projectConfig);
+export default GraphQLProject;

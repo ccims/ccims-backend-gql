@@ -1,12 +1,11 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
-import GraphQLIssueEdge from "../edges/GraphQLIssueEdge";
-import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import GraphQLIssueTimelineItemEdge from "../edges/GraphQLIssueTimelineItemEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueTimelineItemPage",
     description: "A page of multiple issue timeline items",
     interfaces: [GraphQLPage],
@@ -28,4 +27,6 @@ export default new GraphQLObjectType({
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
     }
-});
+};
+let GraphQLIssueTimelineItemPage = new GraphQLObjectType(issueTimelineItemPageConfig);
+export default GraphQLIssueTimelineItemPage

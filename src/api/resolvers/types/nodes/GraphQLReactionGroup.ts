@@ -1,12 +1,14 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLInt, GraphQLID } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLInt, GraphQLID, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
+import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext> = {
     name: "ReactionGroup",
     description: "A relation of users who have reacted with a certain reaction to something",
     interfaces: [GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this reaction group"
@@ -25,5 +27,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: "The name of the recation with which the people in this reaction group have reacted"
         }
-    }
-})
+    })
+}
+let GraphQLReactionGroup = new GraphQLObjectType(reactionGroupConfig);
+export default GraphQLReactionGroup;

@@ -1,5 +1,5 @@
 import { CCIMSNode } from "./CCIMSNode";
 
-export class User extends CCIMSNode {
+export class Component extends CCIMSNode {
 
 }

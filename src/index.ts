@@ -3,6 +3,7 @@ import { CCIMSApi } from "./api/CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { printSchema } from "graphql";
 import { log } from "./log";
+import testSchema from "./temp/TestSchema";
 
 console.log("Hello world");
 
@@ -12,5 +13,9 @@ export function functionToTest(a: number, b: number): number {
 
 
 //const syncService = new SyncService();
-const backendApi = new CCIMSApi({});
-backendApi.start();
+if (false) {
+    const backendApi = new CCIMSApi({});
+    backendApi.start();
+} else {
+    console.log(printSchema(ccimsSchema));
+}

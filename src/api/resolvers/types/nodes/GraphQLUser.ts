@@ -1,15 +1,17 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import projects from "../../listQueries/projects";
 import assignedToIssues from "../../listQueries/user/assignedToIssues";
 import participantOfIssues from "../../listQueries/user/participantOfIssues";
 import issueComments from "../../listQueries/user/issueComments";
+import { User } from "../../../../common/nodes/User";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
     name: "User",
     description: "A user of th ccims. Can be assigned to projects, components and can have multiple ims accounts",
     interfaces: [GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this user"
@@ -30,5 +32,7 @@ export default new GraphQLObjectType({
         assignedToIssues,
         participantOfIssues,
         issueComments
-    }
-});
+    })
+};
+let GraphQLUser = new GraphQLObjectType(userConfig);
+export default GraphQLUser;

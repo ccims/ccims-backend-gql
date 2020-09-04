@@ -1,4 +1,4 @@
-import { GraphQLScalarType, ValueNode, astFromValue, Kind, GraphQLScalarTypeConfig, StringValueNode, IntValueNode } from "graphql";
+import { GraphQLScalarType, ValueNode, Kind, GraphQLScalarTypeConfig, IntValueNode } from "graphql";
 
 let timeSpan: GraphQLScalarTypeConfig<number, number> = {
     name: "TimeSpan",

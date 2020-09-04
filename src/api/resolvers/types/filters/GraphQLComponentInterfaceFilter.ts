@@ -1,9 +1,9 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLNonNull } from "graphql";
+import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
 
-export default new GraphQLInputObjectType({
+let componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentInterfaceFilter",
     description: "Filters for an instance of a component's interface",
-    fields: {
+    fields: () => ({
         name: {
             type: GraphQLString,
             description: "The name the component has to have"
@@ -24,5 +24,7 @@ export default new GraphQLInputObjectType({
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "If given, only interfaces which are consumed by at least one of the components with the given ids can match the filter"
         }
-    }
-});
+    })
+};
+let GraphQLComponentInterfaceFilter = new GraphQLInputObjectType(componentInterfaceFilterConfig);
+export default GraphQLComponentInterfaceFilter;

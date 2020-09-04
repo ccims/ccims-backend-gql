@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLList } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLList, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
@@ -14,12 +14,14 @@ import pinnedOn from "../../listQueries/issue/pinnedOn";
 import timeline from "../../listQueries/issue/timeline";
 import locations from "../../listQueries/issue/locations";
 import GraphQLComment from "./GraphQLComment";
+import { Issue } from "../../../../common/nodes/Issue";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
     description: "A cros component issue within ccims which links multiple issues from single ims",
     interfaces: [GraphQLComment, GraphQLNode],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
             description: "The unique id of this issue"
@@ -101,5 +103,7 @@ export default new GraphQLObjectType({
         pinnedOn,
         timeline,
         locations,
-    }
-});
+    })
+};
+let GraphQLIssue = new GraphQLObjectType(issueConfig);
+export default GraphQLIssue;

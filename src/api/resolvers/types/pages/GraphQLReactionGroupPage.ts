@@ -1,17 +1,15 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLList } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
-import GraphQLProject from "../nodes/GraphQLProject";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import GraphQLReactionGroup from "../nodes/GraphQLReactionGroup";
 import GraphQLReactionGroupEdge from "../edges/GraphQLReactionGroupEdge";
+import { ResolverContext } from "../../../ResolverContext";
 
-export default new GraphQLObjectType({
+let reactionGroupPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ReactionGroupPage",
     description: "A page of reaction groups",
     interfaces: [GraphQLPage],
-    fields: {
+    fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLReactionGroup),
             description: "All reaction groups on this page"
@@ -28,5 +26,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
         }
-    }
-});
+    })
+};
+let GraphQLReactionGroupPage = new GraphQLObjectType(reactionGroupPageConfig);
+export default GraphQLReactionGroupPage;

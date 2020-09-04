@@ -1,9 +1,13 @@
-import { GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import testMutation from "./mutations/testMutation";
-export default new GraphQLObjectType({
+import { ResolverContext } from "../ResolverContext";
+
+let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
     description: "Mutations to change the data within the ccims",
-    fields: {
+    fields: () => ({
         testMutation
-    }
-});
+    })
+};
+let mutation = new GraphQLObjectType(mutationConfig);
+export default mutation;
