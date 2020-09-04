@@ -33,6 +33,13 @@ CREATE TABLE relation_component_pinnedIssues
     PRIMARY KEY (component_id, issue_id)
 );
 
+CREATE TABLE relation_component_label 
+(
+    component_id id NOT NULL,
+    label_id id NOT NULL,
+    PRIMARY KEY (component_id, label_id)
+);
+
 CREATE TABLE component_interfaces
 (
     name character varying(256) NOT NULL,
