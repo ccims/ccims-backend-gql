@@ -2,7 +2,6 @@ import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadListCommand } from "../LoadListCommand";
 import { NodeCache } from "../../../NodeCache";
 import { QueryResultRow, QueryResult } from "pg";
-import { QueryPart } from "../QueryPart";
 import { ConditionSpecification } from "../ConditionSpecification";
 
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
