@@ -4,6 +4,7 @@ import components from "../../listQueries/components";
 import users from "../../listQueries/users";
 import issues from "../../listQueries/issues";
 import GraphQLUser from "./GraphQLUser";
+import labels from "../../listQueries/labels";
 
 export default new GraphQLObjectType({
     name: "Project",
@@ -16,14 +17,15 @@ export default new GraphQLObjectType({
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
-            description: "The human readable name of this project"
+            description: "The human readable name of this project\n\nMax. 256 characters"
         },
         components,
         users,
         owner: {
             type: GraphQLNonNull(GraphQLUser),
-            description: "The user which administrates \"owns\" the project"
+            description: "The user who administrates \"owns\" the project"
         },
-        issues
+        issues,
+        labels
     }
 });

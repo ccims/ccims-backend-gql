@@ -2,10 +2,10 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLIssueFilter from "../types/filters/GraphQLIssueFilter";
 import GraphQLIssuePage from "../types/pages/GraphQLIssuePage";
 
-let issues: GraphQLFieldConfig<any, any, any> = {
+let issuesOnLocation: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLIssuePage,
-    description: `All issues on this node, matching the given filter.\n
-    These are all issues regardless on which components/interfaces they are located.\n\n
+    description: `Only returnes issues which are assigned to this __location__ matching the filter\n\n
+    (for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).\n
     If no filter is given, all issues will be returned`,
     args: {
         after: {
@@ -30,4 +30,4 @@ let issues: GraphQLFieldConfig<any, any, any> = {
         }
     }
 };
-export default issues;
+export default issuesOnLocation;

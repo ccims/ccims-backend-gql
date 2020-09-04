@@ -1,21 +1,22 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLList } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
-import GraphQLProject from "../nodes/GraphQLProject";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
+import GraphQLComponent from "../nodes/GraphQLComponent";
+import GraphQLComponentEdge from "../edges/GraphQLComponentEdge";
+import GraphQLComponentInterface from "../nodes/GraphQLComponentInterface";
+import GraphQLComponentInterfaceEdge from "../edges/GraphQLComponentInterfaceEdge";
 
 export default new GraphQLObjectType({
-    name: "ProjectPage",
-    description: "A page of projects",
+    name: "ComponentInterfacePage",
+    description: "A page of multiple component interfaces",
     interfaces: [GraphQLPage],
     fields: {
         nodes: {
-            type: GraphQLList(GraphQLProject),
-            description: "All projects on this page"
+            type: GraphQLList(GraphQLComponentInterface),
+            description: "All interfaces on this page"
         },
         edges: {
-            type: GraphQLList(GraphQLProjectEdge),
+            type: GraphQLList(GraphQLComponentInterfaceEdge),
             description: "Edges to all nodes containing the cursor"
         },
         pageInfo: {

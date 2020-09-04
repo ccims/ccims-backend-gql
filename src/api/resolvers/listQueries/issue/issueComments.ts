@@ -4,7 +4,7 @@ import GraphQLIssueCommentPage from "../../types/pages/GraphQLIssueCommentPage";
 
 let issueComments: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLIssueCommentPage,
-    description: `All comments written by this user, matching the given filter.\n
+    description: `All comments for this issue, matching the given filter.\n
     If no filter is given, all comments will be returned`,
     args: {
         after: {

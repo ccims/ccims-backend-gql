@@ -1,21 +1,22 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLList } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
-import GraphQLProject from "../nodes/GraphQLProject";
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
 import GraphQLPage from "./GraphQLPage";
+import GraphQLIssueEdge from "../edges/GraphQLIssueEdge";
+import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
+import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
+import GraphQLIssueTimelineItemEdge from "../edges/GraphQLIssueTimelineItemEdge";
 
 export default new GraphQLObjectType({
-    name: "ProjectPage",
-    description: "A page of projects",
+    name: "IssueTimelineItemPage",
+    description: "A page of multiple issue timeline items",
     interfaces: [GraphQLPage],
     fields: {
         nodes: {
-            type: GraphQLList(GraphQLProject),
-            description: "All projects on this page"
+            type: GraphQLList(GraphQLIssueTimelineItem),
+            description: "All issue timeline items on this page"
         },
         edges: {
-            type: GraphQLList(GraphQLProjectEdge),
+            type: GraphQLList(GraphQLIssueTimelineItemEdge),
             description: "Edges to all nodes containing the cursor"
         },
         pageInfo: {

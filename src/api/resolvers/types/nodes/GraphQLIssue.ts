@@ -4,6 +4,16 @@ import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
+import linkedIssues from "../../listQueries/issue/linkedIssues";
+import assignees from "../../listQueries/issue/assignees";
+import issueComments from "../../listQueries/issue/issueComments";
+import reactions from "../../listQueries/issue/reactions";
+import labels from "../../listQueries/issue/labels";
+import participants from "../../listQueries/issue/participants";
+import pinnedOn from "../../listQueries/issue/pinnedOn";
+import timeline from "../../listQueries/issue/timeline";
+import locations from "../../listQueries/issue/locations";
+import GraphQLComment from "./GraphQLComment";
 
 export default new GraphQLObjectType({
     name: "Issue",
@@ -82,5 +92,14 @@ export default new GraphQLObjectType({
             type: GraphQLTimeSpan,
             description: "The time already spent on work on this issue.\n\nThis is only for displaying and has no effect on the ccims but will be synce to other ims"
         },
+        issueComments,
+        linkedIssues,
+        reactions,
+        assignees,
+        labels,
+        participants,
+        pinnedOn,
+        timeline,
+        locations,
     }
 });

@@ -2,9 +2,9 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
 import GraphQLComponentFilter from "../types/filters/GraphQLComponentFilter";
 
-let components: GraphQLFieldConfig<any, any, any> = {
+let consumedBy: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLComponentPage,
-    description: "Components which are part of this project and match the filter.\n\nIf no filter is given, all components will be returned",
+    description: "Components which consume the interface and match the filter.\n\nIf no filter is given, all components will be returned",
     args: {
         after: {
             type: GraphQLString,
@@ -29,4 +29,4 @@ let components: GraphQLFieldConfig<any, any, any> = {
     }
 };
 
-export default components;
+export default consumedBy;

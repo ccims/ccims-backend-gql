@@ -4,18 +4,20 @@ import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
 import GraphQLProject from "../nodes/GraphQLProject";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
+import GraphQLReactionGroup from "../nodes/GraphQLReactionGroup";
+import GraphQLReactionGroupEdge from "../edges/GraphQLReactionGroupEdge";
 
 export default new GraphQLObjectType({
-    name: "ProjectPage",
-    description: "A page of projects",
+    name: "ReactionGroupPage",
+    description: "A page of reaction groups",
     interfaces: [GraphQLPage],
     fields: {
         nodes: {
-            type: GraphQLList(GraphQLProject),
-            description: "All projects on this page"
+            type: GraphQLList(GraphQLReactionGroup),
+            description: "All reaction groups on this page"
         },
         edges: {
-            type: GraphQLList(GraphQLProjectEdge),
+            type: GraphQLList(GraphQLReactionGroupEdge),
             description: "Edges to all nodes containing the cursor"
         },
         pageInfo: {

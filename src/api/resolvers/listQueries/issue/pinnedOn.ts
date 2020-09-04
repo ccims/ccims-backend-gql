@@ -1,10 +1,13 @@
 import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
-import GraphQLComponentFilter from "../types/filters/GraphQLComponentFilter";
+import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
+import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
+import GraphQLComponentPage from "../../types/pages/GraphQLComponentPage";
+import GraphQLComponentFilter from "../../types/filters/GraphQLComponentFilter";
 
-let components: GraphQLFieldConfig<any, any, any> = {
+let pinnedOn: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLComponentPage,
-    description: "Components which are part of this project and match the filter.\n\nIf no filter is given, all components will be returned",
+    description: `All components where this issue has been pinned, matching the given filter.\n
+    If no filter is given, all components will be returned`,
     args: {
         after: {
             type: GraphQLString,
@@ -28,5 +31,4 @@ let components: GraphQLFieldConfig<any, any, any> = {
         }
     }
 };
-
-export default components;
+export default pinnedOn;

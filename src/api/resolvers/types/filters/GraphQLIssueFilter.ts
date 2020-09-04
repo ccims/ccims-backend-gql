@@ -2,6 +2,7 @@ import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, Gra
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
+import GraphQLLabelFilter from "./GraphQLLabelFilter";
 
 export default new GraphQLInputObjectType({
     name: "IssueFilter",

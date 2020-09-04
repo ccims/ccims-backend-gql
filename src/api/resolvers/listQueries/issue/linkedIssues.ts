@@ -1,11 +1,10 @@
 import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLIssueFilter from "../types/filters/GraphQLIssueFilter";
-import GraphQLIssuePage from "../types/pages/GraphQLIssuePage";
+import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
+import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 
-let issues: GraphQLFieldConfig<any, any, any> = {
+let linkedIssues: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLIssuePage,
-    description: `All issues on this node, matching the given filter.\n
-    These are all issues regardless on which components/interfaces they are located.\n\n
+    description: `All issues linked to or linking this issue, matching the given filter.\n
     If no filter is given, all issues will be returned`,
     args: {
         after: {
@@ -30,4 +29,4 @@ let issues: GraphQLFieldConfig<any, any, any> = {
         }
     }
 };
-export default issues;
+export default linkedIssues;

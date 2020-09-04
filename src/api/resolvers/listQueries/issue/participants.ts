@@ -1,10 +1,13 @@
 import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLUserPage from "../types/pages/GraphQLUserPage";
-import GraphQLUserFilter from "../types/filters/GraphQLUserFilter";
+import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
+import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
+import GraphQLUserPage from "../../types/pages/GraphQLUserPage";
+import GraphQLUserFilter from "../../types/filters/GraphQLUserFilter";
 
-let users: GraphQLFieldConfig<any, any, any> = {
+let participants: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLUserPage,
-    description: "Users which are part of this project and match the given filter.\n\nIf no filter is given, all users will be returned",
+    description: `All users participating on this issue (by writing a comment, etc.), matching the given filter.\n
+    If no filter is given, all users will be returned`,
     args: {
         after: {
             type: GraphQLString,
@@ -28,4 +31,4 @@ let users: GraphQLFieldConfig<any, any, any> = {
         }
     }
 };
-export default users;
+export default participants;
