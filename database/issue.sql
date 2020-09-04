@@ -17,7 +17,7 @@ CREATE TABLE issue_issue (
 
 CREATE TABLE relation_issue_linkedIssue (
     issue_id id NOT NULL,
-    linked_issue_id id NOT NULL,
+    linkedIssue_id id NOT NULL,
     PRIMARY KEY (issue_id, linked_issue_id)
 );
 
