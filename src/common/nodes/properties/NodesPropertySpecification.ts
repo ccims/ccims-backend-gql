@@ -1,6 +1,8 @@
 import { DatabaseCommand } from "../../database/DatabaseCommand";
 import { CCIMSNode } from "../CCIMSNode";
 import { Property } from "./Property";
+import { AddRelationCommand } from "../../database/commands/save/AddRelationCommand";
+import { RemoveRelationCommand } from "../../database/commands/save/RemoveRelationCommand";
 
 export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> {
     /**
@@ -121,6 +123,46 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             this.loadFromId,
             addRel,
             removeRel
+        )
+    }
+
+    /**
+     * specifies that the property should handle save, and is the primary node
+     * in the relation table
+     * @param primary the name for the primary column
+     * @param secundary the name for the secundary column
+     */
+    public saveOnPrimary(primary: string, secundary: string): NodesPropertySpecification<T, V> {
+        return new NodesPropertySpecification (
+            this.loadDynamic,
+            true,
+            this.loadFromIds,
+            this.loadElements,
+            this.notifiers,
+            this.loadIds,
+            this.loadFromId,
+            AddRelationCommand.fromPrimary(primary, secundary),
+            RemoveRelationCommand.fromPrimary(primary, secundary)
+        )
+    }
+
+    /**
+     * specifies that the property should handle save, and is the secundary node
+     * in the relation table
+     * @param primary the name for the primary column
+     * @param secundary the name for the secundary column
+     */
+    public saveOnSecundary(primary: string, secundary: string): NodesPropertySpecification<T, V> {
+        return new NodesPropertySpecification (
+            this.loadDynamic,
+            true,
+            this.loadFromIds,
+            this.loadElements,
+            this.notifiers,
+            this.loadIds,
+            this.loadFromId,
+            AddRelationCommand.fromSecundary(primary, secundary),
+            RemoveRelationCommand.fromSecundary(primary, secundary)
         )
     }
 
