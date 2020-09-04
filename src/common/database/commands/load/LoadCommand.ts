@@ -1,8 +1,9 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
-import { QueryConfig } from "pg";
+import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "../../NodeCache";
 import { QueryPart } from "./QueryPart";
 import { ConditionSpecification } from "./ConditionSpecification";
+import { DatabaseManager } from "../../DatabaseManager";
 
 export abstract class LoadCommand<T> extends DatabaseCommand<T> {
     /**

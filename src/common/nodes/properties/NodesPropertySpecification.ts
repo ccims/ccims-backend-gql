@@ -12,7 +12,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * @param loadDynamic if true, the should always load as least as possible
      * @param save if true, the property must handle save
      * @param loadIds command generator to load all ids
-     * @param loadFromId command generator to load a single element by id
      * @param loadFromIds command generator to load elements by a list of ids
      * @param loadElements command generator to load all elements
      * @param addRel command generator to add a relation to the relation table
@@ -26,7 +25,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
         public readonly loadElements: (node: V) => DatabaseCommand<T[]>,
         public readonly notifiers: ((element: T, node: V) => Property<V>)[],
         public readonly loadIds?: (node: V) => DatabaseCommand<string[]>,
-        public readonly loadFromId?: (id: string, node: V) => DatabaseCommand<T | undefined>,
         public readonly addRel?: (id: string, node: V) => DatabaseCommand<void>,
         public readonly removeRel?: (id: string, node: V) => DatabaseCommand<void>
     ) {
@@ -57,7 +55,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      */
     public static loadDynamic<T extends CCIMSNode, V extends CCIMSNode>(
         loadIds: (node: V) => DatabaseCommand<string[]>,
-        loadFromId: (id: string, node: V) => DatabaseCommand<T | undefined>,
         loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         loadElements: (node: V) => DatabaseCommand<T[]>
     ): NodesPropertySpecificationBuilder<T, V> {
@@ -65,8 +62,7 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             loadFromIds,
             loadElements,
             true,
-            loadIds,
-            loadFromId
+            loadIds
         );
     }
 }
@@ -120,7 +116,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             this.loadElements,
             this.notifiers,
             this.loadIds,
-            this.loadFromId,
             addRel,
             removeRel
         )
@@ -140,7 +135,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             this.loadElements,
             this.notifiers,
             this.loadIds,
-            this.loadFromId,
             AddRelationCommand.fromPrimary(primary, secundary),
             RemoveRelationCommand.fromPrimary(primary, secundary)
         )
@@ -160,7 +154,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             this.loadElements,
             this.notifiers,
             this.loadIds,
-            this.loadFromId,
             AddRelationCommand.fromSecundary(primary, secundary),
             RemoveRelationCommand.fromSecundary(primary, secundary)
         )
@@ -178,7 +171,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             this.loadElements,
             this.notifiers,
             this.loadIds,
-            this.loadFromId
         )
     }
  }

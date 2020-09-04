@@ -54,11 +54,11 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
         await this.ensureLoadLevel(LoadLevel.Partial);
         if (this._elements.has(id)) {
             return this._elements.get(id);
-        } else if (this._ids.has(id) && this._specification.loadFromId) {
-            const loadCommand = this._specification.loadFromId(id, this._node);
+        } else if (this._ids.has(id) && this._specification.loadDynamic) {
+            const loadCommand = this._specification.loadFromIds([id], this._node);
             this._databaseManager.addCommand(loadCommand);
             await this._databaseManager.executePendingCommands();
-            const resultElement = loadCommand.getResult(this._databaseManager);
+            const resultElement = loadCommand.getResult()[0];
             if (resultElement) {
                 if (!this._elements.has(id)) {
                     this._elements.set(id, resultElement);
@@ -124,7 +124,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
     private async ensureAddDeleteLoadLevel(): Promise<void> {
         if (this._specification.loadDynamic) {
             await this.ensureLoadLevel(LoadLevel.Ids);
-            if (this._loadLevel == LoadLevel.Ids) {
+            if (this._loadLevel === LoadLevel.Ids) {
                 this._loadLevel = LoadLevel.Partial;
             }
         } else {
@@ -138,21 +138,21 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
      */
     private async ensureLoadLevel(level: LoadLevel): Promise<void> {
         if (this._loadLevel < level) {
-            if (level == LoadLevel.Ids && this._specification.loadDynamic) {
+            if (level === LoadLevel.Ids && this._specification.loadDynamic) {
                 if (!this._specification.loadIds) {
                     throw new Error("necessary generator not present");
                 }
                 const getIdsCommand = this._specification.loadIds(this._node);
                 this._databaseManager.addCommand(getIdsCommand);
                 await this._databaseManager.executePendingCommands();
-                this.setIds(getIdsCommand.getResult(this._databaseManager));
+                this.setIds(getIdsCommand.getResult());
             } else if (level > LoadLevel.None) {
                 if (this._loadLevel >= LoadLevel.Ids) {
                     const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
                     const loadOtherCommand = this._specification.loadFromIds(notLoadedIds, this._node);
                     this._databaseManager.addCommand(loadOtherCommand);
                     await this._databaseManager.executePendingCommands();
-                    loadOtherCommand.getResult(this._databaseManager).forEach(element => {
+                    loadOtherCommand.getResult().forEach(element => {
                         this._elements.set(element.id, element);
                         //a notify is not necessary because this was already done when the ids were loaded
                     });
@@ -167,7 +167,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
                     const loadAllCommand = this._specification.loadElements(this._node);
                     this._databaseManager.addCommand(loadAllCommand);
                     await this._databaseManager.executePendingCommands();
-                    this.setElements(loadAllCommand.getResult(this._databaseManager));
+                    this.setElements(loadAllCommand.getResult());
                 }
             }
         }

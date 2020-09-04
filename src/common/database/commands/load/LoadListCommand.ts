@@ -1,10 +1,14 @@
 import { LoadCommand } from "./LoadCommand";
 import { NodeCache } from "../../NodeCache";
 import { QueryResult, QueryResultRow } from "pg";
+import { DatabaseManager } from "../../DatabaseManager";
+import { DatabaseCommand } from "../../DatabaseCommand";
 
 export abstract class LoadListCommand<T> extends LoadCommand<T[]> {   
-    protected getResultInternal(nodeCache: NodeCache, result: QueryResult): T[] {
-        return result.rows.map(resultRow => this.getSingleResult(nodeCache, resultRow, result));
+   
+    public setDatabaseResult(nodeCache: NodeCache, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result =  result.rows.map(resultRow => this.getSingleResult(nodeCache, resultRow, result));
+        return [];
     }
 
     /**

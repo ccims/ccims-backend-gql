@@ -2,6 +2,7 @@ import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
+import { DatabaseManager } from "../../DatabaseManager";
 
 export class AddRelationCommand extends DatabaseCommand<void> {
 
@@ -29,8 +30,8 @@ export class AddRelationCommand extends DatabaseCommand<void> {
         return this.config;
     }
 
-    protected getResultInternal(nodeCache: NodeCache, result: QueryResult<any>): void {
-        //no nothing
+    public setDatabaseResult(nodeCache: NodeCache, result: QueryResult<any>): DatabaseCommand<any>[] {
+        return [];
     }
 
    /**

@@ -1,5 +1,6 @@
 import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "./NodeCache";
+import { DatabaseManager } from "./DatabaseManager";
 
 /**
  * @param T the type for the result of the Command
@@ -11,14 +12,7 @@ export abstract class DatabaseCommand<T> {
      */
     public subCommands: DatabaseCommand<any>[] = [];
 
-    /**
-     * the result when the query was executed
-     * this MUST only be used by getResultInternal (read access)
-     * and the DatabaseManager (write access)
-     */
-    databaseResult?: QueryResult;
-
-    private result?: T;
+    protected result?: T;
 
     /**
      * overrite this method to generate the query
@@ -26,27 +20,34 @@ export abstract class DatabaseCommand<T> {
     public abstract getQueryConfig(): QueryConfig; 
 
     /**
-     * gets the result of this query as soon as it is available
-     * this method caches the result automatically
-     * @param nodeCache nodeCache used to get / add nodes
-     * @throws error if databaseResult is not present
-     */
-    public getResult(nodeCache: NodeCache): T {
-        if (!this.result) {
-            if (!this.databaseResult) {
-                throw new Error("no database result available");
-            }
-            this.result = this.getResultInternal(nodeCache, this.databaseResult);
-        }
-        return this.result;
-    }
-
-    /**
      * must be overwritten by subclasses
      * used by @see getResult to generate the result out of the databaseResult
      * it is guaranteed that databaseResult is NOT undefined
      * @param nodeCache nodeCache used to get / add nodes
+     * @returns is executed directly after, this can be used to execute necessary follow-up commands
      */
-    protected abstract getResultInternal(nodeCache: NodeCache, result: QueryResult): T
+    public abstract setDatabaseResult(nodeCache: NodeCache, result: QueryResult): DatabaseCommand<any>[];
 
+    /**
+     * is called when all follow-up commands are executed
+     * if something has to happen here, this method should be overwritten
+     * @param nodeCache nodeCache used to get / add nodes
+     * @param commands the list of follow-up commands
+     */
+    public notifyFollowUpCommandsResult(nodeCache: NodeCache, commands: DatabaseCommand<any>[]): void {
+
+    }
+
+    /**
+     * gets the result of this query as soon as it is available
+     * this method caches the result automatically
+     * this can be overwritten to change the behaviour
+     * @throws error if no result is set, if this behaviour is unwanted, it is necessary to overwrite this method
+     */
+    public getResult(): T {
+        if (!this.result) {
+            throw new Error("no result currently set");
+        }
+        return this.result;
+    }
 }

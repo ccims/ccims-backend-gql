@@ -2,9 +2,9 @@ import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
+import { DatabaseManager } from "../../DatabaseManager";
 
 export class LoadRelationCommand extends DatabaseCommand<string[]> {
-
     private readonly config: QueryConfig<any[]>;
     private readonly resultColumn: string;
 
@@ -31,8 +31,10 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
     public getQueryConfig(): QueryConfig<any[]> {
         return this.config;
     }
-    protected getResultInternal(nodeCache: NodeCache, result: QueryResult<any>): string[] {
-        return result.rows.map(row => row[this.resultColumn]);
+
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row[this.resultColumn]);
+        return [];
     }
 
     /**
