@@ -70,7 +70,7 @@ export abstract class CCIMSNode implements Saveable {
     /**
      * marks this node as changed, aka isChanged will return true
      */
-    protected markChanged(): void {
+    public markChanged(): void {
         this._isChanged = true;
     }
 

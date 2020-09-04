@@ -1,5 +1,6 @@
 import { DatabaseCommand } from "../../database/DatabaseCommand";
 import { CCIMSNode } from "../CCIMSNode";
+import { Property } from "./Property";
 
 export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> {
     /**
@@ -14,14 +15,16 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * @param loadElements command generator to load all elements
      * @param addRel command generator to add a relation to the relation table
      * @param removeRel command generator to remove a relation from the relation table
+     * @param notifiers callbacks to get properties to notifiy changes
      */
     constructor(
         public readonly loadDynamic: boolean,
         public readonly save: boolean,
         public readonly loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         public readonly loadElements: (node: V) => DatabaseCommand<T[]>,
+        public readonly notifiers: ((element: T, node: V) => Property<V>)[],
         public readonly loadIds?: (node: V) => DatabaseCommand<string[]>,
-        public readonly loadFromId?: (id: string, node: V) => DatabaseCommand<T>,
+        public readonly loadFromId?: (id: string, node: V) => DatabaseCommand<T | undefined>,
         public readonly addRel?: (id: string, node: V) => DatabaseCommand<void>,
         public readonly removeRel?: (id: string, node: V) => DatabaseCommand<void>
     ) {
@@ -52,7 +55,7 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      */
     public static loadDynamic<T extends CCIMSNode, V extends CCIMSNode>(
         loadIds: (node: V) => DatabaseCommand<string[]>,
-        loadFromId: (id: string, node: V) => DatabaseCommand<T>,
+        loadFromId: (id: string, node: V) => DatabaseCommand<T | undefined>,
         loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         loadElements: (node: V) => DatabaseCommand<T[]>
     ): NodesPropertySpecificationBuilder<T, V> {
@@ -70,6 +73,9 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
  * builder for @see NodesPropertySpecification
  */
  class NodesPropertySpecificationBuilder<T extends CCIMSNode, V extends CCIMSNode> {
+
+    private notifiers: ((element: T, node: V) => Property<V>)[] = [];
+
     /**
      * @param loadDynamic if true, the should always load as least as possible
      * @param loadIds command generator to load all ids
@@ -82,9 +88,17 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
         private loadElements: (node: V) => DatabaseCommand<T[]>,
         private loadDynamic: boolean,
         private loadIds?: (node: V) => DatabaseCommand<string[]>,
-        private loadFromId?: (id: string, node: V) => DatabaseCommand<T>
+        private loadFromId?: (id: string, node: V) => DatabaseCommand<T | undefined>
     ) { 
         
+    }
+
+    /**
+     * adds a notify callback when a change on this property occures
+     * @param toNotify generates the property to notify out of element
+     */
+    public nodifyChanged(toNotify: (element: T, node: V) => Property<V>) {
+        this.notifiers.push(toNotify);
     }
 
     /**
@@ -95,13 +109,14 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      */
     public save(
         addRel: (id: string, node: V) => DatabaseCommand<void>,
-        removeRel: (id: string, node: V) => DatabaseCommand<void>
+        removeRel: (id: string, node: V) => DatabaseCommand<void>,
     ): NodesPropertySpecification<T, V> {
         return new NodesPropertySpecification<T, V>(
             this.loadDynamic,
             true,
             this.loadFromIds,
             this.loadElements,
+            this.notifiers,
             this.loadIds,
             this.loadFromId,
             addRel,
@@ -119,6 +134,7 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
             false,
             this.loadFromIds,
             this.loadElements,
+            this.notifiers,
             this.loadIds,
             this.loadFromId
         )
