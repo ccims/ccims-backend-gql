@@ -3,10 +3,12 @@ DROP TABLE IF EXISTS user_ims_credentials;
 DROP TABLE IF EXISTS ims_systems;
 
 -- Project/Component tables
+DROP TABLE IF EXISTS relation_component_label;
+DROP TABLE IF EXISTS relation_component_issue;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS components;
 DROP TABLE IF EXISTS relation_project_component;
-DROP TABLE IF EXISTS relation_component_pinnedIssues;
+DROP TABLE IF EXISTS relation_component_pinnedIssue;
 DROP TABLE IF EXISTS component_interfaces;
 DROP TABLE IF EXISTS relation_componentInterface_issue;
 
@@ -15,6 +17,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS relation_user_project;
 
 -- Issue Tables
+DROP TABLE IF EXISTS issue_label;
 DROP TABLE IF EXISTS issue_reactionGroup;
 DROP TABLE IF EXISTS issue_timeline_reopenedEvent;
 DROP TABLE IF EXISTS issue_timeline_closedEvent;

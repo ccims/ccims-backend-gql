@@ -211,5 +211,5 @@ CREATE TABLE issue_label (
     LIKE syncNode,
     name varchar(256) NOT NULL,
     description varchar(65536) NOT NULL,
-    color varchar(9) NOT NULL,
+    color varchar(9) NOT NULL
  ) INHERITS (node);

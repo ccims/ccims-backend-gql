@@ -19,14 +19,14 @@ CREATE TABLE relation_project_component
     PRIMARY KEY (project_id, component_id)
 );
 
-CREATE TABLE relation_component_issues
+CREATE TABLE relation_component_issue
 (
     component_id id NOT NULL,
     issue_id id NOT NULL,
     PRIMARY KEY (component_id, issue_id)
 );
 
-CREATE TABLE relation_component_pinnedIssues
+CREATE TABLE relation_component_pinnedIssue
 (
     component_id id NOT NULL,
     issue_id id NOT NULL,
