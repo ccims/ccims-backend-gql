@@ -1,5 +1,5 @@
 import * as core from "express-serve-static-core";
-import { config } from "../../config/_Config";
+import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
 

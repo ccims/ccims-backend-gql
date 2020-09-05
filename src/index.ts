@@ -1,5 +1,5 @@
 import { SyncService } from "./syncService/SyncService";
-import { CCIMSApi } from "./api/_CCIMSApi";
+import { CCIMSApi } from "./api/CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { printSchema } from "graphql";
 import { log } from "./log";
