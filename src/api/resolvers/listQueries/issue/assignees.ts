@@ -9,8 +9,8 @@ export default () => {
     if (assignees === undefined) {
         assignees = {
             type: GraphQLUserPage,
-            description: `All users who are explicitely assigned to issue, matching the given filter.\n
-            If no filter is given, all issues will be returned`,
+            description: "All users who are explicitely assigned to issue, matching the given filter.\n" +
+                "If no filter is given, all issues will be returned",
             args: {
                 after: {
                     type: GraphQLString,

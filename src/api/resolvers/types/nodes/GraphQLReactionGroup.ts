@@ -15,9 +15,9 @@ let reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext>
         },
         users: {
             type: GraphQLList(GraphQLUser),
-            description: `Users who reacted with this reaction.\n\n
-            If there are only a few, all users will be returned. 
-            If too many users are part of this reaction group, only a few will be returned`
+            description: "Users who reacted with this reaction.\n\n" +
+                "If there are only a few, all users will be returned. " +
+                "If too many users are part of this reaction group, only a few will be returned"
         },
         totalUserCount: {
             type: GraphQLNonNull(GraphQLInt),

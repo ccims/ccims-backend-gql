@@ -2,7 +2,7 @@ import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, Gra
 
 let issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueLocationFilter",
-    description: `Filters for Issues locations (components and interfaces). All parameters given in this filter will be connected via _AND_`,
+    description: "Filters for Issues locations (components and interfaces). All parameters given in this filter will be connected via _AND_",
     fields: () => ({
         name: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),

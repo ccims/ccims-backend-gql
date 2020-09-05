@@ -9,8 +9,8 @@ export default () => {
     if (participants === undefined) {
         participants = {
             type: GraphQLUserPage,
-            description: `All users participating on this issue (by writing a comment, etc.), matching the given filter.\n
-            If no filter is given, all users will be returned`,
+            description: "All users participating on this issue (by writing a comment, etc.), matching the given filter.\n" +
+                "If no filter is given, all users will be returned",
             args: {
                 after: {
                     type: GraphQLString,

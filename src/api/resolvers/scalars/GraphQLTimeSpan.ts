@@ -2,8 +2,8 @@ import { GraphQLScalarType, ValueNode, Kind, GraphQLScalarTypeConfig, IntValueNo
 
 let timeSpan: GraphQLScalarTypeConfig<number, number> = {
     name: "TimeSpan",
-    description: `A integer number representing the length of the time span in milliseconds\n\n
-    Example: \`60000\` (equivalent to a time span of one minute)`,
+    description: "A integer number representing the length of the time span in milliseconds\n\n" +
+        "Example: `60000` (equivalent to a time span of one minute)",
     serialize: (value: number): number => {
         return Math.max(0, Math.round(value));
     },

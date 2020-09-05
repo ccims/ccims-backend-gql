@@ -3,11 +3,10 @@ import { Color } from "../../../common/Color";
 
 let color: GraphQLScalarTypeConfig<Color, string> = {
     name: "Color",
-    description: `A scalar type representing a colour in RGB colour space.\n
-    The scalar must be a string in CSS Colour Hex format:\n\n
-    \`#rrggbb\` where \`rr\`, \`gg\`, \`bb\` are the hex values between _0_ and _ff_\n\n
-    
-    Example: \`#ffff00\` (would be a _beautiful_ yellow)`,
+    description: "A scalar type representing a colour in RGB colour space.\n" +
+        "The scalar must be a string in CSS Colour Hex format:\n\n" +
+        "\`#rrggbb\` where \`rr\`, \`gg\`, \`bb\` are the hex values between _0_ and _ff_\n\n" +
+        "Example: \`#ffff00\` (would be a _beautiful_ yellow)",
     serialize: (value: Color): string => {
         return value.toString();
     },

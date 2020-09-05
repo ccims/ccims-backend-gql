@@ -6,8 +6,8 @@ import GraphQLLabelFilter from "./GraphQLLabelFilter";
 
 let issueFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueFilter",
-    description: `Filters for Issues. All parameters given in this filter will be connected via _AND_\n\n
-    Not specific issues in issue management systems but the issue in the ccims`,
+    description: "Filters for Issues. All parameters given in this filter will be connected via _AND_\n\n" +
+        "Not specific issues in issue management systems but the issue in the ccims",
     fields: () => ({
         title: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),

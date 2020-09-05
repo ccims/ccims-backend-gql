@@ -3,8 +3,8 @@ import GraphQLDate from "../../scalars/GraphQLDate";
 
 let issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueTimelineItemFilter",
-    description: `Filters for certain timeline events. All parameters given in this filter will be connected via _AND_\n\n
-    __Please note:__ It's currently __not__ possible to filter for specific properties of an event. Might be added in future`,
+    description: "Filters for certain timeline events. All parameters given in this filter will be connected via _AND_\n\n" +
+        "__Please note:__ It's currently __not__ possible to filter for specific properties of an event. Might be added in future",
     fields: () => ({
         createdBy: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),

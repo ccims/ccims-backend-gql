@@ -7,8 +7,8 @@ export default () => {
     if (reactions === undefined) {
         reactions = {
             type: GraphQLReactionGroupPage,
-            description: `All reactions on this node, matching the given filter.\n
-            If no filter is given, all reactions will be returned`,
+            description: "All reactions on this node, matching the given filter.\n" +
+                "If no filter is given, all reactions will be returned",
             args: {
                 after: {
                     type: GraphQLString,

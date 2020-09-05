@@ -9,8 +9,8 @@ export default () => {
     if (labels === undefined) {
         labels = {
             type: GraphQLLabelPage,
-            description: `All labels on this issue, matching the given filter.\n
-            If no filter is given, all labels will be returned`,
+            description: "All labels on this issue, matching the given filter.\n" +
+                "If no filter is given, all labels will be returned",
             args: {
                 after: {
                     type: GraphQLString,

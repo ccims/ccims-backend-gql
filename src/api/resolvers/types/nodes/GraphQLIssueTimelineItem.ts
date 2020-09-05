@@ -21,8 +21,8 @@ let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, Resol
         },
         createdBy: {
             type: GraphQLUser,
-            description: `The user responsible for the creation of the event (e.g. autor of a comment)\n\n
-            It's possible there is no autor, for example if the action was performed automatically`
+            description: "The user responsible for the creation of the event (e.g. autor of a comment)\n\n" +
+                "It's possible there is no autor, for example if the action was performed automatically"
         },
         createdAt: {
             type: GraphQLNonNull(GraphQLDate),

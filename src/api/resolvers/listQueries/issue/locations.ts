@@ -9,8 +9,8 @@ export default () => {
     if (locations === undefined) {
         locations = {
             type: GraphQLIssueLocationPage,
-            description: `All locations this issue is assigned to, matching the given filter.\n
-            If no filter is given, all locations will be returned`,
+            description: "All locations this issue is assigned to, matching the given filter.\n" +
+                "If no filter is given, all locations will be returned",
             args: {
                 after: {
                     type: GraphQLString,

@@ -9,8 +9,8 @@ export default () => {
     if (pinnedOn === undefined) {
         pinnedOn = {
             type: GraphQLComponentPage,
-            description: `All components where this issue has been pinned, matching the given filter.\n
-            If no filter is given, all components will be returned`,
+            description: "All components where this issue has been pinned, matching the given filter.\n" +
+                "If no filter is given, all components will be returned",
             args: {
                 after: {
                     type: GraphQLString,

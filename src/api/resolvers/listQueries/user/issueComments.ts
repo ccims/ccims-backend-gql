@@ -7,8 +7,8 @@ export default () => {
     if (issueComments === undefined) {
         issueComments = {
             type: GraphQLIssueCommentPage,
-            description: `All comments written by this user, matching the given filter.\n
-            If no filter is given, all comments will be returned`,
+            description: "All comments written by this user, matching the given filter.\n" +
+                "If no filter is given, all comments will be returned",
             args: {
                 after: {
                     type: GraphQLString,

@@ -9,8 +9,8 @@ export default () => {
     if (timeline === undefined) {
         timeline = {
             type: GraphQLIssueTimelineItemPage,
-            description: `All timeline events for this issue in chonological order from oldest to newest, matching the given filter.\n
-            If no filter is given, all events will be returned`,
+            description: "All timeline events for this issue in chonological order from oldest to newest, matching the given filter.\n" +
+                "If no filter is given, all events will be returned",
             args: {
                 after: {
                     type: GraphQLString,

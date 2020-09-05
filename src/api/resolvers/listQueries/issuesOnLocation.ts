@@ -7,9 +7,9 @@ export default () => {
     if (issuesOnLocation === undefined) {
         issuesOnLocation = {
             type: GraphQLIssuePage,
-            description: `Only returnes issues which are assigned to this __location__ matching the filter\n\n
-            (for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).\n
-            If no filter is given, all issues will be returned`,
+            description: "Only returnes issues which are assigned to this __location__ matching the filter\n\n" +
+                "(for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).\n" +
+                "If no filter is given, all issues will be returned",
             args: {
                 after: {
                     type: GraphQLString,

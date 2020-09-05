@@ -19,7 +19,7 @@ import { ResolverContext } from "../../../ResolverContext";
 
 let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
-    description: "A cros component issue within ccims which links multiple issues from single ims",
+    description: "A cross component issue within ccims which links multiple issues from single ims",
     interfaces: () => ([GraphQLComment, GraphQLNode]),
     fields: () => ({
         id: {

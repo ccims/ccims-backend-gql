@@ -7,9 +7,9 @@ export default () => {
     if (issues === undefined) {
         issues = {
             type: GraphQLIssuePage,
-            description: `All issues on this node, matching the given filter.\n
-            These are all issues regardless on which components/interfaces they are located.\n\n
-            If no filter is given, all issues will be returned`,
+            description: "All issues on this node, matching the given filter.\n" +
+                "These are all issues regardless on which components/interfaces they are located.\n" +
+                "If no filter is given, all issues will be returned",
             args: {
                 after: {
                     type: GraphQLString,

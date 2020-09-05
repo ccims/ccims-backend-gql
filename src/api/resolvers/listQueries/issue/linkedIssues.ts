@@ -7,8 +7,8 @@ export default () => {
     if (linkedIssues === undefined) {
         linkedIssues = {
             type: GraphQLIssuePage,
-            description: `All issues linked to or linking this issue, matching the given filter.\n
-            If no filter is given, all issues will be returned`,
+            description: "All issues linked to or linking this issue, matching the given filter.\n" +
+                "If no filter is given, all issues will be returned",
             args: {
                 after: {
                     type: GraphQLString,
