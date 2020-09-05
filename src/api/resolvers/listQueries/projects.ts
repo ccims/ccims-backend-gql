@@ -33,7 +33,7 @@ export default () => {
             },
             resolve: (parent: any, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
                 console.log(args);
-                return { nodes: [{ name: JSON.stringify(context.dbManager) }] };
+                return { nodes: [{ name: "Test component" }] };
             }
         };
     }
