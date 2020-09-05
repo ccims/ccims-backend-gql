@@ -17,7 +17,7 @@ CREATE TABLE issue_issue (
 
 CREATE TABLE relation_issue_linkedIssue (
     issue_id id NOT NULL,
-    linked_issue_id id NOT NULL,
+    linkedIssue_id id NOT NULL,
     PRIMARY KEY (issue_id, linked_issue_id)
 );
 
@@ -206,3 +206,10 @@ CREATE TABLE issue_reactionGroup (
     reaction varchar(100) NOT NULL,
     users id[] NOT NULL
 ) INHERITS (node);
+
+CREATE TABLE issue_label (
+    LIKE syncNode,
+    name varchar(256) NOT NULL,
+    description varchar(65536) NOT NULL,
+    color varchar(9) NOT NULL
+ ) INHERITS (node);
