@@ -1,9 +1,5 @@
 import * as core from "express-serve-static-core";
 import { graphqlHTTP, GraphQLParams } from "express-graphql";
-import * as graphql from "graphql";
-import * as fs from "fs";
-import { config } from "../config/Config";
-import { RootAPIResolver } from "./resolvers/RootAPIResolver";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import ccimsSchema from "./resolvers/CCIMSSchema";
 import { ResolverContext } from "./ResolverContext";

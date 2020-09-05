@@ -1,8 +1,7 @@
 import * as core from "express-serve-static-core";
-import { config } from "../../config/Config";
+import { config } from "../../config/_Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { User } from "../../common/nodes/User";
 import { ResolverContext } from "../ResolverContext";
 
 /**

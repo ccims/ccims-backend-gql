@@ -1,6 +1,6 @@
-import { APIConfig } from "./APIConfig";
-import { CommonConfig } from "./CommonConfig";
-import { PostgresConfig } from "./PostgresConfig";
+import { APIConfig } from "./_APIConfig";
+import { CommonConfig } from "./_CommonConfig";
+import { PostgresConfig } from "./_PostgresConfig";
 
 export let config = {
     postgres: new PostgresConfig("config/postgres.json"),

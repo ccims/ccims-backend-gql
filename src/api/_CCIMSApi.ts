@@ -1,11 +1,11 @@
 import express from "express";
 import * as core from "express-serve-static-core";
-import { config } from "../config/Config";
+import { config } from "../config/_Config";
 import { loginHandler } from "./auth/LoginHandler";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { jwtVerifier } from "./auth/JWTVerifier";
-import { graphqlHandler } from "./GraphQLHandler";
+import { jwtVerifier } from "./auth/_JWTVerifier";
+import { graphqlHandler } from "./_GraphQLHandler";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 
 

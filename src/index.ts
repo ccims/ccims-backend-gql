@@ -1,9 +1,8 @@
 import { SyncService } from "./syncService/SyncService";
-import { CCIMSApi } from "./api/CCIMSApi";
+import { CCIMSApi } from "./api/_CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { printSchema } from "graphql";
 import { log } from "./log";
-import testSchema from "./temp/TestSchema";
 
 console.log("Hello world");
 
