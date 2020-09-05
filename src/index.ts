@@ -1,4 +1,4 @@
-import { SyncService } from "./syncService/syncService";
+import { SyncService } from "./syncService/SyncService";
 import { CCIMSApi } from "./api/ccimsApi";
 
 console.log("Hello world");
