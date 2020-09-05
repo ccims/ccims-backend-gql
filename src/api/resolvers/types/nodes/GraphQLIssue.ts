@@ -20,7 +20,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
     description: "A cros component issue within ccims which links multiple issues from single ims",
-    interfaces: [GraphQLComment, GraphQLNode],
+    interfaces: () => ([GraphQLComment, GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -94,15 +94,15 @@ let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             type: GraphQLTimeSpan,
             description: "The time already spent on work on this issue.\n\nThis is only for displaying and has no effect on the ccims but will be synce to other ims"
         },
-        issueComments,
-        linkedIssues,
-        reactions,
-        assignees,
-        labels,
-        participants,
-        pinnedOn,
-        timeline,
-        locations,
+        issueComments: issueComments(),
+        linkedIssues: linkedIssues(),
+        reactions: reactions(),
+        assignees: assignees(),
+        labels: labels(),
+        participants: participants(),
+        pinnedOn: pinnedOn(),
+        timeline: timeline(),
+        locations: locations()
     })
 };
 let GraphQLIssue = new GraphQLObjectType(issueConfig);

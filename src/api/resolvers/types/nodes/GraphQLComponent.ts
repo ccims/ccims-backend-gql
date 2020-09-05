@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig, GraphQLInt } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
@@ -7,14 +7,16 @@ import issuesOnLocation from "../../listQueries/issuesOnLocation";
 import projects from "../../listQueries/projects";
 import interfaces from "../../listQueries/interfaces";
 import consumedInterfaces from "../../listQueries/consumedInterfaces";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
+import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import { Component } from "../../../../common/nodes/Component";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLIssuePage from "../pages/GraphQLIssuePage";
+import GraphQLIssueFilter from "../filters/GraphQLIssueFilter";
 
 let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
     description: "A component known to ccims.\n\nA component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)",
-    interfaces: [GraphQLNode, GraphQLIssueLocation],
+    interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -36,11 +38,11 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLIMSType,
             description: "The software of the IMS used by this component. This must be one of the supported ones"
         },
-        issues,
-        issuesOnLocation,
-        projects,
-        interfaces,
-        consumedInterfaces
+        issues: issues(),
+        issuesOnLocation: issuesOnLocation(),
+        projects: projects(),
+        interfaces: interfaces(),
+        consumedInterfaces: consumedInterfaces()
         //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
     })
 };

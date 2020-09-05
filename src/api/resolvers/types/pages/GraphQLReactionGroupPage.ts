@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let reactionGroupPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ReactionGroupPage",
     description: "A page of reaction groups",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLReactionGroup),

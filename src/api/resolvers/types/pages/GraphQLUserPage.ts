@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let userPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UserPage",
     description: "A page of multiple users",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLUser),

@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "LabelPage",
     description: "A page of multiple labels",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLLabel),

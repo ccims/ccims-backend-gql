@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let componentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ComponentPage",
     description: "A page of multiple components",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLComponent),

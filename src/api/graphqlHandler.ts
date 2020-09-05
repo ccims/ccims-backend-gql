@@ -6,6 +6,7 @@ import { config } from "../config/Config";
 import { RootAPIResolver } from "./resolvers/RootAPIResolver";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import ccimsSchema from "./resolvers/CCIMSSchema";
+import { ResolverContext } from "./ResolverContext";
 
 export function graphqlHandler(dbManager: DatabaseManager): core.RequestHandler {
     var handler = new GraphQLHandler(dbManager);
@@ -17,8 +18,10 @@ export function graphqlHandler(dbManager: DatabaseManager): core.RequestHandler 
 class GraphQLHandler {
 
     private middleware: (req: core.Request, res: core.Response) => any;
+    private dbManager: DatabaseManager;
 
-    public constructor(dbManager: DatabaseManager, numberRootResolvers?: number) {
+    public constructor(dbManager: DatabaseManager) {
+        this.dbManager = dbManager;
         this.middleware = graphqlHTTP({
             schema: ccimsSchema,
             graphiql: {
@@ -28,6 +31,8 @@ class GraphQLHandler {
     }
 
     public handle(req: core.Request, res: core.Response, next: core.NextFunction): any {
-        return this.middleware(req, res);
+        let resolverRequest: ResolverContext = req;
+        resolverRequest.dbManager = this.dbManager;
+        return this.middleware(resolverRequest, res);
     }
 }

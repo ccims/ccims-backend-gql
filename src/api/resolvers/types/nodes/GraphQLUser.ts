@@ -10,7 +10,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
     name: "User",
     description: "A user of th ccims. Can be assigned to projects, components and can have multiple ims accounts",
-    interfaces: [GraphQLNode],
+    interfaces: () => ([GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -28,10 +28,10 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The mail address of the user"
         },
-        projects,
-        assignedToIssues,
-        participantOfIssues,
-        issueComments
+        projects: projects(),
+        assignedToIssues: assignedToIssues(),
+        participantOfIssues: participantOfIssues(),
+        issueComments: issueComments()
     })
 };
 let GraphQLUser = new GraphQLObjectType(userConfig);

@@ -13,8 +13,8 @@ export function functionToTest(a: number, b: number): number {
 
 
 //const syncService = new SyncService();
-if (false) {
-    const backendApi = new CCIMSApi({});
+if (true) {
+    const backendApi = new CCIMSApi({ hallo: "welt" });
     backendApi.start();
 } else {
     console.log(printSchema(ccimsSchema));

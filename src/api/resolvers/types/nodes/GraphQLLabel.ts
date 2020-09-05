@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
     description: "A label assignable to issues. A label is per-project",
-    interfaces: [GraphQLNode],
+    interfaces: () => ([GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -26,7 +26,7 @@ let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
             type: GraphQLColor,
             description: "The color of the label in the GUI"
         },
-        projects
+        projects: projects()
     })
 };
 let GraphQLLabel = new GraphQLObjectType(labelConfig);

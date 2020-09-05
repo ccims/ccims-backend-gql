@@ -11,7 +11,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
     description: "A project is a one unit in which the participating components colaborate",
-    interfaces: [GraphQLNode],
+    interfaces: () => ([GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -21,14 +21,14 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The human readable name of this project\n\nMax. 256 characters"
         },
-        components,
-        users,
+        components: components(),
+        users: users(),
         owner: {
             type: GraphQLNonNull(GraphQLUser),
             description: "The user who administrates \"owns\" the project"
         },
-        issues,
-        labels
+        issues: issues(),
+        labels: labels()
     })
 };
 let GraphQLProject = new GraphQLObjectType(projectConfig);

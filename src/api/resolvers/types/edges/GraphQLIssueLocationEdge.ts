@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
+import GraphQLIssueLocation from "../nodes/GraphQLIssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
 
 let issueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {

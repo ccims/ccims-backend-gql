@@ -12,7 +12,7 @@ import { ResolverContext } from "../../../../ResolverContext";
 let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
     name: "IssueComment",
     description: "A commemt on an issue. Not including th issue body itself",
-    interfaces: [GraphQLIssueTimelineItem, GraphQLComment, GraphQLNode],
+    interfaces: () => ([GraphQLIssueTimelineItem, GraphQLComment, GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -50,7 +50,7 @@ let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> =
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions,
+        reactions: reactions(),
     })
 };
 let GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);

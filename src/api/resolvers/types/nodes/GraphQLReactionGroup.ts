@@ -7,7 +7,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext> = {
     name: "ReactionGroup",
     description: "A relation of users who have reacted with a certain reaction to something",
-    interfaces: [GraphQLNode],
+    interfaces: () => ([GraphQLNode]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),

@@ -1,14 +1,14 @@
 import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
+import GraphQLIssueLocation from "../nodes/GraphQLIssueLocation";
 import GraphQLIssueLocationEdge from "../edges/GraphQLIssueLocationEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
 let issueLocationPage: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueLocationPage",
     description: "A page of multiple issue locations",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLIssueLocation),

@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let issueCommentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueCommentPage",
     description: "A page of multiple issue comments",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: () => ({
         nodes: {
             type: GraphQLList(GraphQLIssueComment),

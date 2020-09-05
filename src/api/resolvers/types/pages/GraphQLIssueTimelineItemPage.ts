@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueTimelineItemPage",
     description: "A page of multiple issue timeline items",
-    interfaces: [GraphQLPage],
+    interfaces: () => ([GraphQLPage]),
     fields: {
         nodes: {
             type: GraphQLList(GraphQLIssueTimelineItem),

@@ -10,7 +10,7 @@ let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         node,
         echo,
-        projects
+        projects: projects()
     })
 };
 let query = new GraphQLObjectType(queryConfig);

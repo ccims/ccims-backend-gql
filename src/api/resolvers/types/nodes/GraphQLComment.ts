@@ -41,7 +41,7 @@ let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions,
+        reactions: reactions(),
     })
 };
 let GraphQLComment = new GraphQLInterfaceType(commentConfig);

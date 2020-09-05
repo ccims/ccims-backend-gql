@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
+import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLComponent from "./GraphQLComponent";
 import issuesOnLocation from "../../listQueries/issuesOnLocation";
@@ -10,7 +10,7 @@ import { ResolverContext } from "../../../ResolverContext";
 let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
     name: "ComponentInterface",
     description: "An interface offered by a component which can be counsumed by other components",
-    interfaces: [GraphQLNode, GraphQLIssueLocation],
+    interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
     fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID),
@@ -28,8 +28,8 @@ let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Resolv
             type: GraphQLNonNull(GraphQLComponent),
             description: "The parent component of this interface which offers it"
         },
-        issuesOnLocation,
-        consumedBy
+        issuesOnLocation: issuesOnLocation(),
+        consumedBy: consumedBy()
     })
 };
 let GraphQLComponentInterface = new GraphQLObjectType(componentInterfaceConfig);
