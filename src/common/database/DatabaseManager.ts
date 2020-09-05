@@ -24,9 +24,9 @@ export class DatabaseManager implements NodeCache {
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
      */
-    public constructor (idGenerator: IdGenerator) {
+    public constructor (idGenerator: IdGenerator, client: Client) {
         this.idGenerator = idGenerator;
-        this.pgClient = new Client(config.postgres);
+        this.pgClient = client
         this.pgClient.connect();
     }
 
@@ -65,16 +65,20 @@ export class DatabaseManager implements NodeCache {
     public async executePendingCommands(): Promise<void> {
         this.pgClient.query("BEGIN;");
         Promise.all(this.pendingCommands.map(async (command): Promise<void> => {
-            const commandConfig = command.getQueryConfig();
-            try {
-                const result = await this.pgClient.query(commandConfig);
-                command.databaseResult = result;
-            } catch {
-                log(2, "database command failed: " + commandConfig.text);          
-            }
+            
         }));
         this.pgClient.query("COMMIT;");
         this.pendingCommands = [];
+    }
+
+    private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
+        const commandConfig = command.getQueryConfig();
+        try {
+            const result = await this.pgClient.query(commandConfig);
+            const followUpCommands = command.setDatabaseResult(this, result);
+        } catch {
+            log(2, "database command failed: " + commandConfig.text);          
+        }
     }
 
     /**
