@@ -5,11 +5,10 @@ import { NodesPropertySpecification } from "./NodesPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
+import { NodePropertyBase } from "./NodePropertyBase";
 
-export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements Saveable, Property<T> {
-    private _databaseManager: DatabaseManager;
-    private _specification: NodesPropertySpecification<T, V>;
-    private _node: V;
+export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+    private readonly _specification: NodesPropertySpecification<T, V>;
     private _loadLevel: LoadLevel = LoadLevel.None;
     private _ids: Set<string> = new Set<string>();
     private _elements: Map<string, T> = new Map<string, T>();
@@ -24,9 +23,8 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
      * @param node the node proviced to all generators as last parameter
      */
     public constructor(databaseManager: DatabaseManager, specification: NodesPropertySpecification<T, V>, node: V) {
-        this._databaseManager = databaseManager;
+        super(databaseManager, specification, node);
         this._specification = specification;
-        this._node = node;
     }
     
     /**
@@ -230,30 +228,6 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> implements 
             }
         });
         this._loadLevel = LoadLevel.Complete;
-    }
-
-    /**
-     * notifies the element that this node was added
-     * @param element the element to notify
-     * @param byDatabase true if caused by database
-     */
-    private async notifyAdded(element: T, byDatabase: boolean): Promise<void> {
-        this._specification.notifiers.forEach(async notifier => {
-            const toNotify = notifier(element, this._node);
-            await toNotify.wasAddedBy(this._node, byDatabase);
-        })
-    }
-
-    /**
-     * notifies the element that this node was removed
-     * @param element the element to notify
-     * @param byDatabase true if caused by database
-     */
-    private async notifyRemoved(element: T, byDatabase: boolean): Promise<void> {
-        this._specification.notifiers.forEach(async notifier => {
-            const toNotify = notifier(element, this._node);
-            await toNotify.wasRemovedBy(this._node, byDatabase);
-        })
     }
 
     async wasAddedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {

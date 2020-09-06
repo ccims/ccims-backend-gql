@@ -3,8 +3,9 @@ import { CCIMSNode } from "../CCIMSNode";
 import { Property } from "./Property";
 import { AddRelationCommand } from "../../database/commands/save/AddRelationCommand";
 import { RemoveRelationCommand } from "../../database/commands/save/RemoveRelationCommand";
+import { PropertySpecification } from "./PropertySpecification";
 
-export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> {
+export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> implements PropertySpecification<T, V> {
     /**
      * general specification for a property
      * hint: you probably shoud not use this constructor, but the generator functions below
