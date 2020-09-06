@@ -3,6 +3,7 @@ import { graphqlHTTP, GraphQLParams } from "express-graphql";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import ccimsSchema from "./resolvers/CCIMSSchema";
 import { ResolverContext } from "./ResolverContext";
+import testSchema from "../temp/TestSchema";
 
 export function graphqlHandler(dbManager: DatabaseManager): core.RequestHandler {
     var handler = new GraphQLHandler(dbManager);
@@ -19,7 +20,7 @@ class GraphQLHandler {
     public constructor(dbManager: DatabaseManager) {
         this.dbManager = dbManager;
         this.middleware = graphqlHTTP({
-            schema: ccimsSchema,
+            schema: testSchema,
             graphiql: {
                 headerEditorEnabled: true
             }

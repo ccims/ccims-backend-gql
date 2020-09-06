@@ -1,0 +1,21 @@
+import { GraphQLFieldConfig } from "graphql";
+import { ResolverContext } from "../../../ResolverContext";
+import GraphQLPinIssuePayload from "../../types/mutations/payloads/issue/GraphQLPinIssuePayload";
+import GraphQLPinIssueInput from "../../types/mutations/inputs/issue/GraphQLPinIssueInput";
+
+let pinIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+export default () => {
+    if (pinIssue === undefined) {
+        pinIssue = {
+            type: GraphQLPinIssuePayload,
+            description: "",
+            args: {
+                input: {
+                    type: GraphQLPinIssueInput,
+                    description: "The data for the mutation"
+                }
+            }
+        };
+    }
+    return pinIssue;
+};

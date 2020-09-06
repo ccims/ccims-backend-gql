@@ -1,16 +1,23 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
-import Element2 from "./Element2";
+import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ResolverContext } from "../api/ResolverContext";
 
 class Element1Internal {
 
 }
 
-let e1: GraphQLObjectTypeConfig<Element1Internal, ResolverContext> = {
-    name: "Element1",
+let e1: GraphQLObjectTypeConfig<any, ResolverContext> = {
+    name: "IssueMutation",
     fields: () => ({
-        elements2: {
-            type: Element2
+        setName: {
+            type: GraphQLString,
+            args: {
+                newName: {
+                    type: GraphQLString
+                }
+            },
+            resolve: (parent, args) => {
+                return "Changed name from \"" + parent.name + "\" to \"" + args.newName + "\"";
+            }
         }
     })
 };

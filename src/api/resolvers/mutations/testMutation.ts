@@ -1,18 +1,21 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLResolveInfo } from "graphql";
+import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../ResolverContext";
+import GraphQLTestMutationPayload from "../types/mutations/payloads/GraphQLTestMutationPayload";
+import GraphQLTestMutationInput from "../types/mutations/inputs/GraphQLTestMutationInput";
 
-let testMutation: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLString,
-    description: "Returns the given string",
-    args: {
-        name: {
-            type: GraphQLString,
-            description: "A name for any object"
-        }
-    },
-    resolve: (parent: any, args: { name: string }, context: ResolverContext, info: GraphQLResolveInfo): string => {
-        return args.name;
+let testMutation: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+export default () => {
+    if (testMutation === undefined) {
+        testMutation = {
+            type: GraphQLTestMutationPayload,
+            description: "",
+            args: {
+                input: {
+                    type: GraphQLTestMutationInput,
+                    description: "The data for the mutation"
+                }
+            }
+        };
     }
-}
-
-export default testMutation;
+    return testMutation;
+};
