@@ -26,7 +26,6 @@ export class DatabaseManager implements NodeCache {
     public constructor (idGenerator: SnowflakeGenerator, client: Client) {
         this.idGenerator = idGenerator;
         this.pgClient = client
-        this.pgClient.connect();
     }
 
     /**
@@ -54,7 +53,7 @@ export class DatabaseManager implements NodeCache {
      */
     public addCommand(command: DatabaseCommand<any>): void {
         this.pendingCommands.push(command);
-        command.subCommands.forEach(this.addCommand);
+        command.subCommands.forEach(cmd => this.addCommand(cmd));
     }
 
     /**
@@ -63,7 +62,7 @@ export class DatabaseManager implements NodeCache {
      */
     public async executePendingCommands(): Promise<void> {
         this.pgClient.query("BEGIN;");
-        Promise.all(this.pendingCommands.map(this.executeCommand));
+        await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
         this.pgClient.query("COMMIT;");
         this.pendingCommands = [];
     }

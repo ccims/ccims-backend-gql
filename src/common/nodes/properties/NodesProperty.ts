@@ -220,7 +220,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
      */
     setElements(elements: T[]): void {
         this.setIds(elements.map(element => element.id));
-        const newElements = Array.from(this._addedIds).map(this._elements.get);
+        const newElements = Array.from(this._addedIds).map(id => this._elements.get(id));
         this._elements = elements.reduce((map, element, index, elements) => map.set(element.id, element), new Map<string, T>());
         newElements.forEach(element => {
             if (element) {
