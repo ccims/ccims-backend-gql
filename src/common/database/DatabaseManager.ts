@@ -1,10 +1,9 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
-import { IdGenerator } from "../util/IdGenerator";
 import { NodeCache } from "./NodeCache";
 import { DatabaseCommand } from "./DatabaseCommand";
 import { Client } from "pg";
-import { config } from "../../config";
 import { log } from "../../log";
+import { SnowflakeGenerator } from "../../utils/Snowflake";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -13,7 +12,7 @@ import { log } from "../../log";
 export class DatabaseManager implements NodeCache {
     nodes: Map<string, CCIMSNode> = new Map<string, CCIMSNode>();
 
-    public readonly idGenerator: IdGenerator;
+    public readonly idGenerator: SnowflakeGenerator;
 
     private pendingCommands: DatabaseCommand<any>[] = [];
 
@@ -24,7 +23,7 @@ export class DatabaseManager implements NodeCache {
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
      */
-    public constructor (idGenerator: IdGenerator, client: Client) {
+    public constructor (idGenerator: SnowflakeGenerator, client: Client) {
         this.idGenerator = idGenerator;
         this.pgClient = client
         this.pgClient.connect();
@@ -64,9 +63,7 @@ export class DatabaseManager implements NodeCache {
      */
     public async executePendingCommands(): Promise<void> {
         this.pgClient.query("BEGIN;");
-        Promise.all(this.pendingCommands.map(async (command): Promise<void> => {
-            
-        }));
+        Promise.all(this.pendingCommands.map(this.executeCommand));
         this.pgClient.query("COMMIT;");
         this.pendingCommands = [];
     }
