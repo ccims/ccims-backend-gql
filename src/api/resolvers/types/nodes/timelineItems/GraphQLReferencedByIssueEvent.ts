@@ -10,7 +10,7 @@ import GraphQLIssueComment from "./GraphQLIssueComment";
 
 let referencedByIssueEventConfig: GraphQLObjectTypeConfig<ReferencedByIssueEvent, ResolverContext> = {
     name: "ReferencedByIssueEvent",
-    description: "An ReferencedByIssueEvent in the timeline of an issue wiht a date and a creator\n\n" +
+    description: "An ReferencedByIssueEvent in the timeline of an issue with a date and a creator\n\n" +
         "This occurs if this issue is referenced by another known issue",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({

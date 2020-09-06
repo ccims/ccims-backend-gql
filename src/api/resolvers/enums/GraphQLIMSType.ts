@@ -15,4 +15,4 @@ let imsTypeConfig: GraphQLEnumTypeConfig = {
     }
 };
 let GraphQLIMSType = new GraphQLEnumType(imsTypeConfig);
-export default GraphQLEnumType;
+export default GraphQLIMSType;

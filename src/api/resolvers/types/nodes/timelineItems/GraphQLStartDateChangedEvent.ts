@@ -9,7 +9,7 @@ import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
 let startDateChangedEventConfig: GraphQLObjectTypeConfig<StartDateChangedEvent, ResolverContext> = {
     name: "StartDateChangedEvent",
-    description: "An StartDateChangedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An StartDateChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

@@ -9,7 +9,7 @@ import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
 let wasLinkedEventConfig: GraphQLObjectTypeConfig<WasLinkedEvent, ResolverContext> = {
     name: "WasLinkedEvent",
-    description: "An WasLinkedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An WasLinkedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

@@ -10,7 +10,7 @@ import GraphQLTimeSpan from "../../../scalars/GraphQLTimeSpan";
 
 let estimatedTimeChangedEventConfig: GraphQLObjectTypeConfig<EstimatedTimeChangedEvent, ResolverContext> = {
     name: "EstimatedTimeChangedEvent",
-    description: "An EstimatedTimeChangedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An EstimatedTimeChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

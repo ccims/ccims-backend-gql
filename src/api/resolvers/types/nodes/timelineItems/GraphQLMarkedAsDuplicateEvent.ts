@@ -9,7 +9,7 @@ import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
 let markedAsDuplicateEventConfig: GraphQLObjectTypeConfig<MarkedAsDuplicateEvent, ResolverContext> = {
     name: "MarkedAsDuplicateEvent",
-    description: "An MarkedAsDuplicateEvent in the timeline of an issue wiht a date and a creator",
+    description: "An MarkedAsDuplicateEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

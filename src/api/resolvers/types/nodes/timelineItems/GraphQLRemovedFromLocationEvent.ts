@@ -10,7 +10,7 @@ import GraphQLIssueLocation from "../GraphQLIssueLocation";
 
 let removedFromLocationEventConfig: GraphQLObjectTypeConfig<RemovedFromLocationEvent, ResolverContext> = {
     name: "RemovedFromLocationEvent",
-    description: "An RemovedFromLocationEvent in the timeline of an issue wiht a date and a creator",
+    description: "An RemovedFromLocationEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

@@ -8,7 +8,7 @@ import { ResolverContext } from "../../../ResolverContext";
 
 let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, ResolverContext> = {
     name: "IssueTimelineItem",
-    description: "An event in the timeline of an issue wiht a date and a creator",
+    description: "An event in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLNode]),
     fields: () => ({
         id: {

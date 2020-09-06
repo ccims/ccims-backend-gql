@@ -9,7 +9,7 @@ import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
 let renamedTitleEventConfig: GraphQLObjectTypeConfig<RenamedTitleEvent, ResolverContext> = {
     name: "RenamedTitleEvent",
-    description: "An RenamedTitleEvent in the timeline of an issue wiht a date and a creator",
+    description: "An RenamedTitleEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

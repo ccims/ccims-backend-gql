@@ -1314,7 +1314,7 @@ type IssueComment implements IssueTimelineItem & Comment & Node {
   ): ReactionGroupPage
 }
 
-"""An event in the timeline of an issue wiht a date and a creator"""
+"""An event in the timeline of an issue with a date and a creator"""
 interface IssueTimelineItem implements Node {
   """The unique id of this timeline item"""
   id: ID!

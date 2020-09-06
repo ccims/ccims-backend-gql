@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID,  GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLObjectTypeConfig } from "graphql";
 import { UnpinnedEvent } from "../../../../../common/nodes/timelineItems/UnpinnedEvent";
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLIssue from "../GraphQLIssue";
@@ -9,7 +9,7 @@ import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
 let unpinnedEventConfig: GraphQLObjectTypeConfig<UnpinnedEvent, ResolverContext> = {
     name: "UnpinnedEvent",
-    description: "An UnpinnedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An UnpinnedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

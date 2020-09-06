@@ -10,7 +10,7 @@ import GraphQLIssueLocation from "../GraphQLIssueLocation";
 
 let addedToLocationEventConfig: GraphQLObjectTypeConfig<AddedToLocationEvent, ResolverContext> = {
     name: "AddedToLocationEvent",
-    description: "An AddedToLocationEvent in the timeline of an issue wiht a date and a creator",
+    description: "An AddedToLocationEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

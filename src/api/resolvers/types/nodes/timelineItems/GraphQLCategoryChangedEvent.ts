@@ -10,7 +10,7 @@ import GraphQLIssueCategory from "../../../enums/GraphQLIssueCategory";
 
 let categoryChangedEventConfig: GraphQLObjectTypeConfig<CategoryChangedEvent, ResolverContext> = {
     name: "CategoryChangedEvent",
-    description: "An CategoryChangedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An CategoryChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

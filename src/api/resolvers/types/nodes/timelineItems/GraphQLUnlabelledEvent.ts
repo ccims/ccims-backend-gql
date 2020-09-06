@@ -10,7 +10,7 @@ import GraphQLLabel from "../GraphQLLabel";
 
 let unlabelledEventConfig: GraphQLObjectTypeConfig<UnlabelledEvent, ResolverContext> = {
     name: "UnlabelledEvent",
-    description: "An UnlabelledEvent in the timeline of an issue wiht a date and a creator",
+    description: "An UnlabelledEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

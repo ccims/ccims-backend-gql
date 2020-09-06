@@ -10,7 +10,7 @@ import GraphQLPriority from "../../../enums/GraphQLPriority";
 
 let priorityChangedEventConfig: GraphQLObjectTypeConfig<PriorityChangedEvent, ResolverContext> = {
     name: "PriorityChangedEvent",
-    description: "An PriorityChangedEvent in the timeline of an issue wiht a date and a creator",
+    description: "An PriorityChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {

@@ -10,7 +10,7 @@ import GraphQLComponent from "../GraphQLComponent";
 
 let referencedByOtherEventConfig: GraphQLObjectTypeConfig<ReferencedByOtherEvent, ResolverContext> = {
     name: "ReferencedByOtherEvent",
-    description: "An ReferencedByOtherEvent in the timeline of an issue wiht a date and a creator.\n\n" +
+    description: "An ReferencedByOtherEvent in the timeline of an issue with a date and a creator.\n\n" +
         "This occures if this issue is referenced outside of an issue (e.g. pull request etc.)",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({

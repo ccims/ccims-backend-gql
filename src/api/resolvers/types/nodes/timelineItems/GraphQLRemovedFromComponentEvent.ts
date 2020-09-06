@@ -10,7 +10,7 @@ import GraphQLComponent from "../GraphQLComponent";
 
 let removedFromComponentEventConfig: GraphQLObjectTypeConfig<RemovedFromComponentEvent, ResolverContext> = {
     name: "RemovedFromComponentEvent",
-    description: "An RemovedFromComponentEvent in the timeline of an issue wiht a date and a creator",
+    description: "An RemovedFromComponentEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
         id: {
