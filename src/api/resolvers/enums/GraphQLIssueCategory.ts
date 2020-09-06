@@ -1,6 +1,6 @@
-import { GraphQLEnumType } from "graphql";
+import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-export default new GraphQLEnumType({
+let issueCategoryConfig: GraphQLEnumTypeConfig = {
     name: "IssueCategory",
     description: "The category of an issue. The issue will be displayed accordingly in the ccims",
     values: {
@@ -17,4 +17,6 @@ export default new GraphQLEnumType({
             description: "The category for issues, that either weren't yet assigned to a category or that don't fit into one of the other categories"
         }
     }
-});
+};
+let GraphQLIssueCategory = new GraphQLEnumType(issueCategoryConfig);
+export default GraphQLIssueCategory;

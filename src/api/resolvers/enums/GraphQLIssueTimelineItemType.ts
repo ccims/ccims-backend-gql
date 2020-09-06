@@ -1,6 +1,6 @@
-import { GraphQLEnumType } from "graphql";
+import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-export default new GraphQLEnumType({
+let issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
     name: "IssueTimelineItemType",
     description: "The type of a timeline item/event so it can be filtered for <sup>(because GraphQL doesn't allow to filter for a type)</sup>",
     values: {
@@ -109,4 +109,6 @@ export default new GraphQLEnumType({
             description: "An event if the issue is no longer a duplicate of another issue"
         },
     }
-});
+};
+let GraphQLIssueTimelineItemType = new GraphQLEnumType(issueTimelineItemTypeConfig);
+export default GraphQLIssueTimelineItemType;

@@ -1,6 +1,6 @@
-import { GraphQLEnumType } from "graphql";
+import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-export default new GraphQLEnumType({
+let imsTypeConfig: GraphQLEnumTypeConfig = {
     name: "IMSType",
     description: "The type of the Issue management system. Currently only GitHub and ccims internal are available",
     values: {
@@ -13,4 +13,6 @@ export default new GraphQLEnumType({
             description: "GitHub (or GitHub enterprise server) is the IMS for the component"
         }
     }
-});
+};
+let GraphQLIMSType = new GraphQLEnumType(imsTypeConfig);
+export default GraphQLEnumType;

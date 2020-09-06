@@ -1,6 +1,6 @@
-import { GraphQLEnumType } from "graphql";
+import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-export default new GraphQLEnumType({
+let priorityConfig: GraphQLEnumTypeConfig = {
     name: "Priority",
     description: "The Priority which an issue has - how urgent it needs to be resolved",
     values: {
@@ -17,4 +17,6 @@ export default new GraphQLEnumType({
             description: "Issues with this priority are __very__ urgent and need to be resolved quickly"
         }
     }
-});
+};
+let GraphQLPriority = new GraphQLEnumType(priorityConfig);
+export default GraphQLPriority;
