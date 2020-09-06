@@ -23,18 +23,18 @@ export abstract class DatabaseCommand<T> {
      * must be overwritten by subclasses
      * used by @see getResult to generate the result out of the databaseResult
      * it is guaranteed that databaseResult is NOT undefined
-     * @param nodeCache nodeCache used to get / add nodes
+     * @param databaseManager used to add nodes
      * @returns is executed directly after, this can be used to execute necessary follow-up commands
      */
-    public abstract setDatabaseResult(nodeCache: NodeCache, result: QueryResult): DatabaseCommand<any>[];
+    public abstract setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult): DatabaseCommand<any>[];
 
     /**
      * is called when all follow-up commands are executed
      * if something has to happen here, this method should be overwritten
-     * @param nodeCache nodeCache used to get / add nodes
+     * @param databaseManager databaseManager used to add nodes
      * @param commands the list of follow-up commands
      */
-    public notifyFollowUpCommandsResult(nodeCache: NodeCache, commands: DatabaseCommand<any>[]): void {
+    public notifyFollowUpCommandsResult(databaseManager: DatabaseManager, commands: DatabaseCommand<any>[]): void {
 
     }
 

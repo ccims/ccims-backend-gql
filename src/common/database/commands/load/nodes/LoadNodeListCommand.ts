@@ -3,6 +3,7 @@ import { LoadListCommand } from "../LoadListCommand";
 import { NodeCache } from "../../../NodeCache";
 import { QueryResultRow, QueryResult } from "pg";
 import { ConditionSpecification } from "../ConditionSpecification";
+import { DatabaseManager } from "../../../DatabaseManager";
 
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
     
@@ -25,16 +26,14 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         }]
     }
 
-    /**
-     * @see getNodeResult
-     */
-    protected getSingleResult(nodeCache: NodeCache, resultRow: QueryResultRow, result: QueryResult<any>): T {
-        const cacheResult = nodeCache.getNode(resultRow["id"]);
+    
+    protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
+        const cacheResult = databaseManager.getNode(resultRow["id"]);
         if (cacheResult) {
             return cacheResult as T;
         } else {
-            const newNode: T = this.getNodeResult(resultRow, result);
-            nodeCache.addNode(newNode);
+            const newNode: T = this.getNodeResult(databaseManager, resultRow, result);
+            databaseManager.addNode(newNode);
             return newNode;
         }
     }
@@ -45,6 +44,6 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param result  the complete QueryResult for additional properties like fields
      * @returns the parsed element
      */
-    protected abstract getNodeResult(resultRow: QueryResultRow, result: QueryResult<any>): T;
+    protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
 
 }

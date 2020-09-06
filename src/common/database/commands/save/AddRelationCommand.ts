@@ -30,7 +30,7 @@ export class AddRelationCommand extends DatabaseCommand<void> {
         return this.config;
     }
 
-    public setDatabaseResult(nodeCache: NodeCache, result: QueryResult<any>): DatabaseCommand<any>[] {
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         return [];
     }
 
