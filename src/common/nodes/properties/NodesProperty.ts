@@ -49,7 +49,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
      * @returns the element if existing, otherwise undefined
      */
     public async getElement(id: string): Promise<T | undefined> {
-        await this.ensureLoadLevel(LoadLevel.Partial);
+        await this.ensureAddDeleteLoadLevel();
         if (this._elements.has(id)) {
             return this._elements.get(id);
         } else if (this._ids.has(id) && this._specification.loadDynamic) {
