@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ReopenIssueInput",
     description: "The inputs for the reopenIssue",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLReopenIssueInput = new GraphQLInputObjectType(reopenIssueInputConfig);
 export default GraphQLReopenIssueInput;

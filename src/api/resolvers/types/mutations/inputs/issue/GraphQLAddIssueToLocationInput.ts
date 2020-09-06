@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let addIssueToLocationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddIssueToLocationInput",
     description: "The inputs for the addIssueToLocation",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLAddIssueToLocationInput = new GraphQLInputObjectType(addIssueToLocationInputConfig);
 export default GraphQLAddIssueToLocationInput;

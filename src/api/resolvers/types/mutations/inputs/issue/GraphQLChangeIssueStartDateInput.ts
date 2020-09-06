@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let changeIssueStartDateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssueStartDateInput",
     description: "The inputs for the changeIssueStartDate",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLChangeIssueStartDateInput = new GraphQLInputObjectType(changeIssueStartDateInputConfig);
 export default GraphQLChangeIssueStartDateInput;

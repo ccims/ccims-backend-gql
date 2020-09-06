@@ -20,7 +20,7 @@ class GraphQLHandler {
     public constructor(dbManager: DatabaseManager) {
         this.dbManager = dbManager;
         this.middleware = graphqlHTTP({
-            schema: testSchema,
+            schema: ccimsSchema,
             graphiql: {
                 headerEditorEnabled: true
             }

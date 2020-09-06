@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let markIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "MarkIssueAsDuplicateInput",
     description: "The inputs for the markIssueAsDuplicate",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLMarkIssueAsDuplicateInput = new GraphQLInputObjectType(markIssueAsDuplicateInputConfig);
 export default GraphQLMarkIssueAsDuplicateInput;

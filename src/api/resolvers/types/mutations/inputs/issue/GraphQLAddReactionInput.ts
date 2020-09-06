@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let addReactionInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddReactionInput",
     description: "The inputs for the addReaction",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLAddReactionInput = new GraphQLInputObjectType(addReactionInputConfig);
 export default GraphQLAddReactionInput;

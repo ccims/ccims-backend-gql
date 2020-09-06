@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnlinkIssueInput",
     description: "The inputs for the unlinkIssue",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLUnlinkIssueInput = new GraphQLInputObjectType(unlinkIssueInputConfig);
 export default GraphQLUnlinkIssueInput;

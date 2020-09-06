@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let unpinIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnpinIssueInput",
     description: "The inputs for the unpinIssue",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLUnpinIssueInput = new GraphQLInputObjectType(unpinIssueInputConfig);
 export default GraphQLUnpinIssueInput;

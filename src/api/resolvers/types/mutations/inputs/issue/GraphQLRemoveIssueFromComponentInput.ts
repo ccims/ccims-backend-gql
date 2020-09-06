@@ -3,12 +3,12 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let removeIssueFromComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveIssueFromComponentInput",
     description: "The inputs for the removeIssueFromComponent",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         }
-    }
+    })
 };
 let GraphQLRemoveIssueFromComponentInput = new GraphQLInputObjectType(removeIssueFromComponentInputConfig);
 export default GraphQLRemoveIssueFromComponentInput;
