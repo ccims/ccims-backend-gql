@@ -83,7 +83,9 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
                 this._elements.set(element.id, element);
             }
             await this.notifyAdded(element, false);
-            this._node.markChanged();
+            if (this._specification.save) {
+                this._node.markChanged();
+            }
         }
     }
 
@@ -98,7 +100,9 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
             this._elements.delete(element.id);
             await this.notifyRemoved(element, false);
             this._removedIds.add(element.id);
-            this._node.markChanged();
+            if (this._specification.save) {
+                this._node.markChanged();
+            }
         }
     }
 
@@ -242,6 +246,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
+                this._node.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._addedIds.add(element.id);
@@ -264,6 +269,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
+                this._node.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._removedIds.add(element.id);

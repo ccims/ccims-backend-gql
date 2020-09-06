@@ -40,7 +40,7 @@ export class AddRelationCommand extends DatabaseCommand<void> {
      * @param secundary the secundary id column name
      */
     public static fromPrimary(primary: string, secundary: string): (id: string, node: CCIMSNode) => AddRelationCommand {
-        return (id, node) => new AddRelationCommand(`relation_${primary}, ${secundary}`, primary + "_id", secundary + "_id", node.id, id);
+        return (id, node) => new AddRelationCommand(`relation_${primary}_${secundary}`, primary + "_id", secundary + "_id", node.id, id);
     }
 
     /**
@@ -49,6 +49,6 @@ export class AddRelationCommand extends DatabaseCommand<void> {
      * @param secundary the secundary id column name
      */
     public static fromSecundary(primary: string, secundary: string): (id: string, node: CCIMSNode) => AddRelationCommand {
-        return (id, node) => new AddRelationCommand(`relation_${primary}, ${secundary}`, primary + "_id", secundary + "_id", node.id, id);
+        return (id, node) => new AddRelationCommand(`relation_${primary}_${secundary}`, primary + "_id", secundary + "_id", node.id, id);
     }
 }

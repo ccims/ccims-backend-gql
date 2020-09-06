@@ -96,8 +96,9 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * adds a notify callback when a change on this property occures
      * @param toNotify generates the property to notify out of element
      */
-    public nodifyChanged(toNotify: (element: T, node: V) => Property<V>) {
+    public notifyChanged(toNotify: (element: T, node: V) => Property<V>): NodesPropertySpecificationBuilder<T, V> {
         this.notifiers.push(toNotify);
+        return this;
     }
 
     /**

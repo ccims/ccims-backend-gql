@@ -27,10 +27,10 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * @param byDatabase true if caused by database
      */
     protected async notifyAdded(element: T, byDatabase: boolean): Promise<void> {
-        this.specification.notifiers.forEach(async notifier => {
+        await Promise.all(this.specification.notifiers.map(notifier => {
             const toNotify = notifier(element, this._node);
-            await toNotify.wasAddedBy(this._node, byDatabase);
-        })
+            return toNotify.wasAddedBy(this._node, byDatabase);
+        }));
     }
 
     /**
@@ -39,9 +39,9 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * @param byDatabase true if caused by database
      */
     protected async notifyRemoved(element: T, byDatabase: boolean): Promise<void> {
-        this.specification.notifiers.forEach(async notifier => {
+        await Promise.all(this.specification.notifiers.map(notifier => {
             const toNotify = notifier(element, this._node);
-            await toNotify.wasRemovedBy(this._node, byDatabase);
-        })
+            return toNotify.wasRemovedBy(this._node, byDatabase);
+        }));
     }
 }

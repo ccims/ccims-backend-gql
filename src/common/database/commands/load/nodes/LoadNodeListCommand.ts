@@ -4,6 +4,7 @@ import { NodeCache } from "../../../NodeCache";
 import { QueryResultRow, QueryResult } from "pg";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
+import { QueryPart } from "../QueryPart";
 
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
     
@@ -18,12 +19,12 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): ConditionSpecification[] {
-        return [{
+    protected generateConditions(i: number): [ConditionSpecification[], number] {
+        return this.ids ? [[{
             priority: 1,
             text: `main.id = ANY($${i})`,
             values: [this.ids]
-        }]
+        }], i + 1] : [[], i];
     }
 
     
@@ -45,5 +46,12 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the parsed element
      */
     protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
+
+    protected generateQueryEnd(i: number): QueryPart {
+        return {
+            text: "ORDER BY main.id;",
+            values: [] 
+        }
+    }
 
 }

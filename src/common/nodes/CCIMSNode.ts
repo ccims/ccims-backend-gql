@@ -94,7 +94,7 @@ export abstract class CCIMSNode implements Saveable {
      * registers a saveable, so it is saved when necessary
      * @param saveable the Savable to add
      */
-    protected registerSaveable(saveable: Saveable): Saveable {
+    protected registerSaveable<T extends Saveable>(saveable: T): T {
         this._saveables.push(saveable);
         return saveable;
     }

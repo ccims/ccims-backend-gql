@@ -15,7 +15,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         let text: string = queryStart.text + " WHERE";
         let values: any[] = queryStart.values;
 
-        const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1);
+        const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1)[0];
         conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
 
         for (let i = 0; i < conditionSpecifications.length - 1; i++) {
@@ -64,7 +64,8 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * the conditions are connected by AND
      * it is highly recommended to return at least one condition
      * @param i the first index of query parameter to use
+     * @result the parameters and a new i
      */
-    protected abstract generateConditions(i: number): ConditionSpecification[]
+    protected abstract generateConditions(i: number): [ConditionSpecification[], number]
 
 }
