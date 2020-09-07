@@ -2,17 +2,18 @@ import {CCIMSNode}  from "./CCIMSNode";
 import {NodeType} from "./NodeType";
 import {SyncMetadata} from "./SyncMetadata";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { NodeTableSpecification } from "./NodeTableSpecification";
 
 /**
  * 
  */
-export abstract class SyncNode extends CCIMSNode {
+export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
     private _metadata: Map<string, SyncMetadata> | undefined;
 
     private _lastChangedAt: Date;
 
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, lastChangedAt: Date, metadata?: Map<string, SyncMetadata>) {
-        super(type, databaseManager, id);
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: Map<string, SyncMetadata>) {
+        super(type, databaseManager, tableSpecification, id);
         this._lastChangedAt = lastChangedAt;
         this._metadata = metadata;
     }

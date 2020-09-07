@@ -2,11 +2,18 @@ import { NodeType } from "./NodeType";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { Saveable } from "./Saveable";
+import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
+import { DeleteNodeCommand } from "../database/commands/DeleteNodeCommand";
+import { AddNodeCommand } from "../database/commands/save/AddNodeCommands";
+import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
+
+export const CCIMSNodeTableSpecification: NodeTableSpecification<CCIMSNode>
+    = new NodeTableSpecification<CCIMSNode>("node", undefined, RowSpecification.fromProperty("id", "id"));
 
 /**
  * Base class for all datatypes with an id, which are accessable via the api
  */
-export abstract class CCIMSNode implements Saveable {
+export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     private _id: string;
     private _type: NodeType;
     private _isNew: boolean = false;
@@ -14,11 +21,13 @@ export abstract class CCIMSNode implements Saveable {
     private _isDeleted: boolean = false;
     protected databaseManager: DatabaseManager;
     private _saveables: Saveable[] = [];
+    protected _tableSpecification: NodeTableSpecification<T>;
 
-    protected constructor (type: NodeType, databaseManager: DatabaseManager, id: string) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string) {
         this._id = id;
         this._type = type;
         this.databaseManager = databaseManager;
+        this._tableSpecification = tableSpecification;
     }
 
     /**
@@ -107,7 +116,10 @@ export abstract class CCIMSNode implements Saveable {
     public save(): void {
         this._saveables.forEach(saveable => saveable.save());
         if (this.isChanged()) {
-            this.databaseManager.addCommand(this.getSaveCommandsInternal());
+            const command = this.getSaveCommandsInternal();
+            if (command) {
+                this.databaseManager.addCommand(command);
+            }
         }
     }
 
@@ -115,5 +127,17 @@ export abstract class CCIMSNode implements Saveable {
      * this should be overwritten to generate a save command
      * this method is only invoked if isChanged()
      */
-    protected abstract getSaveCommandsInternal(): DatabaseCommand<any>;
+    protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
+        if (this.isNew()) {
+            if (!this.isDeleted()) {
+                return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
+            } else {
+                return undefined
+            }
+        } else if (this.isDeleted()) {
+            return new DeleteNodeCommand(this.id, this._tableSpecification.tableName);
+        } else {
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows)
+        }
+    }
 }
