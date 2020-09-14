@@ -29,7 +29,7 @@ CREATE TABLE relation_component_pinnedIssue
 (
     component_id id NOT NULL,
     pinnedIssue_id id NOT NULL,
-    PRIMARY KEY (component_id, issue_id)
+    PRIMARY KEY (component_id, pinnedIssue_id)
 );
 
 CREATE TABLE relation_component_label 
@@ -51,5 +51,5 @@ CREATE TABLE relation_componentInterface_issue
 (
     componentInterface_id id NOT NULL,
     issue_id id NOT NULL,
-    PRIMARY KEY (component_interface_id, issue_id)
+    PRIMARY KEY (componentInterface_id, issue_id)
 );
