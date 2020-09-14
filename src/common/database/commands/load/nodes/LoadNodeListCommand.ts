@@ -5,6 +5,7 @@ import { QueryResultRow, QueryResult } from "pg";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
+import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
     
@@ -14,17 +15,43 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     public ids?: string[]
 
+    private _rows: string;
+
+    protected constructor(rows: RowSpecification<T>[]) {
+        super();
+        this._rows = rows.map(row => row.rowName).join(", ");
+    }
+
+    /**
+     * gets a string with all rows that should be selected
+     */
+    protected get rows(): string {
+        return this._rows;
+    }
+
     /**
      * adds the id condition
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
     protected generateConditions(i: number): [ConditionSpecification[], number] {
-        return this.ids ? [[{
-            priority: 1,
-            text: `main.id = ANY($${i})`,
-            values: [this.ids]
-        }], i + 1] : [[], i];
+        if (this.ids) {
+            if (this.ids.length == 1) {
+                return [[{
+                    priority: 1,
+                    text: `main.id = $${i})`,
+                    values: [this.ids[0]]
+                }], i + 1];
+            } else {
+                return [[{
+                    priority: 1,
+                    text: `main.id = ANY($${i})`,
+                    values: [this.ids]
+                }], i + 1];
+            }
+        } else {
+            return [[], i];
+        }
     }
 
     

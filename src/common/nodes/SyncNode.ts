@@ -1,8 +1,15 @@
-import {CCIMSNode}  from "./CCIMSNode";
+import {CCIMSNode, CCIMSNodeTableSpecification}  from "./CCIMSNode";
 import {NodeType} from "./NodeType";
 import {SyncMetadata} from "./SyncMetadata";
 import { DatabaseManager } from "../database/DatabaseManager";
-import { NodeTableSpecification } from "./NodeTableSpecification";
+import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
+import { DatabaseCommand } from "../database/DatabaseCommand";
+import { AddNodeCommand } from "../database/commands/save/AddNodeCommands";
+import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
+
+
+export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
+    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, new RowSpecification("deleted", node => node.isDeleted()));
 
 /**
  * 
@@ -56,6 +63,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         if (!this._metadata) {
             throw new Error("this SyncNode was loaded without metadata");
         }
+        this.markChanged();
         this._metadata.set(metadata.id, metadata);
     }
 
@@ -68,7 +76,23 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         if (!this._metadata) {
             throw new Error("this SyncNode was loaded without metadata");
         }
+        this.markChanged();
         this._metadata.delete(id);
+    }
+
+    /**
+     * this can be overwritten to generate a save command
+     * this method is only invoked if isChanged()
+     * adds the metadata
+     */
+    protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
+        if (this.isNew()) {
+            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => node._metadata)]);
+        } else if (this._metadata) {
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => node._metadata)]);
+        } else {
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
+        }
     }
 
 }

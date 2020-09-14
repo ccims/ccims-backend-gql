@@ -124,7 +124,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     }
 
     /**
-     * this should be overwritten to generate a save command
+     * this can be overwritten to generate a save command
      * this method is only invoked if isChanged()
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
