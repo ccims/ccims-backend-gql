@@ -1,6 +1,5 @@
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadListCommand } from "../LoadListCommand";
-import { NodeCache } from "../../../NodeCache";
 import { QueryResultRow, QueryResult } from "pg";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
@@ -14,6 +13,27 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * the priority for this filter is 1
      */
     public ids?: string[]
+
+    /**
+     * when used with a limit, if true the first n elements are returned
+     * if false the last n elements are returned
+     */
+    public first: boolean = true;
+
+    /**
+     * limit the amount of results
+     */
+    public limit?: number;
+
+    /**
+     * returnes only elements after the specified id (exclusive)
+     */
+    public afterId?: string;
+
+    /**
+     * returnes only elements before the specified id (exclusive)
+     */
+    public beforeId?: string;
 
     private _rows: string;
 
@@ -35,23 +55,42 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the first index of query parameter to use
      */
     protected generateConditions(i: number): [ConditionSpecification[], number] {
+        const conditions: ConditionSpecification[] = [];
+
         if (this.ids) {
             if (this.ids.length == 1) {
-                return [[{
+                conditions.push({
                     priority: 1,
                     text: `main.id = $${i})`,
                     values: [this.ids[0]]
-                }], i + 1];
+                });
             } else {
-                return [[{
+                conditions.push({
                     priority: 1,
                     text: `main.id = ANY($${i})`,
                     values: [this.ids]
-                }], i + 1];
+                });
             }
-        } else {
-            return [[], i];
+            i++;
         }
+        if (this.afterId) {
+            conditions.push({
+                priority: 2,
+                text: `main.id > $${i}`,
+                values: [this.afterId]
+            });
+            i++;
+        }
+        if (this.beforeId) {
+            conditions.push({
+                priority: 2,
+                text: `main.id < $${i}`,
+                values: [this.beforeId]
+            });
+            i++;
+        }
+
+        return [conditions, i];
     }
 
     
@@ -75,9 +114,16 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
 
     protected generateQueryEnd(i: number): QueryPart {
-        return {
-            text: "ORDER BY main.id;",
-            values: [] 
+        if (this.limit) {
+            return {
+                text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
+                values: [this.limit] 
+            }
+        } else {
+            return {
+                text: "ORDER BY main.id",
+                values: []
+            }
         }
     }
 
