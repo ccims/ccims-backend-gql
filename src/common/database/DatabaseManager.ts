@@ -4,6 +4,7 @@ import { DatabaseCommand } from "./DatabaseCommand";
 import { Client } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
+import { LoadNodeCommand } from "./commands/load/nodes/LoadNodeCommand";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -44,6 +45,22 @@ export class DatabaseManager implements NodeCache {
      */
     public getCachedNode(id: string): CCIMSNode | undefined {
         return this.nodes.get(id);
+    }
+
+    /**
+     * gets the node if it is already cached, otherwise it loads it
+     * @param id the id for the node to get
+     */
+    public async getNode(id: string): Promise<CCIMSNode | undefined> {
+        const cachedNode = this.getCachedNode(id);
+        if (cachedNode) {
+            return cachedNode;
+        } else {
+            const loadCommand = new LoadNodeCommand(id);
+            this.addCommand(loadCommand);
+            await this.executePendingCommands();
+            return loadCommand.getResult();
+        }
     }
 
     /**
