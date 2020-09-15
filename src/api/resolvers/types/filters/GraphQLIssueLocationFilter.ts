@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
+import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig, GraphQLID } from "graphql";
 
 let issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueLocationFilter",
@@ -7,7 +7,11 @@ let issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
         name: {
             type: GraphQLList(GraphQLNonNull(GraphQLString)),
             description: "The name of the location must match one of the gien strings"
-        }
+        },
+        description: {
+            type: GraphQLString,
+            description: "The issue locations description must match the given __RegEx__"
+        },
     })
 };
 let GraphQLIssueLocationFilter = new GraphQLInputObjectType(issueLocationFilterConfig);

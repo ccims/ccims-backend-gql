@@ -2,6 +2,7 @@ import { GraphQLInterfaceType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQL
 import GraphQLNode from "../GraphQLNode";
 import issuesOnLocation from "../../listQueries/issuesOnLocation";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLUser from "./GraphQLUser";
 
 let issueLocationConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
     name: "IssueLocation",
@@ -15,6 +16,10 @@ let issueLocationConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
         name: {
             type: GraphQLNonNull(GraphQLString),
             description: "The name of the location\n\nMax. 256 characters"
+        },
+        description: {
+            type: GraphQLString,
+            description: "A textual description (of the fuction) of this issue location.\n\nMax. 65536 characters"
         },
         issuesOnLocation: issuesOnLocation()
     })
