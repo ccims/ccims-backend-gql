@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 let removeIssueFromLocationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveIssueFromLocationInput",
@@ -7,6 +7,14 @@ let removeIssueFromLocationInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue to remove from the specified location"
+        },
+        location: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The issue-location ID from which to remove the issue"
         }
     })
 };

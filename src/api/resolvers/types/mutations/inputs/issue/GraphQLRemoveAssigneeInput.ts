@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 
 let removeAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveAssigneeInput",
@@ -7,6 +7,14 @@ let removeAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue from which to remove an assignee"
+        },
+        user: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the user being unassigned from the specified issue"
         }
     })
 };

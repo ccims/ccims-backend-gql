@@ -3,8 +3,8 @@ import addIssueComment from "./mutations/issue/addIssueComment";
 import deleteIssueComment from "./mutations/issue/deleteIssueComment";
 import linkIssue from "./mutations/issue/linkIssue";
 import unlinkIssue from "./mutations/issue/unlinkIssue";
-import addLabel from "./mutations/issue/addLabel";
-import removeLabel from "./mutations/issue/removeLabel";
+import addLabelToIssue from "./mutations/issue/addLabelToIssue";
+import removeLabelFromIssue from "./mutations/issue/removeLabelFromIssue";
 import pinIssue from "./mutations/issue/pinIssue";
 import unpinIssue from "./mutations/issue/unpinIssue";
 import renameIssueTitle from "./mutations/issue/renameIssueTitle";
@@ -23,8 +23,8 @@ import addIssueToComponent from "./mutations/issue/addIssueToComponent";
 import removeIssueFromComponent from "./mutations/issue/removeIssueFromComponent";
 import markIssueAsDuplicate from "./mutations/issue/markIssueAsDuplicate";
 import unmarkIssueAsDuplicate from "./mutations/issue/unmarkIssueAsDuplicate";
-import addReaction from "./mutations/issue/addReaction";
-import removeReaction from "./mutations/issue/removeReaction";
+import addReactionToComment from "./mutations/issue/addReactionToComment";
+import removeReactionFromComment from "./mutations/issue/removeReactionFromComment";
 import { GraphQLFieldConfigMap } from "graphql";
 import { ResolverContext } from "../ResolverContext";
 
@@ -34,8 +34,8 @@ let issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     deleteIssueComment: deleteIssueComment(),
     linkIssue: linkIssue(),
     unlinkIssue: unlinkIssue(),
-    addLabel: addLabel(),
-    removeLabel: removeLabel(),
+    addLabelToIssue: addLabelToIssue(),
+    removeLabelFromIssue: removeLabelFromIssue(),
     pinIssue: pinIssue(),
     unpinIssue: unpinIssue(),
     renameIssueTitle: renameIssueTitle(),
@@ -54,7 +54,7 @@ let issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     removeIssueFromComponent: removeIssueFromComponent(),
     markIssueAsDuplicate: markIssueAsDuplicate(),
     unmarkIssueAsDuplicate: unmarkIssueAsDuplicate(),
-    addReaction: addReaction(),
-    removeReaction: removeReaction(),
+    addReactionToComment: addReactionToComment(),
+    removeReactionFromComment: removeReactionFromComment(),
 };
 export default issueMutations;

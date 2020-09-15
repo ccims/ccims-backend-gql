@@ -1,4 +1,5 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
+import GraphQLDate from "../../../../scalars/GraphQLDate";
 
 let changeIssueStartDateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssueStartDateInput",
@@ -7,6 +8,14 @@ let changeIssueStartDateInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue to change the start date of"
+        },
+        newStartDate: {
+            type: GraphQLNonNull(GraphQLDate),
+            description: "The new start date to assign to the issue"
         }
     })
 };

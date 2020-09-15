@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 let reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ReopenIssueInput",
@@ -7,6 +7,10 @@ let reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The id of the issue to reopen"
         }
     })
 };

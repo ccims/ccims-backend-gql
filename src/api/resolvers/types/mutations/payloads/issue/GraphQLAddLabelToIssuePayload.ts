@@ -1,9 +1,9 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../../ResolverContext";
 
-let removeReactionPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
-    name: "RemoveReactionPayload",
-    description: "The Payload/Response for the removeReaction mutation",
+let addLabelToIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+    name: "AddLabelToIssuePayload",
+    description: "The Payload/Response for the addToIssueLabel mutation",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
@@ -11,5 +11,5 @@ let removeReactionPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> =
         }
     })
 };
-let GraphQLRemoveReactionPayload = new GraphQLObjectType(removeReactionPayloadConfig);
-export default GraphQLRemoveReactionPayload;
+let GraphQLAddLabelToIssuePayload = new GraphQLObjectType(addLabelToIssuePayloadConfig);
+export default GraphQLAddLabelToIssuePayload;

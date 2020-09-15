@@ -1,4 +1,5 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
+import GraphQLPriority from "../../../../enums/GraphQLPriority";
 
 let changeIssuePriorityInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssuePriorityInput",
@@ -7,6 +8,14 @@ let changeIssuePriorityInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue to change the priority of"
+        },
+        newPriority: {
+            type: GraphQLNonNull(GraphQLPriority),
+            description: "The new priority to be set for the issue"
         }
     })
 };

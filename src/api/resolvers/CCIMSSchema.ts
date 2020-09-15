@@ -78,11 +78,6 @@ type AddReactionPayload {
     reactionEdge: ReactionGroupEdge
 }
 
-input RemoveReactionInput {
-    clientMutationID: String
-    reactionToRemove: String!
-}
-
 type RemoveReactionPayload {
     clientMutationID: String
 }
@@ -100,21 +95,10 @@ type AddIssueCommentPayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-input DeleteIssueCommentInput {
-    clientMutationID: String
-    issueComment: ID
-}
-
 type DeleteIssueCommentPayload {
     clientMutationID: String
     deletedComment: DeletedIssueComment
     timelineEdge: IssueTimelineItemEdge
-}
-
-input LinkIssueInput {
-    clientMutationID: String,
-    issue: ID!
-    issueToLink: ID!
 }
 
 type LinkIssuePayload {
@@ -122,12 +106,6 @@ type LinkIssuePayload {
     linkedIssue: Issue
     linkedIssueEdge: IssueEdge
     timelineEdge: IssueTimelineItemEdge
-}
-
-input UnlinkIssueInput {
-    clientMutationID: String,
-    issue: ID!
-    issueToUnlink: ID!
 }
 
 type UnlinkIssuePayload {
@@ -149,12 +127,6 @@ type AddLabelPayload {
     event: LabelledEvent
     labelEdge: LabelEdge
     timelineEdge: IssueTimelineItemEdge
-}
-
-input RemoveLabelInput {
-    clientMutationID: String
-    issue: ID!
-    label: ID!
 }
 
 type RemoveLabelPayload {
@@ -179,24 +151,12 @@ type PinIssuePayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-input UnpinIssueInput {
-    clientMutationID: String
-    issue: ID!
-    component: ID!
-}
-
 type UnpinIssuePayload {
     clientMutationID: String
     unpinnedIssue: Issue
     component: Component
     event: UnpinnedEvent
     timelineEdge: IssueTimelineItemEdge
-}
-
-input RenameIssueTitleInput {
-    clientMutationID: String
-    issue: ID!
-    newTitle: String!
 }
 
 type RenameIssueTitlePayload {
@@ -234,12 +194,6 @@ type  AddAssigneePayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-input RemoveAssigneeInput {
-    clientMutationID: String
-    issue: ID!
-    userToUnassign: ID!
-}
-
 type  RemoveAssigneePayload {
     clientMutationID: String
     issue: Issue
@@ -258,11 +212,6 @@ type CloseIssuePayload {
     closedIssue: Issue
     event: ClosedEvent
     timelineEdge: IssueTimelineItemEdge
-}
-
-input ReopenIssueInput {
-    clientMutationID: String
-    issueToReopen: ID!
 }
 
 type ReopenIssuePayload {
@@ -339,12 +288,6 @@ type AddIssueToLocationPayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-input RemoveIssueFromLocationInput {
-    clientMutationID: String
-    issue: ID!
-    locationToRemove: ID!
-}
-
 type RemoveIssueFromLocationPayload {
     clientMutationID: String
     issue: Issue
@@ -368,12 +311,6 @@ type AddIssueToComponentPayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-input RemoveIssueFromComponentInput {
-    clientMutationID: String
-    issue: ID!
-    componentToRemove: ID!
-}
-
 type RemoveIssueFromComponentPayload {
     clientMutationID: String
     issue: Issue
@@ -382,25 +319,12 @@ type RemoveIssueFromComponentPayload {
     timelineEdge: IssueTimelineItemEdge
 }
 
-
-input MarkIssueAsDuplicateInput {
-    clientMutationID: String
-    issue: ID!
-    originalIssue: ID!
-}
-
 type MarkIssueAsDuplicatePayload {
     clientMutationID: String
     issue: Issue
     originalIssue: Issue
     event: MarkedAsDuplicateEvent
     timelineEdge: IssueTimelineItemEdge
-}
-
-
-input UnmarkIssueAsDuplicateInput {
-    clientMutationID: String
-    issue: ID!
 }
 
 type UnmarkIssueAsDuplicatePayload {

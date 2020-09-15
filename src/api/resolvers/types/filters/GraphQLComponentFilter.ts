@@ -11,7 +11,7 @@ let componentFilterConfig: GraphQLInputObjectTypeConfig = {
         },
         owner: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The owner of the project must have any of the given ids"
+            description: "The owner of the component must have any of the given ids"
         },
         description: {
             type: GraphQLString,

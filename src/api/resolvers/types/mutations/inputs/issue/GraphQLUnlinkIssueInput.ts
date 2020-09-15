@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 let unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnlinkIssueInput",
@@ -7,6 +7,14 @@ let unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue which is the __origin__ of the relation"
+        },
+        issueToUnlink: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue the link to which sholud be removed (destination of relation)"
         }
     })
 };

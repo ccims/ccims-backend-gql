@@ -1,8 +1,8 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
-    name: "AddAssigneeInput",
-    description: "The inputs for the addAssignee",
+let addLabelToIssueInputConfig: GraphQLInputObjectTypeConfig = {
+    name: "AddLabelToIssueInput",
+    description: "The inputs for the addToIssueLabel",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
@@ -10,13 +10,13 @@ let addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
         },
         issue: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The ID of the issue to which the new assignee should be added"
+            description: "The ID of the issue to which to add the label"
         },
-        userToAssign: {
+        label: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The ID of the user to be added as assignee to the specified issue"
+            description: "The ID of the label to be added to the specified issue"
         }
     })
 };
-let GraphQLAddAssigneeInput = new GraphQLInputObjectType(addAssigneeInputConfig);
-export default GraphQLAddAssigneeInput;
+let GraphQLAddLabelToIssueInput = new GraphQLInputObjectType(addLabelToIssueInputConfig);
+export default GraphQLAddLabelToIssueInput;

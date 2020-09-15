@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 let unmarkIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnmarkIssueAsDuplicateInput",
@@ -7,6 +7,10 @@ let unmarkIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
+        },
+        issue: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The ID of the issue which to unmark as duplicate"
         }
     })
 };
