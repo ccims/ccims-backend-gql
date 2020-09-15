@@ -43,6 +43,10 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         return Array.from(this._elements, ([key, value]) => value);
     }
 
+    /**
+     * gets the elements, but also filters them
+     * @param filter 
+     */
     public async getFilteredElements(filter: LoadNodeListCommand<T>): Promise<T[]> {
         await this.ensureAddDeleteLoadLevel();
         filter.ids = Array.from((this._ids));

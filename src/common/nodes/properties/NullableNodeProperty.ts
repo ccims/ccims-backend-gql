@@ -5,7 +5,7 @@ import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
 
-export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NulableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
 
     private readonly _specification: NodePropertySpecification<T, V>;
     private _id?: string;
@@ -74,8 +74,8 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
             this._databaseManager.addCommand(loadCommand);
             await this._databaseManager.executePendingCommands();
             const result = loadCommand.getResult();
-            if (result) {
-                this._element = result;
+            if (result.length > 0) {
+                this._element = result[0];
             } else {
                 const reloadCommand = this._specification.reload(this._node);
                 this._databaseManager.addCommand(reloadCommand);

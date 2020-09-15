@@ -68,8 +68,8 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
             this._databaseManager.addCommand(loadCommand);
             await this._databaseManager.executePendingCommands();
             const result = loadCommand.getResult();
-            if (result) {
-                this._element = result;
+            if (result.length > 0) {
+                this._element = result[0];
             } else {
                 const reloadCommand = this._specification.reload(this._node);
                 this._databaseManager.addCommand(reloadCommand);

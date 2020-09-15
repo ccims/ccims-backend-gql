@@ -19,10 +19,12 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
 
     private _lastChangedAt: Date;
 
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: Map<string, SyncMetadata>) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: [string, SyncMetadata][]) {
         super(type, databaseManager, tableSpecification, id);
         this._lastChangedAt = lastChangedAt;
-        this._metadata = metadata;
+        if (metadata) {
+            this._metadata = new Map(metadata);
+        }
     }
 
     public get lastChangedAt(): Date {
@@ -87,9 +89,9 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
         if (this.isNew()) {
-            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => node._metadata)]);
+            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);
         } else if (this._metadata) {
-            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => node._metadata)]);
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);
         } else {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
         }

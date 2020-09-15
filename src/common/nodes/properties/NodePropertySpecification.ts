@@ -2,6 +2,7 @@ import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
 import { Property } from "./Property";
 import { PropertySpecification } from "./PropertySpecification";
+import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 
 export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>  implements PropertySpecification<T, V> {
 
@@ -14,7 +15,7 @@ export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
      * @param notifiers get properties to notify
      */
     public constructor(
-        public readonly loadFromId: (id: string, node: V) => DatabaseCommand<T | undefined>,
+        public readonly loadFromId: (id: string, node: V) => LoadNodeListCommand<T>,
         public readonly reload: (node: V) => DatabaseCommand<T | undefined>,
         ...notifiers: ((element: T, node: V) => Property<V>)[]
     ) {

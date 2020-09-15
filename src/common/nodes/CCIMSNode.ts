@@ -21,7 +21,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     private _isDeleted: boolean = false;
     protected databaseManager: DatabaseManager;
     private _saveables: Saveable[] = [];
-    protected _tableSpecification: NodeTableSpecification<T>;
+    public readonly _tableSpecification: NodeTableSpecification<T>;
 
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string) {
         this._id = id;
