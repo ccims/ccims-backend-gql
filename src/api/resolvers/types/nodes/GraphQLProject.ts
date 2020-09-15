@@ -28,7 +28,11 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             description: "The user who administrates \"owns\" the project"
         },
         issues: issues(),
-        labels: labels()
+        labels: labels(),
+        description: {
+            type: GraphQLString,
+            description: "A textual description of this project.\n\nMax. 65536 characters"
+        }
     })
 };
 let GraphQLProject = new GraphQLObjectType(projectConfig);

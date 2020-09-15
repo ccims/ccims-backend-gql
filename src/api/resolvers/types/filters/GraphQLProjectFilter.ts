@@ -23,6 +23,10 @@ let projectFilterConfig: GraphQLInputObjectTypeConfig = {
         issues: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "At least one of the issues given must be on a component assigned to the project"
+        },
+        description: {
+            type: GraphQLString,
+            description: "The projects description must match the given __RegEx__"
         }
     })
 };

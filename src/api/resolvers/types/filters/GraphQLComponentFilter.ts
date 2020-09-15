@@ -15,7 +15,7 @@ let componentFilterConfig: GraphQLInputObjectTypeConfig = {
         },
         description: {
             type: GraphQLString,
-            description: "The projects description must match the given __RegEx__"
+            description: "The components description must match the given __RegEx__"
         },
         imsType: {
             type: GraphQLList(GraphQLNonNull(GraphQLIMSType)),
