@@ -87,7 +87,6 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
         private loadElements: (node: V) => DatabaseCommand<T[]>,
         private loadDynamic: boolean,
         private loadIds?: (node: V) => DatabaseCommand<string[]>,
-        private loadFromId?: (id: string, node: V) => DatabaseCommand<T | undefined>
     ) { 
         
     }
