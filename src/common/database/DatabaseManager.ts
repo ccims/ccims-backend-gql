@@ -34,7 +34,7 @@ export class DatabaseManager implements NodeCache {
      * Caution: if a node with the same id is already registered, it is overridden
      * @param node the node to register
      */
-    public addNode(node: CCIMSNode): void {
+    public addCachedNode(node: CCIMSNode): void {
         this.nodes.set(node.id, node);
     }
 
@@ -42,7 +42,7 @@ export class DatabaseManager implements NodeCache {
      * gets the node with the associated id or undefined if not found
      * @param id the id for the node to get
      */
-    public getNode(id: string): CCIMSNode | undefined {
+    public getCachedNode(id: string): CCIMSNode | undefined {
         return this.nodes.get(id);
     }
 

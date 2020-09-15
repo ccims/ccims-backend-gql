@@ -187,7 +187,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         this._ids.forEach(async id => {
             if (!ids.includes(id)) {
                 this._removedIds.delete(id);
-                const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getNode(id) as T);
+                const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getCachedNode(id) as T);
                 if (element) {
                     await this.notifyRemoved(element, true);
                 }
@@ -195,7 +195,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         });
         ids.forEach(async id => {
             if (this._ids.has(id)) {
-                const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getNode(id) as T);
+                const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getCachedNode(id) as T);
                 if (element) {
                     await this.notifyAdded(element, true);
                 }
