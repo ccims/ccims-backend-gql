@@ -41,27 +41,4 @@ type Mutation {
     removeReaction(input: RemoveReactionInput!): RemoveReactionPayload
 }
 
-input CreateProjectInput {
-        name: String!
-        components: [ID!]
-        users: [ID!]
-        owner: ID!
-}
-
-type AddIssueCommentPayload {
-    comment: IssueComment
-    clientMutationID: String
-    commentEdge: IssueCommentEdge
-    timelineEdge: IssueTimelineItemEdge
-}
-
-type  AddAssigneePayload {
-    clientMutationID: String
-    issue: Issue
-    assignee: User
-    event: AssignedEvent
-    assigneeEdge: UserEdge
-    timelineEdge: IssueTimelineItemEdge
-}
-
 */

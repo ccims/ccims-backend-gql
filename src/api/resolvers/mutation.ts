@@ -2,13 +2,15 @@ import { GraphQLObjectType, GraphQLString, GraphQLObjectTypeConfig } from "graph
 import testMutation from "./mutations/testMutation";
 import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
+import createProject from "./mutations/createProject";
 
 let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
     description: "Mutations to change the data within the ccims",
     fields: () => ({
         testMutation: testMutation(),
-        ...issueMutations
+        ...issueMutations,
+        createProject: createProject()
     })
 };
 let mutation = new GraphQLObjectType(mutationConfig);
