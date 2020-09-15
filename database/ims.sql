@@ -1,12 +1,10 @@
 CREATE TABLE ims_system
 (
-    id id NOT NULL,
     component_id id NOT NULL,
     type ims_type NOT NULL,
     endpoint text NOT NULL,
-    connection_data json NOT NULL,
-    PRIMARY KEY (id)
-);
+    connection_data json NOT NULL
+) INHERITS (node);
 
 CREATE TABLE user_ims_credential
 (

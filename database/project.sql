@@ -1,14 +1,16 @@
 CREATE TABLE project
 (
     name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL
+    owner_user_id id NOT NULL,
+    description character varying(65536) NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE component
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL,
-    description character varying(65536) NOT NULL
+    description character varying(65536) NOT NULL,
+    imsSystem_id id NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE relation_project_component
@@ -42,14 +44,13 @@ CREATE TABLE relation_component_label
 CREATE TABLE component_interface
 (
     name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL,
     description character varying(65536) NOT NULL,
     host_component_id id NOT NULL
 ) INHERITS (node);
 
-CREATE TABLE relation_componentInterface_issue
+CREATE TABLE relation_issueLocation_issue
 (
-    componentInterface_id id NOT NULL,
+    issueLocation_id id NOT NULL,
     issue_id id NOT NULL,
     PRIMARY KEY (componentInterface_id, issue_id)
 );
