@@ -1,19 +1,19 @@
 -- IMS Tables
-DROP TABLE IF EXISTS user_ims_credentials;
-DROP TABLE IF EXISTS ims_systems;
+DROP TABLE IF EXISTS user_ims_credential;
+DROP TABLE IF EXISTS ims_system;
 
 -- Project/Component tables
 DROP TABLE IF EXISTS relation_component_label;
 DROP TABLE IF EXISTS relation_component_issue;
-DROP TABLE IF EXISTS projects;
-DROP TABLE IF EXISTS components;
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS component;
 DROP TABLE IF EXISTS relation_project_component;
 DROP TABLE IF EXISTS relation_component_pinnedIssue;
-DROP TABLE IF EXISTS component_interfaces;
+DROP TABLE IF EXISTS component_interface;
 DROP TABLE IF EXISTS relation_componentInterface_issue;
 
 -- User Tables
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS relation_user_project;
 
 -- Issue Tables

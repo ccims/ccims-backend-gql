@@ -1,10 +1,10 @@
-CREATE TABLE projects
+CREATE TABLE project
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL
 ) INHERITS (node);
 
-CREATE TABLE components
+CREATE TABLE component
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE relation_component_label
     PRIMARY KEY (component_id, label_id)
 );
 
-CREATE TABLE component_interfaces
+CREATE TABLE component_interface
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL,

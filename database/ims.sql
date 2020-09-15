@@ -1,4 +1,4 @@
-CREATE TABLE ims_systems
+CREATE TABLE ims_system
 (
     id id NOT NULL,
     component_id id NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE ims_systems
     PRIMARY KEY (id)
 );
 
-CREATE TABLE user_ims_credentials
+CREATE TABLE user_ims_credential
 (
     id id NOT NULL,
     user_id id NOT NULL,
