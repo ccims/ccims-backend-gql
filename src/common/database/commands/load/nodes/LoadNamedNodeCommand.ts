@@ -2,6 +2,9 @@ import { NamedOwnedNode } from "../../../../nodes/NamedOwnedNode";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
+/**
+ * command to load a named node
+ */
 export abstract class LoadNamedNodesCommand<T extends NamedOwnedNode> extends LoadNodeListCommand<T> {
     /**
      * adds the id condition

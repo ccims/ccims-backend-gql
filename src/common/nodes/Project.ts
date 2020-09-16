@@ -9,14 +9,26 @@ import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User } from "./User";
 
+/**
+ * the specification of the table which contains projects
+ */
 export const ProjectTableSpecification: NodeTableSpecification<Project>
     = new NodeTableSpecification<Project>("project", NamedOwnedNodeTableSpecification);
 
 
+/**
+ * A project
+ */
 export class Project extends NamedOwnedNode<Project> {
 
+    /**
+     * property with the components on this project
+     */
     public readonly componentsProperty: NodeListProperty<Component, Project>;
 
+    /**
+     * the specification of compopnentsProperty
+     */
     private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Project> 
         = NodeListPropertySpecification.loadDynamic<Component, Project>(LoadRelationCommand.fromPrimary("project", "component"),
         (ids, project) => { 
@@ -32,6 +44,15 @@ export class Project extends NamedOwnedNode<Project> {
         .notifyChanged((component, project) => component.projectsProperty)
         .saveOnPrimary("project", "component");
 
+    /**
+     * creates a new Component instance
+     * note: this does NOT create a actually new component, for this @see Project.create
+     * @param databaseManager the databaseManager
+     * @param id the id
+     * @param name the name of the component
+     * @param description the description of the component
+     * @param ownerId the id of the owner of the component
+     */
     public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
         this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));

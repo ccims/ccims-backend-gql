@@ -9,6 +9,9 @@ import { NodeType } from "./NodeType";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 
+/**
+ * enum with all (currently not) supported issue management systems
+ */
 export enum ImsType {
     GitHub = "GitHub",
     GitLab = "GitLab",
@@ -16,10 +19,16 @@ export enum ImsType {
     Redmine = "Redmine"
 }
 
+/**
+ * interface for connectionData
+ */
 export interface ConnectionData {
 
 }
 
+/**
+ * specification of the table which contains ImsSystems
+ */
 export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
     = new NodeTableSpecification<ImsSystem>("ims_system", CCIMSNodeTableSpecification,
     RowSpecification.fromProperty("ims_type", "imsType"),
@@ -27,15 +36,34 @@ export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
     RowSpecification.fromProperty("connection_data", "connectionData"),
     new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));
 
+/**
+ * An issue management system. This will be an instance of one of the available IMS Types.
+ * E.g. One GitHub Repository's issue page.
+ */
 export class ImsSystem extends CCIMSNode<ImsSystem> {
+    /**
+     * the type if the ims
+     */
     private _imsType: ImsType;
 
+    /**
+     * the endpoint used for the ims
+     */
     private _endpoint: string;
 
+    /**
+     * other data necessary for the ims
+     */
     private _connectionData: ConnectionData;
 
+    /**
+     * property with the component on which this imsSystem is
+     */
     public componentProperty: NodeProperty<Component, ImsSystem>;
 
+    /**
+     * specification of the componentProperty
+     */
     private static componentPropertySpecification: NodePropertySpecification<Component, ImsSystem>
     = new NodePropertySpecification<Component, ImsSystem>(
         (id, imsSystem) => {
@@ -49,6 +77,16 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
         (component, imsSystem) => component.imsSystemProperty
     );
 
+    /**
+     * warning: this does only create a new ImsSystem instance, but not a new ImsSystem
+     * to create a new ImsSystem, use @see Component.create
+     * @param databaseManager the databaseManager
+     * @param id the id
+     * @param imsType the type of the imsSystem
+     * @param endpoint the endpoint of the imsSystem
+     * @param connectionData the connectionData
+     * @param componentId the id of the component on which this ImsSystem is
+     */
     public constructor (databaseManager: DatabaseManager, id: string, imsType: ImsType, endpoint: string, connectionData: ConnectionData, componentId: string) {
         super(NodeType.ImsSystem, databaseManager, ImsSystemTableSpecification, id);
         this._imsType = imsType;

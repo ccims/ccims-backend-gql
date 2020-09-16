@@ -5,8 +5,14 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { getLoadCommand } from "./LoadFromIdsCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
+/**
+ * command to load a single node
+ */
 export class LoadNodeCommand extends DatabaseCommand<CCIMSNode | undefined> {
 
+    /**
+     * the command which actually loads the node
+     */
     private _nodeCommand?: LoadNodeListCommand<CCIMSNode>;
 
     /**
@@ -17,16 +23,27 @@ export class LoadNodeCommand extends DatabaseCommand<CCIMSNode | undefined> {
         super();
     }
 
+    /**
+     * generates the query
+     * selects the name of the table where to find the node
+     */
     public getQueryConfig(): QueryConfig<any[]> {
         return {
             text: "SELECT pg_class.relname FROM node INNER JOIN pg_class ON (node.tableoid = pg_class.oid) WHERE node.id = $1;",
             values: [this.id]
         }
     }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the result of the query
+     * @returns the command which actually loads the node
+     */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         if (result.rowCount > 0) {
             this._nodeCommand = getLoadCommand(result.rows[0]["relname"], [this.id]);
-            return [];
+            return [this._nodeCommand];
         } else {
             return [];
         }
