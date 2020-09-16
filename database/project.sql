@@ -15,22 +15,28 @@ CREATE TABLE relation_project_component
 (
     project_id id NOT NULL,
     component_id id NOT NULL,
-    addad_date timestamp NOT NULL,
     PRIMARY KEY (project_id, component_id)
 );
 
-CREATE TABLE relation_component_issues
+CREATE TABLE relation_component_issue
 (
     component_id id NOT NULL,
     issue_id id NOT NULL,
     PRIMARY KEY (component_id, issue_id)
 );
 
-CREATE TABLE relation_component_pinnedIssues
+CREATE TABLE relation_component_pinnedIssue
 (
     component_id id NOT NULL,
-    issue_id id NOT NULL,
-    PRIMARY KEY (component_id, issue_id)
+    pinnedIssue_id id NOT NULL,
+    PRIMARY KEY (component_id, pinnedIssue_id)
+);
+
+CREATE TABLE relation_component_label 
+(
+    component_id id NOT NULL,
+    label_id id NOT NULL,
+    PRIMARY KEY (component_id, label_id)
 );
 
 CREATE TABLE component_interfaces
@@ -43,7 +49,7 @@ CREATE TABLE component_interfaces
 
 CREATE TABLE relation_componentInterface_issue
 (
-    component_interface_id id NOT NULL,
+    componentInterface_id id NOT NULL,
     issue_id id NOT NULL,
-    PRIMARY KEY (component_interface_id, issue_id)
+    PRIMARY KEY (componentInterface_id, issue_id)
 );
