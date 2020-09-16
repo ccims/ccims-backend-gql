@@ -2,7 +2,7 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 
 let createProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateProjectInput",
-    description: "The inputs for the createProject",
+    description: "The inputs for the createProject mutation",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,

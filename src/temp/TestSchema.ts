@@ -5,11 +5,11 @@ let testSchema = new GraphQLSchema({
     mutation: TestQueries,
     query: new GraphQLObjectType({
         name: "Query",
-        fields: {
+        fields: () => ({
             test: {
                 type: GraphQLString,
             }
-        }
+        })
     })
 });
 export default testSchema;

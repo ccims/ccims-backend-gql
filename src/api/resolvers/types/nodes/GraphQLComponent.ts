@@ -12,6 +12,7 @@ import { Component } from "../../../../common/nodes/Component";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLIssuePage from "../pages/GraphQLIssuePage";
 import GraphQLIssueFilter from "../filters/GraphQLIssueFilter";
+import GraphQLIMS from "./GraphQLIMS";
 
 let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -34,9 +35,9 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLString,
             description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters"
         },
-        imsType: {
-            type: GraphQLIMSType,
-            description: "The software of the IMS used by this component. This must be one of the supported ones"
+        ims: {
+            type: GraphQLIMS,
+            description: "The IMS instance used by this component."
         },
         issues: issues(),
         issuesOnLocation: issuesOnLocation(),

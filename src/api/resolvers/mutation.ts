@@ -4,6 +4,7 @@ import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/createProject";
 import createComponent from "./mutations/createComponent";
+import createIMS from "./mutations/createIMS";
 
 let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -13,6 +14,7 @@ let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         ...issueMutations,
         createProject: createProject(),
         createComponent: createComponent(),
+        createIMS: createIMS(),
     })
 };
 let mutation = new GraphQLObjectType(mutationConfig);

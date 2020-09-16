@@ -4,7 +4,7 @@ import Element2 from "./Element2";
 
 const query = new GraphQLObjectType({
     name: "Mutation",
-    fields: {
+    fields: () => ({
         issue: {
             type: Element1,
             args: {
@@ -16,7 +16,7 @@ const query = new GraphQLObjectType({
                 return { id: args.id, name: "Issue #" + args.id };
             }
         }
-    }
+    })
 });
 
 export default query;
