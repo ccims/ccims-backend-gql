@@ -3,6 +3,7 @@ import testMutation from "./mutations/testMutation";
 import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/createProject";
+import createComponent from "./mutations/createComponent";
 
 let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -10,7 +11,8 @@ let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         testMutation: testMutation(),
         ...issueMutations,
-        createProject: createProject()
+        createProject: createProject(),
+        createComponent: createComponent(),
     })
 };
 let mutation = new GraphQLObjectType(mutationConfig);

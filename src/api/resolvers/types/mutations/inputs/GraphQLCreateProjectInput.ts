@@ -3,7 +3,7 @@ import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectType
 let createProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateProjectInput",
     description: "The inputs for the createProject",
-    fields: {
+    fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
@@ -28,7 +28,7 @@ let createProjectInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLNonNull(GraphQLID),
             description: "The owner user of this component. This user will be able to administrate the component"
         }
-    }
+    })
 };
 let GraphQLCreateProjectInput = new GraphQLInputObjectType(createProjectInputConfig);
 export default GraphQLCreateProjectInput;
