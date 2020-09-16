@@ -150,7 +150,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      */
     public save(): void {
         this._saveables.forEach(saveable => saveable.save());
-        if (this.isChanged()) {
+        if (this.isChanged) {
             const command = this.getSaveCommandsInternal();
             if (command) {
                 this.databaseManager.addCommand(command);
@@ -163,13 +163,13 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      * this method is only invoked if isChanged()
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
-        if (this.isNew()) {
-            if (!this.isDeleted()) {
+        if (this.isNew) {
+            if (!this.isDeleted) {
                 return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
             } else {
                 return undefined
             }
-        } else if (this.isDeleted()) {
+        } else if (this.isDeleted) {
             return new DeleteNodeCommand(this.id, this._tableSpecification.tableName);
         } else {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows)

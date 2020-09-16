@@ -102,7 +102,7 @@ export class DatabaseManager implements NodeCache {
     public async saveAndClearCache() {
         await this.executePendingCommands();
         this.nodes.forEach(node => {
-            if (node.isChanged()) {
+            if (node.isChanged) {
                 node.save();
             }
         });
