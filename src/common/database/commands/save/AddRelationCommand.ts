@@ -17,7 +17,6 @@ export class AddRelationCommand extends DatabaseCommand<void> {
 
     /**
      * Command to add a relation
-     * WARNING: only primaryId and secundaryId are secured agains sql injections,
      * DO NOT use user input for tableName, primary or secundary
      * @param tableName the name of the relation table
      * @param primary the name for the primary column
