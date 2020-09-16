@@ -52,5 +52,5 @@ CREATE TABLE relation_issueLocation_issue
 (
     issueLocation_id id NOT NULL,
     issue_id id NOT NULL,
-    PRIMARY KEY (componentInterface_id, issue_id)
+    PRIMARY KEY (issueLocation_id, issue_id)
 );

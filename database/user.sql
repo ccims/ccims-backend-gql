@@ -1,4 +1,4 @@
-CREATE TABLE user
+CREATE TABLE users
 (
     username character varying(100) NOT NULL,
     displayname character varying(200) NOT NULL,

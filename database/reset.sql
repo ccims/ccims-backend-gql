@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS component_interface;
 DROP TABLE IF EXISTS relation_issueLocation_issue;
 
 -- User Tables
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS relation_user_project;
 
 -- Issue Tables
