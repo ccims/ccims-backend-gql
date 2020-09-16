@@ -60,6 +60,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * adds the id condition
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
+     * @return the array of conditions and a index for the next value
      */
     protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
         const conditions: ConditionSpecification[] = [];
