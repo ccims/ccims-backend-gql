@@ -4,7 +4,13 @@ import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
 
+/**
+ * command to remove a relation from the database
+ */
 export class RemoveRelationCommand extends DatabaseCommand<void> {
+    /**
+     * the command
+     */
     private readonly config: QueryConfig<any[]>;
 
     /**
@@ -25,10 +31,19 @@ export class RemoveRelationCommand extends DatabaseCommand<void> {
         }
     }
 
+    /**
+     * generates the command
+     */
     public getQueryConfig(): QueryConfig<any[]> {
         return this.config;
     }
 
+    /**
+     * called when the query is finished
+     * does nothing
+     * @param databaseManager  the DatabseManager
+     * @param result the result from the query
+     */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         return [];
     }

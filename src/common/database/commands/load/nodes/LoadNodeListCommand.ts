@@ -6,6 +6,10 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 
+/**
+ * loads a list of nodes
+ * @param T the type of CCISNode to query
+ */
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
     
     /**
@@ -35,6 +39,9 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     public beforeId?: string;
 
+    /**
+     * string with all rows that shoule be queried
+     */
     private _rows: string;
 
     protected constructor(rows: RowSpecification<T>[]) {
@@ -93,7 +100,12 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         return [conditions, i];
     }
 
-    
+    /**
+     * parses a single result from the query
+     * @param databaseManager teh databaseManager to use
+     * @param resultRow the result row from the query
+     * @param result the complete result from the query
+     */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
         if (cacheResult) {
@@ -113,6 +125,10 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
 
+    /**
+     * generates the end of the query, for example a limit or a order
+     * @param i the next index for a value in the query
+     */
     protected generateQueryEnd(i: number): QueryPart {
         if (this.limit) {
             return {

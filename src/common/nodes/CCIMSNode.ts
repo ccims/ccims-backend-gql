@@ -7,6 +7,9 @@ import { DeleteNodeCommand } from "../database/commands/DeleteNodeCommand";
 import { AddNodeCommand } from "../database/commands/save/AddNodeCommands";
 import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
 
+/**
+ * base specification of a table for a CCIMSNode
+ */
 export const CCIMSNodeTableSpecification: NodeTableSpecification<CCIMSNode>
     = new NodeTableSpecification<CCIMSNode>("node", undefined, RowSpecification.fromProperty("id", "id"));
 
@@ -14,15 +17,47 @@ export const CCIMSNodeTableSpecification: NodeTableSpecification<CCIMSNode>
  * Base class for all datatypes with an id, which are accessable via the api
  */
 export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
+    /**
+     * the id of the node
+     */
     private _id: string;
+    /**
+     * the type of the node
+     */
     private _type: NodeType;
+    /**
+     * true if the node is new
+     */
     private _isNew: boolean = false;
+    /**
+     * true if the node is changed
+     */
     private _isChanged: boolean = false;
+    /**
+     * true if the node is removed
+     */
     private _isDeleted: boolean = false;
+    /**
+     * the databaseManager
+     */
     protected databaseManager: DatabaseManager;
+    /**
+     * array with all savables
+     */
     private _saveables: Saveable[] = [];
+    /**
+     * the specification of the table in which this node is saved
+     */
     protected _tableSpecification: NodeTableSpecification<T>;
 
+    /**
+     * creates a new CCIMSNode
+     * for inherited classed
+     * @param type the type of this node
+     * @param databaseManager the databaseManager
+     * @param tableSpecification teh specification of the table
+     * @param id the id of this node
+     */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string) {
         this._id = id;
         this._type = type;

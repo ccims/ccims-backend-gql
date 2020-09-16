@@ -4,8 +4,14 @@ import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
 
+/**
+ * command to add a relation to the database
+ */
 export class AddRelationCommand extends DatabaseCommand<void> {
 
+    /**
+     * the query
+     */
     private readonly config: QueryConfig<any[]>;
 
     /**
@@ -26,10 +32,19 @@ export class AddRelationCommand extends DatabaseCommand<void> {
         }
     }
 
+    /**
+     * generates the command
+     */
     public getQueryConfig(): QueryConfig<any[]> {
         return this.config;
     }
 
+    /**
+     * called when the query is finished
+     * does nothing
+     * @param databaseManager the databaseManager
+     * @param result the result from the query
+     */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         return [];
     }

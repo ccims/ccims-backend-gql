@@ -1,11 +1,19 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
-import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
 
+/**
+ * command to load a relation
+ */
 export class LoadRelationCommand extends DatabaseCommand<string[]> {
+    /**
+     * the command used to load the relation
+     */
     private readonly config: QueryConfig<any[]>;
+    /**
+     * the column where to find the result
+     */
     private readonly resultColumn: string;
 
     /**
@@ -28,10 +36,21 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
         this.resultColumn = filterByPrimary ? secundary : primary;
     }
 
+    /**
+     * returnes the query config
+     */
     public getQueryConfig(): QueryConfig<any[]> {
         return this.config;
     }
 
+    /**
+     * called when the query is finished
+     * sets the result
+     * 
+     * @param databaseManager the databaseManager to use
+     * @param result the result from the query
+     * @returns follow up commands
+     */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         this.result = result.rows.map(row => row[this.resultColumn]);
         return [];

@@ -5,6 +5,11 @@ import { AddRelationCommand } from "../../database/commands/save/AddRelationComm
 import { RemoveRelationCommand } from "../../database/commands/save/RemoveRelationCommand";
 import { PropertySpecification } from "./PropertySpecification";
 
+/**
+ * specification of property on the other side
+ * @param T the type of the other node(s)
+ * @param V the type of the node on which this property is
+ */
 export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> implements PropertySpecification<T, V> {
     /**
      * general specification for a property
@@ -76,6 +81,8 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
     private notifiers: ((element: T, node: V) => Property<V>)[] = [];
 
     /**
+     * creates a new NodesPropertySpecificationBuilder
+     * normally, this is returned from one of the static mehtods on NodesPropertySpecification
      * @param loadDynamic if true, the should always load as least as possible
      * @param loadIds command generator to load all ids
      * @param loadFromId command generator to load a single element by id

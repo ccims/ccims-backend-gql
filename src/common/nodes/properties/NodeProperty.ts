@@ -4,10 +4,25 @@ import { Property } from "./Property";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 
+/**
+ * property which represents the one side on a many to one relation
+ * does not support undefined other node
+ * @param T the type of the other node
+ * @param V the type of the node on which this property is
+ */
 export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Property<T> {
 
+    /**
+     * the specification of the property
+     */
     private readonly _specification: NodePropertySpecification<T, V>;
+    /**
+     * the id of the other node
+     */
     private _id: string;
+    /**
+     * the other node if already loaded
+     */
     private _element?: T;
 
     /**
@@ -85,6 +100,11 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
         }
     }
 
+    /**
+     * notifies the element that this node was added
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasAddedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         if (!byDatabaseUpdate && element.id !== this._id) {
             this._node.markChanged();
@@ -92,10 +112,20 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
         this._element = element;
         this._id = element.id;
     }
+
+    /**
+     * notifies the element that this node was removed
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasRemovedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         //this can only be a temporary state, so just ignore it
     }
 
+    /**
+     * called to save the property
+     * does nothing on the one side
+     */
     save(): void {
         //do nothing, 
     }

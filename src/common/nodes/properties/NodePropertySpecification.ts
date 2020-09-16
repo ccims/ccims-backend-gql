@@ -3,8 +3,16 @@ import { DatabaseCommand } from "../../database/DatabaseCommand";
 import { Property } from "./Property";
 import { PropertySpecification } from "./PropertySpecification";
 
+/**
+ * specification of property
+ * @param T the type of the other node
+ * @param V the type of the node on which this property is
+ */
 export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>  implements PropertySpecification<T, V> {
 
+    /**
+     * a list of functions which generate nodes which should be notified on remove or add
+     */
     public readonly notifiers: ((element: T, node: V) => Property<V>)[];
 
     /**

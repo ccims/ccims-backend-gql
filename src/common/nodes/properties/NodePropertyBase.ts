@@ -2,10 +2,24 @@ import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { PropertySpecification } from "./PropertySpecification";
 
+/**
+ * property which represents the one side on a many to one relation
+ * @param T the type of the other node
+ * @param V the type of the node on which this property is
+ */
 export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode> {
 
+    /**
+     * the databaseManager
+     */
     protected readonly _databaseManager: DatabaseManager;
+    /**
+     * the specification of the property
+     */
     private readonly specification : PropertySpecification<T, V>;
+    /**
+     * the node on which this property is
+     */
     protected readonly _node: V;
     
 

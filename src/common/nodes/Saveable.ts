@@ -1,6 +1,6 @@
-import { DatabaseCommand } from "../database/DatabaseCommand";
-import { DatabaseManager } from "../database/DatabaseManager";
-
+/**
+ * on a saveable, save should be called when the instance should be saved 
+ */
 export interface Saveable {
     /**
      * saves this savable

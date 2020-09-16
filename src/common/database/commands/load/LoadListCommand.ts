@@ -4,8 +4,18 @@ import { QueryResult, QueryResultRow } from "pg";
 import { DatabaseManager } from "../../DatabaseManager";
 import { DatabaseCommand } from "../../DatabaseCommand";
 
+/**
+ * load command, which loads an array instead of a single element
+ * @param T the type of the elements in the array
+ */
 export abstract class LoadListCommand<T> extends LoadCommand<T[]> {   
    
+    /**
+     * called when the query is finished
+     * calls getSingleResult for every returned row
+     * @param databaseManager the databaseManager
+     * @param result the result from the query
+     */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         this.result =  result.rows.map(resultRow => this.getSingleResult(databaseManager, resultRow, result));
         return [];
