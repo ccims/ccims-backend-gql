@@ -27,7 +27,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
      *                        if false, secundary is used for the filter and primary is the result,
      * @param id the id to filter with
      */
-    private constructor(tableName: string, primary: string, secundary: string, filterByPrimary: boolean, id: string) {
+    public constructor(tableName: string, primary: string, secundary: string, filterByPrimary: boolean, id: string) {
         super();
         verifyIsAllowedSqlIdent(tableName);
         verifyIsAllowedSqlIdent(primary);
