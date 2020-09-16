@@ -16,6 +16,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
     /**
      * generates the query config out of generateQueryStart, generateConditions and
      * generateQueryEnd
+     * the conditions are connected via AND, the whole command consists of begin + conditions + end;
      */
     public getQueryConfig(): QueryConfig<any[]> {
         const queryStart: QueryPart = this.generateQueryStart();
