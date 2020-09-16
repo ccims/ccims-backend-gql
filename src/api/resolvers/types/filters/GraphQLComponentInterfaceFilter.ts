@@ -17,8 +17,8 @@ let componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
             description: "A Regex which the description of the interface needs to match"
         },
         component: {
-            type: GraphQLID,
-            description: "Filter for The ID of the component the inerface is offered by"
+            type: GraphQLList(GraphQLNonNull(GraphQLID)),
+            description: "If given, only interfaces, that are __offered by__ one of the components with the IDs given can match the given filter"
         },
         consumedBy: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
