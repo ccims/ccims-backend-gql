@@ -38,7 +38,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
     }
 
     /**
-     * specifies that the property loads all elements as one element is needed, 
+     * specifies that the property loads all elements once at least one element is needed, 
      * and does NOT try to load single nodes
      * node is normally the node which hosts the property, and is necessary to get e.g. the id
      * @param loadFromIds command generator to load elements by a list of ids
