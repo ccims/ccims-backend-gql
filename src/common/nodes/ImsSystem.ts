@@ -1,4 +1,3 @@
-import { Connection } from "pg";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
@@ -120,6 +119,13 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
     public set connectionData(value: ConnectionData) {
         this.markChanged();
         this._connectionData = this.connectionData;
+    }
+
+    /**
+     * public because Component has to call it
+     */
+    markNew(): void {
+        super.markNew();
     }
 
 }

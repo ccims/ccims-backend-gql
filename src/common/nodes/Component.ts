@@ -3,7 +3,7 @@ import { LoadRelationCommand } from "../database/commands/load/LoadRelationComma
 import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
-import { ImsSystem } from "./ImsSystem";
+import { ConnectionData, ImsSystem, ImsType } from "./ImsSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertyDescription } from "./IssueLocation";
 import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
@@ -122,11 +122,16 @@ export class Component extends NamedOwnedNode implements IssueLocation {
 
     /**
      * creates a new component with the specified name, description, owner and a new id
+     * also creates the imsSystem for the component with imsType, endpoint and connectionData
+     * @param databaseManager 
      * @param name the name of the component, must be shorter than 257 chars
      * @param description the description of the component, must be shorter than 65537 chars
      * @param owner the owner of the component
+     * @param imsType the type of the associated imsSystem
+     * @param endpoint the endpoint of the associated imsSystemn
+     * @param connectionData the connectionData of the associated imsSystem
      */
-    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User, imsSystem: ImsSystem): Component {
+    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User, imsType: ImsType, endpoint: string, connectionData: ConnectionData): Component {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
         }
@@ -134,9 +139,14 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             throw new Error("the specified description is too long");
         }
 
-        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id, imsSystem.id);
+        const componentId = databaseManager.idGenerator.generateString();
+        const imsSystemId = databaseManager.idGenerator.generateString();
+        const component = new Component(databaseManager, componentId, name, description, owner.id, imsSystemId);
         component.markNew();
         databaseManager.addCachedNode(component);
+        const imsSystem = new ImsSystem(databaseManager, imsSystemId, imsType, endpoint, connectionData, componentId);
+        imsSystem.markNew();
+        databaseManager.addCachedNode(imsSystem);
         return component;
     }
 }

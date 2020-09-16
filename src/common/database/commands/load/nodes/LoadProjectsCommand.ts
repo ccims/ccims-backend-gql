@@ -5,6 +5,9 @@ import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
+/**
+ * command to load a list of projects
+ */
 export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
 
     /**
@@ -12,14 +15,26 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
      */
     public onComponents?: string[];
 
+    /**
+     * creates a new LoadProjectsCommand
+     */
     public constructor() {
         super(ProjectTableSpecification.rows);
     }
 
+    /**
+     * parses a project
+     * @param resultRow  the row to parse
+     * @param result  the complete QueryResult for additional properties like fields
+     * @returns the parsed project
+     */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Project {
         return new Project(databaseManager, resultRow["id"], resultRow["name"], resultRow["description"], resultRow["owner_user_id"]);
     }
 
+    /**
+     * generates the start of the query
+     */
     protected generateQueryStart(): QueryPart {
         return {
             text: `SELECT ${this.rows} FROM project`,
