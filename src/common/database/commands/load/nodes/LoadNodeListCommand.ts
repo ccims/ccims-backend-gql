@@ -35,7 +35,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public afterId?: string;
 
     /**
-     * returnes only elements before the specified id (exclusive)
+     * returns only elements before elements with the specified id (exclusive)
      */
     public beforeId?: string;
 
