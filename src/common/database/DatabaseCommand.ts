@@ -16,6 +16,7 @@ export abstract class DatabaseCommand<T> {
 
     /**
      * overrite this method to generate the query
+     * @returns the query config
      */
     public abstract getQueryConfig(): QueryConfig; 
 
@@ -25,6 +26,7 @@ export abstract class DatabaseCommand<T> {
      * it is guaranteed that databaseResult is NOT undefined
      * @param databaseManager used to add nodes
      * @returns is executed directly after, this can be used to execute necessary follow-up commands
+     * @returns follow up commands
      */
     public abstract setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult): DatabaseCommand<any>[];
 
@@ -43,6 +45,7 @@ export abstract class DatabaseCommand<T> {
      * this method caches the result automatically
      * this can be overwritten to change the behaviour
      * @throws error if no result is set, if this behaviour is unwanted, it is necessary to overwrite this method
+     * @returns the result
      */
     public getResult(): T {
         if (!this.result) {
