@@ -53,7 +53,7 @@ class DBManagerInjector {
      * @param idGenerator The Snowflake generator to pass to the new database manager for id generation.
      * This can't be `null` or `undefined` and must be a valid `SnowflakeGenerator`
      */
-    constructor(pgClient: Client, idGenerator: SnowflakeGenerator) {
+    public constructor(pgClient: Client, idGenerator: SnowflakeGenerator) {
         if (!pgClient || !idGenerator) {
             throw new Error("A valid postgres client and id generator must be given");
         }
