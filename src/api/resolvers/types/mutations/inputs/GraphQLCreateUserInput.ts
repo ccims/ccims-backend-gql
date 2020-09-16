@@ -17,7 +17,7 @@ let createUserInputConfig: GraphQLInputObjectTypeConfig = {
             description: "The password for the new user in plain text"
         },
         email: {
-            type: GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: "The mail address of the user.\n\nMax. 320 characters. Must be a valid email address"
         },
         projects: {
