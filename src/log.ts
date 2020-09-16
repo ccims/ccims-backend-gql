@@ -1,5 +1,4 @@
-import { config } from "./config";
-import util from "util";
+import { config } from "./config/Config";
 
 /**
  * Logs the given message if the log level in the config is set at minimum to the given value
