@@ -1,10 +1,11 @@
-import { GraphQLObjectType, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLString, GraphQLObjectTypeConfig, createSourceEventStream } from "graphql";
 import testMutation from "./mutations/testMutation";
 import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/createProject";
 import createComponent from "./mutations/createComponent";
 import createIMS from "./mutations/createIMS";
+import createUser from "./mutations/createUser";
 
 let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -15,6 +16,7 @@ let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         createProject: createProject(),
         createComponent: createComponent(),
         createIMS: createIMS(),
+        createUser: createUser()
     })
 };
 let mutation = new GraphQLObjectType(mutationConfig);
