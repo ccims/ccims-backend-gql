@@ -2,6 +2,7 @@ import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
+import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";
 
 /**
  * command to load a relation
@@ -18,7 +19,6 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
 
     /**
      * command to load all ids from a relation table, with a given id
-     * WARNING: only id is secured against sql injections, use tableName, primary, secundary 
      * and filterByColumn only with constants and NEVER with user data
      * @param tableName the name of the relation table
      * @param primary the primary id column name
@@ -29,6 +29,10 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
      */
     public constructor(tableName: string, primary: string, secundary: string, filterByPrimary: boolean, id: string) {
         super();
+        verifyIsAllowedSqlIdent(tableName);
+        verifyIsAllowedSqlIdent(primary);
+        verifyIsAllowedSqlIdent(secundary);
+
         this.config = {
             text: `SELECT ${primary}, ${secundary} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=$1;`,
             values: [id]

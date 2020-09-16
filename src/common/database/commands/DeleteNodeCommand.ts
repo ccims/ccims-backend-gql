@@ -1,6 +1,7 @@
 import { DatabaseCommand } from "../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { DatabaseManager } from "../DatabaseManager";
+import { verifyIsAllowedSqlIdent } from "./SqlHelperFunctions";
 
 /**
  * delets a CCIMSNode from the database
@@ -10,10 +11,11 @@ export class DeleteNodeCommand extends DatabaseCommand<void> {
     /**
      * creates a new DeleteNodeCommand
      * @param id the id of the node to remove
-     * @param table the table where to remove the node
+     * @param tableName the table where to remove the node
      */
-    public constructor(private readonly id: string, private readonly table: string) {
+    public constructor(private readonly id: string, private readonly tableName: string) {
         super();
+        verifyIsAllowedSqlIdent(tableName);
     }
 
     /**
@@ -21,7 +23,7 @@ export class DeleteNodeCommand extends DatabaseCommand<void> {
      */
     public getQueryConfig(): QueryConfig<any[]> {
         return {
-            text: `DELETE FROM ${this.table} WHERE id=$1`,
+            text: `DELETE FROM ${this.tableName} WHERE id=$1`,
             values: [this.id]
         };
     }

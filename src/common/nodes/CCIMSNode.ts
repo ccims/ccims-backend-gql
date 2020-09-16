@@ -85,14 +85,14 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     /**
      * returns true, if this node was modified or newly created
      */
-    public isChanged(): boolean {
+    public get isChanged(): boolean {
         return this._isChanged;
     }
 
     /**
      * returns true if this node was newly created
      */
-    public isNew(): boolean {
+    public get isNew(): boolean {
         return this._isNew;
     }
 
@@ -100,7 +100,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      * returnes true if this node is deleted
      * this does not indicate that it was newly deleted
      */
-    public isDeleted(): boolean {
+    public get isDeleted(): boolean {
         return this._isDeleted;
     }
 

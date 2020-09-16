@@ -30,12 +30,12 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public limit?: number;
 
     /**
-     * returnes only elements after the specified id (exclusive)
+     * returns only elements after elements with the specified id (exclusive)
      */
     public afterId?: string;
 
     /**
-     * returnes only elements before the specified id (exclusive)
+     * returns only elements before elements with the specified id (exclusive)
      */
     public beforeId?: string;
 
@@ -50,7 +50,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     }
 
     /**
-     * gets a string with all rows that should be selected
+     * @return a string with all rows that should be selected separated by ,
      */
     protected get rows(): string {
         return this._rows;
@@ -60,8 +60,9 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * adds the id condition
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
+     * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): [ConditionSpecification[], number] {
+    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
         const conditions: ConditionSpecification[] = [];
 
         if (this.ids) {
@@ -97,7 +98,10 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             i++;
         }
 
-        return [conditions, i];
+        return {
+            conditions: conditions, 
+            i: i
+        };
     }
 
     /**
@@ -105,6 +109,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param databaseManager teh databaseManager to use
      * @param resultRow the result row from the query
      * @param result the complete result from the query
+     * @returns the parsed element
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
@@ -121,13 +126,14 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * must be overwritten to parse the result rows
      * @param resultRow  the row to parse
      * @param result  the complete QueryResult for additional properties like fields
-     * @returns the parsed element
+     * @returns the parsed node
      */
     protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
 
     /**
      * generates the end of the query, for example a limit or a order
      * @param i the next index for a value in the query
+     * @returns the end of the query
      */
     protected generateQueryEnd(i: number): QueryPart {
         if (this.limit) {

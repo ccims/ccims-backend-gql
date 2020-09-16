@@ -91,9 +91,13 @@ export class DatabaseManager implements NodeCache {
      * after this, it is possible to get the result of each command
      */
     public async executePendingCommands(): Promise<void> {
-        this.pgClient.query("BEGIN;");
-        await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
-        this.pgClient.query("COMMIT;");
+        try {
+            this.pgClient.query("BEGIN;");
+            await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
+            this.pgClient.query("COMMIT;");
+        } catch {
+            log(2, "database command failed");          
+        }
         this.pendingCommands = [];
     }
 
@@ -103,12 +107,8 @@ export class DatabaseManager implements NodeCache {
      */
     private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
         const commandConfig = command.getQueryConfig();
-        try {
-            const result = await this.pgClient.query(commandConfig);
-            const followUpCommands = command.setDatabaseResult(this, result);
-        } catch {
-            log(2, "database command failed: " + commandConfig.text);          
-        }
+        const result = await this.pgClient.query(commandConfig);
+        const followUpCommands = command.setDatabaseResult(this, result);
     }
 
     /**
