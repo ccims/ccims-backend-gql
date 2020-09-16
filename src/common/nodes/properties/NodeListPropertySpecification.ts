@@ -47,8 +47,8 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
     public static loadAll<T extends CCIMSNode, V extends CCIMSNode>(
         loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         loadElements: (node: V) => DatabaseCommand<T[]>
-    ): NodesPropertySpecificationBuilder<T, V> {
-        return new NodesPropertySpecificationBuilder<T, V>(loadFromIds, loadElements, false);
+    ): NodeListPropertySpecificationBuilder<T, V> {
+        return new NodeListPropertySpecificationBuilder<T, V>(loadFromIds, loadElements, false);
     }
 
     /**
@@ -63,8 +63,8 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
         loadIds: (node: V) => DatabaseCommand<string[]>,
         loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         loadElements: (node: V) => DatabaseCommand<T[]>
-    ): NodesPropertySpecificationBuilder<T, V> {
-        return new NodesPropertySpecificationBuilder<T, V>(
+    ): NodeListPropertySpecificationBuilder<T, V> {
+        return new NodeListPropertySpecificationBuilder<T, V>(
             loadFromIds,
             loadElements,
             true,
@@ -76,7 +76,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
 /**
  * builder for @see NodesPropertySpecification
  */
- class NodesPropertySpecificationBuilder<T extends CCIMSNode, V extends CCIMSNode> {
+ class NodeListPropertySpecificationBuilder<T extends CCIMSNode, V extends CCIMSNode> {
 
     private notifiers: ((element: T, node: V) => Property<V>)[] = [];
 
@@ -103,7 +103,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
      * adds a notify callback when a change on this property occures
      * @param toNotify generates the property to notify out of element
      */
-    public notifyChanged(toNotify: (element: T, node: V) => Property<V>): NodesPropertySpecificationBuilder<T, V> {
+    public notifyChanged(toNotify: (element: T, node: V) => Property<V>): NodeListPropertySpecificationBuilder<T, V> {
         this.notifiers.push(toNotify);
         return this;
     }

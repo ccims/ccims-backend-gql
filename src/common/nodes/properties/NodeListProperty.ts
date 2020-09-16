@@ -158,6 +158,8 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._removedIds.forEach(id => {
                 this._databaseManager.addCommand(removeRel(id, this._node));
             });
+            this._addedIds.clear();
+            this._removedIds.clear();
         }
         
     }
@@ -227,7 +229,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         const idsSet = new Set(ids);
         this._removedIds.forEach(id => idsSet.delete(id));
         ids = Array.from(idsSet);
-        
+
         await Promise.all(Array.from(this._ids).map(async id => {
             if (!ids.includes(id)) {
                 this._removedIds.delete(id);

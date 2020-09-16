@@ -64,13 +64,11 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
             if (this._element) {
                 this.notifyRemoved(this._element, false);
             }
-        }
-        if (value.id === this._id) {
-            this._element = value;
-        } else {
             this._element = value;
             this._id = value.id;
             this.notifyAdded(value, false);
+        } else {
+            this._element = value;
         }
     }
 
