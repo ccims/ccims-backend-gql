@@ -1,5 +1,6 @@
 /**
  * base interface of a property, this can be a propety on the many or on the one side
+ * @param type of the element of the property
  */
 export interface Property<T> {
     /**
