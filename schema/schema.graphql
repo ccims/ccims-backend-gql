@@ -2682,169 +2682,183 @@ type Query {
 
 """Mutations to change the data within the ccims"""
 type Mutation {
-  """"""
+  """A mutation for testing if you're able to use GraphQL"""
   testMutation(
     """The data for the mutation"""
     input: TestMutationInput
   ): TestMutationPayload
 
-  """"""
+  """Creates a new Issue"""
   createIssue(
     """The data for the mutation"""
     input: CreateIssueInput
   ): CreateIssuePayload
 
-  """"""
+  """Creates a new comment on an existing issue"""
   addIssueComment(
     """The data for the mutation"""
     input: AddIssueCommentInput
   ): AddIssueCommentPayload
 
-  """"""
+  """
+  Deletes an issue comment.
+  
+  Comments don't get fully deleted but replaced by a
+  
+  `DeletedComment` (only contains creation/deletion date/user) which is for conversation completness
+  """
   deleteIssueComment(
     """The data for the mutation"""
     input: DeleteIssueCommentInput
   ): DeleteIssueCommentPayload
 
-  """"""
+  """Links an issue to another one, creating a relation"""
   linkIssue(
     """The data for the mutation"""
     input: LinkIssueInput
   ): LinkIssuePayload
 
-  """"""
+  """Unlink an issue from another and remove their relation"""
   unlinkIssue(
     """The data for the mutation"""
     input: UnlinkIssueInput
   ): UnlinkIssuePayload
 
-  """"""
+  """Adds a label to an issue"""
   addLabelToIssue(
     """The data for the mutation"""
     input: AddLabelToIssueInput
   ): AddLabelToIssuePayload
 
-  """"""
+  """Remove a label that is currently on the issue"""
   removeLabelFromIssue(
     """The data for the mutation"""
     input: RemoveLabelFromIssueInput
   ): RemoveLabelFromIssuePayload
 
-  """"""
+  """Pins an issue to a component (including in the IMS of the component)"""
   pinIssue(
     """The data for the mutation"""
     input: PinIssueInput
   ): PinIssuePayload
 
-  """"""
+  """Unpin an issue from a component"""
   unpinIssue(
     """The data for the mutation"""
     input: UnpinIssueInput
   ): UnpinIssuePayload
 
-  """"""
+  """Change the title (rename) an issue"""
   renameIssueTitle(
     """The data for the mutation"""
     input: RenameIssueTitleInput
   ): RenameIssueTitlePayload
 
-  """"""
+  """Changes the category of an issue"""
   changeIssueCategory(
     """The data for the mutation"""
     input: ChangeIssueCategoryInput
   ): ChangeIssueCategoryPayload
 
-  """"""
+  """Assignes a user to an issue"""
   addAssignee(
     """The data for the mutation"""
     input: AddAssigneeInput
   ): AddAssigneePayload
 
-  """"""
+  """Uassignes a user that is currently an assinee on an issue"""
   removeAssignee(
     """The data for the mutation"""
     input: RemoveAssigneeInput
   ): RemoveAssigneePayload
 
-  """"""
+  """Closes an open issue"""
   closeIssue(
     """The data for the mutation"""
     input: CloseIssueInput
   ): CloseIssuePayload
 
-  """"""
+  """Reopen an issue after it has been closed"""
   reopenIssue(
     """The data for the mutation"""
     input: ReopenIssueInput
   ): ReopenIssuePayload
 
-  """"""
+  """Changes the priority of an issue"""
   changeIssuePriority(
     """The data for the mutation"""
     input: ChangeIssuePriorityInput
   ): ChangeIssuePriorityPayload
 
-  """"""
+  """Changes the set start date on an issue"""
   changeIssueStartDate(
     """The data for the mutation"""
     input: ChangeIssueStartDateInput
   ): ChangeIssueStartDatePayload
 
-  """"""
+  """Changes the set due date on an issue"""
   changeIssueDueDate(
     """The data for the mutation"""
     input: ChangeIssueDueDateInput
   ): ChangeIssueDueDatePayload
 
-  """"""
+  """Changes the set estimated time on an issue"""
   changeIssueEstimatedTime(
     """The data for the mutation"""
     input: ChangeIssueEstimatedTimeInput
   ): ChangeIssueEstimatedTimePayload
 
-  """"""
+  """Adds an issue to a location (component or interface)"""
   addIssueToLocation(
     """The data for the mutation"""
     input: AddIssueToLocationInput
   ): AddIssueToLocationPayload
 
-  """"""
+  """Removes an issue from an issue location it was assigned to"""
   removeIssueFromLocation(
     """The data for the mutation"""
     input: RemoveIssueFromLocationInput
   ): RemoveIssueFromLocationPayload
 
-  """"""
+  """
+  Adds an issue to a component (including creating the issue on the ims of the component)
+  """
   addIssueToComponent(
     """The data for the mutation"""
     input: AddIssueToComponentInput
   ): AddIssueToComponentPayload
 
-  """"""
+  """
+  Removes an issue from a component it is currently assigned to and deletes it from the ims of the component
+  """
   removeIssueFromComponent(
     """The data for the mutation"""
     input: RemoveIssueFromComponentInput
   ): RemoveIssueFromComponentPayload
 
-  """"""
+  """Marks an issue as being a duplicate of another issue"""
   markIssueAsDuplicate(
     """The data for the mutation"""
     input: MarkIssueAsDuplicateInput
   ): MarkIssueAsDuplicatePayload
 
-  """"""
+  """Remove the marking on an issue that it is a duplicate of another issue"""
   unmarkIssueAsDuplicate(
     """The data for the mutation"""
     input: UnmarkIssueAsDuplicateInput
   ): UnmarkIssueAsDuplicatePayload
 
-  """"""
+  """
+  Adds a reaction by the current user to a comment (issue body or issue comment)
+  """
   addReactionToComment(
     """The data for the mutation"""
     input: AddReactionToCommentInput
   ): AddReactionToCommentPayload
 
-  """"""
+  """
+  Remove a reaction from a comment which was added by the current user (issue body or issue comment)
+  """
   removeReactionFromComment(
     """The data for the mutation"""
     input: RemoveReactionFromCommentInput
@@ -3907,7 +3921,8 @@ input CreateIMSInput {
   ```
   https://example.com/api/[API_KEY]
   ```
-  where strings in [] can be replaced by the IMS extension with values needed. 
+  where strings in [] can be replaced by the IMS extension with values needed 
+  (either dynamid, like the API key of a user or static, like values from the config). 
   See the documentation for the IMS extions for information which keys are expected.
   
   In rare cases depending on the IMS type this might be empty or not a URL
@@ -3956,7 +3971,7 @@ input CreateUserInput {
   
   Max. 320 characters. Must be a valid email address
   """
-  email: String!
+  email: String
 
   """
   If given, the user will be added to the projects with those IDs immediately after creation
