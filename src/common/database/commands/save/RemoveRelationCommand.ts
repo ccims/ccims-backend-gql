@@ -3,6 +3,7 @@ import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
+import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";
 
 /**
  * command to remove a relation from the database
@@ -15,7 +16,6 @@ export class RemoveRelationCommand extends DatabaseCommand<void> {
 
     /**
      * Command to add a relation
-     * WARNING: only primaryId and secundaryId are secured agains sql injections,
      * DO NOT use user input for tableName, primary or secundary
      * @param tableName the name of the relation table
      * @param primary the name for the primary column
@@ -25,6 +25,9 @@ export class RemoveRelationCommand extends DatabaseCommand<void> {
      */
     public constructor(tableName: string, primary: string, secundary: string, primaryId: string, secundaryId: string) {
         super();
+        verifyIsAllowedSqlIdent(tableName);
+        verifyIsAllowedSqlIdent(primary);
+        verifyIsAllowedSqlIdent(secundary);
         this.config = {
             text: `DELETE FROM ${tableName} WHERE (${primary}, ${secundary}) = ($1, $2);`,
             values: [primaryId, secundaryId]

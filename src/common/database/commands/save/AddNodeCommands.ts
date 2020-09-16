@@ -3,6 +3,7 @@ import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { DatabaseManager } from "../../DatabaseManager";
 import { RowSpecification } from "../../../nodes/NodeTableSpecification";
+import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";
 
 /**
  * command which adds a CCIMSNode to the database
@@ -23,6 +24,7 @@ export class AddNodeCommand<T extends CCIMSNode> extends DatabaseCommand<void> {
      * generates a query config
      */
     public getQueryConfig(): QueryConfig<any[]> {
+        this.rows.forEach(row => verifyIsAllowedSqlIdent(row.rowName));
         const rowNames = this.rows.map(row => row.rowName).join(", ");
         const numbers = this.rows.map((row, index) => `$${index + 1}`).join(", ");
         return {

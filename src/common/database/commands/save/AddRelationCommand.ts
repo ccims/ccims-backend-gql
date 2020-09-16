@@ -3,6 +3,7 @@ import { QueryConfig, QueryResult } from "pg";
 import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
+import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";
 
 /**
  * command to add a relation to the database
@@ -26,6 +27,9 @@ export class AddRelationCommand extends DatabaseCommand<void> {
      */
     public constructor(tableName: string, primary: string, secundary: string, primaryId: string, secundaryId: string) {
         super();
+        verifyIsAllowedSqlIdent(tableName);
+        verifyIsAllowedSqlIdent(primary);
+        verifyIsAllowedSqlIdent(secundary);
         this.config = {
             text: `INSERT INTO ${tableName} (${primary}, ${secundary}) VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
             values: [primaryId, secundaryId]
