@@ -18,6 +18,7 @@ import { ResolverContext } from "../ResolverContext";
  * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
  * It must be the same as the one used for signing the JWT during login.\
  * If empty or `undefined`, the secret from the config will be utilized.
+ * @returns An express middleware for verifying passed json web tokens
  */
 export function jwtVerifier(secret?: string): core.RequestHandler {
     var verifier = new JWTVerifier(secret);

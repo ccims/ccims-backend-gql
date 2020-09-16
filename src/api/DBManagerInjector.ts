@@ -15,6 +15,7 @@ import { SnowflakeGenerator } from "../utils/Snowflake";
  * This can't be `null` or `undefined` and must be a valid postgres client.
  * @param idGenerator The Snowflake generator to pass to the new database manager for id generation.
  * This can't be `null` or `undefined` and must be a valid `SnowflakeGenerator`
+ * @returns An express middleware for injecting new database managers
  */
 export function dbManagerInjector(pgClient: Client, idGenerator: SnowflakeGenerator): core.RequestHandler {
     const injector = new DBManagerInjector(pgClient, idGenerator);

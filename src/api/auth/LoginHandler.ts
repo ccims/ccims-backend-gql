@@ -11,6 +11,7 @@ import { log } from "../../log";
  * The handler expects the `req.body` field given on invocation to be valid, parsed JSON data containing the user and password as well as information about the client connecting
  * @param secret The secret to use for JWT signing. This must be the same as used for verifying.\
  * If empty or `undefined` the secret in the config will be used
+ * @returns An express middleware/handler for verifying passed user credentials and generating/returning a new json web token for that user
  */
 export function loginHandler(secret?: string): core.RequestHandler {
     var handler = new LoginHandler(secret);
