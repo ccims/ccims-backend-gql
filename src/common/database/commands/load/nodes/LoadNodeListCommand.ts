@@ -30,7 +30,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public limit?: number;
 
     /**
-     * returnes only elements after the specified id (exclusive)
+     * returns only elements after elements with the specified id (exclusive)
      */
     public afterId?: string;
 
