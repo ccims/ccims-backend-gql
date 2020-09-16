@@ -7,8 +7,8 @@ import testSchema from "../temp/TestSchema";
 import { Client } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 
-export function graphqlHandler(pgClient: Client, idGen: SnowflakeGenerator): core.RequestHandler {
-    var handler = new GraphQLHandler(pgClient, idGen);
+export function graphqlHandler(): core.RequestHandler {
+    var handler = new GraphQLHandler();
     return (req: core.Request, res: core.Response, next: core.NextFunction): any => {
         return handler.handle.call(handler, req, res, next);
     }
@@ -17,12 +17,8 @@ export function graphqlHandler(pgClient: Client, idGen: SnowflakeGenerator): cor
 class GraphQLHandler {
 
     private middleware: (req: core.Request, res: core.Response) => any;
-    private pgClient: Client;
-    private idGenerator: SnowflakeGenerator;
 
-    public constructor(pgClient: Client, idGen: SnowflakeGenerator) {
-        this.pgClient = pgClient;
-        this.idGenerator = idGen;
+    public constructor() {
         this.middleware = graphqlHTTP({
             schema: ccimsSchema,
             graphiql: {
@@ -33,7 +29,6 @@ class GraphQLHandler {
 
     public handle(req: core.Request, res: core.Response, next: core.NextFunction): any {
         let resolverRequest: ResolverContext = req;
-        resolverRequest.dbManager = new DatabaseManager(this.idGenerator, this.pgClient);
         return this.middleware(resolverRequest, res);
     }
 }

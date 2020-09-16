@@ -16,10 +16,12 @@ export function functionToTest(a: number, b: number): number {
 
 //const syncService = new SyncService();
 if (true) {
-    const pgClient: Client = new Client(config.postgres);
     const idGen = new SnowflakeGenerator();
+    const pgClient: Client = new Client(config.postgres);
     const backendApi = new CCIMSApi(pgClient, idGen);
-    backendApi.start();
+    pgClient.connect().then(() => {
+        backendApi.start();
+    })
 } else {
     console.log(printSchema(ccimsSchema));
 }

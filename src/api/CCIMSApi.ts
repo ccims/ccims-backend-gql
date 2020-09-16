@@ -9,6 +9,7 @@ import { graphqlHandler } from "./GraphQLHandler";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import { Client } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
+import { dbManagerInjector } from "./DBManagerInjector";
 
 
 
@@ -68,8 +69,8 @@ export class CCIMSApi {
      */
     private setupRoutes(pgClient: Client, idGen: SnowflakeGenerator) {
         this.server.use(cors());
-        this.server.post("/login", bodyParser.json(), loginHandler());
-        this.server.use("/api", jwtVerifier(), graphqlHandler(pgClient, idGen));
+        this.server.post("/login", dbManagerInjector(pgClient, idGen), bodyParser.json(), loginHandler());
+        this.server.use("/api", dbManagerInjector(pgClient, idGen), jwtVerifier(), graphqlHandler());
     }
 
     /**

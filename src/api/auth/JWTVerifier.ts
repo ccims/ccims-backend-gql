@@ -80,19 +80,21 @@ class JWTVerifier {
         if (req.headers.authorization) {
             const token = req.headers.authorization.split(" ")[1];
             jwt.verify(token, this.secret, (err, payload) => {
-                if (err) {
+                if (err || !payload) {
                     log(3, "Token verification failed");
                     res.status(401).end("Token invalid. Request new one");
                 } else {
-                    //TODO check username
-                    log(7, payload);
-                    if (typeof (payload as any).name === "string") {
+                    const checkedPayload: JWTPayload = payload as JWTPayload;
+                    if (JWTPayload.checkJWTPayload(checkedPayload)) {
+                        const userId = checkedPayload.iss;
+                        const user = undefined; //TODO load user from database manager
+                        log(7, checkedPayload);
                         log(5, "User verified");
                         //TODO: Load user
-                        req.user = {};
+                        req.user = user;
                         next();
                     } else {
-                        log(3, "Token has no name payload");
+                        log(3, "Token has no correct payload");
                         res.status(401).end("Illegal token");
                     }
                 }
@@ -101,5 +103,82 @@ class JWTVerifier {
             log(3, "Auth header invalid");
             res.status(401).end("No valid Authorization header present");
         }
+    }
+}
+
+/**
+ * Class specifying the structure a valid JWT payload must have
+ * 
+ * This class also provides a static method for checking weather a given instance is valid
+ * 
+ * For valid Fields of a JWT payload see https://tools.ietf.org/html/rfc7519#section-4.1.2
+ * In this case the iss, sub and name claims are required to be present
+ */
+class JWTPayload {
+
+    /**
+     * The issuer of the JWT.
+     * This can't be empty, undefined or null and must be a valid string
+     */
+    public iss: string;
+
+    /**
+     * The subject of the JWT - The ID of the user the JWT was created for.
+     * This can't be empty, undefined or null and must be a valid string
+     */
+    public sub: string;
+
+    /**
+     * The user name (NOT the display name) of the user the JWT was created for
+     * This can't be empty, undefined or null and must be a valid string
+     */
+    public name: string;
+
+    /**
+     * The date this JWT expires at
+     * This must either be a valid unix date (seconds from `1970-01-01T00:00:00Z UTC`) or not given (`undefined`)
+     */
+    public exp: number | undefined;
+
+    /**
+     * The date before which this JWT is invalid
+     * This must either be a valid unix date (seconds from `1970-01-01T00:00:00Z UTC`) or not given (`undefined`)
+     */
+    public nbf: number | undefined;
+
+    /**
+     * DON'T USE
+     */
+    constructor() {
+        this.iss = "";
+        this.sub = "";
+        this.name = "";
+    }
+
+    /**
+     * Returns weather the given object is a valid JWT payload.
+     * 
+     * The given object must have all the fields specified by this class with the correct type to be a valid payload
+     * 
+     * __NOTICE__: THis doesn't check weather the user is valid or the date is within the optional interval from nbf to exp
+     * @param payload The JWTPayload-like object to be checked for correct structure
+     */
+    public static checkJWTPayload(payload: JWTPayload): boolean {
+        if (payload === undefined || typeof payload !== "object") {
+            return false;
+        }
+        if (typeof payload.iss !== "string" || typeof payload.sub !== "string" || typeof payload.name !== "string") {
+            return false;
+        }
+        if (payload.iss.length <= 0 || payload.sub.length <= 0 || payload.name.length <= 0) {
+            return false;
+        }
+        if (typeof payload.exp !== "number" && typeof payload.exp !== "undefined") {
+            return false;
+        }
+        if (typeof payload.nbf !== "number" && typeof payload.nbf !== "undefined") {
+            return false;
+        }
+        return true;
     }
 }
