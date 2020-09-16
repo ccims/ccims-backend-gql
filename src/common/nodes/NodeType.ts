@@ -36,5 +36,6 @@ export enum NodeType {
     MarkedAsDuplicateEvent = "MarkedAsDuplicateEvent",
     UnmarkedAsDuplicateEvent = "UnmarkedAsDuplicateEvent",
     ReactionGroup = "ReactionGroup",
-    Label = "Label"
+    Label = "Label",
+    ImsSystem = "ImsSystem"
 }

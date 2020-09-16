@@ -32,27 +32,26 @@ export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): [ConditionSpecification[], number] {
-        const [conditions, i2] = super.generateConditions(i);
-        i = i2;
+    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
+        const conditions= super.generateConditions(i);
 
         if (this.onProjects) {
             if (this.onProjects.length == 1) {
-                conditions.push({
+                conditions.conditions.push({
                     priority: 2,
-                    text: `main.id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${i})`,
+                    text: `main.id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
                     values: [this.onProjects[0]]
                 })
             } else {
-                conditions.push({
+                conditions.conditions.push({
                     priority: 2,
-                    text: `main.id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${i}))`,
+                    text: `main.id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
                     values: [this.onProjects]
                 });
             }
-            i++;
+            conditions.i++;
         }
-        return [conditions, i];
+        return conditions;
     }
 
 }
