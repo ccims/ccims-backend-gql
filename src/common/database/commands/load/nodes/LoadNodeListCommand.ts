@@ -109,7 +109,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param databaseManager teh databaseManager to use
      * @param resultRow the result row from the query
      * @param result the complete result from the query
-     * @returns
+     * @returns the parsed element
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
@@ -126,7 +126,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * must be overwritten to parse the result rows
      * @param resultRow  the row to parse
      * @param result  the complete QueryResult for additional properties like fields
-     * @returns the parsed element
+     * @returns the parsed node
      */
     protected abstract getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T;
 
