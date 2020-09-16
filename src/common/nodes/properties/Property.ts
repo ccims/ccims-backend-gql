@@ -1,5 +1,6 @@
-import { CCIMSNode } from "../CCIMSNode";
-
+/**
+ * base interface of a property, this can be a propety on the many or on the one side
+ */
 export interface Property<T> {
     /**
      * called to notify a corresponding property that an add update occured

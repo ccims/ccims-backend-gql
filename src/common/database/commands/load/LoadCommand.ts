@@ -5,6 +5,13 @@ import { QueryPart } from "./QueryPart";
 import { ConditionSpecification } from "./ConditionSpecification";
 import { DatabaseManager } from "../../DatabaseManager";
 
+/**
+ * abstraction to DatabaseCommand which is intended to load elements and therefore splits the query in three parts
+ * start
+ * conditions (where clause)
+ * end
+ * @param T the type to load
+ */
 export abstract class LoadCommand<T> extends DatabaseCommand<T> {
     /**
      * generates the query config out of generateQueryStart, generateConditions and

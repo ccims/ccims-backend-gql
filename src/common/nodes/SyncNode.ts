@@ -7,18 +7,38 @@ import { DatabaseCommand } from "../database/DatabaseCommand";
 import { AddNodeCommand } from "../database/commands/save/AddNodeCommands";
 import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
 
-
+/**
+ * a table specification for a sync node
+ * does not specifiy the metadata, because this is up to the save method
+ */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, new RowSpecification("deleted", node => node.isDeleted()));
 
 /**
- * 
+ * a syncNode
+ * @param T the type of the SyncNode
  */
 export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
+    /**
+     * map with metadata
+     * if undefined, the metadata is just not loaded, it may be present in the database
+     */
     private _metadata: Map<string, SyncMetadata> | undefined;
 
+    /**
+     * the data where the SyncNode was last changed
+     */
     private _lastChangedAt: Date;
 
+    /**
+     * abstract constructor for extending classes
+     * @param type the type of this node
+     * @param databaseManager the databaseManager
+     * @param tableSpecification the specification of the table which contains this node
+     * @param id the id of this node
+     * @param lastChangedAt the Date where this node was last changed
+     * @param metadata metadata for the sync
+     */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: [string, SyncMetadata][]) {
         super(type, databaseManager, tableSpecification, id);
         this._lastChangedAt = lastChangedAt;
@@ -27,10 +47,16 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         }
     }
 
+    /**
+     * gets the time when this node was last changed
+     */
     public get lastChangedAt(): Date {
         return this._lastChangedAt;
     }
 
+    /**
+     * sets the time when this node was last changed
+     */
     public set lastChangedAt(value: Date) {
         this._lastChangedAt = value;
         this.markChanged();

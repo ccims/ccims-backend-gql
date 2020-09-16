@@ -1,8 +1,8 @@
 import { QueryConfig, QueryResult } from "pg";
-import { NodeCache } from "./NodeCache";
 import { DatabaseManager } from "./DatabaseManager";
 
 /**
+ * base DatabaseCommand, used for all interaction with the databse
  * @param T the type for the result of the Command
  */
 export abstract class DatabaseCommand<T> {

@@ -11,12 +11,25 @@ import { LoadNodeCommand } from "./commands/load/nodes/LoadNodeCommand";
  * All nodes must be registered on this object
  */
 export class DatabaseManager implements NodeCache {
+
+    /**
+     * a map with all nodes
+     */
     nodes: Map<string, CCIMSNode> = new Map<string, CCIMSNode>();
 
+    /**
+     * the idGenerator
+     */
     public readonly idGenerator: SnowflakeGenerator;
 
+    /**
+     * array with not executed commands
+     */
     private pendingCommands: DatabaseCommand<any>[] = [];
 
+    /**
+     * the postgres client
+     */
     private readonly pgClient: Client;
 
     /**
@@ -84,6 +97,10 @@ export class DatabaseManager implements NodeCache {
         this.pendingCommands = [];
     }
 
+    /**
+     * executes a single command
+     * @param command the command to execute
+     */
     private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
         const commandConfig = command.getQueryConfig();
         try {

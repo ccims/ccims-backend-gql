@@ -1,5 +1,8 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
 
+/**
+ * interface to cache nodes
+ */
 export interface NodeCache {
     /**
      * Adds the node to the internal node dictionary

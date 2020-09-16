@@ -5,10 +5,22 @@ import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
 
-export class NulableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+/**
+ * @see NodeProperty, but supports undefined for the other node
+ */
+export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
 
+    /**
+     * the specification of this property
+     */
     private readonly _specification: NodePropertySpecification<T, V>;
+    /**
+     * if present, the id of the other node
+     */
     private _id?: string;
+    /**
+     * the other node
+     */
     private _element?: T;
 
     /**
@@ -92,6 +104,11 @@ export class NulableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exten
         }
     }
 
+    /**
+     * notifies the element that this node was added
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasAddedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         if (!byDatabaseUpdate && element.id !== this._id) {
             this._node.markChanged();
@@ -99,6 +116,12 @@ export class NulableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exten
         this._element = element;
         this._id = element.id;
     }
+
+    /**
+     * notifies the element that this node was removed
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasRemovedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         if (!byDatabaseUpdate && !this._id) {
             this._node.markChanged();
@@ -107,6 +130,10 @@ export class NulableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exten
         this._id = undefined;
     }
 
+    /**
+     * called to save the property
+     * does nothing on the one side
+     */
     save(): void {
         //do nothing, 
     }

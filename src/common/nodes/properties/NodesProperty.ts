@@ -7,12 +7,35 @@ import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
 import { NodePropertyBase } from "./NodePropertyBase";
 
+/**
+ * property which represents the many side of a relation
+ * @param T the type of the other node(s)
+ * @param V the type of the node on which this property is
+ */
 export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+    /**
+     * the specification of the property
+     */
     private readonly _specification: NodesPropertySpecification<T, V>;
+    /**
+     * the current load level
+     */
     private _loadLevel: LoadLevel = LoadLevel.None;
+    /**
+     * list with all ids from the other nodes
+     */
     private _ids: Set<string> = new Set<string>();
+    /**
+     * map from id to other node
+     */
     private _elements: Map<string, T> = new Map<string, T>();
+    /**
+     * set with all new added other nodes (id)
+     */
     private _addedIds: Set<string> = new Set<string>();
+    /**
+     * set with all removed other nodes (id)
+     */
     private _removedIds: Set<string> = new Set<string>();
 
 
@@ -44,8 +67,9 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
     }
 
     /**
-     * gets the elements, but also filters them
-     * @param filter 
+     * gets all elements which are in this relation and returned from filter
+     * @param filter the filter to filter other nodes
+     * @returns the array of filtered elements
      */
     public async getFilteredElements(filter: LoadNodeListCommand<T>): Promise<T[]> {
         await this.ensureAddDeleteLoadLevel();
@@ -138,6 +162,9 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         
     }
 
+    /**
+     * ensures a load level high enough to add or remove nodes
+     */
     private async ensureAddDeleteLoadLevel(): Promise<void> {
         if (this._specification.loadDynamic) {
             await this.ensureLoadLevel(LoadLevel.Ids);
@@ -249,6 +276,11 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         this._loadLevel = LoadLevel.Complete;
     }
 
+    /**
+     * notifies the element that this node was added
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasAddedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         if (byDatabaseUpdate) {
             this._addedIds.delete(element.id);
@@ -274,6 +306,11 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
         }
     }
 
+    /**
+     * notifies the element that this node was removed
+     * @param element the element to notify
+     * @param byDatabase true if caused by database
+     */
     async wasRemovedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
         if (byDatabaseUpdate) {
             this._removedIds.delete(element.id);
@@ -296,6 +333,9 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
 
 }
 
+/**
+ * different load levels of the property
+ */
 enum LoadLevel {
     /**
      * nothing is loaded
