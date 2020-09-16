@@ -1,7 +1,10 @@
+import { QueryConfig, QueryResult } from "pg";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
+import { Issue } from "./Issue";
 import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
@@ -45,6 +48,30 @@ export class Project extends NamedOwnedNode<Project> {
         .saveOnPrimary("project", "component");
 
     /**
+     * property with all issues
+     * do NOT add an issue via this property
+     * do NOT remove an issue via this property
+     */
+    public readonly issuesProperty: NodeListProperty<Issue, Project>;
+
+    /**
+     * specification of the issuesProperty
+     */
+    private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Project>
+        = NodeListPropertySpecification.loadDynamic<Issue, Project>(LoadRelationCommand.fromPrimary("project", "issue"),
+            (ids, project) => {
+                const command = undefined as any;
+                command.ids = ids;
+                return command;
+            },
+            project => {
+                const command = undefined as any;
+                command.onProjects = [project.id];
+                return command;
+            })
+        .noSave();
+
+    /**
      * creates a new Component instance
      * note: this does NOT create a actually new component, for this @see Project.create
      * @param databaseManager the databaseManager
@@ -56,6 +83,7 @@ export class Project extends NamedOwnedNode<Project> {
     public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
         this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
+        this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this));
     }
 
     /**
@@ -77,4 +105,39 @@ export class Project extends NamedOwnedNode<Project> {
         databaseManager.addCachedNode(project);
         return project;
     }
+}
+
+/**
+ * command to laod all ids of issues on a project
+ */
+class LoadIssueIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadIssueIdsCommand
+     * @param projectId the id of the project
+     */
+    public constructor (private readonly projectId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(): QueryConfig<any[]> {
+        return {
+            text: "SELECT DISTINCT ON(issue_id) issue_id FROM relation_component_issue WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            values: [this.projectId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row["issue_id"]);
+        return [];
+    }
+
 }
