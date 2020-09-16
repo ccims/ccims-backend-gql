@@ -37,7 +37,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         }
 
         const queryEnd: QueryPart = this.generateQueryEnd(values.length + 1);
-        text += queryEnd.text + " ";
+        text += queryEnd.text;
         values.push(...queryEnd.values);
 
         return {
