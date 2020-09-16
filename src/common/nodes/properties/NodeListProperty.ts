@@ -158,6 +158,8 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._removedIds.forEach(id => {
                 this._databaseManager.addCommand(removeRel(id, this._node));
             });
+            this._addedIds.clear();
+            this._removedIds.clear();
         }
         
     }
@@ -172,7 +174,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 this._loadLevel = LoadLevel.Partial;
             }
         } else {
-            await this.ensureLoadLevel(LoadLevel.Ids);
+            await this.ensureLoadLevel(LoadLevel.Complete);
         }
     }
 
@@ -221,12 +223,14 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * set the id list
      * this should only be used when loaded from the database
      * this MUST NOT be used to change the elements list!
-     * this has only any effect, if it is not loaded yet
      * @param ids the list of ids
      */
     async setIds(ids: string[]): Promise<void> {
-        //these devensive checks 
-        this._ids.forEach(async id => {
+        const idsSet = new Set(ids);
+        this._removedIds.forEach(id => idsSet.delete(id));
+        ids = Array.from(idsSet);
+
+        await Promise.all(Array.from(this._ids).map(async id => {
             if (!ids.includes(id)) {
                 this._removedIds.delete(id);
                 const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getCachedNode(id) as T);
@@ -234,25 +238,44 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                     await this.notifyRemoved(element, true);
                 }
             }
-        });
-        ids.forEach(async id => {
-            if (this._ids.has(id)) {
+        }));
+        await Promise.all(ids.map(async id => {
+            if (!this._ids.has(id)) {
                 const element = this._elements.has(id) ? this._elements.get(id) : (this._databaseManager.getCachedNode(id) as T);
                 if (element) {
                     await this.notifyAdded(element, true);
                 }
             }
-        });
+        }));
 
         this._ids = new Set<string>(ids);
         if (this._loadLevel > LoadLevel.Ids) {
             const allKnownIds = [...ids, ...this._addedIds];
+            this._ids = new Set(allKnownIds);
             const newElements: Map<string, T> = new Map<string, T>();
-            this._elements.forEach(element => {
-                if (allKnownIds.includes(element.id)) {
-                    newElements.set(element.id, element);
+            
+            const idsToLoad: string[] = [];
+            await Promise.all(allKnownIds.map(async id => {
+                const availableElement = this._elements.get(id);
+                if (availableElement) {
+                    newElements.set(id, availableElement);
+                } else {
+                    idsToLoad.push(id);
                 }
-            });
+            }));
+            if (this._loadLevel == LoadLevel.Complete) {
+                const loadCommand = this._specification.loadFromIds(idsToLoad, this._node);
+                this._databaseManager.addCommand(loadCommand);
+                await this._databaseManager.executePendingCommands();
+                const res = loadCommand.getResult();
+                res.forEach(element => newElements.set(element.id, element));
+                idsToLoad.forEach(id => {
+                    if (!newElements.has(id)) {
+                        this._ids.delete(id);
+                    }
+                })
+            }
+
             this._elements = newElements;
         } else {
             this._loadLevel = LoadLevel.Ids;

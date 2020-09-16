@@ -98,7 +98,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
                     this._element = reloadResult;
                 } else {
                     this._element = undefined;
-                this._id = undefined;
+                    this._id = undefined;
                 }
             }
         }
