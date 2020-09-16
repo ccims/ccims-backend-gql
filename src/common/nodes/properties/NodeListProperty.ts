@@ -1,7 +1,7 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { Saveable } from "../Saveable";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { NodesPropertySpecification } from "./NodesPropertySpecification";
+import { NodeListPropertySpecification } from "./NodeListPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
@@ -12,11 +12,11 @@ import { NodePropertyBase } from "./NodePropertyBase";
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
     /**
      * the specification of the property
      */
-    private readonly _specification: NodesPropertySpecification<T, V>;
+    private readonly _specification: NodeListPropertySpecification<T, V>;
     /**
      * the current load level
      */
@@ -45,7 +45,7 @@ export class NodesProperty<T extends CCIMSNode, V extends CCIMSNode> extends Nod
      * @param specification the specification for the command
      * @param node the node proviced to all generators as last parameter
      */
-    public constructor(databaseManager: DatabaseManager, specification: NodesPropertySpecification<T, V>, node: V) {
+    public constructor(databaseManager: DatabaseManager, specification: NodeListPropertySpecification<T, V>, node: V) {
         super(databaseManager, specification, node);
         this._specification = specification;
     }

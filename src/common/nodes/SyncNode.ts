@@ -12,7 +12,7 @@ import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
  * does not specifiy the metadata, because this is up to the save method
  */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
-    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, new RowSpecification("deleted", node => node.isDeleted()));
+    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, new RowSpecification("deleted", node => node.isDeleted));
 
 /**
  * a syncNode
@@ -114,7 +114,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * adds the metadata
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
-        if (this.isNew()) {
+        if (this.isNew) {
             return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);
         } else if (this._metadata) {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);

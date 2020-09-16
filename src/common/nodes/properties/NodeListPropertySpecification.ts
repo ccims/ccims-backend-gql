@@ -10,7 +10,7 @@ import { PropertySpecification } from "./PropertySpecification";
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> implements PropertySpecification<T, V> {
+export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSNode> implements PropertySpecification<T, V> {
     /**
      * general specification for a property
      * hint: you probably shoud not use this constructor, but the generator functions below
@@ -116,8 +116,8 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
     public save(
         addRel: (id: string, node: V) => DatabaseCommand<void>,
         removeRel: (id: string, node: V) => DatabaseCommand<void>,
-    ): NodesPropertySpecification<T, V> {
-        return new NodesPropertySpecification<T, V>(
+    ): NodeListPropertySpecification<T, V> {
+        return new NodeListPropertySpecification<T, V>(
             this.loadDynamic,
             true,
             this.loadFromIds,
@@ -135,8 +135,8 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * @param primary the name for the primary column
      * @param secundary the name for the secundary column
      */
-    public saveOnPrimary(primary: string, secundary: string): NodesPropertySpecification<T, V> {
-        return new NodesPropertySpecification (
+    public saveOnPrimary(primary: string, secundary: string): NodeListPropertySpecification<T, V> {
+        return new NodeListPropertySpecification (
             this.loadDynamic,
             true,
             this.loadFromIds,
@@ -154,8 +154,8 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * @param primary the name for the primary column
      * @param secundary the name for the secundary column
      */
-    public saveOnSecundary(primary: string, secundary: string): NodesPropertySpecification<T, V> {
-        return new NodesPropertySpecification (
+    public saveOnSecundary(primary: string, secundary: string): NodeListPropertySpecification<T, V> {
+        return new NodeListPropertySpecification (
             this.loadDynamic,
             true,
             this.loadFromIds,
@@ -171,8 +171,8 @@ export class NodesPropertySpecification<T extends CCIMSNode, V extends CCIMSNode
      * specifies that the property should not handle save
      * in this case, it's (normally) up to the other side
      */
-    public noSave(): NodesPropertySpecification<T, V> {
-        return new NodesPropertySpecification<T, V>(
+    public noSave(): NodeListPropertySpecification<T, V> {
+        return new NodeListPropertySpecification<T, V>(
             this.loadDynamic,
             false,
             this.loadFromIds,
