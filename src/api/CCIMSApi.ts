@@ -7,6 +7,8 @@ import cors from "cors";
 import { jwtVerifier } from "./auth/JWTVerifier";
 import { graphqlHandler } from "./GraphQLHandler";
 import { DatabaseManager } from "../common/database/DatabaseManager";
+import { Client } from "pg";
+import { SnowflakeGenerator } from "../utils/Snowflake";
 
 
 
@@ -40,7 +42,7 @@ export class CCIMSApi {
      *  If empty, or `undefined`, the value in the config will be used.\
      * If 0.0.0.0 server will be bound to all availale interfaces.
      */
-    public constructor(dbManager: DatabaseManager, port?: number, hostIface?: string) {
+    public constructor(pgClient: Client, idGen: SnowflakeGenerator, port?: number, hostIface?: string) {
         console.log("Initializing api");
         this.port = port || config.api.port;
         this.hostIface = hostIface || config.api.hostIface || "0.0.0.0";
@@ -48,7 +50,7 @@ export class CCIMSApi {
             this.hostIface = "0.0.0.0";
         }
         this.server = express();
-        this.setupRoutes(dbManager);
+        this.setupRoutes(pgClient, idGen);
     }
 
     /**
@@ -64,10 +66,10 @@ export class CCIMSApi {
      *    - The main graphGL API
      *    - Requires valid JWT in the `Authorization`header
      */
-    private setupRoutes(dbManager: DatabaseManager) {
+    private setupRoutes(pgClient: Client, idGen: SnowflakeGenerator) {
         this.server.use(cors());
         this.server.post("/login", bodyParser.json(), loginHandler());
-        this.server.use("/api", jwtVerifier(), graphqlHandler(dbManager));
+        this.server.use("/api", jwtVerifier(), graphqlHandler(pgClient, idGen));
     }
 
     /**
