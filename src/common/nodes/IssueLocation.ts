@@ -1,8 +1,12 @@
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { Issue } from "./Issue";
-import { NamedOwnedNode } from "./NamedOwnedNode";
+import { NamedNode } from "./NamedNode";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
+
+export interface IssueLocation<T extends IssueLocation = any> extends NamedNode<T> {
+    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>;
+}
 
 export const issuesOnLocationPropertyDescription: NodeListPropertySpecification<Issue, IssueLocation> 
     = NodeListPropertySpecification.loadDynamic<Issue, IssueLocation>(LoadRelationCommand.fromPrimary("issueLocation", "issue"),
@@ -18,7 +22,3 @@ export const issuesOnLocationPropertyDescription: NodeListPropertySpecification<
     })
     //.notifyChanged((project, component) => project.componentsProperty)
     .saveOnPrimary("issueLocation", "issue");
-
-export interface IssueLocation<T extends IssueLocation = any> extends NamedOwnedNode<T> {
-    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>;
-}

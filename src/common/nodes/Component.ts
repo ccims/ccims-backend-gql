@@ -28,16 +28,16 @@ export class Component extends NamedOwnedNode implements IssueLocation {
 
     private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component> 
         = NodeListPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
-        (ids, component) => { 
-            const command = new LoadProjectsCommand();
-            command.ids = ids;
-            return command;
-        }, 
-        component => {
-            const command = new LoadProjectsCommand();
-            command.onComponents = [component.id];
-            return command;
-        })
+            (ids, component) => { 
+                const command = new LoadProjectsCommand();
+                command.ids = ids;
+                return command;
+            }, 
+            component => {
+                const command = new LoadProjectsCommand();
+                command.onComponents = [component.id];
+                return command;
+            })
         .notifyChanged((project, component) => project.componentsProperty)
         .noSave();
 
@@ -56,11 +56,33 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             (imsSystem, component) => imsSystem.componentProperty
         );
 
+    /**
+     * property with all issues
+     * do NOT add an issue via this property
+     */
+    public readonly issuesProperty: NodeListProperty<Issue, Component>;
+
+    private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
+            (ids, component) => {
+                const command = undefined as any;
+                command.ids = ids;
+                return command;
+            },
+            component => {
+                const command = undefined as any;
+                command.onComponents = [component.id];
+                return command;
+            })
+        //TODO: notifychanged
+        .saveOnPrimary("component", "issue");
+
     public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
         this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
         this.imsSystemProperty = this.registerSaveable(new NodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
         this.issuesOnLocationProperty = this.registerSaveable(new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this));
+        this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this));
     }
 
     /**
