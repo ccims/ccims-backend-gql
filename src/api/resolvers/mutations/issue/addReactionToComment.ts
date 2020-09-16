@@ -8,7 +8,7 @@ export default () => {
     if (addReactionToComment === undefined) {
         addReactionToComment = {
             type: GraphQLAddReactionToCommentPayload,
-            description: "",
+            description: "Adds a reaction by the current user to a comment (issue body or issue comment)",
             args: {
                 input: {
                     type: GraphQLAddReactionToCommentInput,

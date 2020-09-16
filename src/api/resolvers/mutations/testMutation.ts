@@ -8,7 +8,7 @@ export default () => {
     if (testMutation === undefined) {
         testMutation = {
             type: GraphQLTestMutationPayload,
-            description: "",
+            description: "A mutation for testing if you're able to use GraphQL",
             args: {
                 input: {
                     type: GraphQLTestMutationInput,

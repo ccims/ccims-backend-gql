@@ -8,7 +8,7 @@ export default () => {
     if (deleteIssueComment === undefined) {
         deleteIssueComment = {
             type: GraphQLDeleteIssueCommentPayload,
-            description: "",
+            description: "Deletes an issue comment.\n\nComments don't get fully deleted but replaced by a\n\n`DeletedComment` (only contains creation/deletion date/user) which is for conversation completness",
             args: {
                 input: {
                     type: GraphQLDeleteIssueCommentInput,

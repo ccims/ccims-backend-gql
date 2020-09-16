@@ -8,7 +8,7 @@ export default () => {
     if (unpinIssue === undefined) {
         unpinIssue = {
             type: GraphQLUnpinIssuePayload,
-            description: "",
+            description: "Unpin an issue from a component",
             args: {
                 input: {
                     type: GraphQLUnpinIssueInput,

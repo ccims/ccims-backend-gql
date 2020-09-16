@@ -8,7 +8,7 @@ export default () => {
     if (unmarkIssueAsDuplicate === undefined) {
         unmarkIssueAsDuplicate = {
             type: GraphQLUnmarkIssueAsDuplicatePayload,
-            description: "",
+            description: "Remove the marking on an issue that it is a duplicate of another issue",
             args: {
                 input: {
                     type: GraphQLUnmarkIssueAsDuplicateInput,

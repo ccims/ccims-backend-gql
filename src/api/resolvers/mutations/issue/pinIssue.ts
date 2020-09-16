@@ -8,7 +8,7 @@ export default () => {
     if (pinIssue === undefined) {
         pinIssue = {
             type: GraphQLPinIssuePayload,
-            description: "",
+            description: "Pins an issue to a component (including in the IMS of the component)",
             args: {
                 input: {
                     type: GraphQLPinIssueInput,

@@ -8,7 +8,7 @@ export default () => {
     if (changeIssueCategory === undefined) {
         changeIssueCategory = {
             type: GraphQLChangeIssueCategoryPayload,
-            description: "",
+            description: "Changes the category of an issue",
             args: {
                 input: {
                     type: GraphQLChangeIssueCategoryInput,

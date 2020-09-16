@@ -8,7 +8,7 @@ export default () => {
     if (changeIssuePriority === undefined) {
         changeIssuePriority = {
             type: GraphQLChangeIssuePriorityPayload,
-            description: "",
+            description: "Changes the priority of an issue",
             args: {
                 input: {
                     type: GraphQLChangeIssuePriorityInput,

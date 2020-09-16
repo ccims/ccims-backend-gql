@@ -8,7 +8,7 @@ export default () => {
     if (changeIssueEstimatedTime === undefined) {
         changeIssueEstimatedTime = {
             type: GraphQLChangeIssueEstimatedTimePayload,
-            description: "",
+            description: "Changes the set estimated time on an issue",
             args: {
                 input: {
                     type: GraphQLChangeIssueEstimatedTimeInput,

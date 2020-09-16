@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { jwtVerifier } from "./auth/JWTVerifier";
 import { graphqlHandler } from "./GraphQLHandler";
-import { DatabaseManager } from "../common/database/DatabaseManager";
 import { Client } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { dbManagerInjector } from "./DBManagerInjector";

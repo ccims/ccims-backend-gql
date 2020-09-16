@@ -8,7 +8,7 @@ export default () => {
     if (addIssueToLocation === undefined) {
         addIssueToLocation = {
             type: GraphQLAddIssueToLocationPayload,
-            description: "",
+            description: "Adds an issue to a location (component or interface)",
             args: {
                 input: {
                     type: GraphQLAddIssueToLocationInput,

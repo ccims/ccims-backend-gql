@@ -8,7 +8,7 @@ export default () => {
     if (renameIssueTitle === undefined) {
         renameIssueTitle = {
             type: GraphQLRenameIssueTitlePayload,
-            description: "",
+            description: "Change the title (rename) an issue",
             args: {
                 input: {
                     type: GraphQLRenameIssueTitleInput,

@@ -8,7 +8,7 @@ export default () => {
     if (removeIssueFromLocation === undefined) {
         removeIssueFromLocation = {
             type: GraphQLRemoveIssueFromLocationPayload,
-            description: "",
+            description: "Removes an issue from an issue location it was assigned to",
             args: {
                 input: {
                     type: GraphQLRemoveIssueFromLocationInput,

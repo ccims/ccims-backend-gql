@@ -8,7 +8,7 @@ export default () => {
     if (removeReactionFromComment === undefined) {
         removeReactionFromComment = {
             type: GraphQLRemoveReactionFromCommentPayload,
-            description: "",
+            description: "Remove a reaction from a comment which was added by the current user (issue body or issue comment)",
             args: {
                 input: {
                     type: GraphQLRemoveReactionFromCommentInput,

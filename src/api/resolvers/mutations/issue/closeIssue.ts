@@ -8,7 +8,7 @@ export default () => {
     if (closeIssue === undefined) {
         closeIssue = {
             type: GraphQLCloseIssuePayload,
-            description: "",
+            description: "Closes an open issue",
             args: {
                 input: {
                     type: GraphQLCloseIssueInput,

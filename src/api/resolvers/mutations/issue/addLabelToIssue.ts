@@ -8,7 +8,7 @@ export default () => {
     if (addLabelToIssue === undefined) {
         addLabelToIssue = {
             type: GraphQLAddLabelToIssuePayload,
-            description: "",
+            description: "Adds a label to an issue",
             args: {
                 input: {
                     type: GraphQLAddLabelToIssueInput,

@@ -8,7 +8,7 @@ export default () => {
     if (changeIssueDueDate === undefined) {
         changeIssueDueDate = {
             type: GraphQLChangeIssueDueDatePayload,
-            description: "",
+            description: "Changes the set due date on an issue",
             args: {
                 input: {
                     type: GraphQLChangeIssueDueDateInput,

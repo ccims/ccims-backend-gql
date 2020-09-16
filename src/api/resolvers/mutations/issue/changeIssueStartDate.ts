@@ -8,7 +8,7 @@ export default () => {
     if (changeIssueStartDate === undefined) {
         changeIssueStartDate = {
             type: GraphQLChangeIssueStartDatePayload,
-            description: "",
+            description: "Changes the set start date on an issue",
             args: {
                 input: {
                     type: GraphQLChangeIssueStartDateInput,

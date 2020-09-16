@@ -8,7 +8,7 @@ export default () => {
     if (addIssueToComponent === undefined) {
         addIssueToComponent = {
             type: GraphQLAddIssueToComponentPayload,
-            description: "",
+            description: "Adds an issue to a component (including creating the issue on the ims of the component)",
             args: {
                 input: {
                     type: GraphQLAddIssueToComponentInput,

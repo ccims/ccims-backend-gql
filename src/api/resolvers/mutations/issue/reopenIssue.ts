@@ -8,7 +8,7 @@ export default () => {
     if (reopenIssue === undefined) {
         reopenIssue = {
             type: GraphQLReopenIssuePayload,
-            description: "",
+            description: "Reopen an issue after it has been closed",
             args: {
                 input: {
                     type: GraphQLReopenIssueInput,

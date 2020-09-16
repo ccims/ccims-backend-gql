@@ -8,7 +8,7 @@ export default () => {
     if (unlinkIssue === undefined) {
         unlinkIssue = {
             type: GraphQLUnlinkIssuePayload,
-            description: "",
+            description: "Unlink an issue from another and remove their relation",
             args: {
                 input: {
                     type: GraphQLUnlinkIssueInput,

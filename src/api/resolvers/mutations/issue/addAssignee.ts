@@ -8,7 +8,7 @@ export default () => {
     if (addAssignee === undefined) {
         addAssignee = {
             type: GraphQLAddAssigneePayload,
-            description: "",
+            description: "Assignes a user to an issue",
             args: {
                 input: {
                     type: GraphQLAddAssigneeInput,

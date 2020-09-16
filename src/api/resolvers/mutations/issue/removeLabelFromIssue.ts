@@ -8,7 +8,7 @@ export default () => {
     if (removeLabelFromIssue === undefined) {
         removeLabelFromIssue = {
             type: GraphQLRemoveLabelFromIssuePayload,
-            description: "",
+            description: "Remove a label that is currently on the issue",
             args: {
                 input: {
                     type: GraphQLRemoveLabelFromIssueInput,

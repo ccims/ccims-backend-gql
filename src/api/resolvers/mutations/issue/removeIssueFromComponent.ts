@@ -8,7 +8,7 @@ export default () => {
     if (removeIssueFromComponent === undefined) {
         removeIssueFromComponent = {
             type: GraphQLRemoveIssueFromComponentPayload,
-            description: "",
+            description: "Removes an issue from a component it is currently assigned to and deletes it from the ims of the component",
             args: {
                 input: {
                     type: GraphQLRemoveIssueFromComponentInput,

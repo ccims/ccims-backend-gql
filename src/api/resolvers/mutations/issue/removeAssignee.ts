@@ -8,7 +8,7 @@ export default () => {
     if (removeAssignee === undefined) {
         removeAssignee = {
             type: GraphQLRemoveAssigneePayload,
-            description: "",
+            description: "Uassignes a user that is currently an assinee on an issue",
             args: {
                 input: {
                     type: GraphQLRemoveAssigneeInput,

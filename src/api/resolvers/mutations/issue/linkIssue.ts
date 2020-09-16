@@ -8,7 +8,7 @@ export default () => {
     if (linkIssue === undefined) {
         linkIssue = {
             type: GraphQLLinkIssuePayload,
-            description: "",
+            description: "Links an issue to another one, creating a relation",
             args: {
                 input: {
                     type: GraphQLLinkIssueInput,

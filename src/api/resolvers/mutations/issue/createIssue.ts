@@ -8,7 +8,7 @@ export default () => {
     if (createIssue === undefined) {
         createIssue = {
             type: GraphQLCreateIssuePayload,
-            description: "",
+            description: "Creates a new Issue",
             args: {
                 input: {
                     type: GraphQLCreateIssueInput,

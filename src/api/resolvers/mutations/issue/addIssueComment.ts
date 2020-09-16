@@ -8,7 +8,7 @@ export default () => {
     if (addIssueComment === undefined) {
         addIssueComment = {
             type: GraphQLAddIssueCommentPayload,
-            description: "",
+            description: "Creates a new comment on an existing issue",
             args: {
                 input: {
                     type: GraphQLAddIssueCommentInput,

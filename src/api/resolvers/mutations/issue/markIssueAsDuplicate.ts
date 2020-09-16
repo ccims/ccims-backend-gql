@@ -8,7 +8,7 @@ export default () => {
     if (markIssueAsDuplicate === undefined) {
         markIssueAsDuplicate = {
             type: GraphQLMarkIssueAsDuplicatePayload,
-            description: "",
+            description: "Marks an issue as being a duplicate of another issue",
             args: {
                 input: {
                     type: GraphQLMarkIssueAsDuplicateInput,
