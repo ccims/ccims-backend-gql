@@ -947,10 +947,8 @@ type Component implements Node & IssueLocation {
   """
   description: String
 
-  """
-  The software of the IMS used by this component. This must be one of the supported ones
-  """
-  imsType: IMSType
+  """The IMS instance used by this component."""
+  ims: IMS
 
   """
   All issues on this node, matching the given filter.
@@ -1054,6 +1052,22 @@ type Component implements Node & IssueLocation {
     """Only return the last _n_ interfaces in the system"""
     last: Int
   ): ComponentInterfacePage
+}
+
+"""
+An issue management system. This will be an __instance__ of one of the available IMS Types.
+
+E.g. One GitHub Repository's issue page.
+"""
+type IMS implements Node {
+  """The unique ID of this IMS"""
+  id: ID!
+
+  """The type/system this IMS is an instance of"""
+  imsType: IMSType
+
+  """The component this IMS belongs to"""
+  component: Component
 }
 
 """
@@ -2841,6 +2855,24 @@ type Mutation {
     """The data for the mutation"""
     input: CreateProjectInput
   ): CreateProjectPayload
+
+  """Creates a new component"""
+  createComponent(
+    """The data for the mutation"""
+    input: CreateComponentInput
+  ): CreateComponentPayload
+
+  """Creates a new IMS"""
+  createIMS(
+    """The data for the mutation"""
+    input: CreateIMSInput
+  ): CreateIMSPayload
+
+  """Creates a new User"""
+  createUser(
+    """The data for the mutation"""
+    input: CreateUserInput
+  ): CreateUserPayload
 }
 
 """The Payload/Response for the addIssueToLocation mutation"""
@@ -3758,7 +3790,7 @@ type CreateProjectPayload {
   project: Project
 }
 
-"""The inputs for the createProject"""
+"""The inputs for the createProject mutation"""
 input CreateProjectInput {
   """An arbitraty string to return together with the mutation result"""
   clientMutationID: String
@@ -3796,4 +3828,138 @@ input CreateProjectInput {
   The owner user of this component. This user will be able to administrate the component
   """
   owner: ID!
+}
+
+"""The Payload/Response for the createComponent mutation"""
+type CreateComponentPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The component created by this mutation"""
+  component: Component
+}
+
+"""The inputs for the createComponent mutation"""
+input CreateComponentInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """
+  The (non unique) display name of this component
+  
+  Max. 256 characters
+  """
+  name: String!
+
+  """The ID of the user who administrates "owns" the component"""
+  owner: ID!
+
+  """
+  A textual description (of the fuction) of this component.
+  
+  Max. 65536 characters. `null` equivalent to ""
+  """
+  description: String
+
+  """
+  The IMS used by this component. This must be created before the component
+  
+  Can be `null`
+  """
+  ims: ID!
+
+  """
+  If given, the component will be added to the projects with those IDs.
+  
+  Can be `null`
+  """
+  projects: [ID!]
+
+  """
+  If given, the new component will consume the interfacs with the given IDs.
+  
+  Can be `null`
+  """
+  consumedInterfaces: [ID!]
+}
+
+"""The Payload/Response for the createIMS mutation"""
+type CreateIMSPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The IMS created by this mutation"""
+  ims: IMS
+}
+
+"""The inputs for the createIMS mutation"""
+input CreateIMSInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """The type/system this IMS is an instance of"""
+  imsType: IMSType
+
+  """
+  The endpoint where to reach the IMS instance.
+              
+  In the most cases this will be a URL in the form of
+  ```
+  https://example.com/api/[API_KEY]
+  ```
+  where strings in [] can be replaced by the IMS extension with values needed. 
+  See the documentation for the IMS extions for information which keys are expected.
+  
+  In rare cases depending on the IMS type this might be empty or not a URL
+  """
+  endpoint: String
+
+  """
+  Data needed for the connection to the IMS API.
+              
+  See the documentation for the IMS extions for information which keys are expected.
+  This must be a valid JSON-string
+  """
+  connectionData: JSON
+}
+
+"""The Payload/Response for the createUser mutation"""
+type CreateUserPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The user created by this mutation"""
+  user: User
+}
+
+"""The inputs for the createUser mutation"""
+input CreateUserInput {
+  """
+  The unique username used for login.
+  
+  Max. 100 characters.
+  """
+  username: String!
+
+  """
+  The name of the user to display in the GUI.
+  
+  Max. 200 characters.
+  """
+  displayName: String!
+
+  """The password for the new user in plain text"""
+  password: String!
+
+  """
+  The mail address of the user.
+  
+  Max. 320 characters. Must be a valid email address
+  """
+  email: String!
+
+  """
+  If given, the user will be added to the projects with those IDs immediately after creation
+  """
+  projects: [ID!]
 }
