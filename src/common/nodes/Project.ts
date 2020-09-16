@@ -32,20 +32,20 @@ export class Project extends NamedOwnedNode<Project> {
     /**
      * the specification of compopnentsProperty
      */
-    private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Project> 
+    private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Project>
         = NodeListPropertySpecification.loadDynamic<Component, Project>(LoadRelationCommand.fromPrimary("project", "component"),
-        (ids, project) => { 
-            const command = new LoadComponentsCommand();
-            command.ids = ids;
-            return command;
-        }, 
-        project => {
-            const command = new LoadComponentsCommand();
-            command.onProjects = [project.id];
-            return command;
-        })
-        .notifyChanged((component, project) => component.projectsProperty)
-        .saveOnPrimary("project", "component");
+            (ids, project) => {
+                const command = new LoadComponentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            project => {
+                const command = new LoadComponentsCommand();
+                command.onProjects = [project.id];
+                return command;
+            })
+            .notifyChanged((component, project) => component.projectsProperty)
+            .saveOnPrimary("project", "component");
 
     /**
      * property with all issues
@@ -70,7 +70,7 @@ export class Project extends NamedOwnedNode<Project> {
                 command.onProjects = [project.id];
                 return command;
             })
-        .noSave();
+            .noSave();
 
     /**
      * creates a new Component instance
@@ -81,7 +81,7 @@ export class Project extends NamedOwnedNode<Project> {
      * @param description the description of the component
      * @param ownerId the id of the owner of the component
      */
-    public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
         this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
         this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this));
@@ -117,7 +117,7 @@ class LoadIssueIdsCommand extends DatabaseCommand<string[]> {
      * creates a new LoadIssueIdsCommand
      * @param projectId the id of the project
      */
-    public constructor (private readonly projectId: string) {
+    public constructor(private readonly projectId: string) {
         super();
     }
 

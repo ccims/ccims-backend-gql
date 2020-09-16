@@ -27,6 +27,11 @@
             "type": "boolean",
             "title": "Disables jwt verification",
             "description": "If set to `true` the JWT verification for API calls will be disabled and anyone can make requests"
+        },
+        "schemaLocation": {
+            "type": "string",
+            "title": "GraphQL schema location",
+            "description": "The file location relative to the execution directory where the GraphQL Schema is located"
         }
     },
     "additionalProperties": false,
@@ -35,6 +40,7 @@
         "port",
         "jwtSecret",
         "debugNoLogin",
+        "schemaLocation",
         "$schema"
     ]
 }

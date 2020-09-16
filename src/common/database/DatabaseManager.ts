@@ -37,7 +37,7 @@ export class DatabaseManager implements NodeCache {
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
      */
-    public constructor (idGenerator: SnowflakeGenerator, client: Client) {
+    public constructor(idGenerator: SnowflakeGenerator, client: Client) {
         this.idGenerator = idGenerator;
         this.pgClient = client
     }
@@ -96,7 +96,7 @@ export class DatabaseManager implements NodeCache {
             await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
             this.pgClient.query("COMMIT;");
         } catch {
-            log(2, "database command failed");          
+            log(2, "database command failed");
         }
         this.pendingCommands = [];
     }
@@ -126,5 +126,5 @@ export class DatabaseManager implements NodeCache {
         await this.executePendingCommands();
         this.nodes.clear();
     }
-    
+
 }

@@ -16,7 +16,7 @@ import { NodePropertySpecification } from "./properties/NodePropertySpecificatio
  */
 export const ComponentInterfaceTableSpecification: NodeTableSpecification<ComponentInterface>
     = new NodeTableSpecification<ComponentInterface>("component_interface", NamedNodeTableSpecification,
-    new RowSpecification("host_component_id", componentInterface => componentInterface.componentProperty.getId()));
+        new RowSpecification("host_component_id", componentInterface => componentInterface.componentProperty.getId()));
 
 /**
  * a component can have interfaces, which can be locations for issues
@@ -26,19 +26,19 @@ export class ComponentInterface extends NamedNode<ComponentInterface> {
      * property on which component this interface is
      */
     public readonly componentProperty: NodeProperty<Component, ComponentInterface>;
-    
+
     private static readonly componentPropertySpecification: NodePropertySpecification<Component, ComponentInterface>
         = new NodePropertySpecification<Component, ComponentInterface>(
-        (id, componentInterface) => {
-            const command  = new LoadComponentsCommand();
-            command.ids = [id];
-            return command;
-        },
-        componentInterface => {
-            return new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand());
-        },
-        (component, componentInterface) => component.interfacesProperty
-    );
+            (id, componentInterface) => {
+                const command = new LoadComponentsCommand();
+                command.ids = [id];
+                return command;
+            },
+            componentInterface => {
+                return new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand());
+            },
+            (component, componentInterface) => component.interfacesProperty
+        );
 
     /**
      * property with all componentInterfaces of this component
@@ -60,8 +60,8 @@ export class ComponentInterface extends NamedNode<ComponentInterface> {
                 command.consumesInterface = [componentInterface.id];
                 return command;
             })
-        .notifyChanged((component, componentInterface) => component.consumedInterfacesProperty)
-        .noSave();
+            .notifyChanged((component, componentInterface) => component.consumedInterfacesProperty)
+            .noSave();
 
 
     /**
@@ -71,7 +71,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string) {
         super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description);
         this.componentProperty = this.registerSaveable(new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId));
         this.consumedByProperty = this.registerSaveable(new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this));

@@ -23,7 +23,7 @@ import { User } from "./User";
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
     = new NodeTableSpecification<Component>("component", NamedOwnedNodeTableSpecification,
-    new RowSpecification("imsSystem_id", component => component.imsSystemProperty.getId()));
+        new RowSpecification("imsSystem_id", component => component.imsSystemProperty.getId()));
 
 /**
  * A component known to ccims.
@@ -44,20 +44,20 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     /**
      * specification of the projectsProperty
      */
-    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component> 
+    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component>
         = NodeListPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
-            (ids, component) => { 
+            (ids, component) => {
                 const command = new LoadProjectsCommand();
                 command.ids = ids;
                 return command;
-            }, 
+            },
             component => {
                 const command = new LoadProjectsCommand();
                 command.onComponents = [component.id];
                 return command;
             })
-        .notifyChanged((project, component) => project.componentsProperty)
-        .noSave();
+            .notifyChanged((project, component) => project.componentsProperty)
+            .noSave();
 
     /**
      * property for the imsSystem of this component
@@ -70,7 +70,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly imsSystemPropertySpecification: NodePropertySpecification<ImsSystem, Component>
         = new NodePropertySpecification<ImsSystem, Component>(
             (id, component) => {
-                const command  = undefined as any;
+                const command = undefined as any;
                 command.ids = [id];
                 return command;
             },
@@ -101,8 +101,8 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 command.onComponents = [component.id];
                 return command;
             })
-        //TODO: notifychanged
-        .saveOnPrimary("component", "issue");
+            //TODO: notifychanged
+            .saveOnPrimary("component", "issue");
 
     /**
      * property with all componentInterfaces of this component
@@ -121,8 +121,8 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 command.onComponent = [component.id];
                 return command;
             })
-        .notifyChanged((componentInterface, component) => componentInterface.componentProperty)
-        .noSave();
+            .notifyChanged((componentInterface, component) => componentInterface.componentProperty)
+            .noSave();
 
     /**
      * property with all componentInterfaces of this component
@@ -141,9 +141,9 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 command.consumedByComponent = [component.id];
                 return command;
             })
-        .notifyChanged((componentInterface, component) => componentInterface.consumedByProperty)
-        .saveOnPrimary("component", "consumedComponentInterface");
-    
+            .notifyChanged((componentInterface, component) => componentInterface.consumedByProperty)
+            .saveOnPrimary("component", "consumedComponentInterface");
+
 
     /**
      * creates a new Component instance
@@ -155,7 +155,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
         this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
         this.imsSystemProperty = this.registerSaveable(new NodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
