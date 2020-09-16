@@ -50,7 +50,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     }
 
     /**
-     * gets a string with all rows that should be selected separated by ", "
+     * @return a string with all rows that should be selected separated by ,
      */
     protected get rows(): string {
         return this._rows;
