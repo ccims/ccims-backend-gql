@@ -4,26 +4,30 @@ import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSy
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ImsSystem } from "./ImsSystem";
-import { IssueLocation, IssueLocationTableSpecification } from "./IssueLocation";
+import { Issue } from "./Issue";
+import { IssueLocation, issuesOnLocationPropertyDescription } from "./IssueLocation";
+import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NodesProperty } from "./properties/NodesProperty";
-import { NodesPropertySpecification } from "./properties/NodesPropertySpecification";
 import { User } from "./User";
 
 export const ComponentTableSpecification: NodeTableSpecification<Component>
-    = new NodeTableSpecification<Component>("component", IssueLocationTableSpecification,
+    = new NodeTableSpecification<Component>("component", NamedOwnedNodeTableSpecification,
     new RowSpecification("imsSystem_id", component => component.imsSystemProperty.getId()));
 
-export class Component extends IssueLocation {
+export class Component extends NamedOwnedNode implements IssueLocation {
 
-    public readonly projectsProperty: NodesProperty<Project, Component>;
+    public readonly issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>;
 
-    private static readonly projectsPropertySpecification: NodesPropertySpecification<Project, Component> 
-        = NodesPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
+    public readonly projectsProperty: NodeListProperty<Project, Component>;
+
+    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component> 
+        = NodeListPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
         (ids, component) => { 
             const command = new LoadProjectsCommand();
             command.ids = ids;
@@ -54,8 +58,9 @@ export class Component extends IssueLocation {
 
     public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
-        this.projectsProperty = this.registerSaveable(new NodesProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
+        this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
         this.imsSystemProperty = this.registerSaveable(new NodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
+        this.issuesOnLocationProperty = this.registerSaveable(new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this));
     }
 
     /**

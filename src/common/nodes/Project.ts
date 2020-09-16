@@ -5,8 +5,8 @@ import { Component } from "./Component";
 import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { NodesProperty } from "./properties/NodesProperty";
-import { NodesPropertySpecification } from "./properties/NodesPropertySpecification";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User } from "./User";
 
 export const ProjectTableSpecification: NodeTableSpecification<Project>
@@ -15,10 +15,10 @@ export const ProjectTableSpecification: NodeTableSpecification<Project>
 
 export class Project extends NamedOwnedNode<Project> {
 
-    public readonly componentsProperty: NodesProperty<Component, Project>;
+    public readonly componentsProperty: NodeListProperty<Component, Project>;
 
-    private static readonly componentsPropertySpecification: NodesPropertySpecification<Component, Project> 
-        = NodesPropertySpecification.loadDynamic<Component, Project>(LoadRelationCommand.fromPrimary("project", "component"),
+    private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Project> 
+        = NodeListPropertySpecification.loadDynamic<Component, Project>(LoadRelationCommand.fromPrimary("project", "component"),
         (ids, project) => { 
             const command = new LoadComponentsCommand();
             command.ids = ids;
@@ -34,7 +34,7 @@ export class Project extends NamedOwnedNode<Project> {
 
     public constructor (databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
-        this.componentsProperty = this.registerSaveable(new NodesProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
+        this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
     }
 
     /**
