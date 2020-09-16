@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS user_ims_credential;
 DROP TABLE IF EXISTS ims_system;
 
 -- Project/Component tables
+DROP TABLE IF EXISTS relation_component_consumedComponentInterface;
 DROP TABLE IF EXISTS relation_component_label;
 DROP TABLE IF EXISTS relation_component_issue;
 DROP TABLE IF EXISTS project;

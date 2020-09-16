@@ -1,8 +1,10 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { ComponentInterface } from "./ComponentInterface";
 import { ConnectionData, ImsSystem, ImsType } from "./ImsSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertyDescription } from "./IssueLocation";
@@ -103,6 +105,47 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         .saveOnPrimary("component", "issue");
 
     /**
+     * property with all componentInterfaces of this component
+     */
+    public readonly interfacesProperty: NodeListProperty<ComponentInterface, Component>;
+
+    private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
+            (ids, component) => {
+                const command = new LoadComponentInterfacesCommand();
+                command.ids = ids;
+                return command;
+            },
+            component => {
+                const command = new LoadComponentInterfacesCommand();
+                command.onComponent = [component.id];
+                return command;
+            })
+        .notifyChanged((componentInterface, component) => componentInterface.componentProperty)
+        .noSave();
+
+    /**
+     * property with all componentInterfaces of this component
+     */
+    public readonly consumedInterfacesProperty: NodeListProperty<ComponentInterface, Component>;
+
+    private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumedComponentInterface"),
+            (ids, component) => {
+                const command = new LoadComponentInterfacesCommand();
+                command.ids = ids;
+                return command;
+            },
+            component => {
+                const command = new LoadComponentInterfacesCommand();
+                command.consumedByComponent = [component.id];
+                return command;
+            })
+        .notifyChanged((componentInterface, component) => componentInterface.consumedByProperty)
+        .saveOnPrimary("component", "consumedComponentInterface");
+    
+
+    /**
      * creates a new Component instance
      * note: this does NOT create a actually new component, for this @see Component.create
      * @param databaseManager the databaseManager
@@ -118,6 +161,9 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         this.imsSystemProperty = this.registerSaveable(new NodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
         this.issuesOnLocationProperty = this.registerSaveable(new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this));
         this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this));
+        this.interfacesProperty = this.registerSaveable(new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this));
+        this.consumedInterfacesProperty = this.registerSaveable(new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this));
+
     }
 
     /**

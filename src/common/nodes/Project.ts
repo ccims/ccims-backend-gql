@@ -58,7 +58,8 @@ export class Project extends NamedOwnedNode<Project> {
      * specification of the issuesProperty
      */
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Project>
-        = NodeListPropertySpecification.loadDynamic<Issue, Project>(LoadRelationCommand.fromPrimary("project", "issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Project>(
+            project => new LoadIssueIdsCommand(project.id),
             (ids, project) => {
                 const command = undefined as any;
                 command.ids = ids;

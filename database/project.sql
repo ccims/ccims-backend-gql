@@ -54,3 +54,10 @@ CREATE TABLE relation_issueLocation_issue
     issue_id id NOT NULL,
     PRIMARY KEY (issueLocation_id, issue_id)
 );
+
+CREATE TABLE relation_component_consumedComponentInterface
+(
+    component_id id NOT NULL,
+    consumedComponentInterface_id id NOT NULL,
+    PRIMARY KEY (component_id, consumedComponentInterface_id)
+);

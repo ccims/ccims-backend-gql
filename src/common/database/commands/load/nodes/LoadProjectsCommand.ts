@@ -4,6 +4,7 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
+import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
 
 /**
  * command to load a list of projects
@@ -51,19 +52,7 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
         const conditions = super.generateConditions(i);
 
         if (this.onComponents) {
-            if (this.onComponents.length == 1) {
-                conditions.conditions.push({
-                    priority: 2,
-                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=$${conditions.i})`,
-                    values: [this.onComponents[0]]
-                })
-            } else {
-                conditions.conditions.push({
-                    priority: 2,
-                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY($${conditions.i}))`,
-                    values: [this.onComponents]
-                });
-            }
+            conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.onComponents, conditions.i));
             conditions.i++;
         }
         return conditions;
