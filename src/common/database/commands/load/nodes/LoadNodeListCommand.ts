@@ -61,7 +61,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): [ConditionSpecification[], number] {
+    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
         const conditions: ConditionSpecification[] = [];
 
         if (this.ids) {
@@ -97,7 +97,10 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             i++;
         }
 
-        return [conditions, i];
+        return {
+            conditions: conditions, 
+            i: i
+        };
     }
 
     /**
