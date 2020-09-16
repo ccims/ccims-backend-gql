@@ -60,7 +60,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * adds the id condition
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
-     * @return the array of conditions and a index for the next value
+     * @returns the array of conditions and a index for the next value
      */
     protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
         const conditions: ConditionSpecification[] = [];
@@ -109,6 +109,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param databaseManager teh databaseManager to use
      * @param resultRow the result row from the query
      * @param result the complete result from the query
+     * @returns
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
@@ -132,6 +133,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * generates the end of the query, for example a limit or a order
      * @param i the next index for a value in the query
+     * @returns the end of the query
      */
     protected generateQueryEnd(i: number): QueryPart {
         if (this.limit) {
