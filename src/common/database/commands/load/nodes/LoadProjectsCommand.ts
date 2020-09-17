@@ -17,6 +17,11 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
     public onComponents?: string[];
 
     /**
+     * select the projects with have one of the specified users as participants
+     */
+    public onUsers?: string[];
+
+    /**
      * creates a new LoadProjectsCommand
      */
     public constructor() {
@@ -38,7 +43,7 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM project`,
+            text: `SELECT ${this.rows} FROM project main`,
             values: []
         }
     }
@@ -48,11 +53,15 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onComponents) {
             conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.onComponents, conditions.i));
+            conditions.i++;
+        }
+        if (this.onUsers) {
+            conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.onUsers, conditions.i));
             conditions.i++;
         }
         return conditions;

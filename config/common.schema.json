@@ -9,6 +9,16 @@
             "type": "number",
             "title": "Execution log level",
             "description": "The amount of log information displayed. 0: no log, 1: critical errors, 2: all errors, 3: warnings, 4: system status, 5: , 6: basic processed data, 7: all data, 10: all log"
+        },
+        "passwordSecret": {
+            "type": "string",
+            "title": "Password hashing secret",
+            "description": "The secret to be used for hashing the password into the database"
+        },
+        "passwordAlgorithm": {
+            "type": "string",
+            "title": "Password hashing algorithm",
+            "description": "The hashing algorithm to be used for hasing passwords. Password in the database hashed with a different algorithm will be rehashed to this algorithm to this one on the next login of the user"
         }
     },
     "additionalProperties": false,

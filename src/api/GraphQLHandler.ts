@@ -1,7 +1,8 @@
 import * as core from "express-serve-static-core";
 import { graphqlHTTP, GraphQLParams } from "express-graphql";
 import ccimsSchema from "./resolvers/CCIMSSchema";
-import { ResolverContext } from "./ResolverContext";
+import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
+import { log } from "../log";
 
 /**
  * Express middleware/handler for parsing and processing a graphql request and responding to it
@@ -15,7 +16,7 @@ import { ResolverContext } from "./ResolverContext";
  */
 export function graphqlHandler(): core.RequestHandler {
     var handler = new GraphQLHandler();
-    return (req: core.Request, res: core.Response, next: core.NextFunction): any => {
+    return (req: ResolverContextOptional, res: core.Response, next: core.NextFunction): any => {
         return handler.handle.call(handler, req, res, next);
     }
 }
@@ -50,8 +51,13 @@ class GraphQLHandler {
      * @param res The express response object. Passed directly on to the express-graphql handler
      * @param next The next function to the next middleware. Won't be called as this handler will always resolve the request
      */
-    public handle(req: core.Request, res: core.Response, next: core.NextFunction): any {
-        let resolverRequest: ResolverContext = req;
-        return this.middleware(resolverRequest, res);
+    public handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction): any {
+        if (!req.user || !req.dbManager) {
+            log(2, "Database manager or logged in user empty");
+            res.status(500).end("Error while processing request");
+        } else {
+            let resolverRequest: ResolverContext = req as ResolverContext;
+            return this.middleware(resolverRequest, res);
+        }
     }
 }
