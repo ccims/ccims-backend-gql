@@ -39,11 +39,11 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @param lastChangedAt the Date where this node was last changed
      * @param metadata metadata for the sync
      */
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: [string, SyncMetadata][]) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: SyncMetadataMap) {
         super(type, databaseManager, tableSpecification, id);
         this._lastChangedAt = lastChangedAt;
         if (metadata) {
-            this._metadata = new Map(metadata);
+            this._metadata = new Map(metadata.entries);
         }
     }
 
@@ -115,12 +115,19 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
         if (this.isNew) {
-            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);
+            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => {entries: [...node._metadata ?? []]})]);
         } else if (this._metadata) {
-            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => [...node._metadata ?? []])]);
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => {entries: [...node._metadata ?? []]})]);
         } else {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
         }
     }
 
+}
+
+/**
+ * interface for the json format of the metadata
+ */
+export interface SyncMetadataMap {
+    entries: [string, SyncMetadata][]
 }
