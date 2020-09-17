@@ -1,6 +1,6 @@
 CREATE TABLE ims_system
 (
-    component_id id NOT NULL,
+    component_id id,
     type ims_type NOT NULL,
     endpoint text NOT NULL,
     connection_data json NOT NULL

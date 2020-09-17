@@ -16,6 +16,7 @@ import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 
 /**
@@ -62,7 +63,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     /**
      * property for the imsSystem of this component
      */
-    public readonly imsSystemProperty: NodeProperty<ImsSystem, Component>;
+    public readonly imsSystemProperty: NullableNodeProperty<ImsSystem, Component>;
 
     /**
      * specification of the imsSystemProperty
@@ -155,10 +156,10 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId?: string) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
         this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
-        this.imsSystemProperty = this.registerSaveable(new NodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
+        this.imsSystemProperty = this.registerSaveable(new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
         this.issuesOnLocationProperty = this.registerSaveable(new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this));
         this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this));
         this.interfacesProperty = this.registerSaveable(new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this));
@@ -177,7 +178,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param endpoint the endpoint of the associated imsSystemn
      * @param connectionData the connectionData of the associated imsSystem
      */
-    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User, imsType: ImsType, endpoint: string, connectionData: ConnectionData): Component {
+    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Component {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
         }
@@ -185,14 +186,9 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             throw new Error("the specified description is too long");
         }
 
-        const componentId = databaseManager.idGenerator.generateString();
-        const imsSystemId = databaseManager.idGenerator.generateString();
-        const component = new Component(databaseManager, componentId, name, description, owner.id, imsSystemId);
+        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
         component.markNew();
         databaseManager.addCachedNode(component);
-        const imsSystem = new ImsSystem(databaseManager, imsSystemId, imsType, endpoint, connectionData, componentId);
-        imsSystem.markNew();
-        databaseManager.addCachedNode(imsSystem);
         return component;
     }
 }
