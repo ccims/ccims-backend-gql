@@ -20,7 +20,7 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
  * @param table the table where to load the nodes
  * @param ids the ids of the nodes to load
  */
-export function getLoadCommand(table: string, ids: string[]): LoadNodeListCommand<CCIMSNode> {
+export function getLoadCommand(table: string, ids?: string[]): LoadNodeListCommand<CCIMSNode> {
     const commandFactory = commandFactories.get(table);
     if (!commandFactory) {
         throw new Error("no command factory registered for specified node type")
