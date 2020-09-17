@@ -5,11 +5,13 @@ import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
+import { LoadNamedOwnedNodesCommand } from "./LoadNamedOwnedNodesCommand";
+import components from "../../../../../api/resolvers/listQueries/components";
 
 /**
  * command to load a list of projects
  */
-export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
+export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
 
     /**
      * select the projects with have one of the specified components
@@ -20,6 +22,11 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
      * select the projects with have one of the specified users as participants
      */
     public onUsers?: string[];
+
+    /**
+     * select only projects which have one of the given issues on a component assigned to them
+     */
+    public onIssues?: string[];
 
     /**
      * creates a new LoadProjectsCommand
@@ -64,6 +71,24 @@ export class LoadProjectsCommand extends LoadNodeListCommand<Project> {
             conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.onUsers, conditions.i));
             conditions.i++;
         }
+
+        if (this.onIssues) {
+            if (this.onIssues.length == 1) {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=$${conditions}))`,
+                    values: [this.onIssues[0]],
+                    priority: 5
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=ANY($${conditions})))`,
+                    values: [this.onIssues],
+                    priority: 5
+                });
+            }
+            conditions.i++;
+        }
+
         return conditions;
     }
 
