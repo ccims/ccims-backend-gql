@@ -1,7 +1,7 @@
 import { User } from "../common/nodes/User";
 
 export class UserPermissions {
-    private readonly _globalPermissions: GlobalPermissions;
+    private _globalPermissions: GlobalPermissions;
     private readonly _projectPermissions: Map<string, ProjectPermission>;
     private readonly _componentPermissions: Map<string, ComponentPermission>;
     private _user: User;
@@ -29,6 +29,35 @@ export class UserPermissions {
                 this._componentPermissions = new Map(jsonPermissions.component);
             }
         }
+    }
+
+    public setProjectPermissions(projectId: string, permissions: ProjectPermission) {
+        this._projectPermissions.set(projectId, permissions);
+        this._user.markChanged();
+    }
+
+    public removeProjectPermissions(projectId: string) {
+        this._projectPermissions.delete(projectId);
+        this._user.markChanged();
+    }
+
+    public setComponentPermissions(projectId: string, permissions: ProjectPermission) {
+        this._projectPermissions.set(projectId, permissions);
+        this._user.markChanged();
+    }
+
+    public removeComponentPermissions(projectId: string) {
+        this._projectPermissions.delete(projectId);
+        this._user.markChanged();
+    }
+
+    public set globalPermissions(permissions: GlobalPermissions) {
+        this._globalPermissions = permissions;
+        this._user.markChanged();
+    }
+
+    public get globalPermissions(): GlobalPermissions {
+        return this._globalPermissions;
     }
 
     public toDatabase(): DatabsePermissions {

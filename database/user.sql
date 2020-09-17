@@ -4,7 +4,7 @@ CREATE TABLE users
     displayname character varying(200) NOT NULL,
     pw_hash character varying(200) NOT NULL,
     email character varying(320),
-    permissions bytea NOT NULL
+    permissions JSON NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE relation_user_project
