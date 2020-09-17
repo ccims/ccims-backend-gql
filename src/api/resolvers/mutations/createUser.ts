@@ -17,7 +17,7 @@ export default () => {
                 }
             },
             resolve: (src, args, context, info) => {
-                const user = User.create(context.dbManager, args.input.username, args.input.displayName, args.input.password, args.input.email, args.input.projects);
+                const user = User.create(context.dbManager, args.input.username, args.input.displayName, args.input.password, args.input.email);
                 return { clientMutationID: args.input.clientMutationID, user: user };
             }
         };

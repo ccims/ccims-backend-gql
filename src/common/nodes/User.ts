@@ -11,6 +11,7 @@ import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProject
 import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
+import { Issue } from "./Issue";
 
 /**
  * specification of a table which can contain users
@@ -76,9 +77,11 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         permissions.user = this;
         this._permissions = permissions;
         this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this));
+        this.assignedToIssuesProperty = undefined as any;
+        this.participantOfIssuesProperty = undefined as any;
     }
 
-    public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string, projects?: string[]): User {
+    public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): User {
         if (username.length > 100) {
             throw new Error("The given username is too long");
         }
@@ -225,4 +228,15 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             })
             .notifyChanged((project, component) => project.usersProperty)
             .saveOnPrimary("user", "project");
+
+
+    public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
+
+    public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
+
+    public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
+
+    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
+
+
 }
