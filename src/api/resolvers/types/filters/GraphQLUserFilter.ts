@@ -29,9 +29,9 @@ let userFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The user must be participant of at least one of the issues with the given ids"
         },
-        issueComments: {
+        comments: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The user must have written at least one of the comments with the given ids"
+            description: "The user must have written or edited at least one of the comments (issue or comment) with the given ids"
         }
     })
 };
