@@ -66,13 +66,13 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
         if (this.onUsernames) {
             if (this.onUsernames.length == 1) {
                 conditions.conditions.push({
-                    text: `username=$${conditions.i}`,
-                    values: [this.onUsernames],
+                    text: `main.username=$${conditions.i}`,
+                    values: [this.onUsernames[0]],
                     priority: 5
                 });
             } else {
                 conditions.conditions.push({
-                    text: `username=ANY($${conditions.i})`,
+                    text: `main.username=ANY($${conditions.i})`,
                     values: [this.onUsernames],
                     priority: 5
                 });

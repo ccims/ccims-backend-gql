@@ -23,10 +23,6 @@ let createUserInputConfig: GraphQLInputObjectTypeConfig = {
         email: {
             type: GraphQLString,
             description: "The mail address of the user.\n\nMax. 320 characters. Must be a valid email address"
-        },
-        projects: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "If given, the user will be added to the projects with those IDs immediately after creation"
         }
     })
 };
