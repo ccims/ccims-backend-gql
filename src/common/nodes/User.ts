@@ -3,6 +3,13 @@ import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { UserPermissions } from "../../utils/UserPermissions";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { Project } from "./Project";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import crypto from "crypto";
+import { config } from "../../config/Config";
 
 /**
  * specification of a table which can contain users
@@ -48,7 +55,10 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     private _permissions: UserPermissions;
 
     /**
-     * abstract constructor for subclasses
+     * Constructor for creating a user from database
+     * 
+     * DONT'T USE TO CREATE A NEW USER!
+     * 
      * @param type the type
      * @param databaseManager the databaseManager 
      * @param tableSpecification teh table specification
@@ -56,13 +66,34 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
-        super(NodeType.User, databaseManager, tableSpecification, id);
+    public constructor(databaseManager: DatabaseManager, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
+        super(NodeType.User, databaseManager, UserTableSpecification, id);
         this._username = username;
         this._displayName = displayName;
         this._passwordHash = passwordHash;
         this._email = email;
+        permissions.user = this;
         this._permissions = permissions;
+        this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this));
+    }
+
+    public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string, projects?: string[]): User {
+        if (username.length > 100) {
+            throw new Error("The given username is too long");
+        }
+        if (displayName.length > 200) {
+            throw new Error("the given display name is too long");
+        }
+        if (email && email.length > 320) {
+            throw new Error("The given email is too long");
+        }
+
+        const passwordHash = crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
+
+        const user = new User(databaseManager, databaseManager.idGenerator.generateString(), username, displayName, passwordHash, new UserPermissions(), email);
+        user.markNew();
+        databaseManager.addCachedNode(user);
+        return user;
     }
 
     /**
@@ -148,4 +179,27 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public get permissions(): UserPermissions {
         return this._permissions;
     }
+
+    /**
+     * Property containing all projects this user is a part of
+     */
+    public readonly projectsProperty: NodeListProperty<Project, User>;
+
+    /**
+     * specification of the projectsProperty
+     */
+    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, User>
+        = NodeListPropertySpecification.loadDynamic<Project, User>(LoadRelationCommand.fromPrimary("user", "project"),
+            (ids, user) => {
+                const command = new LoadProjectsCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadProjectsCommand();
+                command.onUsers = [user.id];
+                return command;
+            })
+            .notifyChanged((project, component) => project.usersProperty)
+            .saveOnPrimary("user", "project");
 }

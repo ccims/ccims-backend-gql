@@ -2,7 +2,8 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { ResolverContext } from "../ResolverContext";
+import { ResolverContext, ResolverContextOptional } from "../ResolverContext";
+import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * Express middleware for verifying a JWT given by the client
@@ -72,8 +73,15 @@ class JWTVerifier {
      * @param next The next function to call the next middleware.\
      * This will be called once the provided JWT was sucessfully verified as a valid token
      */
-    public handle(req: ResolverContext, res: core.Response, next: core.NextFunction) {
+    public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction) {
         if (config.api.debugNoLogin) {
+            if (req.dbManager) {
+                const cmd = new LoadUsersCommand();
+                cmd.onUsernames = ["root"];
+                req.dbManager.addCommand(cmd);
+                await req.dbManager.executePendingCommands();
+                req.user = cmd.getResult()[0];
+            }
             next();
             return;
         }

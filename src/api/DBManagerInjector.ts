@@ -1,6 +1,6 @@
 import * as core from "express-serve-static-core";
 import { Client } from "pg";
-import { ResolverContext } from "./ResolverContext";
+import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 
@@ -75,7 +75,7 @@ class DBManagerInjector {
      * @param next The next function to call the next middleware/handler. 
      * This can't be `null` or `undefined` and must be a valid, callable function
      */
-    public handle(req: ResolverContext, res: core.Response, next: core.NextFunction) {
+    public handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction) {
         if (typeof req === "object" && req && !req.dbManager) {
             req.dbManager = new DatabaseManager(this.idGenerator, this.pgClient);
         }

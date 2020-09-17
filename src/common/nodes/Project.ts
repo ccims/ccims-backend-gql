@@ -11,6 +11,7 @@ import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User } from "./User";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * the specification of the table which contains projects
@@ -41,6 +42,29 @@ export class Project extends NamedOwnedNode<Project> {
             },
             project => {
                 const command = new LoadComponentsCommand();
+                command.onProjects = [project.id];
+                return command;
+            })
+            .notifyChanged((component, project) => component.projectsProperty)
+            .saveOnPrimary("project", "component");
+
+    /**
+     * Property with the usersparticipating in this project
+     */
+    public readonly usersProperty: NodeListProperty<User, Project>;
+
+    /**
+     * the specification of compopnentsProperty
+     */
+    private static readonly usersPropertySpecification: NodeListPropertySpecification<User, Project>
+        = NodeListPropertySpecification.loadDynamic<User, Project>(LoadRelationCommand.fromSecundary("user", "project"),
+            (ids, project) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            project => {
+                const command = new LoadUsersCommand();
                 command.onProjects = [project.id];
                 return command;
             })
@@ -85,6 +109,7 @@ export class Project extends NamedOwnedNode<Project> {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
         this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
         this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this));
+        this.usersProperty = this.registerSaveable(new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this));
     }
 
     /**
