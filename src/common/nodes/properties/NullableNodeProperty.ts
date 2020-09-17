@@ -30,7 +30,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * @param specification  the specification of this property
      * @param node the node which contains this property
      */
-    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id?: string, ) {
+    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id?: string) {
         super(databaseManager, specification, node);
         this._id = id;
         this._specification = specification;

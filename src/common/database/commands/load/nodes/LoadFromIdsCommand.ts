@@ -1,4 +1,5 @@
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
+import { LoadComponentInterfacesCommand } from "./LoadComponentInterfacesCommand";
 import { LoadComponentsCommand } from "./LoadComponentsCommand";
 import { LoadImsSystemsCommand } from "./LoadImsSystemsCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
@@ -9,6 +10,7 @@ import { LoadProjectsCommand } from "./LoadProjectsCommand";
  */
 const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["component", () => new LoadComponentsCommand()],
+    ["component_interface", () => new LoadComponentInterfacesCommand()],
     ["project", () => new LoadProjectsCommand()],
     ["ims_system", () => new LoadImsSystemsCommand()]
 ]);

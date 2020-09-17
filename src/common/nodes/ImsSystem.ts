@@ -5,8 +5,8 @@ import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Component } from "./Component";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 
 /**
  * enum with all (currently not) supported issue management systems
@@ -58,7 +58,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
     /**
      * property with the component on which this imsSystem is
      */
-    public componentProperty: NodeProperty<Component, ImsSystem>;
+    public componentProperty: NullableNodeProperty<Component, ImsSystem>;
 
     /**
      * specification of the componentProperty
@@ -86,12 +86,23 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
      * @param connectionData the connectionData
      * @param componentId the id of the component on which this ImsSystem is
      */
-    public constructor (databaseManager: DatabaseManager, id: string, imsType: ImsType, endpoint: string, connectionData: ConnectionData, componentId: string) {
+    public constructor (databaseManager: DatabaseManager, id: string, imsType: ImsType, endpoint: string, connectionData: ConnectionData, componentId?: string) {
         super(NodeType.ImsSystem, databaseManager, ImsSystemTableSpecification, id);
         this._imsType = imsType;
         this._connectionData = connectionData;
         this._endpoint = endpoint;
-        this.componentProperty = this.registerSaveable(new NodeProperty<Component, ImsSystem>(databaseManager, ImsSystem.componentPropertySpecification, this, componentId));
+        this.componentProperty = this.registerSaveable(new NullableNodeProperty<Component, ImsSystem>(databaseManager, ImsSystem.componentPropertySpecification, this, componentId));
+    }
+
+    /**
+     * creates a new ImsSystem with the specififed imsType, endpoint and connectionData
+     * 
+     */
+    public static create(databaseManager: DatabaseManager, imsType: ImsType, endpoint: string, connectionData: ConnectionData): ImsSystem {
+        const imsSystem = new ImsSystem(databaseManager, databaseManager.idGenerator.generateString(), imsType, endpoint, connectionData);
+        imsSystem.markNew();
+        databaseManager.addCachedNode(imsSystem);
+        return imsSystem;
     }
 
     public get imsType(): ImsType {
@@ -119,13 +130,6 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
     public set connectionData(value: ConnectionData) {
         this.markChanged();
         this._connectionData = this.connectionData;
-    }
-
-    /**
-     * public because Component has to call it
-     */
-    markNew(): void {
-        super.markNew();
     }
 
 }
