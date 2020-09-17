@@ -77,10 +77,11 @@ class JWTVerifier {
         if (config.api.debugNoLogin) {
             if (req.dbManager) {
                 const cmd = new LoadUsersCommand();
-                cmd.onUsernames = ["root"];
+                cmd.ids = ["0"];
                 req.dbManager.addCommand(cmd);
                 await req.dbManager.executePendingCommands();
-                req.user = cmd.getResult()[0];
+                const result = cmd.getResult();
+                req.user = result[0];
             }
             next();
             return;

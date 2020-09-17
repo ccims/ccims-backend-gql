@@ -51,13 +51,15 @@ class GraphQLHandler {
      * @param res The express response object. Passed directly on to the express-graphql handler
      * @param next The next function to the next middleware. Won't be called as this handler will always resolve the request
      */
-    public handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction): any {
+    public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction): Promise<any> {
         if (!req.user || !req.dbManager) {
             log(2, "Database manager or logged in user empty");
             res.status(500).end("Error while processing request");
         } else {
             let resolverRequest: ResolverContext = req as ResolverContext;
-            return this.middleware(resolverRequest, res);
+            var result = await this.middleware(resolverRequest, res);
+            req.dbManager.saveAndClearCache();
+            return result;
         }
     }
 }

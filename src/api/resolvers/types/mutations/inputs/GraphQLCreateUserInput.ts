@@ -4,6 +4,10 @@ let createUserInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateUserInput",
     description: "The inputs for the createUser mutation",
     fields: () => ({
+        clientMutationID: {
+            type: GraphQLString,
+            description: "An arbitraty string to return together with the mutation result"
+        },
         username: {
             type: GraphQLNonNull(GraphQLString),
             description: "The unique username used for login.\n\nMax. 100 characters."

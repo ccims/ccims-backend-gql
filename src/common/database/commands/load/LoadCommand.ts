@@ -20,7 +20,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      */
     public getQueryConfig(): QueryConfig<any[]> {
         const queryStart: QueryPart = this.generateQueryStart();
-        let text: string = queryStart.text + " WHERE";
+        let text: string = queryStart.text + " WHERE ";
         let values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
@@ -37,7 +37,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         }
 
         const queryEnd: QueryPart = this.generateQueryEnd(values.length + 1);
-        text += queryEnd.text;
+        text += " " + queryEnd.text;
         values.push(...queryEnd.values);
 
         return {
@@ -61,7 +61,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
     protected generateQueryEnd(i: number): QueryPart {
         return {
             text: ";",
-            values: [] 
+            values: []
         }
     }
 
@@ -74,6 +74,6 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * @param i the first index of query parameter to use
      * @result the parameters and a new i
      */
-    protected abstract generateConditions(i: number): {conditions: ConditionSpecification[], i: number}
+    protected abstract generateConditions(i: number): { conditions: ConditionSpecification[], i: number }
 
 }
