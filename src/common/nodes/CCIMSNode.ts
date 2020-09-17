@@ -36,7 +36,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     /**
      * true if the node is removed
      */
-    private _isDeleted: boolean = false;
+    protected _isDeleted: boolean = false;
     /**
      * the databaseManager
      */

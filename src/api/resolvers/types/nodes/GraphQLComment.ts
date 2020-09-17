@@ -2,7 +2,7 @@ import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, Grap
 import reactions from "../../listQueries/issue/reactions";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLUser from "./GraphQLUser";
-import { Comment } from "../../../../common/nodes/Comment";
+import { Comment } from "../../../../common/nodes/timelineItems/Comment";
 import { ResolverContext } from "../../../ResolverContext";
 
 let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {

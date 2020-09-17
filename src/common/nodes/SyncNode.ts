@@ -6,13 +6,19 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { AddNodeCommand } from "../database/commands/save/AddNodeCommands";
 import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { User } from "./User";
+import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 
 /**
  * a table specification for a sync node
  * does not specifiy the metadata, because this is up to the save method
  */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
-    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, new RowSpecification("deleted", node => node.isDeleted));
+    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, 
+    RowSpecification.fromProperty("deleted", "isDeleted"));
 
 /**
  * a syncNode
@@ -25,10 +31,20 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     private _metadata: Map<string, SyncMetadata> | undefined;
 
-    /**
-     * the data where the SyncNode was last changed
-     */
-    private _lastChangedAt: Date;
+    public createdByProperty: NullableNodeProperty<User, SyncNode>;
+
+    private static createdByPropertySpecification: NodePropertySpecification<User, SyncNode>
+        = new NodePropertySpecification<User, SyncNode>(
+            (id, syncNode) => {
+                const command = new LoadUsersCommand();
+                command.ids = [id];
+                return command;
+            },
+            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand())
+            //TODO notifier?
+        );
+
+    private readonly _createdAt: Date;
 
     /**
      * abstract constructor for extending classes
@@ -39,27 +55,16 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @param lastChangedAt the Date where this node was last changed
      * @param metadata metadata for the sync
      */
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, lastChangedAt: Date, metadata?: SyncMetadataMap) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
+        createdById: string | undefined, createdAt: Date,
+        isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(type, databaseManager, tableSpecification, id);
-        this._lastChangedAt = lastChangedAt;
         if (metadata) {
             this._metadata = new Map(metadata.entries);
         }
-    }
-
-    /**
-     * gets the time when this node was last changed
-     */
-    public get lastChangedAt(): Date {
-        return this._lastChangedAt;
-    }
-
-    /**
-     * sets the time when this node was last changed
-     */
-    public set lastChangedAt(value: Date) {
-        this._lastChangedAt = value;
-        this.markChanged();
+        this._isDeleted = isDeleted;
+        this._createdAt = createdAt;
+        this.createdByProperty = this.registerSaveable(new NullableNodeProperty<User, SyncNode>(databaseManager, SyncNode.createdByPropertySpecification, this, createdById));
     }
 
     /**
@@ -121,6 +126,10 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         } else {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
         }
+    }
+
+    public get createdAt(): Date {
+        return this._createdAt;
     }
 
 }

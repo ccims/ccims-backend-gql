@@ -3,7 +3,7 @@ import GraphQLIssue from "./GraphQLIssue";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLNode from "../GraphQLNode";
-import { IssueTimelineItem } from "../../../../common/nodes/IssueTimelineItem";
+import { IssueTimelineItem } from "../../../../common/nodes/timelineItems/IssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";
 
 let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, ResolverContext> = {
