@@ -2,6 +2,8 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
+import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
+import { ResolverContextOptional } from "../ResolverContext";
 
 /**
  * Express middleware for generating and returning a JWT
@@ -57,7 +59,7 @@ class LoginHandler {
      *       "username": "[USERNAME]",
      *       "password": "[PASSWORD]",
      *       "client": {
-     *          "name": "[HUMAN_READABLE_CLIENT_NAME]",
+     *          "name": "[HUMAN_READABLE_CLIENT_NAME]"
      *       }
      *    }
      * 
@@ -69,25 +71,41 @@ class LoginHandler {
      * @param next The next function to call the next middleware.\
      * UNUSED and won't be called, as this middleware will terminate the request in all cases
      */
-    public handle(req: core.Request, res: core.Response, next: core.NextFunction): void {
+    public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction): Promise<void> {
+        if (!req.dbManager) {
+            log(2, "Database manager undefined during login");
+            res.status(500).end("Error whil logging in");
+            return;
+        }
         const userInfo: UserCredentials = req.body;
-        //TODO: Verify user credentials
         log(5, "User login attempt");
         log(7, userInfo);
         if (UserCredentials.checkCredentialStructure(userInfo)) {
-            const webToken = jwt.sign({
-                name: userInfo.username,
-            }, this.secret, {
-                subject: "USER_ID",
-                issuer: "PROCESS_ID"
-            });
-            log(5, "Successfull login");
-            log(7, webToken);
-            res.status(200).json({ token: webToken });
-            return;
+            const cmd = new LoadUsersCommand();
+            cmd.onUsernames = [userInfo.username];
+            req.dbManager.addCommand(cmd);
+            await req.dbManager.executePendingCommands();
+            const result = cmd.getResult();
+            if (result.length == 1 && result[0].verifyPasswordAndRehash(userInfo.password)) {
+                const webToken = jwt.sign({
+                    name: result[0].username,
+                }, this.secret, {
+                    subject: result[0].id,
+                    issuer: "PROCESS_ID"
+                });
+                log(5, "Successfull login");
+                log(7, webToken);
+                res.status(200).json({ token: webToken });
+                return;
+            } else {
+                log(3, "Failed login attempt - illegal password");
+                log(6, userInfo.username + " entered wrong password");
+                res.status(401).end("Invalid username or password");
+                return;
+            }
         }
         log(3, "Failed login attempt");
-        res.status(401).end("Invalid user credential format",);
+        res.status(401).end("Invalid user credential format");
     }
 }
 
@@ -199,7 +217,7 @@ class ClientInfo {
         if (typeof info !== "object" || info === null) {
             return false;
         }
-        if (typeof info.name !== "string" || typeof info.name !== "undefined") {
+        if (typeof info.name !== "string" && typeof info.name !== "undefined") {
             return false;
         }
         return true;

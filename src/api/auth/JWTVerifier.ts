@@ -86,23 +86,36 @@ class JWTVerifier {
             next();
             return;
         }
+        if (!req.dbManager) {
+            log(2, "Database manager undefined during JWT verification");
+            res.status(500).end("Error during token verification");
+            return;
+        }
         log(5, "JWT verifying");
         if (req.headers.authorization) {
             const token = req.headers.authorization.split(" ")[1];
-            jwt.verify(token, this.secret, (err, payload) => {
+            jwt.verify(token, this.secret, async (err, payload) => {
                 if (err || !payload) {
                     log(3, "Token verification failed");
                     res.status(401).end("Token invalid. Request new one");
                 } else {
                     const checkedPayload: JWTPayload = payload as JWTPayload;
                     if (JWTPayload.checkJWTPayload(checkedPayload)) {
-                        const userId = checkedPayload.iss;
-                        const user = undefined; //TODO load user from database manager
                         log(7, checkedPayload);
-                        log(5, "User verified");
-                        //TODO: Load user
-                        req.user = user;
-                        next();
+                        const userId = checkedPayload.iss;
+                        const cmd = new LoadUsersCommand();
+                        cmd.ids = [userId];
+                        req.dbManager?.addCommand(cmd);
+                        await req.dbManager?.executePendingCommands();
+                        const result = cmd.getResult();
+                        if (result.length == 1 && result[0].id == userId && result[0].username == checkedPayload.name) {
+                            log(5, "User verified");
+                            req.user = result[0];
+                            next();
+                        } else {
+                            log(3, "Illegal token payload for user " + checkedPayload.name);
+                            res.status(401).end("Illegal token");
+                        }
                     } else {
                         log(3, "Token has no correct payload");
                         res.status(401).end("Illegal token");

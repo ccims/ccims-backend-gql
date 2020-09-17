@@ -10,12 +10,13 @@ import { LoadRelationCommand } from "../database/commands/load/LoadRelationComma
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import crypto from "crypto";
 import { config } from "../../config/Config";
+import { log } from "../../log";
 
 /**
  * specification of a table which can contain users
  */
 export const UserTableSpecification: NodeTableSpecification<User>
-    = new NodeTableSpecification<User>("node", CCIMSNodeTableSpecification,
+    = new NodeTableSpecification<User>("users", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("username", "username"),
         RowSpecification.fromProperty("displayname", "displayName"),
         RowSpecification.fromProperty("pw_hash", "passwordHash"),
@@ -88,7 +89,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             throw new Error("The given email is too long");
         }
 
-        const passwordHash = crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
+        const passwordHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
 
         const user = new User(databaseManager, databaseManager.idGenerator.generateString(), username, displayName, passwordHash, new UserPermissions(), email);
         user.markNew();
@@ -148,8 +149,26 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this._passwordHash = value;
     }
 
+    /**
+     * The password of the user in hased format
+     * The database allows 200 characters max.
+     */
     public get passwordHash(): string {
         return this._passwordHash;
+    }
+
+    public verifyPasswordAndRehash(password: string): boolean {
+        const [oldAlgorithm, oldHash] = this._passwordHash.split(";");
+        const inputHash = crypto.createHmac(oldAlgorithm, config.common.passwordSecret).update(password).digest("base64");
+        if (inputHash !== oldHash) {
+            return false;
+        }
+        if (oldAlgorithm.trim().toLowerCase() != config.common.passwordAlgorithm.trim().toLowerCase()) {
+            log(6, "Rehashed user password for " + this._username);
+            const newHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
+            this.passwordHash = newHash;
+        }
+        return true;
     }
 
     /**

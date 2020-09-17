@@ -96,8 +96,9 @@ export class DatabaseManager implements NodeCache {
             await this.pgClient.query("BEGIN;");
             await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
             await this.pgClient.query("COMMIT;");
-        } catch {
+        } catch (e) {
             log(2, "database command failed");
+            log(8, e);
         }
         this.pendingCommands = [];
     }
