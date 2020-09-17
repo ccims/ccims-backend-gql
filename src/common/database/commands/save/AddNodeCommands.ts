@@ -16,7 +16,7 @@ export class AddNodeCommand<T extends CCIMSNode> extends DatabaseCommand<void> {
      * @param table the name of the table where to add the node
      * @param rows the list of rows which should be saved
      */
-    public constructor (private readonly node: T, private readonly table: string, private readonly rows: RowSpecification<T>[]) {
+    public constructor(private readonly node: T, private readonly table: string, private readonly rows: RowSpecification<T>[]) {
         super();
     }
 
@@ -28,7 +28,7 @@ export class AddNodeCommand<T extends CCIMSNode> extends DatabaseCommand<void> {
         const rowNames = this.rows.map(row => row.rowName).join(", ");
         const numbers = this.rows.map((row, index) => `$${index + 1}`).join(", ");
         return {
-            text: `INSERT INTO ${this.table} (${rowNames}) VALUES (${numbers})`,
+            text: `INSERT INTO ${this.table} (${rowNames}) VALUES (${numbers});`,
             values: this.rows.map(row => row.getValue(this.node))
         };
     }

@@ -38,9 +38,13 @@ export class UserPermissions {
      * This can be `undefined`. If it is, the permissions won't be changable until a user is set
      */
     public constructor(jsonPermissions?: DatabsePermissions | string, user?: User) {
-        let parsedPermissions: DatabsePermissions = jsonPermissions as DatabsePermissions;
+        let parsedPermissions: DatabsePermissions | undefined = jsonPermissions as DatabsePermissions;
         if (typeof jsonPermissions === "string") {
-            parsedPermissions = JSON.parse(jsonPermissions);
+            try {
+                parsedPermissions = JSON.parse(jsonPermissions);
+            } catch {
+                parsedPermissions = undefined;
+            }
         }
         if (user) {
             this._user = user;

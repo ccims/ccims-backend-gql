@@ -11,7 +11,7 @@ import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
  * @param T the type of CCISNode to query
  */
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
-    
+
     /**
      * filter by a list of ids
      * the priority for this filter is 1
@@ -62,14 +62,14 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions: ConditionSpecification[] = [];
 
         if (this.ids) {
             if (this.ids.length == 1) {
                 conditions.push({
                     priority: 1,
-                    text: `main.id = $${i})`,
+                    text: `main.id = $${i}`,
                     values: [this.ids[0]]
                 });
             } else {
@@ -99,7 +99,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         }
 
         return {
-            conditions: conditions, 
+            conditions: conditions,
             i: i
         };
     }
@@ -139,7 +139,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         if (this.limit) {
             return {
                 text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
-                values: [this.limit] 
+                values: [this.limit]
             }
         } else {
             return {

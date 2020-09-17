@@ -20,7 +20,7 @@ export const UserTableSpecification: NodeTableSpecification<User>
         RowSpecification.fromProperty("displayname", "displayName"),
         RowSpecification.fromProperty("pw_hash", "passwordHash"),
         RowSpecification.fromProperty("email", "email"),
-        RowSpecification.fromProperty("permissions", "permissions"));
+        new RowSpecification<User>("permissions", (user) => user.permissions.toDatabase()));
 
 /**
  * A user is a CCIMSNode to represent a user (account) of the ccims with a username, password, email etc. 
@@ -146,6 +146,10 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         }
         this.markChanged();
         this._passwordHash = value;
+    }
+
+    public get passwordHash(): string {
+        return this._passwordHash;
     }
 
     /**

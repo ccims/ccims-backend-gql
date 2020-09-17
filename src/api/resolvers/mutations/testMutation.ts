@@ -14,6 +14,9 @@ export default () => {
                     type: GraphQLTestMutationInput,
                     description: "The data for the mutation"
                 }
+            },
+            resolve: async (src, args, context, info) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
         };
     }
