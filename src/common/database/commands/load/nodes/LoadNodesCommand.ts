@@ -125,7 +125,7 @@ export class LoadNodesCommand<T extends CCIMSNode> extends LoadCommand<T[]> {
             if (this.ids.length == 1) {
                 conditions.push({
                     priority: 1,
-                    text: `main.id = $${i})`,
+                    text: `main.id = $${i}`,
                     values: [this.ids[0]]
                 });
             } else {
