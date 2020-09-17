@@ -55,6 +55,7 @@ DROP TABLE IF EXISTS relation_issue_label;
 DROP TABLE IF EXISTS relation_issue_participant;
 DROP TABLE IF EXISTS relation_issue_assignee;
 DROP TABLE IF EXISTS relation_issue_linkedIssue;
+DROP TABLE IF EXISTS relation_comment_editedBy;
 DROP TABLE IF EXISTS issue_issue;
 
 -- Common
