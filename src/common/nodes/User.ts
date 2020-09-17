@@ -12,6 +12,7 @@ import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
 import { Issue } from "./Issue";
+import { IssueComment } from "./timelineItems/IssueComment";
 
 /**
  * specification of a table which can contain users
@@ -79,6 +80,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this));
         this.assignedToIssuesProperty = undefined as any;
         this.participantOfIssuesProperty = undefined as any;
+        this.issueCommentProperty = undefined as any;
     }
 
     public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): User {
@@ -238,5 +240,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
 
     public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
 
+    public readonly issueCommentProperty: NodeListProperty<IssueComment, User>;
+
+    public static readonly issueCommentPropertySpecification: NodeListPropertySpecification<IssueComment, User> = undefined as any;
 
 }
