@@ -130,6 +130,9 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      */
     public readonly consumedInterfacesProperty: NodeListProperty<ComponentInterface, Component>;
 
+    /**
+     * specification of consumedInterfacesProperty
+     */
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumedComponentInterface"),
             (ids, component) => {
