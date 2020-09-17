@@ -44,7 +44,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM component_interface`,
+            text: `SELECT ${this.rows} FROM component_interface main `,
             values: []
         }
     }

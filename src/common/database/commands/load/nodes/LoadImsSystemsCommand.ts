@@ -32,7 +32,7 @@ export class LoadImsSystemsCommand extends LoadNodeListCommand<ImsSystem> {
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM ims_system`,
+            text: `SELECT ${this.rows} FROM ims_system main `,
             values: []
         };
     }

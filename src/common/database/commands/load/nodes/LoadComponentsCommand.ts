@@ -43,7 +43,7 @@ export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM component`,
+            text: `SELECT ${this.rows} FROM component main `,
             values: []
         }
     }
