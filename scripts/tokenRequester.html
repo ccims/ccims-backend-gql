@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST-requester</title>
+</head>
+
+<body>
+    <textarea id="text" style="width:500px;height:250px;">
+{
+    "username": "USERNAME",
+    "password": "PASSWORD",
+    "client": {
+        "name": "CLIENTNAME"
+    }
+}
+    </textarea><br>
+    <button onclick="send();">Send</button><br>
+    <span id="out"></span>
+    <script>
+        const out = document.getElementById("out");
+        const text = document.getElementById("text");
+        function send() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = () => {
+                if (xhttp.readyState == 4) {
+                    out.innerText = xhttp.response;
+                }
+            }
+            xhttp.open("POST", "http://localhost:8080/login");
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send(text.value);
+        }
+    </script>
+</body>
+
+</html>
