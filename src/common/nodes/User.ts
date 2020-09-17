@@ -56,8 +56,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
-        super(NodeType.User, databaseManager, tableSpecification, id);
+    public constructor(databaseManager: DatabaseManager, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
+        super(NodeType.User, databaseManager, UserTableSpecification, id);
         this._username = username;
         this._displayName = displayName;
         this._passwordHash = passwordHash;
