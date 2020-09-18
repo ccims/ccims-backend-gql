@@ -29,7 +29,7 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
     /**
      * abstract constructor for subclasses
      * @param type the type
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
      * @param name the name of the NamedNode

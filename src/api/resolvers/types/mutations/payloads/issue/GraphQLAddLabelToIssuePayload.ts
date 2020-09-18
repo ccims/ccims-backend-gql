@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLLabelledEvent from "../../../nodes/timelineItems/GraphQLLabelledEvent";
 
-let addLabelToIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addLabelToIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddLabelToIssuePayload",
     description: "The Payload/Response for the addToIssueLabel mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let addLabelToIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> 
         }
     })
 };
-let GraphQLAddLabelToIssuePayload = new GraphQLObjectType(addLabelToIssuePayloadConfig);
+const GraphQLAddLabelToIssuePayload = new GraphQLObjectType(addLabelToIssuePayloadConfig);
 export default GraphQLAddLabelToIssuePayload;

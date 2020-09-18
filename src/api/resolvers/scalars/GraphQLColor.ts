@@ -1,7 +1,7 @@
 import { GraphQLScalarType, ValueNode, astFromValue, Kind, GraphQLScalarTypeConfig, StringValueNode } from "graphql";
 import { Color } from "../../../common/Color";
 
-let color: GraphQLScalarTypeConfig<Color, string> = {
+const color: GraphQLScalarTypeConfig<Color, string> = {
     name: "Color",
     description: "A scalar type representing a colour in RGB colour space.\n" +
         "The scalar must be a string in CSS Colour Hex format:\n\n" +

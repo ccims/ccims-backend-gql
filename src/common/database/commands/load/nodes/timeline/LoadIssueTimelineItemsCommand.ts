@@ -12,7 +12,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     public onIssues?: string[];
 
     /**
-     * if true, no body 
+     * if true, no body
      */
     public noBody: boolean = false;
 
@@ -22,7 +22,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     public types?: IssueTimelineItemType[];
 
     /**
-     * creates a new 
+     * creates a new
      */
     public constructor() {
         super("issue_timelineItem");
@@ -92,7 +92,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
             });
             i++;
         }
-        return {conditions: conditions, i: i};
+        return {conditions, i};
     }
 
     /**

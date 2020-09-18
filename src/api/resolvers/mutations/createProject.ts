@@ -3,7 +3,7 @@ import { ResolverContext } from "../../ResolverContext";
 import GraphQLCreateProjectPayload from "../types/mutations/payloads/GraphQLCreateProjectPayload";
 import GraphQLCreateProjectInput from "../types/mutations/inputs/GraphQLCreateProjectInput";
 
-let createProject: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let createProject: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (createProject === undefined) {
         createProject = {

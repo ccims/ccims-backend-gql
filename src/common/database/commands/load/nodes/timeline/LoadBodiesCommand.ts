@@ -24,9 +24,9 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
      * @returns the parsed Body
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Body {
-        return new Body(databaseManager, resultRow["id"], resultRow["created_by"], resultRow["created_at"], resultRow["issue"], 
-            resultRow["body"], resultRow["last_edited_by"], resultRow["last_edited_at"], resultRow["initial_title"], resultRow["deleted"], 
-            this.loadWithMetadata ? resultRow["metadata"] : undefined);
+        return new Body(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
+            resultRow.body, resultRow.last_edited_by, resultRow.last_edited_at, resultRow.initial_title, resultRow.deleted,
+            this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 
     /**
@@ -38,5 +38,5 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
             values: []
         };
     }
-    
+
 }

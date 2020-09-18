@@ -3,7 +3,7 @@ import GraphQLDate from "../../../../scalars/GraphQLDate";
 import GraphQLIssueCategory from "../../../../enums/GraphQLIssueCategory";
 import GraphQLTimeSpan from "../../../../scalars/GraphQLTimeSpan";
 
-let createIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const createIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateIssueInput",
     description: "The inputs for the createIssue",
     fields: () => ({
@@ -53,5 +53,5 @@ let createIssueInputConfig: GraphQLInputObjectTypeConfig = {
         },
     })
 };
-let GraphQLCreateIssueInput = new GraphQLInputObjectType(createIssueInputConfig);
+const GraphQLCreateIssueInput = new GraphQLInputObjectType(createIssueInputConfig);
 export default GraphQLCreateIssueInput;

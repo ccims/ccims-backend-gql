@@ -1,6 +1,6 @@
 import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-let issueCategoryConfig: GraphQLEnumTypeConfig = {
+const issueCategoryConfig: GraphQLEnumTypeConfig = {
     name: "IssueCategory",
     description: "The category of an issue. The issue will be displayed accordingly in the ccims",
     values: {
@@ -18,5 +18,5 @@ let issueCategoryConfig: GraphQLEnumTypeConfig = {
         }
     }
 };
-let GraphQLIssueCategory = new GraphQLEnumType(issueCategoryConfig);
+const GraphQLIssueCategory = new GraphQLEnumType(issueCategoryConfig);
 export default GraphQLIssueCategory;

@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLIssueLocation from "../GraphQLIssueLocation";
 
-let addedToLocationEventConfig: GraphQLObjectTypeConfig<AddedToLocationEvent, ResolverContext> = {
+const addedToLocationEventConfig: GraphQLObjectTypeConfig<AddedToLocationEvent, ResolverContext> = {
     name: "AddedToLocationEvent",
     description: "An AddedToLocationEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -36,5 +36,5 @@ let addedToLocationEventConfig: GraphQLObjectTypeConfig<AddedToLocationEvent, Re
         }
     })
 };
-let GraphQLAddedToLocationEvent = new GraphQLObjectType(addedToLocationEventConfig);
+const GraphQLAddedToLocationEvent = new GraphQLObjectType(addedToLocationEventConfig);
 export default GraphQLAddedToLocationEvent;

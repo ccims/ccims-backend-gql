@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ReopenIssueInput",
     description: "The inputs for the reopenIssue",
     fields: () => ({
@@ -14,5 +14,5 @@ let reopenIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLReopenIssueInput = new GraphQLInputObjectType(reopenIssueInputConfig);
+const GraphQLReopenIssueInput = new GraphQLInputObjectType(reopenIssueInputConfig);
 export default GraphQLReopenIssueInput;

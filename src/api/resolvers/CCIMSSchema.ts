@@ -3,7 +3,7 @@ import mutation from "./mutation";
 import query from "./query";
 import typeImports from "./typeImports";
 
-let ccimsSchema = new GraphQLSchema({
+const ccimsSchema = new GraphQLSchema({
     types: typeImports,
     mutation,
     query

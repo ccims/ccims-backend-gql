@@ -41,7 +41,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      * @returns the parsed componentInterface
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ComponentInterface {
-        return new ComponentInterface(databaseManager, resultRow["id"], resultRow["name"], resultRow["description"], resultRow["host_component_id"]);
+        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.host_component_id);
     }
 
     /**

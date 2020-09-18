@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLAddedToLocationEvent from "../../../nodes/timelineItems/GraphQLAddedToLocationEvent";
 
-let addIssueToLocationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addIssueToLocationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddIssueToLocationPayload",
     description: "The Payload/Response for the addIssueToLocation mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let addIssueToLocationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContex
         }
     })
 };
-let GraphQLAddIssueToLocationPayload = new GraphQLObjectType(addIssueToLocationPayloadConfig);
+const GraphQLAddIssueToLocationPayload = new GraphQLObjectType(addIssueToLocationPayloadConfig);
 export default GraphQLAddIssueToLocationPayload;

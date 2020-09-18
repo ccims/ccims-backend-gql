@@ -12,7 +12,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
      * filters for IssueLocations where at least one of the issues is located
      */
     public hasIssueOnLocation?: string[];
-    
+
     /**
      * creates a new LoadIssueLocationsCommand
      */
@@ -33,7 +33,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
             conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }
-        
+
         return conditions;
     }
 }

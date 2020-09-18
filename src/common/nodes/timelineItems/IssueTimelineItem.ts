@@ -14,7 +14,7 @@ import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNo
 * does not specifiy the metadata, because this is up to the save method
 */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
-   = new NodeTableSpecification<IssueTimelineItem>("issue_timelineItem", SyncNodeTableSpecification, 
+   = new NodeTableSpecification<IssueTimelineItem>("issue_timelineItem", SyncNodeTableSpecification,
    new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {

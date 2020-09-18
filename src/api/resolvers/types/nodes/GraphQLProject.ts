@@ -8,7 +8,7 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 
-let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
+const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
     description: "A project is a one unit in which the participating components colaborate",
     interfaces: () => ([GraphQLNode]),
@@ -35,5 +35,5 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
         }
     })
 };
-let GraphQLProject = new GraphQLObjectType(projectConfig);
+const GraphQLProject = new GraphQLObjectType(projectConfig);
 export default GraphQLProject;

@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLLabel from "../../../nodes/GraphQLLabel";
 
-let removeLabelFromIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const removeLabelFromIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "RemoveLabelFromIssuePayload",
     description: "The Payload/Response for the removeFromIssueLabel mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let removeLabelFromIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverCont
         }
     })
 };
-let GraphQLRemoveLabelFromIssuePayload = new GraphQLObjectType(removeLabelFromIssuePayloadConfig);
+const GraphQLRemoveLabelFromIssuePayload = new GraphQLObjectType(removeLabelFromIssuePayloadConfig);
 export default GraphQLRemoveLabelFromIssuePayload;

@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLComponentPage from "../../types/pages/GraphQLComponentPage";
 import GraphQLComponentFilter from "../../types/filters/GraphQLComponentFilter";
 
-let consumedBy: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let consumedBy: GraphQLFieldConfig<any, any, any> | undefined;
 
 export default () => {
     if (consumedBy === undefined) {

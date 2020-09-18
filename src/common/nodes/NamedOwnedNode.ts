@@ -12,7 +12,7 @@ import { User } from "./User";
  * specification of a table which contains NamedOwnedNodes
  */
 export const NamedOwnedNodeTableSpecification: NodeTableSpecification<NamedOwnedNode>
-    = new NodeTableSpecification<NamedOwnedNode>("node", NamedNodeTableSpecification, 
+    = new NodeTableSpecification<NamedOwnedNode>("node", NamedNodeTableSpecification,
         new RowSpecification("owner_user_id", component => component.id));
 
 /**
@@ -41,7 +41,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     /**
      * abstract constructor for subclasses
      * @param type the type
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
      * @param name the name of the NamedNode

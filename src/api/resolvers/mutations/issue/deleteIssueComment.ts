@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLDeleteIssueCommentPayload from "../../types/mutations/payloads/issue/GraphQLDeleteIssueCommentPayload";
 import GraphQLDeleteIssueCommentInput from "../../types/mutations/inputs/issue/GraphQLDeleteIssueCommentInput";
 
-let deleteIssueComment: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let deleteIssueComment: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (deleteIssueComment === undefined) {
         deleteIssueComment = {

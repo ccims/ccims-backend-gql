@@ -19,7 +19,7 @@ export class NodeTableSpecification<T extends CCIMSNode> {
      * creates a new NodeTableSpecification with all rows of baseNodeTableSpecification and rows
      * @param tableName the name of the table
      * @param baseNodeTableSpecification the table specification which is the base of this table specification
-     * @param rows the rows to add to baseNodeTableSpecification 
+     * @param rows the rows to add to baseNodeTableSpecification
      */
     public constructor(tableName: string, baseNodeTableSpecification?: NodeTableSpecification<T>, ...rows: RowSpecification<T>[]) {
         this.tableName = tableName;
@@ -36,7 +36,7 @@ export class RowSpecification<T extends CCIMSNode> {
      * the name of the row
      */
     public readonly rowName: string;
-    
+
     /**
      * function to get the value from the node
      */

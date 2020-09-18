@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let startDateChangedEventConfig: GraphQLObjectTypeConfig<StartDateChangedEvent, ResolverContext> = {
+const startDateChangedEventConfig: GraphQLObjectTypeConfig<StartDateChangedEvent, ResolverContext> = {
     name: "StartDateChangedEvent",
     description: "An StartDateChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -39,5 +39,5 @@ let startDateChangedEventConfig: GraphQLObjectTypeConfig<StartDateChangedEvent, 
         }
     })
 };
-let GraphQLStartDateChangedEvent = new GraphQLObjectType(startDateChangedEventConfig);
+const GraphQLStartDateChangedEvent = new GraphQLObjectType(startDateChangedEventConfig);
 export default GraphQLStartDateChangedEvent;

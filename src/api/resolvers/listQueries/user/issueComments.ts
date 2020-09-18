@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLIssueCommentFilter from "../../types/filters/GraphQLIssueCommentFilter";
 import GraphQLIssueCommentPage from "../../types/pages/GraphQLIssueCommentPage";
 
-let issueComments: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let issueComments: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (issueComments === undefined) {
         issueComments = {

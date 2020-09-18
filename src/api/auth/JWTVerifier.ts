@@ -7,13 +7,13 @@ import { LoadUsersCommand } from "../../common/database/commands/load/nodes/Load
 
 /**
  * Express middleware for verifying a JWT given by the client
- * 
+ *
  * Initializes and returns a handler for verifying a given JWT to authorize a user to a restricted resource
- * 
+ *
  * The handler expects the request to contain a `Authorization` header field with the following content:
- * 
+ *
  *    Bearer [JWT_TOKEN]
- * 
+ *
  * If either this header isn't provided correctly or the token provided is invalid, the request will be responded to with a
  * 401 status code and an error message speciying the reason
  * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
@@ -22,7 +22,7 @@ import { LoadUsersCommand } from "../../common/database/commands/load/nodes/Load
  * @returns An express middleware for verifying passed json web tokens
  */
 export function jwtVerifier(secret?: string): core.RequestHandler {
-    var verifier = new JWTVerifier(secret);
+    let verifier = new JWTVerifier(secret);
     return (req: core.Request, res: core.Response, next: core.NextFunction) => {
         verifier.handle.call(verifier, req, res, next);
     };
@@ -40,7 +40,7 @@ class JWTVerifier {
 
     /**
      * Initializes the JWT verifier. To handle a request to a restricted resource, call `handle(res, req, next)`
-     * 
+     *
      * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
      * It must be the same as the one used for signing the JWT during login.\
      * If empty or `undefined`, the secret from the config will be utilized.
@@ -54,19 +54,19 @@ class JWTVerifier {
 
     /**
      * Handles a request to a restricted resource (like the API) where a valid JWT is needed for accessing it.
-     * 
+     *
      * The handler expects the request to contain a `Authorization` header field with the following content:
-     * 
+     *
      *    Bearer [JWT_TOKEN]
-     * 
+     *
      * If either this header isn't provided correctly or the token provided is invalid, the request will be responded to with a
      * 401 status code and an error message speciying the reason
-     * 
-     * If header and token are valid and the user is a valid user, the provided `next` function will be called 
+     *
+     * If header and token are valid and the user is a valid user, the provided `next` function will be called
      * without further action to grant access to the restricted ressource
-     * 
+     *
      * __NOTICE__: If the `debugNoLogin` field in the `api.json` config file is set to `true`, the JWT and user verification will be __fully bypassed__
-     * 
+     *
      * @param req The request data provided by express.\
      * This must have a valid `Authorization: Bearer [JWT_TOKEN]` header.
      * @param res A valid express respone object. This will only be used in case, verification wasn't successfull.
@@ -131,9 +131,9 @@ class JWTVerifier {
 
 /**
  * Class specifying the structure a valid JWT payload must have
- * 
+ *
  * This class also provides a static method for checking weather a given instance is valid
- * 
+ *
  * For valid Fields of a JWT payload see https://tools.ietf.org/html/rfc7519#section-4.1.2
  * In this case the iss, sub and name claims are required to be present
  */
@@ -180,9 +180,9 @@ class JWTPayload {
 
     /**
      * Returns weather the given object is a valid JWT payload.
-     * 
+     *
      * The given object must have all the fields specified by this class with the correct type to be a valid payload
-     * 
+     *
      * __NOTICE__: THis doesn't check weather the user is valid or the date is within the optional interval from nbf to exp
      * @param payload The JWTPayload-like object to be checked for correct structure
      */

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLCloseIssuePayload from "../../types/mutations/payloads/issue/GraphQLCloseIssuePayload";
 import GraphQLCloseIssueInput from "../../types/mutations/inputs/issue/GraphQLCloseIssueInput";
 
-let closeIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let closeIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (closeIssue === undefined) {
         closeIssue = {

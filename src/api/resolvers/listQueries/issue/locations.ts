@@ -4,7 +4,7 @@ import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 import GraphQLIssueLocationFilter from "../../types/filters/GraphQLIssueLocationFilter";
 import GraphQLIssueLocationPage from "../../types/pages/GraphQLIssueLocationPage";
 
-let locations: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let locations: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (locations === undefined) {
         locations = {

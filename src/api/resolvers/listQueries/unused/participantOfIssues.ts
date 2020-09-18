@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLInt, GraphQLString } from "graphql";
 import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
 import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 
-let participantOfIssues: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let participantOfIssues: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (participantOfIssues === undefined) {
         participantOfIssues = {

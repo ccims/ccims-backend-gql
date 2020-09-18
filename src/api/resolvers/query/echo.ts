@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLString, GraphQLResolveInfo } from "graphql";
 import { ResolverContext } from "../../ResolverContext";
 
-let echo: GraphQLFieldConfig<any, any, any> = {
+const echo: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLString,
     description: "Returns the string which is given as input",
     args: {

@@ -9,7 +9,7 @@ import GraphQLNode from "../../GraphQLNode";
 import { IssueComment } from "../../../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../../../ResolverContext";
 
-let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
+const issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
     name: "IssueComment",
     description: "A commemt on an issue. Not including th issue body itself",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLComment, GraphQLNode]),
@@ -53,5 +53,5 @@ let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> =
         reactions: reactions(),
     })
 };
-let GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
+const GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
 export default GraphQLIssueComment;

@@ -1,7 +1,7 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 import GraphQLTimeSpan from "../../../../scalars/GraphQLTimeSpan";
 
-let changeIssueEstimatedTimeInputConfig: GraphQLInputObjectTypeConfig = {
+const changeIssueEstimatedTimeInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssueEstimatedTimeInput",
     description: "The inputs for the changeIssueEstimatedTime",
     fields: () => ({
@@ -19,5 +19,5 @@ let changeIssueEstimatedTimeInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLChangeIssueEstimatedTimeInput = new GraphQLInputObjectType(changeIssueEstimatedTimeInputConfig);
+const GraphQLChangeIssueEstimatedTimeInput = new GraphQLInputObjectType(changeIssueEstimatedTimeInputConfig);
 export default GraphQLChangeIssueEstimatedTimeInput;

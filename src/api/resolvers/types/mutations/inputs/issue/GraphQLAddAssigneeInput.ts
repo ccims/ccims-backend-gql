@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
+const addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddAssigneeInput",
     description: "The inputs for the addAssignee",
     fields: () => ({
@@ -18,5 +18,5 @@ let addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLAddAssigneeInput = new GraphQLInputObjectType(addAssigneeInputConfig);
+const GraphQLAddAssigneeInput = new GraphQLInputObjectType(addAssigneeInputConfig);
 export default GraphQLAddAssigneeInput;

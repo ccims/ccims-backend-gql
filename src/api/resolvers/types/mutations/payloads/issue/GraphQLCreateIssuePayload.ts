@@ -2,7 +2,7 @@ import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graph
 import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
 
-let createIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const createIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CreateIssuePayload",
     description: "The Payload/Response for the createIssue mutation",
     fields: () => ({
@@ -16,5 +16,5 @@ let createIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLCreateIssuePayload = new GraphQLObjectType(createIssuePayloadConfig);
+const GraphQLCreateIssuePayload = new GraphQLObjectType(createIssuePayloadConfig);
 export default GraphQLCreateIssuePayload;

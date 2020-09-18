@@ -49,7 +49,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         super(databaseManager, specification, node);
         this._specification = specification;
     }
-    
+
     /**
      * get the ids of all elements
      */
@@ -110,7 +110,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * adds an element to this property
-     * does 
+     * does
      * @param element the element to add
      */
     public async add(element: T) : Promise<void> {
@@ -130,7 +130,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * removes an element from this property if possible
-     * @param element 
+     * @param element
      */
     public async remove(element: T) : Promise<void> {
         await this.ensureAddDeleteLoadLevel();
@@ -162,7 +162,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._addedIds.clear();
             this._removedIds.clear();
         }
-        
+
     }
 
     /**
@@ -201,7 +201,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                     await this._databaseManager.executePendingCommands();
                     loadOtherCommand.getResult().forEach(element => {
                         this._elements.set(element.id, element);
-                        //a notify is not necessary because this was already done when the ids were loaded
+                        // a notify is not necessary because this was already done when the ids were loaded
                     });
                     notLoadedIds.forEach(id => {
                         if (!this._elements.has(id)) {
@@ -254,7 +254,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             const allKnownIds = [...ids, ...this._addedIds];
             this._ids = new Set(allKnownIds);
             const newElements: Map<string, T> = new Map<string, T>();
-            
+
             const idsToLoad: string[] = [];
             await Promise.all(allKnownIds.map(async id => {
                 const availableElement = this._elements.get(id);
@@ -285,7 +285,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * set the nodes list
-     * this is treated as the most current version, 
+     * this is treated as the most current version,
      * @param elements the list of elements
      */
     setElements(elements: T[]): void {
@@ -325,7 +325,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 this._ids.add(element.id);
                 if (this._loadLevel >= LoadLevel.Partial) {
                     this._elements.set(element.id, element);
-                } 
+                }
             }
         }
     }

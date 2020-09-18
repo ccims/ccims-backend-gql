@@ -17,7 +17,7 @@ import { User } from "../User";
 * does not specifiy the metadata, because this is up to the save method
 */
 export const CommentTableSpecification: NodeTableSpecification<Comment>
-   = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification, 
+   = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification,
    RowSpecification.fromProperty("body", "body"),
    RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
    new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
@@ -57,8 +57,8 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     private _lastEditedAt: Date;
 
-    //TODO: reactions
-    //TODO? currentUserCanEdit
+    // TODO: reactions
+    // TODO? currentUserCanEdit
 
     /**
      * abstract constructor for extending classes

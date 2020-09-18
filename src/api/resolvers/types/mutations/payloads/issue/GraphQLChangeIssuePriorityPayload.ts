@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLPriorityChangedEvent from "../../../nodes/timelineItems/GraphQLPriorityChangedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let changeIssuePriorityPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const changeIssuePriorityPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ChangeIssuePriorityPayload",
     description: "The Payload/Response for the changeIssuePriority mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let changeIssuePriorityPayloadConfig: GraphQLObjectTypeConfig<any, ResolverConte
         }
     })
 };
-let GraphQLChangeIssuePriorityPayload = new GraphQLObjectType(changeIssuePriorityPayloadConfig);
+const GraphQLChangeIssuePriorityPayload = new GraphQLObjectType(changeIssuePriorityPayloadConfig);
 export default GraphQLChangeIssuePriorityPayload;

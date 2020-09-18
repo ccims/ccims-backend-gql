@@ -85,13 +85,13 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the array of conditions and a index for the next value
      */
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions = this.countMode ? {conditions: [], i: i} : this.generatePaginationConditions(i);
+        const conditions = this.countMode ? {conditions: [], i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
             conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i, 1));
             conditions.i++;
         }
-        
+
         return conditions;
     }
 
@@ -119,7 +119,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             });
             i++;
         }
-        return {conditions: conditions, i: i};
+        return {conditions, i};
     }
 
     /**
@@ -143,7 +143,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             }
             return [];
         } else {
-            this.count = Number.parseInt(result.rows[0]["count"]);
+            this.count = Number.parseInt(result.rows[0].count);
             return [];
         }
     }
@@ -156,7 +156,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the parsed element
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
-        const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
+        const cacheResult = databaseManager.getCachedNode(resultRow.id);
         let returnValue: T;
         if (cacheResult) {
             returnValue = cacheResult as T;

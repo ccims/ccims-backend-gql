@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLDueDateChangedEvent from "../../../nodes/timelineItems/GraphQLDueDateChangedEvent";
 
-let changeIssueDueDatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const changeIssueDueDatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ChangeIssueDueDatePayload",
     description: "The Payload/Response for the changeIssueDueDate mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let changeIssueDueDatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContex
         }
     })
 };
-let GraphQLChangeIssueDueDatePayload = new GraphQLObjectType(changeIssueDueDatePayloadConfig);
+const GraphQLChangeIssueDueDatePayload = new GraphQLObjectType(changeIssueDueDatePayloadConfig);
 export default GraphQLChangeIssueDueDatePayload;

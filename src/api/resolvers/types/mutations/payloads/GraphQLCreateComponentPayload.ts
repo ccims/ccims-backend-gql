@@ -2,7 +2,7 @@ import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graph
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLComponent from "../../nodes/GraphQLComponent";
 
-let createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CreateComponentPayload",
     description: "The Payload/Response for the createComponent mutation",
     fields: () => ({
@@ -16,5 +16,5 @@ let createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> 
         }
     })
 };
-let GraphQLCreateComponentPayload = new GraphQLObjectType(createComponentPayloadConfig);
+const GraphQLCreateComponentPayload = new GraphQLObjectType(createComponentPayloadConfig);
 export default GraphQLCreateComponentPayload;

@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 
-let removeAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
+const removeAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveAssigneeInput",
     description: "The inputs for the removeAssignee",
     fields: () => ({
@@ -18,5 +18,5 @@ let removeAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLRemoveAssigneeInput = new GraphQLInputObjectType(removeAssigneeInputConfig);
+const GraphQLRemoveAssigneeInput = new GraphQLInputObjectType(removeAssigneeInputConfig);
 export default GraphQLRemoveAssigneeInput;

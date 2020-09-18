@@ -1,6 +1,6 @@
 import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-let issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
+const issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
     name: "IssueTimelineItemType",
     description: "The type of a timeline item/event so it can be filtered for <sup>(because GraphQL doesn't allow to filter for a type)</sup>",
     values: {
@@ -118,5 +118,5 @@ let issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
         }
     }
 };
-let GraphQLIssueTimelineItemType = new GraphQLEnumType(issueTimelineItemTypeConfig);
+const GraphQLIssueTimelineItemType = new GraphQLEnumType(issueTimelineItemTypeConfig);
 export default GraphQLIssueTimelineItemType;

@@ -17,7 +17,7 @@ import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand"
  * does not specifiy the metadata, because this is up to the save method
  */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
-    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification, 
+    = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
     RowSpecification.fromProperty("deleted", "isDeleted"));
 
 /**
@@ -72,7 +72,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
     public get isMetadataPresent(): boolean {
         return this._metadata != undefined;
     }
- 
+
     /**
      * Gets the metadata based on the specified id
      * @param id the id to look for metadata

@@ -4,7 +4,7 @@ import GraphQLComment from "../../../nodes/GraphQLComment";
 import GraphQLReactionGroup from "../../../nodes/GraphQLReactionGroup";
 import GraphQLReactionGroupEdge from "../../../edges/GraphQLReactionGroupEdge";
 
-let addReactionToCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addReactionToCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddReactionToCommentPayload",
     description: "The Payload/Response for the addToCommentReaction mutation",
     fields: () => ({
@@ -22,5 +22,5 @@ let addReactionToCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverCont
         }
     })
 };
-let GraphQLAddReactionToCommentPayload = new GraphQLObjectType(addReactionToCommentPayloadConfig);
+const GraphQLAddReactionToCommentPayload = new GraphQLObjectType(addReactionToCommentPayloadConfig);
 export default GraphQLAddReactionToCommentPayload;

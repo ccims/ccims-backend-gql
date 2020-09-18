@@ -37,7 +37,7 @@ export class UpdateNodeCommand<T extends CCIMSNode> extends DatabaseCommand<void
     /**
      * called when the query is finished
      * does nothing
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param result the result from the query
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {

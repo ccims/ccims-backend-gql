@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let removeLabelFromIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const removeLabelFromIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveLabelFromIssueInput",
     description: "The inputs for the removeFromIssueLabel",
     fields: () => ({
@@ -18,5 +18,5 @@ let removeLabelFromIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLRemoveLabelFromIssueInput = new GraphQLInputObjectType(removeLabelFromIssueInputConfig);
+const GraphQLRemoveLabelFromIssueInput = new GraphQLInputObjectType(removeLabelFromIssueInputConfig);
 export default GraphQLRemoveLabelFromIssueInput;

@@ -18,7 +18,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * the node on which this property is
      */
     protected readonly _node: V;
-    
+
 
     /**
      * base functionality for node properties

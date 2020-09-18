@@ -18,11 +18,11 @@ type namedNodeListQueryType<TSource extends CCIMSNode, TNode extends NamedNode> 
 
     /**
      * Takes a command with all filters added, executes it and returns a page with the results
-     * 
+     *
      * The command is executed eiter directly on the database manager or on a property, depending on the given `propertyProvider`.
      * If the `propertyProvider` is `undefined` or returns `undefined`, a root query will be executed on the database manager.
      * If there a valid property is returned by the `propertyProvider`, the command will executed on the property
-     * 
+     *
      * @param src If not a root query - The source node on which the property is used and on which to execure the given property provider
      * @param context The `ResolverContext` object provided by the resolve function, containing a valid `dbManager`
      * @param cmd The command containing all the set filters to be executed
@@ -31,12 +31,12 @@ type namedNodeListQueryType<TSource extends CCIMSNode, TNode extends NamedNode> 
 };
 
 /**
- * Creates the base for a node list query for a GraphQL property. 
- * 
+ * Creates the base for a node list query for a GraphQL property.
+ *
  * This contains the basic argument and type structure and logic for inserting the limiting parameters (before/after/first/last)
  * as well as the `name` and `description` filters
  * into the command and generating the resulting page from given command and arguments
- * 
+ *
  * @param pageType The GraphQL Type of the Page which is returned for the query
  * @param filterType The type of the GraphQL filter to be used for the query
  * @param description The description text of the query

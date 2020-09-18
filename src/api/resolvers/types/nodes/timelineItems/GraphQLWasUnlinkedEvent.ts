@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let wasUnlinkedEventConfig: GraphQLObjectTypeConfig<WasUnlinkedEvent, ResolverContext> = {
+const wasUnlinkedEventConfig: GraphQLObjectTypeConfig<WasUnlinkedEvent, ResolverContext> = {
     name: "WasUnlinkedEvent",
     description: "An WasUnlinkedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -35,5 +35,5 @@ let wasUnlinkedEventConfig: GraphQLObjectTypeConfig<WasUnlinkedEvent, ResolverCo
         }
     })
 };
-let GraphQLWasUnlinkedEvent = new GraphQLObjectType(wasUnlinkedEventConfig);
+const GraphQLWasUnlinkedEvent = new GraphQLObjectType(wasUnlinkedEventConfig);
 export default GraphQLWasUnlinkedEvent;

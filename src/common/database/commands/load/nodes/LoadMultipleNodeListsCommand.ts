@@ -42,9 +42,9 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
         this.resultIds = [];
         const commands: Map<string, LoadNodeListCommand<T>> = new Map();
         result.rows.forEach(row => {
-            const id: string = row["id"];
+            const id: string = row.id;
             this.resultIds?.push(id);
-            const tableName = row["relname"];
+            const tableName = row.relname;
             const command: LoadNodeListCommand<T> = commands.get(tableName) ?? getLoadCommand(tableName, []) as LoadNodeListCommand<T>;
             command.ids?.push(id);
         });
@@ -96,5 +96,5 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         throw new Error("forbidden");
     }
-    
+
 }

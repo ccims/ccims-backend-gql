@@ -40,7 +40,7 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
      * @returns the parsed project
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Project {
-        return new Project(databaseManager, resultRow["id"], resultRow["name"], resultRow["description"], resultRow["owner_user_id"]);
+        return new Project(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id);
     }
 
     /**

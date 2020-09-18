@@ -10,7 +10,7 @@ import GraphQLIMS from "./GraphQLIMS";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
 
-let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
+const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
     description: "A component known to ccims.\n\nA component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)",
     interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
@@ -42,5 +42,5 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty)
     })
 };
-let GraphQLComponent = new GraphQLObjectType(componentConfig);
+const GraphQLComponent = new GraphQLObjectType(componentConfig);
 export default GraphQLComponent;

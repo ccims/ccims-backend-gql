@@ -30,7 +30,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
     /**
      * filters for Components where at least one of the issues is located
      */
-    public hasIssueOnLocation?: string[]; 
+    public hasIssueOnLocation?: string[];
 
     /**
      * filters for components with at least one of the issues
@@ -51,7 +51,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
      * @returns the parsed component
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Component {
-        return new Component(databaseManager, resultRow["id"], resultRow["name"], resultRow["description"], resultRow["owner_user_id"], resultRow["imsSystem_id"]);
+        return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id, resultRow.imsSystem_id);
     }
 
     /**

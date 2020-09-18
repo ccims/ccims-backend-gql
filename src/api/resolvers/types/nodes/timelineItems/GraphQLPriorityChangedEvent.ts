@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLPriority from "../../../enums/GraphQLPriority";
 
-let priorityChangedEventConfig: GraphQLObjectTypeConfig<PriorityChangedEvent, ResolverContext> = {
+const priorityChangedEventConfig: GraphQLObjectTypeConfig<PriorityChangedEvent, ResolverContext> = {
     name: "PriorityChangedEvent",
     description: "An PriorityChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -40,5 +40,5 @@ let priorityChangedEventConfig: GraphQLObjectTypeConfig<PriorityChangedEvent, Re
         }
     })
 };
-let GraphQLPriorityChangedEvent = new GraphQLObjectType(priorityChangedEventConfig);
+const GraphQLPriorityChangedEvent = new GraphQLObjectType(priorityChangedEventConfig);
 export default GraphQLPriorityChangedEvent;

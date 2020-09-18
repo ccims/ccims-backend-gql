@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let renamedTitleEventConfig: GraphQLObjectTypeConfig<RenamedTitleEvent, ResolverContext> = {
+const renamedTitleEventConfig: GraphQLObjectTypeConfig<RenamedTitleEvent, ResolverContext> = {
     name: "RenamedTitleEvent",
     description: "An RenamedTitleEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -39,5 +39,5 @@ let renamedTitleEventConfig: GraphQLObjectTypeConfig<RenamedTitleEvent, Resolver
         }
     })
 };
-let GraphQLRenamedTitleEvent = new GraphQLObjectType(renamedTitleEventConfig);
+const GraphQLRenamedTitleEvent = new GraphQLObjectType(renamedTitleEventConfig);
 export default GraphQLRenamedTitleEvent;

@@ -70,7 +70,7 @@ export class Issue extends SyncNode<Issue> {
                 return command;
             },
             timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand())
-            //no notifier because this is never allowed to change
+            // no notifier because this is never allowed to change
         );
 
     public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;

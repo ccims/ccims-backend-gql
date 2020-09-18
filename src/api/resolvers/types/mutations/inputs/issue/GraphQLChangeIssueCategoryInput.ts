@@ -1,7 +1,7 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 import GraphQLIssueCategory from "../../../../enums/GraphQLIssueCategory";
 
-let changeIssueCategoryInputConfig: GraphQLInputObjectTypeConfig = {
+const changeIssueCategoryInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssueCategoryInput",
     description: "The inputs for the changeIssueCategory",
     fields: () => ({
@@ -19,5 +19,5 @@ let changeIssueCategoryInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLChangeIssueCategoryInput = new GraphQLInputObjectType(changeIssueCategoryInputConfig);
+const GraphQLChangeIssueCategoryInput = new GraphQLInputObjectType(changeIssueCategoryInputConfig);
 export default GraphQLChangeIssueCategoryInput;

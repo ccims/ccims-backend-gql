@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLIssueComment from "./GraphQLIssueComment";
 
-let referencedByIssueEventConfig: GraphQLObjectTypeConfig<ReferencedByIssueEvent, ResolverContext> = {
+const referencedByIssueEventConfig: GraphQLObjectTypeConfig<ReferencedByIssueEvent, ResolverContext> = {
     name: "ReferencedByIssueEvent",
     description: "An ReferencedByIssueEvent in the timeline of an issue with a date and a creator\n\n" +
         "This occurs if this issue is referenced by another known issue",
@@ -41,5 +41,5 @@ let referencedByIssueEventConfig: GraphQLObjectTypeConfig<ReferencedByIssueEvent
         }
     })
 };
-let GraphQLReferencedByIssueEvent = new GraphQLObjectType(referencedByIssueEventConfig);
+const GraphQLReferencedByIssueEvent = new GraphQLObjectType(referencedByIssueEventConfig);
 export default GraphQLReferencedByIssueEvent;

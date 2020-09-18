@@ -4,7 +4,7 @@ import GraphQLDeletedIssueComment from "../../../nodes/timelineItems/GraphQLDele
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let deleteIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const deleteIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "DeleteIssueCommentPayload",
     description: "The Payload/Response for the deleteIssueComment mutation",
     fields: () => ({
@@ -30,5 +30,5 @@ let deleteIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContex
         }
     })
 };
-let GraphQLDeleteIssueCommentPayload = new GraphQLObjectType(deleteIssueCommentPayloadConfig);
+const GraphQLDeleteIssueCommentPayload = new GraphQLObjectType(deleteIssueCommentPayloadConfig);
 export default GraphQLDeleteIssueCommentPayload;

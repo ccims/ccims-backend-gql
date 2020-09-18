@@ -2,7 +2,7 @@ import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLUser from "../types/nodes/GraphQLUser";
 
-let currentUser: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let currentUser: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (currentUser === undefined) {
         currentUser = {

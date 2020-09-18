@@ -6,7 +6,7 @@ import GraphQLComponentInterface from "../nodes/GraphQLComponentInterface";
 import GraphQLIssueComment from "../nodes/timelineItems/GraphQLIssueComment";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueCommentEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issueCommentEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueCommentEdge",
     description: "An edge for an IssueCommentPage to link a cursor to an element",
     fields: () => ({
@@ -20,5 +20,5 @@ let issueCommentEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLIssueCommentEdge = new GraphQLObjectType(issueCommentEdgeConfig);
+const GraphQLIssueCommentEdge = new GraphQLObjectType(issueCommentEdgeConfig);
 export default GraphQLIssueCommentEdge;

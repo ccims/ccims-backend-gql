@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLEstimatedTimeChangedEvent from "../../../nodes/timelineItems/GraphQLEstimatedTimeChangedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let changeIssueEstimatedTimePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const changeIssueEstimatedTimePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ChangeIssueEstimatedTimePayload",
     description: "The Payload/Response for the changeIssueEstimatedTime mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let changeIssueEstimatedTimePayloadConfig: GraphQLObjectTypeConfig<any, Resolver
         }
     })
 };
-let GraphQLChangeIssueEstimatedTimePayload = new GraphQLObjectType(changeIssueEstimatedTimePayloadConfig);
+const GraphQLChangeIssueEstimatedTimePayload = new GraphQLObjectType(changeIssueEstimatedTimePayloadConfig);
 export default GraphQLChangeIssueEstimatedTimePayload;

@@ -1,7 +1,7 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLDate from "../../scalars/GraphQLDate";
 
-let issueCommentFilterConfig: GraphQLInputObjectTypeConfig = {
+const issueCommentFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueCommentFilter",
     description: "Filter for comments on issues (not including the issue bodies themselves). All parameters given in this filter will be connected via _AND_",
     fields: () => ({
@@ -47,5 +47,5 @@ let issueCommentFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLIssueCommentFilter = new GraphQLInputObjectType(issueCommentFilterConfig);
+const GraphQLIssueCommentFilter = new GraphQLInputObjectType(issueCommentFilterConfig);
 export default GraphQLIssueCommentFilter;

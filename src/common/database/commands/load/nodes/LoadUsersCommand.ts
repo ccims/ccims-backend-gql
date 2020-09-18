@@ -61,7 +61,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
      * @returns the parsed user
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): User {
-        return new User(databaseManager, resultRow["id"], resultRow["username"], resultRow["displayname"], resultRow["pw_hash"], new UserPermissions(resultRow["pw_hash"]), resultRow["email"]);
+        return new User(databaseManager, resultRow.id, resultRow.username, resultRow.displayname, resultRow.pw_hash, new UserPermissions(resultRow.pw_hash), resultRow.email);
     }
 
     /**

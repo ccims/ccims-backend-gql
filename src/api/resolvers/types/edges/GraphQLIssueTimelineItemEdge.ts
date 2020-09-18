@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConf
 import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueTimelineItemEdge",
     description: "An edge for an IssueTimelineItemPage to link a cursor to an element",
     fields: () => ({
@@ -16,5 +16,5 @@ let issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> =
         }
     })
 };
-let GraphQLIssueTimelineItemEdge = new GraphQLObjectType(issueTimelineItemEdgeConfig);
+const GraphQLIssueTimelineItemEdge = new GraphQLObjectType(issueTimelineItemEdgeConfig);
 export default GraphQLIssueTimelineItemEdge;

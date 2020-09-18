@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let closedEventConfig: GraphQLObjectTypeConfig<ClosedEvent, ResolverContext> = {
+const closedEventConfig: GraphQLObjectTypeConfig<ClosedEvent, ResolverContext> = {
     name: "ClosedEvent",
     description: "An ClosedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -31,5 +31,5 @@ let closedEventConfig: GraphQLObjectTypeConfig<ClosedEvent, ResolverContext> = {
         }
     })
 };
-let GraphQLClosedEvent = new GraphQLObjectType(closedEventConfig);
+const GraphQLClosedEvent = new GraphQLObjectType(closedEventConfig);
 export default GraphQLClosedEvent;

@@ -2,7 +2,7 @@ import { User } from "../common/nodes/User";
 
 /**
  * Class representing the permissions a user has in the CCIMS
- * 
+ *
  * There are project and component specific permissions as well as global permissions
  */
 export class UserPermissions {
@@ -31,7 +31,7 @@ export class UserPermissions {
 
     /**
      * Initialized permissions based on saved/given permissions or creates a new set of default permissions
-     * 
+     *
      * @param jsonPermissions The permissions object as it is stored within the database either as parsed object or as string.
      * If this is `undefined`, a new set of default permissions (nothing allowed) will be constructed.
      * @param user The user to notify once these permissions are changed.
@@ -74,7 +74,7 @@ export class UserPermissions {
 
     /**
      * NOT TO BE USED OTHER THAN BY A USER OBJECT!!
-     * 
+     *
      * Sets the user these permissions notify when they are changed
      */
     set user(user: User) {
@@ -85,7 +85,7 @@ export class UserPermissions {
 
     /**
      * Sets the permissions of this user on the specified project and notifies the user object
-     * 
+     *
      * If no user was set yet, this will fail
      * @param projectId The ID of the project fo which to set the permissions
      * @param permissions The new Project permissions to be set
@@ -101,7 +101,7 @@ export class UserPermissions {
     /**
      * Unsets the permissions for the user on the given project
      * Logically equivalent to setting all permissions for that project to `false` but more efficient
-     * 
+     *
      * If no user was set yet, this will fail
      * @param projectId The ID of the project on which to unset all the permissions of the user
      */
@@ -115,7 +115,7 @@ export class UserPermissions {
 
     /**
      * Returns the project specific permissions for this user on the given projct
-     * 
+     *
      * @param projectId The ID of the project of which to get the users permission
      * @returns An object containing the project specific permissions.
      * Modifications to this object won't be stored. Use `setProjectPermissions` for changing
@@ -126,7 +126,7 @@ export class UserPermissions {
 
     /**
      * Sets the permissions of this user on the specified component and notifies the user object
-     * 
+     *
      * If no user was set yet, this will fail
      * @param componentId The ID of the component fo which to set the permissions
      * @param permissions The new Component permissions to be set
@@ -142,7 +142,7 @@ export class UserPermissions {
     /**
      * Unsets the permissions for the user on the given component
      * Logically equivalent to setting all permissions for that component to `false` but more efficient
-     * 
+     *
      * If no user was set yet, this will fail
      * @param componentId The ID of the component on which to unset all the permissions of the user
      */
@@ -156,7 +156,7 @@ export class UserPermissions {
 
     /**
      * Returns the component specific permissions for this user on the given component
-     * 
+     *
      * @param componentId The ID of the component of which to get the users permission
      * @returns An object containing the component specific permissions.
      * Modifications to this object won't be stored. Use `setComponentPermissions` for changing
@@ -175,7 +175,7 @@ export class UserPermissions {
 
     /**
      * Returns the global permissions for this user
-     * 
+     *
      * @returns An object containing the global permissions.
      * Modifications to this object won't be stored. Set a new `GlobalPermissions` to change them
      */
@@ -185,7 +185,7 @@ export class UserPermissions {
 
     /**
      * Converts this database object to a JS-object which is serializable to JSON and savable in the database
-     * 
+     *
      * @returns An object implementing `DatabasePermission` which is a serializable representation of this object
      */
     public toDatabase(): DatabsePermissions {
@@ -198,8 +198,8 @@ export class UserPermissions {
  */
 interface DatabsePermissions {
     global: GlobalPermissions,
-    project: Array<[string, ProjectPermission]>,
-    component: Array<[string, ComponentPermission]>
+    project: [string, ProjectPermission][],
+    component: [string, ComponentPermission][]
 }
 
 

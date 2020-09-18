@@ -3,7 +3,7 @@ import { ResolverContext } from "../../ResolverContext";
 import GraphQLCreateIMSPayload from "../types/mutations/payloads/GraphQLCreateIMSPayload";
 import GraphQLCreateIMSInput from "../types/mutations/inputs/GraphQLCreateIMSInput";
 
-let createIMS: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let createIMS: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (createIMS === undefined) {
         createIMS = {

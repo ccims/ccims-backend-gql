@@ -15,13 +15,13 @@ export interface IssueLocation<T extends IssueLocation = any> extends NamedNode<
 /**
  * specification for the issuesOnLocationProperty (sadly interfaces cannot have a static property)
  */
-export const issuesOnLocationPropertySpecification: NodeListPropertySpecification<Issue, IssueLocation> 
+export const issuesOnLocationPropertySpecification: NodeListPropertySpecification<Issue, IssueLocation>
     = NodeListPropertySpecification.loadDynamic<Issue, IssueLocation>(LoadRelationCommand.fromPrimary("issueLocation", "issue"),
-    (ids, issueLocation) => { 
+    (ids, issueLocation) => {
         const command = new LoadIssuesCommand();
         command.ids = ids;
         return command;
-    }, 
+    },
     issueLocation => {
         const command = new LoadIssuesCommand();
         command.onLocations = [issueLocation.id];

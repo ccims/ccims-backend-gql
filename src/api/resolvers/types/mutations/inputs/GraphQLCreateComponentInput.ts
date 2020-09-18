@@ -1,6 +1,6 @@
 import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
 
-let createComponentInputConfig: GraphQLInputObjectTypeConfig = {
+const createComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateComponentInput",
     description: "The inputs for the createComponent mutation",
     fields: () => ({
@@ -34,5 +34,5 @@ let createComponentInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLCreateComponentInput = new GraphQLInputObjectType(createComponentInputConfig);
+const GraphQLCreateComponentInput = new GraphQLInputObjectType(createComponentInputConfig);
 export default GraphQLCreateComponentInput;

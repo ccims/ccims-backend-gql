@@ -5,7 +5,7 @@ import GraphQLUser from "../nodes/GraphQLUser";
 import GraphQLUserEdge from "../edges/GraphQLUserEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let userPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const userPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UserPage",
     description: "A page of multiple users",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let userPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLUserPage = new GraphQLObjectType(userPageConfig);
+const GraphQLUserPage = new GraphQLObjectType(userPageConfig);
 export default GraphQLUserPage;

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLChangeIssueDueDatePayload from "../../types/mutations/payloads/issue/GraphQLChangeIssueDueDatePayload";
 import GraphQLChangeIssueDueDateInput from "../../types/mutations/inputs/issue/GraphQLChangeIssueDueDateInput";
 
-let changeIssueDueDate: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let changeIssueDueDate: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (changeIssueDueDate === undefined) {
         changeIssueDueDate = {

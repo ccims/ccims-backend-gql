@@ -5,7 +5,7 @@ import GraphQLComment from "../../../nodes/GraphQLComment";
 import GraphQLUnpinnedEvent from "../../../nodes/timelineItems/GraphQLUnpinnedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let unpinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const unpinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UnpinIssuePayload",
     description: "The Payload/Response for the unpinIssue mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let unpinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLUnpinIssuePayload = new GraphQLObjectType(unpinIssuePayloadConfig);
+const GraphQLUnpinIssuePayload = new GraphQLObjectType(unpinIssuePayloadConfig);
 export default GraphQLUnpinIssuePayload;

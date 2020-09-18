@@ -32,13 +32,13 @@ export const UserTableSpecification: NodeTableSpecification<User>
         new RowSpecification<User>("permissions", (user) => user.permissions.toDatabase()));
 
 /**
- * A user is a CCIMSNode to represent a user (account) of the ccims with a username, password, email etc. 
+ * A user is a CCIMSNode to represent a user (account) of the ccims with a username, password, email etc.
  * A user can login provided a password was set and a user can link his accounts on other IMS.
  * @param T the type of this User
  */
 export class User<T extends User = any> extends CCIMSNode<T> {
     /**
-     * The username used to login, a system wide unique string with 
+     * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
     private _username: string;
@@ -140,12 +140,12 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             })
             .notifyChanged((comment, user) => comment.editedByProperty)
             .noSave();
-    
+
     public readonly ownedNodesProperty: NodeListProperty<NamedOwnedNode, User>;
 
     public static readonly ownedNodesPropertySpecification: NodeListPropertySpecification<NamedOwnedNode, User>
         = NodeListPropertySpecification.loadDynamic<NamedOwnedNode, User>(
-            user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user), 
+            user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
                 LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
             (ids, user) => {
                 const command1 = new LoadComponentsCommand();
@@ -166,11 +166,11 @@ export class User<T extends User = any> extends CCIMSNode<T> {
 
     /**
      * Constructor for creating a user from database
-     * 
+     *
      * DONT'T USE TO CREATE A NEW USER!
-     * 
+     *
      * @param type the type
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
      * @param name the name of the NamedNode
@@ -211,7 +211,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     }
 
     /**
-     * The username used to login, a system wide unique string with 
+     * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
     public get username(): string {
@@ -219,7 +219,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     }
 
     /**
-     * The username used to login, a system wide unique string with 
+     * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
     public set username(value: string) {

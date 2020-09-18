@@ -1,7 +1,7 @@
 import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 
-let pageInfoConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const pageInfoConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "PageInfo",
     description: "Information about a page including the first and last elements cursor and next/previous pages",
     fields: () => ({
@@ -23,5 +23,5 @@ let pageInfoConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLPageInfo = new GraphQLObjectType(pageInfoConfig);
+const GraphQLPageInfo = new GraphQLObjectType(pageInfoConfig);
 export default GraphQLPageInfo;

@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let closeIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const closeIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CloseIssueInput",
     description: "The inputs for the closeIssue",
     fields: () => ({
@@ -14,5 +14,5 @@ let closeIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLCloseIssueInput = new GraphQLInputObjectType(closeIssueInputConfig);
+const GraphQLCloseIssueInput = new GraphQLInputObjectType(closeIssueInputConfig);
 export default GraphQLCloseIssueInput;

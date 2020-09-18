@@ -5,7 +5,7 @@ import GraphQLLabel from "../nodes/GraphQLLabel";
 import GraphQLLabelEdge from "../edges/GraphQLLabelEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "LabelPage",
     description: "A page of multiple labels",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLLabelPage = new GraphQLObjectType(labelPageConfig);
+const GraphQLLabelPage = new GraphQLObjectType(labelPageConfig);
 export default GraphQLLabelPage;

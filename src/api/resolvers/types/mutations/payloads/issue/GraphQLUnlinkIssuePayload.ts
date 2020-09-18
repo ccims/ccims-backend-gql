@@ -5,7 +5,7 @@ import GraphQLMarkedAsDuplicateEvent from "../../../nodes/timelineItems/GraphQLM
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLUnlinkEvent from "../../../nodes/timelineItems/GraphQLUnlinkEvent";
 
-let unlinkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const unlinkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UnlinkIssuePayload",
     description: "The Payload/Response for the unlinkIssue mutation",
     fields: () => ({
@@ -27,5 +27,5 @@ let unlinkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLUnlinkIssuePayload = new GraphQLObjectType(unlinkIssuePayloadConfig);
+const GraphQLUnlinkIssuePayload = new GraphQLObjectType(unlinkIssuePayloadConfig);
 export default GraphQLUnlinkIssuePayload;

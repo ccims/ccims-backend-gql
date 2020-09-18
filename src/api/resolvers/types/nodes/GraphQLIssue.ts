@@ -16,7 +16,7 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLComment from "./GraphQLComment";
 import GraphQLUser from "./GraphQLUser";
 
-let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
+const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
     description: "A cross component issue within ccims which links multiple issues from single ims",
     interfaces: () => ([GraphQLComment, GraphQLNode]),
@@ -110,5 +110,5 @@ let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         locations: locations()
     })
 };
-let GraphQLIssue = new GraphQLObjectType(issueConfig);
+const GraphQLIssue = new GraphQLObjectType(issueConfig);
 export default GraphQLIssue;

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLRemoveIssueFromLocationPayload from "../../types/mutations/payloads/issue/GraphQLRemoveIssueFromLocationPayload";
 import GraphQLRemoveIssueFromLocationInput from "../../types/mutations/inputs/issue/GraphQLRemoveIssueFromLocationInput";
 
-let removeIssueFromLocation: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let removeIssueFromLocation: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (removeIssueFromLocation === undefined) {
         removeIssueFromLocation = {

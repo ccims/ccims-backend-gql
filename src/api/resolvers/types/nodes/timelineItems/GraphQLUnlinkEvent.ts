@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let unlinkEventConfig: GraphQLObjectTypeConfig<UnlinkEvent, ResolverContext> = {
+const unlinkEventConfig: GraphQLObjectTypeConfig<UnlinkEvent, ResolverContext> = {
     name: "UnlinkEvent",
     description: "An UnlinkEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -35,5 +35,5 @@ let unlinkEventConfig: GraphQLObjectTypeConfig<UnlinkEvent, ResolverContext> = {
         }
     })
 };
-let GraphQLUnlinkEvent = new GraphQLObjectType(unlinkEventConfig);
+const GraphQLUnlinkEvent = new GraphQLObjectType(unlinkEventConfig);
 export default GraphQLUnlinkEvent;

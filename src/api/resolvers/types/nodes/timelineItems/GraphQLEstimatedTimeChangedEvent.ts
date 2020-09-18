@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLTimeSpan from "../../../scalars/GraphQLTimeSpan";
 
-let estimatedTimeChangedEventConfig: GraphQLObjectTypeConfig<EstimatedTimeChangedEvent, ResolverContext> = {
+const estimatedTimeChangedEventConfig: GraphQLObjectTypeConfig<EstimatedTimeChangedEvent, ResolverContext> = {
     name: "EstimatedTimeChangedEvent",
     description: "An EstimatedTimeChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -40,5 +40,5 @@ let estimatedTimeChangedEventConfig: GraphQLObjectTypeConfig<EstimatedTimeChange
         }
     })
 };
-let GraphQLEstimatedTimeChangedEvent = new GraphQLObjectType(estimatedTimeChangedEventConfig);
+const GraphQLEstimatedTimeChangedEvent = new GraphQLObjectType(estimatedTimeChangedEventConfig);
 export default GraphQLEstimatedTimeChangedEvent;

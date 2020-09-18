@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLUnmarkIssueAsDuplicatePayload from "../../types/mutations/payloads/issue/GraphQLUnmarkIssueAsDuplicatePayload";
 import GraphQLUnmarkIssueAsDuplicateInput from "../../types/mutations/inputs/issue/GraphQLUnmarkIssueAsDuplicateInput";
 
-let unmarkIssueAsDuplicate: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let unmarkIssueAsDuplicate: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (unmarkIssueAsDuplicate === undefined) {
         unmarkIssueAsDuplicate = {

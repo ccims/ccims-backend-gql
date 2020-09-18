@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLReactionGroupFilter from "../../types/filters/GraphQLReactionGroupFilter";
 import GraphQLReactionGroupPage from "../../types/pages/GraphQLReactionGroupPage";
 
-let reactions: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let reactions: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (reactions === undefined) {
         reactions = {

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLReopenIssuePayload from "../../types/mutations/payloads/issue/GraphQLReopenIssuePayload";
 import GraphQLReopenIssueInput from "../../types/mutations/inputs/issue/GraphQLReopenIssueInput";
 
-let reopenIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let reopenIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (reopenIssue === undefined) {
         reopenIssue = {

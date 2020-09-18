@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
 
-let testMutationInputConfig: GraphQLInputObjectTypeConfig = {
+const testMutationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "TestMutationInput",
     description: "The inputs for the testMutation",
     fields: () => ({
@@ -10,5 +10,5 @@ let testMutationInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLTestMutationInput = new GraphQLInputObjectType(testMutationInputConfig);
+const GraphQLTestMutationInput = new GraphQLInputObjectType(testMutationInputConfig);
 export default GraphQLTestMutationInput;

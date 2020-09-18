@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLChangeIssueEstimatedTimePayload from "../../types/mutations/payloads/issue/GraphQLChangeIssueEstimatedTimePayload";
 import GraphQLChangeIssueEstimatedTimeInput from "../../types/mutations/inputs/issue/GraphQLChangeIssueEstimatedTimeInput";
 
-let changeIssueEstimatedTime: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let changeIssueEstimatedTime: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (changeIssueEstimatedTime === undefined) {
         changeIssueEstimatedTime = {

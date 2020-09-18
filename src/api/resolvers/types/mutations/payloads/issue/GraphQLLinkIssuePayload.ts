@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLLinkEvent from "../../../nodes/timelineItems/GraphQLLinkEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let linkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const linkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "LinkIssuePayload",
     description: "The Payload/Response for the linkIssue mutation",
     fields: () => ({
@@ -30,5 +30,5 @@ let linkIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLLinkIssuePayload = new GraphQLObjectType(linkIssuePayloadConfig);
+const GraphQLLinkIssuePayload = new GraphQLObjectType(linkIssuePayloadConfig);
 export default GraphQLLinkIssuePayload;

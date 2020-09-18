@@ -31,7 +31,7 @@ function createFilter(tableName: string, primary: string, secundary: string, fil
         }
     }
 
-    
+
 }
 
 /**
@@ -71,14 +71,14 @@ export function createRelationFilterBySecundary(primary: string, secundary: stri
 export function createStringListFilter(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length == 1) {
-        return { 
-            priority: priority,
+        return {
+            priority,
             text: `main.${rowName}=$${i}`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority: priority,
+            priority,
             text: `main.${rowName}=ANY($${i})`,
             values: [ids]
         };
@@ -99,13 +99,13 @@ export function createRelationFilterOnMany(tableName: string, rowName: string, i
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length == 1) {
         return {
-            priority: priority,
+            priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=$${i})`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority: priority,
+            priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=ANY($${i}))`,
             values: [ids]
         };

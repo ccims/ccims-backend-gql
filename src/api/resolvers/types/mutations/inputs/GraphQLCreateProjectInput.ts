@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
 
-let createProjectInputConfig: GraphQLInputObjectTypeConfig = {
+const createProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateProjectInput",
     description: "The inputs for the createProject mutation",
     fields: () => ({
@@ -30,5 +30,5 @@ let createProjectInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLCreateProjectInput = new GraphQLInputObjectType(createProjectInputConfig);
+const GraphQLCreateProjectInput = new GraphQLInputObjectType(createProjectInputConfig);
 export default GraphQLCreateProjectInput;

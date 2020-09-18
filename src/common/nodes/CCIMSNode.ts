@@ -39,7 +39,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> extends Saveable {
      * the specification of the table in which this node is saved
      */
     public readonly _tableSpecification: NodeTableSpecification<T>;
-    
+
 
     /**
      * creates a new CCIMSNode

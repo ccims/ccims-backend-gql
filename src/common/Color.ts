@@ -7,7 +7,7 @@ export class Color {
     public constructor(rgba: number);
     public constructor(strOrROrRGBA: string | number, g?: number, b?: number, a?: number) {
         if (typeof strOrROrRGBA === "string" && g === undefined && b === undefined && a === undefined) {
-            let noWhitespace = strOrROrRGBA.trim().replace(/\s*/g, "").toLowerCase();
+            const noWhitespace = strOrROrRGBA.trim().replace(/\s*/g, "").toLowerCase();
             if (noWhitespace.startsWith("#")) {
                 if (noWhitespace.length >= 6) {
                     let aVal = 255;
@@ -16,30 +16,30 @@ export class Color {
                     } else if (noWhitespace.length !== 6) {
                         throw new Error("Illegal html color string");
                     }
-                    let rVal = parseInt(noWhitespace.substr(1, 2), 16);
-                    let gVal = parseInt(noWhitespace.substr(3, 2), 16);
-                    let bVal = parseInt(noWhitespace.substr(5, 2), 16);
+                    const rVal = parseInt(noWhitespace.substr(1, 2), 16);
+                    const gVal = parseInt(noWhitespace.substr(3, 2), 16);
+                    const bVal = parseInt(noWhitespace.substr(5, 2), 16);
                     this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
                 }
             } else if (noWhitespace.startsWith("rgb")) {
-                let colorParts = noWhitespace.substring(noWhitespace.indexOf("(") + 1, noWhitespace.indexOf(")")).split(",");
+                const colorParts = noWhitespace.substring(noWhitespace.indexOf("(") + 1, noWhitespace.indexOf(")")).split(",");
                 let aVal = 255;
                 if (noWhitespace.startsWith("rgba") && colorParts.length === 4) {
                     aVal = parseInt(colorParts[3], 10);
                 } else if (colorParts.length !== 3) {
                     throw new Error("Illegal css color string");
                 }
-                let rVal = parseInt(colorParts[0], 10);
-                let gVal = parseInt(colorParts[1], 10);
-                let bVal = parseInt(colorParts[2], 10);
+                const rVal = parseInt(colorParts[0], 10);
+                const gVal = parseInt(colorParts[1], 10);
+                const bVal = parseInt(colorParts[2], 10);
                 this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
             }
         } else if (typeof strOrROrRGBA === "number" && g === undefined && b === undefined && a === undefined) {
-            let intNum = Math.max(0, Math.min(0xffffffff, Math.floor(strOrROrRGBA)));
-            let rVal = (intNum >> 3 * 8) & 0xff;
-            let gVal = (intNum >> 2 * 8) & 0xff;
-            let bVal = (intNum >> 8) & 0xff;
-            let aVal = (intNum) & 0xff;
+            const intNum = Math.max(0, Math.min(0xffffffff, Math.floor(strOrROrRGBA)));
+            const rVal = (intNum >> 3 * 8) & 0xff;
+            const gVal = (intNum >> 2 * 8) & 0xff;
+            const bVal = (intNum >> 8) & 0xff;
+            const aVal = (intNum) & 0xff;
             this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
         } else if (typeof strOrROrRGBA === "number" && typeof g === "number" && typeof b === "number" && (typeof a === "number" || a === undefined)) {
             this.color = { r: Color.checkAndRound(strOrROrRGBA), g: Color.checkAndRound(g), b: Color.checkAndRound(b), a: Color.checkAndRound(a || 255) };
@@ -71,7 +71,7 @@ export class Color {
     }
 
     public toString(): string {
-        let alphaStr = this.color.a === 255 ? "" : this.color.a.toString(16).toUpperCase()
+        const alphaStr = this.color.a === 255 ? "" : this.color.a.toString(16).toUpperCase()
         return `#${this.color.r.toString(16).toUpperCase()}${this.color.g.toString(16).toUpperCase()}${this.color.b.toString(16).toUpperCase()}${alphaStr}`;
     }
 
