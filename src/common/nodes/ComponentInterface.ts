@@ -10,8 +10,9 @@ import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { IssueLocation } from "./IssueLocation";
+import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { Issue } from "./Issue";
+import { createJSDocThisTag } from "typescript";
 
 /**
  * the specification of the table which contains components
@@ -28,7 +29,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
     /**
      * property for issues which are located on this component
      */
-    public readonly issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation> = undefined as any;
+    public readonly issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>;
 
     /**
      * property on which component this interface is
@@ -83,6 +84,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
         super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description);
         this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
         this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
+        this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
     }
 
 }

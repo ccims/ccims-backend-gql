@@ -30,12 +30,12 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     private static readonly ownerPropertySpecification: NodePropertySpecification<User, NamedOwnedNode>
         = new NodePropertySpecification<User, NamedOwnedNode>(
             (id, node) => {
-                const command  = undefined as any;
+                const command  = new LoadUsersCommand();
                 command.ids = [id];
                 return command;
             },
-            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand())
-            //TODO notify user
+            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
+            (user, node) => user.ownedNodesProperty
         );
 
     /**
