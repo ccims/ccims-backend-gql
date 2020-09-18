@@ -22,7 +22,7 @@ import { LoadUsersCommand } from "../../common/database/commands/load/nodes/Load
  * @returns An express middleware for verifying passed json web tokens
  */
 export function jwtVerifier(secret?: string): core.RequestHandler {
-    let verifier = new JWTVerifier(secret);
+    const verifier = new JWTVerifier(secret);
     return (req: core.Request, res: core.Response, next: core.NextFunction) => {
         verifier.handle.call(verifier, req, res, next);
     };

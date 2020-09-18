@@ -53,7 +53,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
         return this._element as T;
     }
 
-   /**
+    /**
      * sets  the element of this property
      * @param value the element to set, this might be undefined
      */

@@ -10,9 +10,9 @@ import { NodePropertySpecification } from "../properties/NodePropertySpecificati
 import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNode";
 
 /**
-* a table specification for a IssueTimelineItem
-* does not specifiy the metadata, because this is up to the save method
-*/
+ * a table specification for a IssueTimelineItem
+ * does not specifiy the metadata, because this is up to the save method
+ */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
    = new NodeTableSpecification<IssueTimelineItem>("issue_timelineItem", SyncNodeTableSpecification,
    new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));

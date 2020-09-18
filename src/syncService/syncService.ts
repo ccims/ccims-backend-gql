@@ -1,16 +1,18 @@
+import { log } from "../log";
+
 export class SyncService {
 
     private timer: NodeJS.Timeout | undefined;
 
     public constructor() {
-        console.log("Starting sync service");
+        log(10, "Starting sync service");
         this.timer = undefined;
         this.startService();
     }
 
     public startService(): void {
         if (this.timer === undefined) {
-            let that = this;
+            const that = this;
             this.timer = setInterval(() => {
                 that.sync();
             }, 5 * 60 * 1000);
@@ -25,7 +27,7 @@ export class SyncService {
     }
 
     private sync(): void {
-        console.log("Syncing");
+        log(10, "Syncing");
     }
 
 }

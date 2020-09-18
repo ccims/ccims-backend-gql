@@ -13,9 +13,9 @@ import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 
 /**
-* a table specification for a Comment
-* does not specifiy the metadata, because this is up to the save method
-*/
+ * a table specification for a Comment
+ * does not specifiy the metadata, because this is up to the save method
+ */
 export const CommentTableSpecification: NodeTableSpecification<Comment>
    = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification,
    RowSpecification.fromProperty("body", "body"),

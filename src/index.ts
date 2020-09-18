@@ -13,7 +13,7 @@ export function functionToTest(a: number, b: number): number {
 }
 
 
-//const syncService = new SyncService();
+// const syncService = new SyncService();
 if (true) {
     const idGen = new SnowflakeGenerator();
     const pgClient: Client = new Client(config.postgres);
