@@ -18,6 +18,7 @@ import { IssueLocation } from "./IssueLocation";
 import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
 import { Component } from "./Component";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 
 
 /**
@@ -161,6 +162,78 @@ export class Issue extends SyncNode<Issue> {
             .noSave();
 
     /**
+     * Property of all components this issue is currently pinned on
+     * do NOT pin an issue via this property
+     */
+    public readonly pinnedOnProperty: NodeListProperty<Component, Issue>;
+
+    /**
+     * Static specification for the property of all components this issue is pinned on
+     */
+    private static readonly pinnedOnPropertySpecification: NodeListPropertySpecification<Component, Issue>
+        = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "pinnedIssue"),
+            (ids, issue) => {
+                const command = new LoadComponentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadComponentsCommand();
+                command.hasIssue = [issue.id];
+                return command;
+            })
+            .notifyChanged((component, issue) => component.pinnedIssuesProperty)
+            .noSave();
+
+    /**
+     * Property conaining all issues that are linked to by this issue (where this issue is the origin of the __relation__)
+     * do NOT add a linked issue via this property
+     */
+    public readonly linksToIssuesProperty: NodeListProperty<Issue, Issue>;
+
+    /**
+     * Specification for the linkedTo property
+     */
+    private static readonly linksToIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
+        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linkedIssues"),
+            (ids, issue) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadIssuesCommand();
+                command.linkedByIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((linksToIssue, issue) => linksToIssue.linkedByIssuesProperty)
+            .saveOnPrimary("issue", "linkedIssues");
+
+    /**
+     * Property conaining all issues that are linked to by this issue (where this issue is the __destination__)
+     * do NOT add a linked issue via this property
+     */
+    public readonly linkedByIssuesProperty: NodeListProperty<Issue, Issue>;
+
+    /**
+     * Specification for the linkedTo property
+     */
+    private static readonly linkedByIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
+        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linkedIssues"),
+            (ids, issue) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadIssuesCommand();
+                command.linkedByIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((linkedByIssue, issue) => linkedByIssue.linksToIssuesProperty)
+            .noSave();
+
+    /**
      * abstract constructor for extending classes
      * @param type the type of this node
      * @param databaseManager the databaseManager
@@ -190,6 +263,9 @@ export class Issue extends SyncNode<Issue> {
         this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
         this.locationsProperty = new NodeListProperty<IssueLocation, Issue>(databaseManager, Issue.locationsPropertySpecification, this);
         this.componentsProperty = new NodeListProperty<Component, Issue>(databaseManager, Issue.componentsPropertySpecification, this);
+        this.pinnedOnProperty = new NodeListProperty<Component, Issue>(databaseManager, Issue.pinnedOnPropertySpecification, this);
+        this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
+        this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,

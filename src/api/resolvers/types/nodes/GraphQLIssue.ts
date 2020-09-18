@@ -1,21 +1,20 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLList, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLDate from "../../scalars/GraphQLDate";
-import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
-import GraphQLUser from "./GraphQLUser";
-import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
-import linkedIssues from "../../listQueries/issue/linkedIssues";
-import assignees from "../../listQueries/issue/assignees";
-import issueComments from "../../listQueries/issue/issueComments";
-import reactions from "../../listQueries/issue/reactions";
-import labels from "../../listQueries/issue/labels";
-import participants from "../../listQueries/issue/participants";
-import pinnedOn from "../../listQueries/issue/pinnedOn";
-import timeline from "../../listQueries/issue/timeline";
-import locations from "../../listQueries/issue/locations";
-import GraphQLComment from "./GraphQLComment";
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Issue } from "../../../../common/nodes/Issue";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
+import componentsListQuery from "../../listQueries/componentsListQuery";
+import issueComments from "../../listQueries/issue/issueComments";
+import labels from "../../listQueries/issue/labels";
+import locations from "../../listQueries/issue/locations";
+import reactions from "../../listQueries/issue/reactions";
+import timeline from "../../listQueries/issue/timeline";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import usersListQuery from "../../listQueries/usersListQuery";
+import GraphQLDate from "../../scalars/GraphQLDate";
+import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
+import GraphQLNode from "../GraphQLNode";
+import GraphQLComment from "./GraphQLComment";
+import GraphQLUser from "./GraphQLUser";
 
 let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
@@ -95,12 +94,18 @@ let issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             description: "The time already spent on work on this issue.\n\nThis is only for displaying and has no effect on the ccims but will be synce to other ims"
         },
         issueComments: issueComments(),
-        linkedIssues: linkedIssues(),
+        linksToIssues: issuesListQuery("All issues linked to from issue (this issue is __origin__ of relation, matching the given filter.\n" +
+            "If no filter is given, all issues will be returned", issue => issue.linksToIssuesProperty),
+        linkedByIssues: issuesListQuery("All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.\n" +
+            "If no filter is given, all issues will be returned", issue => issue.linkedByIssuesProperty),
         reactions: reactions(),
-        assignees: assignees(),
+        assignees: usersListQuery("All users who are explicitely assigned to issue, matching the given filter.\n" +
+            "If no filter is given, all issues will be returned", issue => issue.assigneesProperty),
         labels: labels(),
-        participants: participants(),
-        pinnedOn: pinnedOn(),
+        participants: usersListQuery("All users participating on this issue (by writing a comment, etc.), matching the given filter.\n" +
+            "If no filter is given, all users will be returned", issue => issue.participantsProperty),
+        pinnedOn: componentsListQuery("All components where this issue has been pinned, matching the given filter.\n" +
+            "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
         timeline: timeline(),
         locations: locations()
     })

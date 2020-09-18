@@ -1,0 +1,1205 @@
+
+enum IMSType {
+  CCIMS
+  GITHUB
+}
+enum IssueCategory {
+  BUG
+  FEATURE_REQUEST
+  UNCLASSIFIED
+}
+enum IssueTimelineItemType {
+  ISSUE_COMMENT
+  DELETED_ISSUE_COMMENT
+  REFERENCED_BY_OTHER_EVENT
+  REFERENCED_BY_ISSUE_EVENT
+  LINK_EVENT
+  UNLINK_EVENT
+  WAS_LINKED_EVENT
+  WAS_UNLINKED_EVENT
+  LABELLED_EVENT
+  UNLABELLED_EVENT
+  PINNED_EVENT
+  UNPINNED_EVENT
+  RENAMED_TITLE_EVENT
+  CATEGORY_CHANGED_EVENT
+  ASSIGNED_EVENT
+  UNASSIGNED_EVENT
+  CLOSED_EVENT
+  REOPENED_EVENT
+  PRIORITY_CHANGED_EVENT
+  START_DATE_CHANGED_EVENT
+  DUE_DATE_CHANGED_EVENT
+  ESTIMATED_TIME_CHANGED_EVENT
+  ADDED_LOCATION_EVENT
+  REMOVED_LOCATION_EVENT
+  MARKED_AS_DUPLICATE_EVENT
+  UNMARKED_AS_DUPLICATE_EVENT
+}
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+scalar Color
+scalar Date
+scalar JSON
+scalar TimeSpan
+interface Node {
+  id: ID
+}
+type ComponentInterfaceEdge {
+  node: ComponentInterface
+  cursor: String!
+}
+type ComponentEdge {
+  node: Component
+  cursor: String!
+}
+type IssueCommentEdge {
+  node: IssueComment
+  cursor: String!
+}
+type IssueEdge {
+  node: Issue
+  cursor: String!
+}
+type IssueLocationEdge {
+  node: IssueLocation
+  cursor: String!
+}
+type IssueTimelineItemEdge {
+  node: IssueTimelineItem
+  cursor: String!
+}
+type LabelEdge {
+  node: Label
+  cursor: String!
+}
+type ProjectEdge {
+  node: Project
+  cursor: String!
+}
+type ReactionGroupEdge {
+  node: ReactionGroup
+  cursor: String!
+}
+type UserEdge {
+  node: User
+  cursor: String!
+}
+input ComponentFilter {
+  name: [String!]
+  owner: [ID!]
+  description: String
+  imsType: [IMSType!]
+}
+input ComponentInterfaceFilter {
+  name: String
+  description: String
+  component: ID
+  consumedBy: [ID!]
+}
+input IssueCommentFilter {
+  issue: [ID!]
+  createdBy: [ID!]
+  editedBy: [ID!]
+  createdAfter: Date
+  createdBefore: Date
+  editedAfter: Date
+  editedBefore: Date
+  body: String
+  reactions: [[String!]!]
+  currentUserCanEdit: Boolean
+}
+input IssueFilter {
+  title: [String!]
+  components: [ID!]
+  body: String
+  createdBy: [ID!]
+  editedBy: [ID!]
+  createdAfter: Date
+  createdBefore: Date
+  editedAfter: Date
+  editedBefore: Date
+  updatedAfter: Date
+  updatedBefore: Date
+  isOpen: Boolean
+  isDuplicate: Boolean
+  category: [IssueCategory!]
+  linksIssues: Boolean
+  linkedIssues: [ID!]
+  reactions: [[String!]!]
+  assignees: [ID!]
+  labels: [LabelFilter!]
+  participants: [ID!]
+  locations: [ID!]
+  currentUserCanEdit: Boolean
+  currentUserCanComment: Boolean
+  startDateAfter: Date
+  startDateBefore: Date
+  dueDateAfter: Date
+  dueDateBefore: Date
+  estimatedTimeGreaterThan: TimeSpan
+  estimatedTimeLowerThan: TimeSpan
+  spentTimeGreaterThan: TimeSpan
+  spentTimeLowerThan: TimeSpan
+}
+input IssueLocationFilter {
+  name: [String!]
+  description: String
+}
+input IssueTimelineItemFilter {
+  createdBy: [ID!]
+  createdAfter: Date
+  createdBefore: Date
+}
+input LabelFilter {
+  name: [String!]
+  description: String
+  color: [Color!]
+}
+input ProjectFilter {
+  name: [String!]
+  components: [ID!]
+  users: [ID!]
+  owner: [ID!]
+  issues: [ID!]
+  description: String
+}
+input ReactionGroupFilter {
+  reaction: [String!]
+  users: [ID!]
+}
+input UserFilter {
+  username: [String!]
+  displayName: String
+  email: [String!]
+  projects: [ID!]
+  assignedToIssues: [ID!]
+  participantOfIssues: [ID!]
+  issueComments: [ID!]
+}
+type ComponentInterfacePage implements Page {
+  nodes: [ComponentInterface]
+  edges: [ComponentInterfaceEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type ComponentPage implements Page {
+  nodes: [Component]
+  edges: [ComponentEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type IssueCommentPage implements Page {
+  nodes: [IssueComment]
+  edges: [IssueCommentEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type IssueLocationPage implements Page {
+  nodes: [IssueLocation]
+  edges: [IssueLocationEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type IssuePage implements Page {
+  nodes: [Issue]
+  edges: [IssueEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type LabelPage implements Page {
+  nodes: [Label]
+  edges: [LabelEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type IssueTimelineItemPage implements Page {
+  nodes: [IssueTimelineItem]
+  edges: [IssueTimelineItemEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+interface Page {
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+type UserPage implements Page {
+  nodes: [User]
+  edges: [UserEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type ReactionGroupPage implements Page {
+  nodes: [ReactionGroup]
+  edges: [ReactionGroupEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+type ProjectPage implements Page {
+  nodes: [Project]
+  edges: [ProjectEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+interface Comment {
+  id: ID!
+  body: String
+  bodyRendered: String
+  createdBy: User
+  editedBy: [User!]
+  createdAt: Date!
+  lastEditedAt: Date
+  currentUserCanEdit: Boolean!
+  reactions(
+    after: String
+    before: String
+    filterBy: ReactionGroupFilter
+    first: Int
+    last: Int
+  ): ReactionGroupPage
+}
+type Component implements Node & IssueLocation {
+  id: ID!
+  name: String!
+  owner: User
+  description: String
+  ims: IMS
+  issues(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  issuesOnLocation(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  projects(
+    after: String
+    before: String
+    filterBy: ProjectFilter
+    first: Int
+    last: Int
+  ): ProjectPage
+  interfaces(
+    after: String
+    before: String
+    filterBy: ComponentInterfaceFilter
+    first: Int
+    last: Int
+  ): ComponentInterfacePage
+  consumedInterfaces(
+    after: String
+    before: String
+    filterBy: ComponentInterfaceFilter
+    first: Int
+    last: Int
+  ): ComponentInterfacePage
+}
+type IMS implements Node {
+  id: ID!
+  imsType: IMSType
+  component: Component
+}
+type ComponentInterface implements Node & IssueLocation {
+  id: ID!
+  name: String!
+  description: String
+  component: Component!
+  issuesOnLocation(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  consumedBy(
+    after: String
+    before: String
+    filterBy: ComponentFilter
+    first: Int
+    last: Int
+  ): ComponentPage
+}
+type Issue implements Comment & Node {
+  id: ID!
+  title: String!
+  body: String
+  bodyRendered: String
+  createdBy: User
+  editedBy: [User!]
+  createdAt: Date!
+  lastEditedAt: Date
+  updatedAt: Date
+  isOpen: Boolean!
+  isDuplicate: Boolean!
+  category: IssueCategory!
+  currentUserCanEdit: Boolean!
+  currentUserCanComment: Boolean!
+  startDate: Date
+  dueDate: Date
+  estimatedTime: TimeSpan
+  spentTime: TimeSpan
+  issueComments(
+    after: String
+    before: String
+    filterBy: IssueCommentFilter
+    first: Int
+    last: Int
+  ): IssueCommentPage
+  linkedIssues(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  reactions(
+    after: String
+    before: String
+    filterBy: ReactionGroupFilter
+    first: Int
+    last: Int
+  ): ReactionGroupPage
+  assignees(
+    after: String
+    before: String
+    filterBy: UserFilter
+    first: Int
+    last: Int
+  ): UserPage
+  labels(
+    after: String
+    before: String
+    filterBy: LabelFilter
+    first: Int
+    last: Int
+  ): LabelPage
+  participants(
+    after: String
+    before: String
+    filterBy: UserFilter
+    first: Int
+    last: Int
+  ): UserPage
+  pinnedOn(
+    after: String
+    before: String
+    filterBy: ComponentFilter
+    first: Int
+    last: Int
+  ): ComponentPage
+  timeline(
+    after: String
+    before: String
+    filterBy: IssueTimelineItemFilter
+    first: Int
+    last: Int
+  ): IssueTimelineItemPage
+  locations(
+    after: String
+    before: String
+    filterBy: IssueLocationFilter
+    first: Int
+    last: Int
+  ): IssueLocationPage
+}
+interface IssueLocation implements Node {
+  id: ID!
+  name: String!
+  description: String
+  issuesOnLocation(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+}
+interface IssueTimelineItem implements Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type Label implements Node {
+  id: ID!
+  name: String!
+  description: String
+  color: Color
+  projects(
+    after: String
+    before: String
+    filterBy: ProjectFilter
+    first: Int
+    last: Int
+  ): ProjectPage
+}
+type ReactionGroup implements Node {
+  id: ID!
+  users: [User]
+  totalUserCount: Int!
+  reaction: String!
+}
+type Project implements Node {
+  id: ID!
+  name: String!
+  components(
+    after: String
+    before: String
+    filterBy: ComponentFilter
+    first: Int
+    last: Int
+  ): ComponentPage
+  users(
+    after: String
+    before: String
+    filterBy: UserFilter
+    first: Int
+    last: Int
+  ): UserPage
+  owner: User!
+  issues(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  labels(
+    after: String
+    before: String
+    filterBy: LabelFilter
+    first: Int
+    last: Int
+  ): LabelPage
+  description: String
+}
+type User implements Node {
+  projects(
+    after: String
+    before: String
+    filterBy: ProjectFilter
+    first: Int
+    last: Int
+  ): ProjectPage
+  assignedToIssues(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  participantOfIssues(
+    after: String
+    before: String
+    filterBy: IssueFilter
+    first: Int
+    last: Int
+  ): IssuePage
+  issueComments(
+    after: String
+    before: String
+    filterBy: IssueCommentFilter
+    first: Int
+    last: Int
+  ): IssueCommentPage
+}
+type AddedToComponentEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  component: Component!
+}
+type AddedToLocationEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  location: IssueLocation!
+}
+type ClosedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type AssignedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  assignee: User!
+}
+type CategoryChangedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldCategory: IssueCategory!
+  newCategory: IssueCategory!
+}
+type DueDateChangedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldDueDate: Date
+  newDueDate: Date
+}
+type DeletedIssueComment implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  deletedBy: User
+  deletedAt: Date
+}
+type EstimatedTimeChangedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldEstimatedTime: TimeSpan
+  newEstimatedTime: TimeSpan
+}
+type LabelledEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  label: Label!
+}
+type IssueComment implements IssueTimelineItem & Comment & Node {
+  id: ID!
+  issue: Issue!
+  body: String
+  bodyRendered: String
+  createdBy: User
+  editedBy: [User!]
+  createdAt: Date!
+  lastEditedAt: Date
+  currentUserCanEdit: Boolean!
+  reactions(
+    after: String
+    before: String
+    filterBy: ReactionGroupFilter
+    first: Int
+    last: Int
+  ): ReactionGroupPage
+}
+type MarkedAsDuplicateEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  originalIssue: Issue
+}
+type LinkEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  linkedIssue: Issue
+}
+type PinnedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type ReferencedByIssueEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  mentionedAt: Issue
+  mentionedInComment: IssueComment
+}
+type PriorityChangedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldPriority: Priority
+  newPriority: Priority
+}
+type RemovedFromComponentEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  removedComponent: Component!
+}
+type ReferencedByOtherEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  component: Component
+  source: String
+  sourceURL: String
+}
+type RemovedFromLocationEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  removedLocation: IssueLocation!
+}
+type ReopenedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type StartDateChangedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldStartDate: Date
+  newStartDate: Date
+}
+type RenamedTitleEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  oldTitle: String!
+  newTitle: String!
+}
+type UnassignedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  removedAssignee: User!
+}
+type UnlabelledEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  removedLabel: Label!
+}
+type WasLinkedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  linkedBy: Issue
+}
+type UnmarkedAsDuplicateEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type WasUnlinkedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  unlinkedBy: Issue
+}
+type UnpinnedEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+}
+type UnlinkEvent implements IssueTimelineItem & Node {
+  id: ID!
+  issue: Issue!
+  createdBy: User
+  createdAt: Date!
+  removedLinkedIssue: Issue
+}
+type Query {
+  node(
+    id: ID!
+  ): Node
+  echo(
+    input: String
+  ): String
+  projects(
+    after: String
+    before: String
+    filterBy: ProjectFilter
+    first: Int
+    last: Int
+  ): ProjectPage
+}
+type Mutation {
+  testMutation(
+    input: TestMutationInput
+  ): TestMutationPayload
+  createIssue(
+    input: CreateIssueInput
+  ): CreateIssuePayload
+  addIssueComment(
+    input: AddIssueCommentInput
+  ): AddIssueCommentPayload
+  deleteIssueComment(
+    input: DeleteIssueCommentInput
+  ): DeleteIssueCommentPayload
+  linkIssue(
+    input: LinkIssueInput
+  ): LinkIssuePayload
+  unlinkIssue(
+    input: UnlinkIssueInput
+  ): UnlinkIssuePayload
+  addLabelToIssue(
+    input: AddLabelToIssueInput
+  ): AddLabelToIssuePayload
+  removeLabelFromIssue(
+    input: RemoveLabelFromIssueInput
+  ): RemoveLabelFromIssuePayload
+  pinIssue(
+    input: PinIssueInput
+  ): PinIssuePayload
+  unpinIssue(
+    input: UnpinIssueInput
+  ): UnpinIssuePayload
+  renameIssueTitle(
+    input: RenameIssueTitleInput
+  ): RenameIssueTitlePayload
+  changeIssueCategory(
+    input: ChangeIssueCategoryInput
+  ): ChangeIssueCategoryPayload
+  addAssignee(
+    input: AddAssigneeInput
+  ): AddAssigneePayload
+  removeAssignee(
+    input: RemoveAssigneeInput
+  ): RemoveAssigneePayload
+  closeIssue(
+    input: CloseIssueInput
+  ): CloseIssuePayload
+  reopenIssue(
+    input: ReopenIssueInput
+  ): ReopenIssuePayload
+  changeIssuePriority(
+    input: ChangeIssuePriorityInput
+  ): ChangeIssuePriorityPayload
+  changeIssueStartDate(
+    input: ChangeIssueStartDateInput
+  ): ChangeIssueStartDatePayload
+  changeIssueDueDate(
+    input: ChangeIssueDueDateInput
+  ): ChangeIssueDueDatePayload
+  changeIssueEstimatedTime(
+    input: ChangeIssueEstimatedTimeInput
+  ): ChangeIssueEstimatedTimePayload
+  addIssueToLocation(
+    input: AddIssueToLocationInput
+  ): AddIssueToLocationPayload
+  removeIssueFromLocation(
+    input: RemoveIssueFromLocationInput
+  ): RemoveIssueFromLocationPayload
+  addIssueToComponent(
+    input: AddIssueToComponentInput
+  ): AddIssueToComponentPayload
+  removeIssueFromComponent(
+    input: RemoveIssueFromComponentInput
+  ): RemoveIssueFromComponentPayload
+  markIssueAsDuplicate(
+    input: MarkIssueAsDuplicateInput
+  ): MarkIssueAsDuplicatePayload
+  unmarkIssueAsDuplicate(
+    input: UnmarkIssueAsDuplicateInput
+  ): UnmarkIssueAsDuplicatePayload
+  addReactionToComment(
+    input: AddReactionToCommentInput
+  ): AddReactionToCommentPayload
+  removeReactionFromComment(
+    input: RemoveReactionFromCommentInput
+  ): RemoveReactionFromCommentPayload
+  createProject(
+    input: CreateProjectInput
+  ): CreateProjectPayload
+  createComponent(
+    input: CreateComponentInput
+  ): CreateComponentPayload
+  createIMS(
+    input: CreateIMSInput
+  ): CreateIMSPayload
+  createUser(
+    input: CreateUserInput
+  ): CreateUserPayload
+}
+type TestMutationPayload {
+  clientMutationID: String
+}
+input TestMutationInput {
+  clientMutationID: String
+}
+type CreateIssuePayload {
+  clientMutationID: String
+  issue: Issue
+}
+input CreateIssueInput {
+  clientMutationID: String
+  title: String!
+  body: String
+  componentIDs: [ID!]!
+  category: IssueCategory
+  labels: [ID!]
+  assignees: [ID!]
+  locations: [ID!]
+  startDate: Date
+  dueDate: Date
+  estimatedTime: TimeSpan
+}
+type AddIssueCommentPayload {
+  clientMutationID: String
+  comment: IssueComment
+  issue: Issue
+  timelineEdge: IssueTimelineItemEdge
+}
+input AddIssueCommentInput {
+  clientMutationID: String
+  issue: ID!
+  body: String!
+}
+type DeleteIssueCommentPayload {
+  clientMutationID: String
+  deletedComment: DeletedIssueComment
+  issue: Issue
+  event: DeletedIssueComment
+  timelineEdge: IssueTimelineItemEdge
+}
+input DeleteIssueCommentInput {
+  clientMutationID: String
+  issueComment: ID!
+}
+type LinkIssuePayload {
+  clientMutationID: String
+  linkedIssue: Issue
+  issue: Issue
+  event: LinkEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input LinkIssueInput {
+  clientMutationID: String
+  issue: ID!
+  issueToLink: ID!
+}
+type UnlinkIssuePayload {
+  clientMutationID: String
+  issue: Issue
+  event: UnlinkEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input UnlinkIssueInput {
+  clientMutationID: String
+  issue: ID!
+  issueToUnlink: ID!
+}
+type AddLabelToIssuePayload {
+  clientMutationID: String
+  label: Label
+  issue: Issue
+  event: LabelledEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input AddLabelToIssueInput {
+  clientMutationID: String
+  issue: ID!
+  label: ID!
+}
+type RemoveLabelFromIssuePayload {
+  clientMutationID: String
+  label: Label
+  issue: Issue
+  event: UnlabelledEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input RemoveLabelFromIssueInput {
+  clientMutationID: String
+  issue: ID!
+  label: ID!
+}
+type PinIssuePayload {
+  clientMutationID: String
+  component: Component
+  issue: Issue
+  event: PinnedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input PinIssueInput {
+  clientMutationID: String
+  issue: ID!
+  component: ID!
+}
+type UnpinIssuePayload {
+  clientMutationID: String
+  issue: Issue
+  component: Comment
+  event: UnpinnedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input UnpinIssueInput {
+  clientMutationID: String
+  issue: ID!
+  component: ID!
+}
+type RenameIssueTitlePayload {
+  clientMutationID: String
+  issue: Issue
+  event: RenamedTitleEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input RenameIssueTitleInput {
+  clientMutationID: String
+  issue: ID!
+  newTitle: String!
+}
+type ChangeIssueCategoryPayload {
+  clientMutationID: String
+  issue: Issue
+  event: CategoryChangedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ChangeIssueCategoryInput {
+  clientMutationID: String
+  issue: ID!
+  newCategory: IssueCategory!
+}
+type AddAssigneePayload {
+  clientMutationID: String
+  assignee: User
+  issue: Issue
+  event: AssignedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input AddAssigneeInput {
+  clientMutationID: String
+  issue: ID!
+  userToAssign: ID!
+}
+type RemoveAssigneePayload {
+  clientMutationID: String
+  user: User
+  issue: Issue
+  event: UnassignedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input RemoveAssigneeInput {
+  clientMutationID: String
+  issue: ID!
+  user: ID!
+}
+type CloseIssuePayload {
+  clientMutationID: String
+  issue: Issue
+  event: ClosedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input CloseIssueInput {
+  clientMutationID: String
+  issue: ID!
+}
+type ReopenIssuePayload {
+  clientMutationID: String
+  issue: Issue
+  event: ReopenedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ReopenIssueInput {
+  clientMutationID: String
+  issue: ID!
+}
+type ChangeIssuePriorityPayload {
+  clientMutationID: String
+  issue: Issue
+  event: PriorityChangedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ChangeIssuePriorityInput {
+  clientMutationID: String
+  issue: ID!
+  newPriority: Priority!
+}
+type ChangeIssueStartDatePayload {
+  clientMutationID: String
+  issue: Issue
+  event: StartDateChangedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ChangeIssueStartDateInput {
+  clientMutationID: String
+  issue: ID!
+  newStartDate: Date!
+}
+type ChangeIssueDueDatePayload {
+  clientMutationID: String
+  issue: Issue
+  event: DueDateChangedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ChangeIssueDueDateInput {
+  clientMutationID: String
+  issue: ID!
+  newDueDate: Date!
+}
+type ChangeIssueEstimatedTimePayload {
+  clientMutationID: String
+  issue: Issue
+  event: EstimatedTimeChangedEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input ChangeIssueEstimatedTimeInput {
+  clientMutationID: String
+  issue: ID!
+  newEstimatedTime: TimeSpan!
+}
+type AddIssueToLocationPayload {
+  clientMutationID: String
+  location: IssueLocation
+  issue: Issue
+  event: AddedToLocationEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input AddIssueToLocationInput {
+  clientMutationID: String
+  issue: ID!
+  location: ID!
+}
+type RemoveIssueFromLocationPayload {
+  clientMutationID: String
+  location: IssueLocation
+  issue: Issue
+  event: RemovedFromLocationEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input RemoveIssueFromLocationInput {
+  clientMutationID: String
+  issue: ID!
+  location: ID!
+}
+type AddIssueToComponentPayload {
+  clientMutationID: String
+  component: Component
+  issue: Issue
+  event: AddedToComponentEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input AddIssueToComponentInput {
+  clientMutationID: String
+  issue: ID!
+  location: ID!
+}
+type RemoveIssueFromComponentPayload {
+  clientMutationID: String
+  component: Component
+  issue: Issue
+  event: RemovedFromComponentEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input RemoveIssueFromComponentInput {
+  clientMutationID: String
+  issue: ID!
+  component: ID!
+}
+type MarkIssueAsDuplicatePayload {
+  clientMutationID: String
+  originalIssue: Issue
+  issue: Issue
+  event: MarkedAsDuplicateEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input MarkIssueAsDuplicateInput {
+  clientMutationID: String
+  issue: ID!
+  originalIssue: ID!
+}
+type UnmarkIssueAsDuplicatePayload {
+  clientMutationID: String
+  issue: Issue
+  event: UnmarkedAsDuplicateEvent
+  timelineEdge: IssueTimelineItemEdge
+}
+input UnmarkIssueAsDuplicateInput {
+  clientMutationID: String
+  issue: ID!
+}
+type AddReactionToCommentPayload {
+  clientMutationID: String
+  comment: Comment
+  reaction: ReactionGroup
+}
+input AddReactionToCommentInput {
+  clientMutationID: String
+  comment: ID!
+  reaction: String!
+}
+type RemoveReactionFromCommentPayload {
+  clientMutationID: String
+}
+input RemoveReactionFromCommentInput {
+  clientMutationID: String
+  comment: ID!
+  reactionToRemove: String!
+}
+type CreateProjectPayload {
+  clientMutationID: String
+  project: Project
+}
+input CreateProjectInput {
+  clientMutationID: String
+  name: String!
+  description: String
+  components: [ID!]
+  users: [ID!]
+  owner: ID!
+}
+type CreateComponentPayload {
+  clientMutationID: String
+  component: Component
+}
+input CreateComponentInput {
+  clientMutationID: String
+  name: String!
+  owner: ID!
+  description: String
+  ims: ID!
+  projects: [ID!]
+  consumedInterfaces: [ID!]
+}
+type CreateIMSPayload {
+  clientMutationID: String
+  ims: IMS
+}
+input CreateIMSInput {
+  clientMutationID: String
+  imsType: IMSType
+  endpoint: String
+  connectionData: JSON
+}
+type CreateUserPayload {
+  clientMutationID: String
+  user: User
+}
+input CreateUserInput {
+  username: String!
+  displayName: String!
+  password: String!
+  email: String
+  projects: [ID!]
+}
