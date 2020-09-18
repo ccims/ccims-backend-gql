@@ -1,5 +1,4 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
-import { NodeCache } from "./NodeCache";
 import { DatabaseCommand } from "./DatabaseCommand";
 import { Client } from "pg";
 import { log } from "../../log";
@@ -8,17 +7,23 @@ import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultiple
 import { setTypeParser } from "pg-types"
 import { IssueCategory, IssuePriority } from "../nodes/Issue";
 import { ImsType } from "../nodes/ImsSystem";
+import { Saveable } from "../nodes/Saveable";
 
 /**
  * Adds database support, also has an IdGenerator
  * All nodes must be registered on this object
  */
-export class DatabaseManager implements NodeCache {
+export class DatabaseManager {
 
     /**
      * a map with all nodes
      */
     nodes: Map<string, CCIMSNode> = new Map<string, CCIMSNode>();
+
+    /**
+     * set with Saveables to save
+     */
+    toSave: Set<Saveable> = new Set();
 
     /**
      * the idGenerator
@@ -95,15 +100,18 @@ export class DatabaseManager implements NodeCache {
      * after this, it is possible to get the result of each command
      */
     public async executePendingCommands(): Promise<void> {
-        try {
-            await this.pgClient.query("BEGIN;");
-            await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
-            await this.pgClient.query("COMMIT;");
-        } catch (e) {
-            log(2, "database command failed");
-            log(8, e);
-        }
-        this.pendingCommands = [];
+        if (this.pendingCommands.length > 0) {
+             try {
+                await this.pgClient.query("BEGIN;");
+                await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
+                await this.pgClient.query("COMMIT;");
+            } catch (e) {
+                await this.pgClient.query("ROLLBACK;");
+                log(2, "database command failed");
+                log(8, e);
+            }
+            this.pendingCommands = [];
+        }  
     }
 
     /**
@@ -123,15 +131,27 @@ export class DatabaseManager implements NodeCache {
      * WARNING: it is forbidden to use already existing nodes any longer!
      * this will result in serious errors and may affect database consitency!
      */
-    public async saveAndClearCache() {
-        await this.executePendingCommands();
-        this.nodes.forEach(node => {
-            if (node.isChanged) {
-                node.save();
-            }
-        });
-        await this.executePendingCommands();
+    public async saveAndClearCache(): Promise<void> {
+        await this.save();
         this.nodes.clear();
+    }
+
+    /**
+     * saves all nodes
+     */
+    public async save() {
+        await this.executePendingCommands();
+        this.toSave.forEach(saveable => saveable.save());
+        await this.executePendingCommands();
+        this.toSave.clear();
+    }
+
+    /**
+     * adds a savable to save
+     * @param saveable the saveable which will be saved with the next save
+     */
+    public addChanged(saveable: Saveable) {
+        this.toSave.add(saveable);
     }
 }
 

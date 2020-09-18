@@ -54,7 +54,6 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
                 return command;
             },
             comment => new GetWithReloadCommand(comment, "last_edited_by", new LoadUsersCommand())
-            //TODO notifier?
         );
 
     private _lastEditedAt: Date;
@@ -77,20 +76,21 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         super(type, databaseManager, tableSpecification, id, createdById, createdAt, issueId, isDeleted, metadata);
         this._lastEditedAt = lastEditedAt;
         this._body = body;
-        this.editedByProperty = this.registerSaveable(new NodeListProperty<User, Comment>(databaseManager, Comment.editedByPropertySpecification, this));
-        this.lastEditedByProperty = this.registerSaveable(new NullableNodeProperty<User, Comment>(databaseManager, Comment.lastEditedByPropertySpecification, this, lastEditedById));
+        this.editedByProperty = new NodeListProperty<User, Comment>(databaseManager, Comment.editedByPropertySpecification, this);
+        this.lastEditedByProperty = new NullableNodeProperty<User, Comment>(databaseManager, Comment.lastEditedByPropertySpecification, this, lastEditedById);
     }
 
     public get body(): string {
         return this._body;
     }
 
-    public setBody(value: string, atDate: Date, asUser?: User) {
+    public async setBody(value: string, atDate: Date, asUser?: User): Promise<void> {
         if (this._lastEditedAt < atDate) {
             this.lastEditedAt = atDate;
             this._body = value;
             this._lastEditedAt
             this.markChanged();
+            (await this.issueProperty.get()).participatedAt(asUser, atDate);
         }
     }
 

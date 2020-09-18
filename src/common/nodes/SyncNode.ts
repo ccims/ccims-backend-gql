@@ -64,7 +64,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         }
         this._isDeleted = isDeleted;
         this._createdAt = createdAt;
-        this.createdByProperty = this.registerSaveable(new NullableNodeProperty<User, SyncNode>(databaseManager, SyncNode.createdByPropertySpecification, this, createdById));
+        this.createdByProperty = new NullableNodeProperty<User, SyncNode>(databaseManager, SyncNode.createdByPropertySpecification, this, createdById);
     }
 
     /**

@@ -16,7 +16,7 @@ export const CCIMSNodeTableSpecification: NodeTableSpecification<CCIMSNode>
 /**
  * Base class for all datatypes with an id, which are accessable via the api
  */
-export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
+export abstract class CCIMSNode<T extends CCIMSNode = any> extends Saveable {
     /**
      * the id of the node
      */
@@ -29,22 +29,12 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      * true if the node is new
      */
     private _isNew: boolean = false;
-    /**
-     * true if the node is changed
-     */
-    private _isChanged: boolean = false;
+
     /**
      * true if the node is removed
      */
     protected _isDeleted: boolean = false;
-    /**
-     * the databaseManager
-     */
-    protected databaseManager: DatabaseManager;
-    /**
-     * array with all savables
-     */
-    private _saveables: Saveable[] = [];
+
     /**
      * the specification of the table in which this node is saved
      */
@@ -60,9 +50,9 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      * @param id the id of this node
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string) {
+        super(databaseManager);
         this._id = id;
         this._type = type;
-        this.databaseManager = databaseManager;
         this._tableSpecification = tableSpecification;
     }
 
@@ -80,13 +70,6 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      */
     public get type(): NodeType {
         return this._type;
-    }
-
-    /**
-     * returns true, if this node was modified or newly created
-     */
-    public get isChanged(): boolean {
-        return this._isChanged;
     }
 
     /**
@@ -109,14 +92,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      */
     protected markNew(): void {
         this._isNew = true;
-        this._isChanged = true;
-    }
-
-    /**
-     * marks this node as changed, aka isChanged will return true
-     */
-    public markChanged(): void {
-        this._isChanged = true;
+        this.markChanged();
     }
 
     /**
@@ -125,7 +101,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
      */
     protected markDeleted(): void {
         this._isDeleted = true;
-        this._isChanged = true;
+        this.markChanged();
     }
 
     /**
@@ -136,25 +112,16 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> implements Saveable {
     }
 
     /**
-     * registers a saveable, so it is saved when necessary
-     * @param saveable the Savable to add
-     */
-    protected registerSaveable<T extends Saveable>(saveable: T): T {
-        this._saveables.push(saveable);
-        return saveable;
-    }
-
-    /**
      * saves this node
      * this should not be overwritten by child classes
      * @see getSaveCommandsInternal
      */
     public save(): void {
-        this._saveables.forEach(saveable => saveable.save());
+        super.save();
         if (this.isChanged) {
             const command = this.getSaveCommandsInternal();
             if (command) {
-                this.databaseManager.addCommand(command);
+                this._databaseManager.addCommand(command);
             }
         }
     }
