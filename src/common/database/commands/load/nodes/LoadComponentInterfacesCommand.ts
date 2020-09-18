@@ -15,7 +15,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
     /**
      * filter for ComponentInterfaces which are on any of the components
      */
-    public onComponent?: string[];
+    public onComponents?: string[];
 
     /**
      * filter for ComponentInterfaces which are consumed by any of the components
@@ -55,18 +55,18 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onComponent) {
-            conditions.conditions.push(createRelationFilterOnOne("host_component_id", this.onComponent, conditions.i));
+        if (this.onComponents) {
+            conditions.conditions.push(createRelationFilterOnOne("host_component_id", this.onComponents, conditions.i));
             conditions.i++;
         }
         if (this.consumedByComponent) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "consumedComponentInterface", this.consumedByComponent, conditions.i));
             conditions.i++;
         }
-        
+
         return conditions;
     }
 

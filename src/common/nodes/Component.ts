@@ -118,7 +118,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             },
             component => {
                 const command = new LoadComponentInterfacesCommand();
-                command.onComponent = [component.id];
+                command.onComponents = [component.id];
                 return command;
             })
             .notifyChanged((componentInterface, component) => componentInterface.componentProperty)
