@@ -1,10 +1,10 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInterfaceTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import issuesOnLocation from "../../listQueries/issuesOnLocation";
+import { GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLNonNull, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLUser from "./GraphQLUser";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import GraphQLNode from "../GraphQLNode";
+import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 
-let issueLocationConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
+let issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverContext> = {
     name: "IssueLocation",
     description: "A location an issue can be assigned to\n\nCurrently this can be either a component or an interface",
     interfaces: () => ([GraphQLNode]),
@@ -21,7 +21,7 @@ let issueLocationConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
             type: GraphQLString,
             description: "A textual description (of the fuction) of this issue location.\n\nMax. 65536 characters"
         },
-        issuesOnLocation: issuesOnLocation()
+        issuesOnLocation: issuesListQuery("All issues that are assinged to on this issue location matching (if given) `filterBy`", issueLocation => issueLocation.issuesOnLocationProperty)
     })
 };
 let GraphQLIssueLocation = new GraphQLInterfaceType(issueLocationConfig);

@@ -1,15 +1,14 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
+import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
 import interfacesListQuery from "../../listQueries/interfacesListQuery";
-import issuesOnLocation from "../../listQueries/issuesOnLocation";
+import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLIMS from "./GraphQLIMS";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
-import issuesListQuery from "../../listQueries/issuesListQuery";
-import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 
 let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",

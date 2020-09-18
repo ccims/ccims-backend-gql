@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLIssueFilter from "../types/filters/GraphQLIssueFilter";
-import GraphQLIssuePage from "../types/pages/GraphQLIssuePage";
+import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
+import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 
 let issuesOnLocation: GraphQLFieldConfig<any, any, any> | undefined = undefined;
 export default () => {

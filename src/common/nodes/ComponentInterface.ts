@@ -10,6 +10,8 @@ import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { IssueLocation } from "./IssueLocation";
+import { Issue } from "./Issue";
 
 /**
  * the specification of the table which contains components
@@ -21,7 +23,13 @@ export const ComponentInterfaceTableSpecification: NodeTableSpecification<Compon
 /**
  * a component can have interfaces, which can be locations for issues
  */
-export class ComponentInterface extends NamedNode<ComponentInterface> {
+export class ComponentInterface extends NamedNode<ComponentInterface> implements IssueLocation {
+
+    /**
+     * property for issues which are located on this component
+     */
+    public readonly issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation> = undefined as any;
+
     /**
      * property on which component this interface is
      */
