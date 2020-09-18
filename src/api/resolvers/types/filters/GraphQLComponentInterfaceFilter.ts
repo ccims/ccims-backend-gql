@@ -8,10 +8,6 @@ let componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "The name the component has to have"
         },
-        owner: {
-            type: GraphQLID,
-            description: "Filter for interfacs owned by the user with this id"
-        },
         description: {
             type: GraphQLString,
             description: "A Regex which the description of the interface needs to match"

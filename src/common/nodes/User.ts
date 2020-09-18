@@ -3,6 +3,7 @@ import { config } from "../../config/Config";
 import { log } from "../../log";
 import { UserPermissions } from "../../utils/UserPermissions";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
@@ -13,7 +14,6 @@ import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { IssueComment } from "./timelineItems/IssueComment";
-import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 
 /**
  * specification of a table which can contain users
@@ -242,20 +242,20 @@ export class User<T extends User = any> extends CCIMSNode<T> {
 
     public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
 
-    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User> 
+    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
         = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
-        (ids, user) => {
-            const command = new LoadIssuesCommand();
-            command.ids = ids;
-            return command;
-        },
-        user => {
-            const command = new LoadIssuesCommand();
-            command.userParticipated = [user.id];
-            return command;
-        })
-        .notifyChanged((issue, component) => issue.participantsProperty)
-        .noSave();
+            (ids, user) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadIssuesCommand();
+                command.userParticipated = [user.id];
+                return command;
+            })
+            .notifyChanged((issue, component) => issue.participantsProperty)
+            .noSave();
 
     public readonly issueCommentProperty: NodeListProperty<IssueComment, User>;
 

@@ -1,18 +1,14 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig, GraphQLInt } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLUser from "./GraphQLUser";
-import GraphQLIMSType from "../../enums/GraphQLIMSType";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { Component } from "../../../../common/nodes/Component";
+import { ResolverContext } from "../../../ResolverContext";
+import interfacesListQuery from "../../listQueries/interfacesListQuery";
 import issues from "../../listQueries/issues";
 import issuesOnLocation from "../../listQueries/issuesOnLocation";
 import projectsListQuery from "../../listQueries/projectsListQuery";
-import interfaces from "../../listQueries/interfaces";
-import consumedInterfaces from "../../listQueries/consumedInterfaces";
-import GraphQLIssueLocation from "./GraphQLIssueLocation";
-import { Component } from "../../../../common/nodes/Component";
-import { ResolverContext } from "../../../ResolverContext";
-import GraphQLIssuePage from "../pages/GraphQLIssuePage";
-import GraphQLIssueFilter from "../filters/GraphQLIssueFilter";
+import GraphQLNode from "../GraphQLNode";
 import GraphQLIMS from "./GraphQLIMS";
+import GraphQLIssueLocation from "./GraphQLIssueLocation";
+import GraphQLUser from "./GraphQLUser";
 
 let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -42,9 +38,8 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         issues: issues(),
         issuesOnLocation: issuesOnLocation(),
         projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
-        interfaces: interfaces(),
-        consumedInterfaces: consumedInterfaces()
-        //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
+        interfaces: interfacesListQuery("Requests component interfaces which this component offers", component => component.interfacesProperty),
+        consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty)
     })
 };
 let GraphQLComponent = new GraphQLObjectType(componentConfig);

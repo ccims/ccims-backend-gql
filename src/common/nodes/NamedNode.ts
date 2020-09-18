@@ -7,7 +7,7 @@ import { NodeType } from "./NodeType";
  * specification of a table which can contain NamedNodes
  */
 export const NamedNodeTableSpecification: NodeTableSpecification<NamedNode>
-    = new NodeTableSpecification<NamedNode>("node", CCIMSNodeTableSpecification, 
+    = new NodeTableSpecification<NamedNode>("node", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("name", "name"),
         RowSpecification.fromProperty("description", "description"));
 
@@ -35,7 +35,7 @@ export class NamedNode<T extends NamedNode = any> extends CCIMSNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    protected constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string) {
         super(type, databaseManager, tableSpecification, id);
         this._name = name;
         this._description = description;

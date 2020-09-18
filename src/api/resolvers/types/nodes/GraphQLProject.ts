@@ -1,12 +1,12 @@
-import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import componentsListQuery from "../../listQueries/componentsListQuery";
-import usersListQuery from "../../listQueries/usersListQuery";
-import issues from "../../listQueries/issues";
-import GraphQLUser from "./GraphQLUser";
-import labels from "../../listQueries/labels";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Project } from "../../../../common/nodes/Project";
 import { ResolverContext } from "../../../ResolverContext";
+import componentsListQuery from "../../listQueries/componentsListQuery";
+import issues from "../../listQueries/issues";
+import labels from "../../listQueries/labels";
+import usersListQuery from "../../listQueries/usersListQuery";
+import GraphQLNode from "../GraphQLNode";
+import GraphQLUser from "./GraphQLUser";
 
 let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",

@@ -1,8 +1,7 @@
 import { DatabaseManager } from "../database/DatabaseManager";
-import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { SyncNodeTableSpecification, SyncNode, SyncMetadataMap } from "./SyncNode";
+import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 
 /**
  * specification of a table which can contain NamedSyncNodes

@@ -1,12 +1,11 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLIssueLocation from "./GraphQLIssueLocation";
-import GraphQLUser from "./GraphQLUser";
-import GraphQLComponent from "./GraphQLComponent";
-import issuesOnLocation from "../../listQueries/issuesOnLocation";
-import consumedBy from "../../listQueries/consumedBy";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { ResolverContext } from "../../../ResolverContext";
+import componentsListQuery from "../../listQueries/componentsListQuery";
+import issuesOnLocation from "../../listQueries/issuesOnLocation";
+import GraphQLNode from "../GraphQLNode";
+import GraphQLComponent from "./GraphQLComponent";
+import GraphQLIssueLocation from "./GraphQLIssueLocation";
 let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
     name: "ComponentInterface",
     description: "An interface offered by a component which can be counsumed by other components",
@@ -29,7 +28,8 @@ let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Resolv
             description: "The parent component of this interface which offers it"
         },
         issuesOnLocation: issuesOnLocation(),
-        consumedBy: consumedBy()
+        consumedBy: componentsListQuery("Components which consume the interface and match the filter.\n\nIf no filter is given, all components will be returned",
+            iface => iface.consumedByProperty)
     })
 };
 let GraphQLComponentInterface = new GraphQLObjectType(componentInterfaceConfig);

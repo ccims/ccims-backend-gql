@@ -1,8 +1,6 @@
+import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { PageInfo } from "./PageInfo";
-import node from "../query/node";
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { DatabaseManager } from "../../../common/database/DatabaseManager";
 
 /**
  * A page containing multipe CCIMS Nodes
