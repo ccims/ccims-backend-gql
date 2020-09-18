@@ -10,7 +10,6 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * Select only issues of which the title matches this regex
-     * TODO
      */
     public title?: string;
 
@@ -20,42 +19,41 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public onComponents?: string[];
 
     /**
+     * Select only issues which are on any component on one of these projects
+     */
+    public onProjects?: string[];
+
+    /**
      * Select only issues when their body matches this regex
-     * TODO
      */
     public body?: string;
 
     /**
      * Select only issues which were edited by one of these users
-     * TODO
      */
     public editedBy?: string[];
 
     /**
      * Select only issues that were last edited after the given date (inclusive)
      * Only including edits to the issues title or body
-     * TODO
      */
-    public editedAfter?: string[];
+    public lastEditedAfter?: string[];
 
     /**
      * Select only issues that were last edited before the given date (inclusive)
      * Only including edits to the issues title or body
-     * TODO
      */
-    public editedBefore?: string[];
+    public lastEditedBefore?: string[];
 
     /**
      * Select only issues that were last updated after the given date (inclusive)
      * This includes any changes to the issue or its comments
-     * TODO
      */
     public updatedAfter?: string[];
 
     /**
      * Select only issues that were last updated before the given date (inclusive)
      * This includes any changes to the issue or its comments
-     * TODO
      */
     public updatedBefore?: string[];
 
@@ -224,6 +222,86 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
         if (this.onLocations) {
             conditions.conditions.push(createRelationFilterByPrimary("issueLocation", "issue", this.onLocations, conditions.i));
+            conditions.i++;
+        }
+        if (this.onProjects) {
+            if (this.onProjects.length == 1) {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `main.component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
+                    values: [this.onProjects[0]]
+                });
+            } else {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `main.component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
+                    values: [this.onProjects[0]]
+                });
+            }
+            conditions.i++;
+        }
+        if (this.editedBy) {
+            if (this.editedBy.length == 1) {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_editedBy WHERE comment_id=main.body_id AND editedBy_id=$${conditions.i})`,
+                    values: [this.editedBy[0]]
+                });
+            } else {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_editedBy WHERE comment_id=main.body_id AND editedBy_id=ANY($${conditions.i}))`,
+                    values: [this.editedBy]
+                });
+            }
+            conditions.i++;
+        }
+        if (this.lastEditedBefore) {
+            conditions.conditions.push({
+                priority: 2,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at <= $${conditions.i})`,
+                values: [this.lastEditedBefore]
+            });
+            conditions.i++;
+        }
+        if (this.lastEditedAfter) {
+            conditions.conditions.push({
+                priority: 2,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at >= $${conditions.i})`,
+                values: [this.lastEditedAfter]
+            });
+            conditions.i++;
+        }
+        if (this.title) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.title ~ $${conditions.i}`,
+                values: [this.title],
+            });
+            conditions.i++;
+        }
+        if (this.body) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND body ~ $${conditions.i})`,
+                values: [this.body],
+            });
+            conditions.i++;
+        }
+        if (this.updatedAfter) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.updated_at>=$${conditions.i}`,
+                values: [this.updatedAfter],
+            });
+            conditions.i++;
+        }
+        if (this.updatedBefore) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.updated_at<=$${conditions.i}`,
+                values: [this.updatedBefore],
+            });
             conditions.i++;
         }
 

@@ -29,8 +29,8 @@ function issuesListQuery<TSource extends CCIMSNode>(
             cmd.onComponents = args.filterBy?.component;
             cmd.body = args.filterBy?.body;
             cmd.editedBy = args.filterBy?.editedBy;
-            cmd.editedAfter = args.filterBy?.editedAfter;
-            cmd.editedBefore = args.filterBy?.editedBefore;
+            cmd.lastEditedAfter = args.filterBy?.editedAfter;
+            cmd.lastEditedBefore = args.filterBy?.editedBefore;
             cmd.updatedAfter = args.filterBy?.updatedAfter;
             cmd.updatedBefore = args.filterBy?.updatedBefore;
             cmd.isOpen = args.filterBy?.isOpen;

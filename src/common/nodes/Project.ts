@@ -1,6 +1,7 @@
 import { QueryConfig, QueryResult } from "pg";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
@@ -85,12 +86,12 @@ export class Project extends NamedOwnedNode<Project> {
         = NodeListPropertySpecification.loadDynamic<Issue, Project>(
             project => new LoadIssueIdsCommand(project.id),
             (ids, project) => {
-                const command = undefined as any;
+                const command = new LoadIssuesCommand();
                 command.ids = ids;
                 return command;
             },
             project => {
-                const command = undefined as any;
+                const command = new LoadIssuesCommand();
                 command.onProjects = [project.id];
                 return command;
             })
