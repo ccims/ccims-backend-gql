@@ -21,16 +21,16 @@ import { User } from "./User";
 * does not specifiy the metadata, because this is up to the save method
 */
 export const IssueTableSpecification: NodeTableSpecification<Issue>
-   = new NodeTableSpecification<Issue>("issue_issue", SyncNodeTableSpecification, 
-   RowSpecification.fromProperty("title", "title"),
-   RowSpecification.fromProperty("is_open", "isOpen"),
-   RowSpecification.fromProperty("is_duplicate", "isDuplicate"),
-   RowSpecification.fromProperty("category", "category"),
-   RowSpecification.fromProperty("start_date", "startDate"),
-   RowSpecification.fromProperty("due_date", "dueDate"),
-   RowSpecification.fromProperty("estimated_time", "estimatedTime"),
-   RowSpecification.fromProperty("spent_time", "spentTime"),
-   new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
+    = new NodeTableSpecification<Issue>("issue_issue", SyncNodeTableSpecification,
+        RowSpecification.fromProperty("title", "title"),
+        RowSpecification.fromProperty("is_open", "isOpen"),
+        RowSpecification.fromProperty("is_duplicate", "isDuplicate"),
+        RowSpecification.fromProperty("category", "category"),
+        RowSpecification.fromProperty("start_date", "startDate"),
+        RowSpecification.fromProperty("due_date", "dueDate"),
+        RowSpecification.fromProperty("estimated_time", "estimatedTime"),
+        RowSpecification.fromProperty("spent_time", "spentTime"),
+        new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
 
 
 /**
@@ -67,40 +67,40 @@ export class Issue extends SyncNode<Issue> {
             timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand())
             //no notifier because this is never allowed to change
         );
-    
+
     public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
 
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
         = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timelineItem", "issue"),
-        (ids, issue) => {
-            const command = new LoadIssueTimelineItemsCommand();
-            command.ids = ids;
-            return command;
-        },
-        issue => {
-            const command = new LoadIssueTimelineItemsCommand();
-            command.onIssues = [issue.id];
-            return command;
-        })
-        .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
-        .noSave();
+            (ids, issue) => {
+                const command = new LoadIssueTimelineItemsCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadIssueTimelineItemsCommand();
+                command.onIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
+            .noSave();
 
     public readonly participantsProperty: NodeListProperty<User, Issue>;
 
     private static readonly participantsPropertySpecification: NodeListPropertySpecification<User, Issue>
         = NodeListPropertySpecification.loadDynamic<User, Issue>(LoadRelationCommand.fromPrimary("issue", "participant"),
-        (ids, issue) => {
-            const command = new LoadUsersCommand();
-            command.ids = ids;
-            return command;
-        },
-        issue => {
-            const command = new LoadUsersCommand();
-            command.onParticipantOfIssue = [issue.id];
-            return command;
-        })
-        .notifyChanged((user, issue) => user.participantOfIssuesProperty)
-        .saveOnPrimary("issue", "participant");
+            (ids, issue) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadUsersCommand();
+                command.participantOfIssue = [issue.id];
+                return command;
+            })
+            .notifyChanged((user, issue) => user.participantOfIssuesProperty)
+            .saveOnPrimary("issue", "participant");
 
     /**
      * abstract constructor for extending classes
@@ -207,11 +207,11 @@ export class Issue extends SyncNode<Issue> {
             await this.participantsProperty.add(participant);
         }
     }
-        
+
 }
 
 export enum IssueCategory {
-    Bug = "BUG", 
+    Bug = "BUG",
     FeatureRequest = "FEATURE_REQUEST",
     Unclassified = "UNCLASSIFIED"
 }
