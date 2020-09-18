@@ -98,8 +98,13 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         return this._lastEditedAt;
     }
 
+    /**
+     * sets lastEditedAt if the provided date is newer
+     */
     public set lastEditedAt(value: Date) {
-        this._lastEditedAt = value;
-        this.markChanged();
+        if (this._lastEditedAt < value) {
+            this._lastEditedAt = value;
+            this.markChanged();
+        }
     }
 }

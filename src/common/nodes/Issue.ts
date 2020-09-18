@@ -1,6 +1,8 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/LoadIssueTimelineItemsCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { LoadBodiesCommand } from "../database/commands/load/nodes/timeline/LoadBodiesCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
@@ -58,13 +60,12 @@ export class Issue extends SyncNode<Issue> {
     private static readonly bodyPropertySpecification: NodePropertySpecification<Body, Issue>
         = new NodePropertySpecification<Body, Issue>(
             (id, timelineItem) => {
-                //TODO
-                const command = undefined as any;
+                const command = new LoadBodiesCommand();
                 command.ids = [id];
                 return command;
             },
-            //TODO
-            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", undefined as any)
+            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand())
+            //no notifier because this is never allowed to change
         );
     
     public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
@@ -83,6 +84,23 @@ export class Issue extends SyncNode<Issue> {
         })
         .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
         .noSave();
+
+    public readonly participantsProperty: NodeListProperty<User, Issue>;
+
+    private static readonly participantsPropertySpecification: NodeListPropertySpecification<User, Issue>
+        = NodeListPropertySpecification.loadDynamic<User, Issue>(LoadRelationCommand.fromPrimary("issue", "participant"),
+        (ids, issue) => {
+            const command = new LoadUsersCommand();
+            command.ids = ids;
+            return command;
+        },
+        issue => {
+            const command = new LoadUsersCommand();
+            command.onParticipantOfIssue = [issue.id];
+            return command;
+        })
+        .notifyChanged((user, issue) => user.participantOfIssuesProperty)
+        .saveOnPrimary("issue", "participant");
 
     /**
      * abstract constructor for extending classes
@@ -110,6 +128,7 @@ export class Issue extends SyncNode<Issue> {
         this._updatedAt = updateAt;
         this.bodyProperty = this.registerSaveable(new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId));
         this.timelineProperty = this.registerSaveable(new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this));
+        this.participantsProperty = this.registerSaveable(new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this));
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
@@ -166,8 +185,27 @@ export class Issue extends SyncNode<Issue> {
         return this._spentTime;
     }
 
-    public get updateAt(): Date {
+    public get updatedAt(): Date {
         return this._updatedAt;
+    }
+
+    /**
+     * sets updateAt if the provided date is newer
+     */
+    public set updatedAt(value: Date) {
+        if (this._updatedAt < value) {
+            this._updatedAt = value;
+            this.markChanged();
+        }
+    }
+
+    public async participatedAt(participant?: User, atDate?: Date): Promise<void> {
+        if (atDate) {
+            this.updatedAt = atDate;
+        }
+        if (participant) {
+            await this.participantsProperty.add(participant);
+        }
     }
         
 }

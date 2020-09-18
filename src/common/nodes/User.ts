@@ -13,6 +13,7 @@ import { config } from "../../config/Config";
 import { log } from "../../log";
 import { Issue } from "./Issue";
 import { IssueComment } from "./timelineItems/IssueComment";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 
 /**
  * specification of a table which can contain users
@@ -232,13 +233,29 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             .saveOnPrimary("user", "project");
 
 
+    /**
+     * WARNING do NOT use this to add an assignee to an issue!
+     */
     public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
 
     public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
 
     public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
 
-    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
+    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User> 
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
+        (ids, user) => {
+            const command = new LoadIssuesCommand();
+            command.ids = ids;
+            return command;
+        },
+        user => {
+            const command = new LoadIssuesCommand();
+            command.userParticipated = [user.id];
+            return command;
+        })
+        .notifyChanged((issue, component) => issue.participantsProperty)
+        .noSave();
 
     public readonly issueCommentProperty: NodeListProperty<IssueComment, User>;
 
