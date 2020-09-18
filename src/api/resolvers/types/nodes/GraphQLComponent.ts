@@ -1,9 +1,9 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
+import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
 import interfacesListQuery from "../../listQueries/interfacesListQuery";
-import issues from "../../listQueries/issues";
-import issuesOnLocation from "../../listQueries/issuesOnLocation";
+import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLIMS from "./GraphQLIMS";
@@ -35,8 +35,8 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLIMS,
             description: "The IMS instance used by this component."
         },
-        issues: issues(),
-        issuesOnLocation: issuesOnLocation(),
+        issues: issuesListQuery("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
+        issuesOnLocation: issuesListQuery<IssueLocation>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
         projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
         interfaces: interfacesListQuery("Requests component interfaces which this component offers", component => component.interfacesProperty),
         consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty)

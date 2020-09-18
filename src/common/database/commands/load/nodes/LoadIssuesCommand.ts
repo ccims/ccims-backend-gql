@@ -9,9 +9,68 @@ import { createRelationFilterBySecundary, createStringListFilter } from "./Relat
 export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
-     * filters for issues where any of the users perticipated
+     * Select only issues of which the title matches this regex
+     * TODO
      */
-    public userParticipated?: string[];
+    public title?: string;
+
+    /**
+     * Select only issues which are on one of these components
+     * TODO
+     */
+    public onComponents?: string[];
+
+    /**
+     * Select only issues when their body matches this regex
+     * TODO
+     */
+    public body?: string;
+
+    /**
+     * Select only issues which were edited by one of these users
+     * TODO
+     */
+    public editedBy?: string[];
+
+    /**
+     * Select only issues that were last edited after the given date (inclusive)
+     * Only including edits to the issues title or body
+     * TODO
+     */
+    public editedAfter?: string[];
+
+    /**
+     * Select only issues that were last edited before the given date (inclusive)
+     * Only including edits to the issues title or body
+     * TODO
+     */
+    public editedBefore?: string[];
+
+    /**
+     * Select only issues that were last updated after the given date (inclusive)
+     * This includes any changes to the issue or its comments
+     * TODO
+     */
+    public updatedAfter?: string[];
+
+    /**
+     * Select only issues that were last updated before the given date (inclusive)
+     * This includes any changes to the issue or its comments
+     * TODO
+     */
+    public updatedBefore?: string[];
+
+    /**
+     * If set and `true`, only issues that are open are selected. If `false`, only closed issue
+     * TODO
+     */
+    public isOpen?: boolean;
+
+    /**
+     * If set and `true`, only issues that are a duplicate of another issue are selected. If `false`, only issues which are not marked as duplicate
+     * TODO
+     */
+    public isDuplicate?: boolean;
 
     /**
      * filters for issues where any of the users is assigned
@@ -22,6 +81,107 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      * filter for issues with one of the specified categories
      */
     public ofCategory?: IssueCategory[]
+
+    /**
+     * Select only issues linking __to__ one of the given issues (origin of the relation)
+     * TODO
+     */
+    public linksToIssues?: string[];
+
+    /**
+     * Select only issues __being linked to__ one of the given issues (destination of the relation)
+     * TODO
+     */
+    public linkedByIssues?: string[];
+
+    /**
+     * Select only issues that have all of the reactions in one of the given list entries on their body
+     * TODO
+     */
+    public reactions?: string[][];
+
+    /**
+     * Select only issues that have at least one of these assignees
+     * TODO
+     */
+    public assignees?: string[];
+
+    /**
+     * Select only issues that have one of these labels assigned
+     * TODO
+     */
+    public labels?: string[];
+
+    /**
+     * filters for issues where any of the users perticipated
+     */
+    public userParticipated?: string[];
+
+    /**
+     * Select only issues that are assigned to at least one of these locations
+     * TODO
+     */
+    public onLocations?: string[];
+
+    /**
+     * If set and `true`, only issues that the current user is allowed to edit the body on will be selected. If `false` only those where he isn't.
+     * TODO
+     */
+    public currentUserCanEdit?: boolean;
+
+    /**
+     * If set and `true`, only issues that the current user is allowed to comment on will be selected. If `false` only those where he isn't.
+     * TODO
+     */
+    public currentUserCanComment?: boolean;
+
+    /**
+     * Select only issues that have a start date after this date (inclusive)
+     * TODO
+     */
+    public startDateAfter?: Date;
+
+    /**
+     * Select only issues that have a start date before this date (inclusive)
+     * TODO
+     */
+    public startDateBefore?: Date;
+
+    /**
+     * Select only issues that have a due date after this date (inclusive)
+     * TODO
+     */
+    public dueDateAfter?: Date;
+
+    /**
+     * Select only issues that have a due date before this date (inclusive)
+     * TODO
+     */
+    public dueDateBefore?: Date;
+
+    /**
+     * Select only issues that have an estimated time which is at __least__ the given time span in milliseconds (inclusive)
+     * TODO
+     */
+    public estimatedTimeGreaterThan?: number;
+
+    /**
+     * Select only issues that have an estimated time which is at __most__ the given time span in milliseconds (inclusive)
+     * TODO
+     */
+    public estimatedTimeLowerThan?: number;
+
+    /**
+     * Select only issues that have an spent time which is at __least__ the given time span in milliseconds (inclusive)
+     * TODO
+     */
+    public spentTimeGreaterThan?: number;
+
+    /**
+     * Select only issues that have an spent time which is at __most__ the given time span in milliseconds (inclusive)
+     * TODO
+     */
+    public spentTimeLowerThan?: number;
 
     public constructor() {
         super(IssueTableSpecification.rows);
@@ -47,7 +207,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      */
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
-        
+
         if (this.userParticipated) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "participant", this.userParticipated, conditions.i));
             conditions.i++;
@@ -63,5 +223,5 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
         return conditions;
     }
-    
+
 }

@@ -1,11 +1,10 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import projectsListQuery from "../../listQueries/projectsListQuery";
-import assignedToIssues from "../../listQueries/user/assignedToIssues";
-import participantOfIssues from "../../listQueries/user/participantOfIssues";
-import issueComments from "../../listQueries/user/issueComments";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import projectsListQuery from "../../listQueries/projectsListQuery";
+import issueComments from "../../listQueries/user/issueComments";
+import GraphQLNode from "../GraphQLNode";
 
 let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
     name: "User",
@@ -29,8 +28,8 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             description: "The mail address of the user"
         },
         projects: projectsListQuery("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
-        assignedToIssues: assignedToIssues(),
-        participantOfIssues: participantOfIssues(),
+        assignedToIssues: issuesListQuery("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
+        participantOfIssues: issuesListQuery("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
         issueComments: issueComments()
     })
 };
