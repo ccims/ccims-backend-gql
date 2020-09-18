@@ -1,5 +1,6 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLDate from "../../scalars/GraphQLDate";
+import GraphQLIssueTimelineItemType from "../../enums/GraphQLIssueTimelineItemType";
 
 let issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueTimelineItemFilter",
@@ -17,6 +18,10 @@ let issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
         createdBefore: {
             type: GraphQLDate,
             description: "The timeline event must have occurred before the given date (inclusive) to match the filter"
+        },
+        type: {
+            type: GraphQLList(GraphQLNonNull(GraphQLIssueTimelineItemType)),
+            description: "The type of the timeline item must match one of the given ones"
         }
     })
 };
