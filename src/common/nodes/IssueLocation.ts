@@ -26,5 +26,5 @@ export const issuesOnLocationPropertyDescription: NodeListPropertySpecification<
         command.onComponents = [issueLocation.id];
         return command;
     })
-    // TODO .notifyChanged((issue, issueLocation) => issue.)
+    .notifyChanged((issue, issueLocation) => issue.locationsProperty)
     .saveOnPrimary("issueLocation", "issue");

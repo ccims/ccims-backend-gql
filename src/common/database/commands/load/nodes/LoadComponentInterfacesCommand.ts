@@ -23,6 +23,11 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
     public consumedByComponent?: string[];
 
     /**
+     * filters for IssueLocations where at least one of the issues is located
+     */
+    public hasIssueOnLocation?: string[];
+
+    /**
      * creates a new LoadComponentInterfacesCommand
      */
     public constructor() {
@@ -64,6 +69,10 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
         }
         if (this.consumedByComponent) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "consumedComponentInterface", this.consumedByComponent, conditions.i));
+            conditions.i++;
+        }
+        if (this.hasIssueOnLocation) {
+            conditions.conditions.push(createRelationFilterByPrimary("component", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }
 

@@ -4,7 +4,7 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
-import { createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
+import { createRelationFilterByPrimary, createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
 
 export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
@@ -16,7 +16,6 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * Select only issues which are on one of these components
-     * TODO
      */
     public onComponents?: string[];
 
@@ -119,7 +118,6 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * Select only issues that are assigned to at least one of these locations
-     * TODO
      */
     public onLocations?: string[];
 
@@ -218,6 +216,14 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
         if (this.ofCategory) {
             conditions.conditions.push(createStringListFilter("category", this.ofCategory, conditions.i, 5));
+            conditions.i++;
+        }
+        if (this.onComponents) {
+            conditions.conditions.push(createRelationFilterByPrimary("component", "issue", this.onComponents, conditions.i));
+            conditions.i++;
+        }
+        if (this.onLocations) {
+            conditions.conditions.push(createRelationFilterByPrimary("issueLocation", "issue", this.onLocations, conditions.i));
             conditions.i++;
         }
 

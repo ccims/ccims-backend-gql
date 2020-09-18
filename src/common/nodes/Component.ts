@@ -2,6 +2,7 @@ import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand"
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ComponentInterface } from "./ComponentInterface";
@@ -70,7 +71,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly imsSystemPropertySpecification: NodePropertySpecification<ImsSystem, Component>
         = new NodePropertySpecification<ImsSystem, Component>(
             (id, component) => {
-                const command = undefined as any;
+                const command = new LoadImsSystemsCommand();
                 command.ids = [id];
                 return command;
             },
@@ -92,16 +93,16 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
         = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
             (ids, component) => {
-                const command = undefined as any;
+                const command = new LoadIssuesCommand();
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = undefined as any;
+                const command = new LoadIssuesCommand();
                 command.onComponents = [component.id];
                 return command;
             })
-            //TODO: notifychanged
+            .notifyChanged((issue, component) => issue.componentsProperty)
             .saveOnPrimary("component", "issue");
 
     /**

@@ -28,6 +28,16 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
     public imsTypes?: ImsType[];
 
     /**
+     * filters for Components where at least one of the issues is located
+     */
+    public hasIssueOnLocation?: string[]; 
+
+    /**
+     * filters for components with at least one of the issues
+     */
+    public hasIssue?: string[];
+
+    /**
      * creates a new LoadComponentsCommand
      */
     public constructor() {
@@ -69,6 +79,14 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
         }
         if (this.consumesInterface) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "consumedComponentInterface", this.consumesInterface, conditions.i));
+            conditions.i++;
+        }
+        if (this.hasIssueOnLocation) {
+            conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
+            conditions.i++;
+        }
+        if (this.hasIssue) {
+            conditions.conditions.push(createRelationFilterBySecundary("component", "issue", this.hasIssue, conditions.i));
             conditions.i++;
         }
         if (this.imsTypes) {

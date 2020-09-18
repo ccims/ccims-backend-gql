@@ -14,6 +14,10 @@ import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNod
 import { Body } from "./timelineItems/Body";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { User } from "./User";
+import { IssueLocation } from "./IssueLocation";
+import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
+import { Component } from "./Component";
+import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 
 
 /**
@@ -122,6 +126,40 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((user, issue) => user.assignedToIssuesProperty)
             .saveOnPrimary("issue", "assignee");
 
+    public readonly locationsProperty: NodeListProperty<IssueLocation, Issue>;
+
+    private static readonly locationsPropertySpecification: NodeListPropertySpecification<IssueLocation, Issue>
+        = NodeListPropertySpecification.loadDynamic<IssueLocation, Issue>(LoadRelationCommand.fromSecundary("issueLocation", "issue"),
+            (ids, issue) => {
+                const command = new LoadIssueLocationsCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadIssueLocationsCommand();
+                command.hasIssueOnLocation = [issue.id];
+                return command;
+            })
+            .notifyChanged((issueLocation, issue) => issueLocation.issuesOnLocationProperty)
+            .noSave();
+
+    public readonly componentsProperty: NodeListProperty<Component, Issue>;
+
+    private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Issue>
+        = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "issue"),
+            (ids, issue) => {
+                const command = new LoadComponentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadComponentsCommand();
+                command.hasIssue = [issue.id];
+                return command;
+            })
+            .notifyChanged((issueLocation, issue) => issueLocation.issuesOnLocationProperty)
+            .noSave();
+
     /**
      * abstract constructor for extending classes
      * @param type the type of this node
@@ -150,6 +188,8 @@ export class Issue extends SyncNode<Issue> {
         this.timelineProperty = new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this);
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
         this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
+        this.locationsProperty = new NodeListProperty<IssueLocation, Issue>(databaseManager, Issue.locationsPropertySpecification, this);
+        this.componentsProperty = new NodeListProperty<Component, Issue>(databaseManager, Issue.componentsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
