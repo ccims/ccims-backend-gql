@@ -11,6 +11,5 @@ CREATE TABLE relation_user_project
 (
     user_id id NOT NULL,
     project_id id NOT NULL,
-    added_date timestamp NOT NULL,
     PRIMARY KEY (user_id, project_id)
 );
