@@ -8,8 +8,17 @@ import GraphQLUserFilter from "../types/filters/GraphQLUserFilter";
 import GraphQLUserPage from "../types/pages/GraphQLUserPage";
 import nodeListQuery from "./nodeListQuery";
 
-export default <TSource extends CCIMSNode>(description: string, propertyProvider?: (node: TSource) => NodeListProperty<User, TSource>):
-    GraphQLFieldConfig<TSource, ResolverContext> => {
+/**
+ * Creates a users query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
+ * 
+ * @param description The description text for the users query
+ * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
+ * @returns A GraphQLFieldConfig with fields needed for a resolvable users query
+ */
+function usersListQuery<TSource extends CCIMSNode>(
+    description: string,
+    propertyProvider?: (node: TSource) => NodeListProperty<User, TSource>
+): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = nodeListQuery<TSource, User>(GraphQLUserPage, GraphQLUserFilter, description, "users", propertyProvider);
     return {
         ...baseQuery,
@@ -27,3 +36,4 @@ export default <TSource extends CCIMSNode>(description: string, propertyProvider
         }
     };
 };
+export default usersListQuery;

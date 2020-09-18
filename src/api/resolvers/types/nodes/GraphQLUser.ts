@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
-import projects from "../../listQueries/projects";
+import projectsListQuery from "../../listQueries/projectsListQuery";
 import assignedToIssues from "../../listQueries/user/assignedToIssues";
 import participantOfIssues from "../../listQueries/user/participantOfIssues";
 import issueComments from "../../listQueries/user/issueComments";
@@ -28,7 +28,7 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             type: GraphQLString,
             description: "The mail address of the user"
         },
-        projects: projects("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
+        projects: projectsListQuery("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
         assignedToIssues: assignedToIssues(),
         participantOfIssues: participantOfIssues(),
         issueComments: issueComments()

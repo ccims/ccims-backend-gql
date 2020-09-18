@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLResolveInfo } from "graphql";
 import node from "./query/node";
 import echo from "./query/echo";
-import projects from "./listQueries/projects";
+import projectsListQuery from "./listQueries/projectsListQuery";
 import { ResolverContext } from "../ResolverContext";
 import currentUser from "./query/currentUser";
 import { LoadProjectsCommand } from "../../common/database/commands/load/nodes/LoadProjectsCommand";
@@ -12,7 +12,7 @@ let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         node,
         echo,
-        projects: projects("Requests all projects within the current ccims instance mathcing the `filterBy`"),
+        projects: projectsListQuery("Requests all projects within the current ccims instance mathcing the `filterBy`"),
         currentUser: currentUser()
     })
 };

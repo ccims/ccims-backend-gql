@@ -1,10 +1,10 @@
 import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLColor from "../../scalars/GraphQLColor";
-import projects from "../../listQueries/projects";
+import projectsListQuery from "../../listQueries/projectsListQuery";
 import { Label } from "../../../../common/nodes/Label";
 import { ResolverContext } from "../../../ResolverContext";
-import components from "../../listQueries/components";
+import componentsListQuery from "../../listQueries/componentsListQuery";
 
 let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
@@ -27,8 +27,8 @@ let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
             type: GraphQLColor,
             description: "The color of the label in the GUI"
         },
-        components: components("The components this label is available on", label => label.componentsProperty),
-        projects: projects("All projetcs that this label is used on", label => label.projectsProperty)
+        components: componentsListQuery("The components this label is available on", label => label.componentsProperty),
+        projects: projectsListQuery("All projetcs that this label is used on", label => label.projectsProperty)
     })
 };
 let GraphQLLabel = new GraphQLObjectType(labelConfig);

@@ -4,7 +4,7 @@ import GraphQLUser from "./GraphQLUser";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
 import issues from "../../listQueries/issues";
 import issuesOnLocation from "../../listQueries/issuesOnLocation";
-import projects from "../../listQueries/projects";
+import projectsListQuery from "../../listQueries/projectsListQuery";
 import interfaces from "../../listQueries/interfaces";
 import consumedInterfaces from "../../listQueries/consumedInterfaces";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
@@ -41,7 +41,7 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         },
         issues: issues(),
         issuesOnLocation: issuesOnLocation(),
-        projects: projects("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
+        projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
         interfaces: interfaces(),
         consumedInterfaces: consumedInterfaces()
         //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
