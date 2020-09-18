@@ -5,7 +5,7 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedNodesCommand } from "./LoadNamedNodeCommand";
-import { createRelationFilterByPrimary, createRelationFilterOnOne } from "./RelationFilter";
+import { createRelationFilterByPrimary, createStringListFilter } from "./RelationFilter";
 
 /**
  * command to load componentInterfaces
@@ -59,7 +59,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
         const conditions = super.generateConditions(i);
 
         if (this.onComponent) {
-            conditions.conditions.push(createRelationFilterOnOne("host_component_id", this.onComponent, conditions.i));
+            conditions.conditions.push(createStringListFilter("host_component_id", this.onComponent, conditions.i));
             conditions.i++;
         }
         if (this.consumedByComponent) {

@@ -72,7 +72,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
             conditions.i++;
         }
         if (this.imsTypes) {
-            if (this.imsTypes.length == 1) {
+            if (this.imsTypes.length === 1) {
                 conditions.conditions.push({
                     text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=$${conditions.i})`,
                     values: [this.imsTypes],

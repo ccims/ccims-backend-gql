@@ -2,7 +2,7 @@ import { IssueTimelineItem, IssueTimelineItemType } from "../../../../nodes/time
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
-import { createRelationFilterOnOne } from "./RelationFilter";
+import { createStringListFilter } from "./RelationFilter";
 
 export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<IssueTimelineItem> {
 
@@ -37,7 +37,7 @@ export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<
         const conditions = super.generateConditions(i);
 
         if (this.onIssues) {
-            conditions.conditions.push(createRelationFilterOnOne("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
             conditions.i++;
         }
         if (this.noBody) {
@@ -49,7 +49,7 @@ export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<
             conditions.i++;
         }
         if (this.types) {
-            if (this.types.length == 1) {
+            if (this.types.length === 1) {
                 conditions.conditions.push({
                     priority: 10,
                     text: "pg_class.relname = $1",

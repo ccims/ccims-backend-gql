@@ -68,7 +68,7 @@ export function createRelationFilterBySecundary(primary: string, secundary: stri
  * @param priority the priority of the parameter, default 2
  * @returns the filter
  */
-export function createRelationFilterOnOne(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
+export function createStringListFilter(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length == 1) {
         return { 
