@@ -100,15 +100,18 @@ export class DatabaseManager {
      * after this, it is possible to get the result of each command
      */
     public async executePendingCommands(): Promise<void> {
-        try {
-            await this.pgClient.query("BEGIN;");
-            await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
-            await this.pgClient.query("COMMIT;");
-        } catch (e) {
-            log(2, "database command failed");
-            log(8, e);
-        }
-        this.pendingCommands = [];
+        if (this.pendingCommands.length > 0) {
+             try {
+                await this.pgClient.query("BEGIN;");
+                await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
+                await this.pgClient.query("COMMIT;");
+            } catch (e) {
+                await this.pgClient.query("ROLLBACK;");
+                log(2, "database command failed");
+                log(8, e);
+            }
+            this.pendingCommands = [];
+        }  
     }
 
     /**
