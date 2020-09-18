@@ -1,10 +1,9 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLResolveInfo } from "graphql";
-import node from "./query/node";
-import echo from "./query/echo";
-import projectsListQuery from "./listQueries/projectsListQuery";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../ResolverContext";
+import projectsListQuery from "./listQueries/projectsListQuery";
 import currentUser from "./query/currentUser";
-import { LoadProjectsCommand } from "../../common/database/commands/load/nodes/LoadProjectsCommand";
+import echo from "./query/echo";
+import node from "./query/node";
 
 let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Query",

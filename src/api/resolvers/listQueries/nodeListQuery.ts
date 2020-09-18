@@ -1,8 +1,8 @@
-import { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLFieldConfig, GraphQLInputObjectType } from "graphql";
+import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql";
 import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { ResolverContext } from "../../ResolverContext";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
+import { ResolverContext } from "../../ResolverContext";
 import { Page } from "../utils/Page";
 
 type nodeListQueryType<TSource extends CCIMSNode, TNode extends CCIMSNode> = GraphQLFieldConfig<TSource, ResolverContext> &

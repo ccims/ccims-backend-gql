@@ -1,6 +1,6 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLInt, GraphQLInterfaceTypeConfig, GraphQLObjectType, GraphQLResolveInfo } from "graphql";
-import GraphQLPageInfo from "./GraphQLPageInfo";
+import { GraphQLInt, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLNonNull } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLPageInfo from "./GraphQLPageInfo";
 
 let pageConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
     name: "Page",

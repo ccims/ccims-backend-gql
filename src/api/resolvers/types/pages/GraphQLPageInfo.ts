@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLBoolean, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 
 let pageInfoConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {

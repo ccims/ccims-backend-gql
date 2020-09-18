@@ -1,7 +1,6 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLProject from "../nodes/GraphQLProject";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLProject from "../nodes/GraphQLProject";
 
 let projectEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ProjectEdge",

@@ -1,17 +1,17 @@
 import { QueryConfig, QueryResult } from "pg";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
 import { Issue } from "./Issue";
 import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
-import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
+import { NodeTableSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User } from "./User";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * the specification of the table which contains projects
