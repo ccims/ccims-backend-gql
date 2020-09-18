@@ -51,6 +51,16 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public count?: number;
 
     /**
+     * true if forwards paginating and there are more results
+     */
+    public hasNext: boolean = false;
+
+    /**
+     * true if backwards paginating and there are more results
+     */
+    public hasPrevious: boolean = false;
+
+    /**
      * string with all rows that shoule be queried
      */
     private _rows: string;
@@ -131,7 +141,17 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         if (!this.countMode) {
-            this.result =  result.rows.map(resultRow => this.getSingleResult(databaseManager, resultRow, result));
+            const res = result.rows.map(resultRow => this.getSingleResult(databaseManager, resultRow, result));
+            if (this.limit && res.length > this.limit) {
+                if (this.first) {
+                    this.hasNext = true;
+                } else {
+                    this.hasPrevious = true;
+                }
+                this.result = res.slice(0, this.limit);
+            } else {
+                this.result = res;
+            }
             return [];
         } else {
             this.count = result.rowCount;
@@ -176,7 +196,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         if (this.limit && !this.countMode) {
             return {
                 text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
-                values: [this.limit]
+                values: [this.limit + 1]
             }
         } else {
             return {
