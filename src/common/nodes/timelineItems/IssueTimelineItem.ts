@@ -1,4 +1,5 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
+import { LoadIssuesCommand } from "../../database/commands/load/nodes/LoadIssuesCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
@@ -17,18 +18,23 @@ export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTi
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {
 
+    /**
+     * property for the issue where this timelineItem is on
+     */
     public readonly issueProperty: NodeProperty<Issue, IssueTimelineItem>;
 
+    /**
+     * specification of issueProperty
+     */
     private static readonly issuePropertySpecification: NodePropertySpecification<Issue, IssueTimelineItem>
         = new NodePropertySpecification<Issue, IssueTimelineItem>(
             (id, timelineItem) => {
-                //TODO
-                const command = undefined as any;
+                const command = new LoadIssuesCommand();
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "issue", undefined as any)
-            //TODO notifier?
+            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand()),
+            (issue, timelineItem) => issue.timelineProperty
         );
 
 

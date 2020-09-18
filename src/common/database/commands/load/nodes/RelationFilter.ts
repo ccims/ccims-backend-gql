@@ -65,19 +65,20 @@ export function createRelationFilterBySecundary(primary: string, secundary: stri
  * @param rowName the name of the row
  * @param ids the list of ids of the element on the many side
  * @param i the value index
+ * @param priority the priority of the parameter, default 2
  * @returns the filter
  */
-export function createRelationFilterOnOne(rowName: string, ids: string[], i: number): ConditionSpecification {
+export function createRelationFilterOnOne(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length == 1) {
         return { 
-            priority: 2,
+            priority: priority,
             text: `main.${rowName}=$${i}`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority: 2,
+            priority: priority,
             text: `main.${rowName}=ANY($${i})`,
             values: [ids]
         };
@@ -90,20 +91,21 @@ export function createRelationFilterOnOne(rowName: string, ids: string[], i: num
  * @param rowName the name of the row
  * @param ids the list of ids of the element on the one side
  * @param i the value index
+ * @param priority the priority of the parameter, default 2
  * @returns the filter
  */
-export function createRelationFilterOnMany(tableName: string, rowName: string, ids: string[], i: number): ConditionSpecification {
+export function createRelationFilterOnMany(tableName: string, rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(tableName);
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length == 1) {
         return {
-            priority: 2,
+            priority: priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=$${i})`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority: 2,
+            priority: priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=ANY($${i}))`,
             values: [ids]
         };

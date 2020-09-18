@@ -1,12 +1,15 @@
 import { IssueLocation } from "../../../../nodes/IssueLocation";
-import { LoadNodesCommand } from "./LoadNodesCommand";
+import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
 
 /**
  * command to load IssueLocations
  */
-export class LoadIssueLocationsCommand extends LoadNodesCommand<IssueLocation> {
+export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<IssueLocation> {
     
+    /**
+     * creates a new LoadIssueLocationsCommand
+     */
     public constructor() {
-        super("issue_location", "id");
+        super("issue_location");
     }
 }

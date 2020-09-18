@@ -4,7 +4,7 @@ import { DatabaseCommand } from "./DatabaseCommand";
 import { Client } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
-import { LoadNodesCommand } from "./commands/load/nodes/LoadNodesCommand";
+import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -69,7 +69,7 @@ export class DatabaseManager implements NodeCache {
         if (cachedNode) {
             return cachedNode;
         } else {
-            const loadCommand = new LoadNodesCommand("node");
+            const loadCommand = new LoadMultipleNodeListsCommand("node");
             loadCommand.ids = [id];
             this.addCommand(loadCommand);
             await this.executePendingCommands();

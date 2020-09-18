@@ -1,11 +1,16 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/LoadIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { Body } from "./timelineItems/Body";
+import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { User } from "./User";
 
 
@@ -61,6 +66,23 @@ export class Issue extends SyncNode<Issue> {
             //TODO
             timelineItem => new GetWithReloadCommand(timelineItem, "body_id", undefined as any)
         );
+    
+    public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
+
+    private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
+        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timelineItem", "issue"),
+        (ids, issue) => {
+            const command = new LoadIssueTimelineItemsCommand();
+            command.ids = ids;
+            return command;
+        },
+        issue => {
+            const command = new LoadIssueTimelineItemsCommand();
+            command.onIssues = [issue.id];
+            return command;
+        })
+        .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
+        .noSave();
 
     /**
      * abstract constructor for extending classes
@@ -71,7 +93,7 @@ export class Issue extends SyncNode<Issue> {
      * @param lastChangedAt the Date where this node was last changed
      * @param metadata metadata for the sync
      */
-    protected constructor(databaseManager: DatabaseManager, id: string,
+    public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
         startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
@@ -87,10 +109,11 @@ export class Issue extends SyncNode<Issue> {
         this._spentTime = spentTime;
         this._updatedAt = updateAt;
         this.bodyProperty = this.registerSaveable(new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId));
+        this.timelineProperty = this.registerSaveable(new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this));
     }
 
-    public static create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
-        category: IssueCategory, startDate?: Date, dueDate?: Date, estimatedTime?: number, spentTime?: number): Issue {
+    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
+        category: IssueCategory, startDate?: Date, dueDate?: Date, estimatedTime?: number, spentTime?: number): Promise<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
@@ -102,6 +125,10 @@ export class Issue extends SyncNode<Issue> {
         const timelineBody = new Body(databaseManager, bodyId, createdBy?.id, createdAt, issueId, body, createdBy?.id, createdAt, title, false);
         timelineBody.markNew();
         databaseManager.addCachedNode(timelineBody);
+
+        if (createdBy) {
+            await timelineBody.editedByProperty.add(createdBy);
+        }
 
         return issue;
     }

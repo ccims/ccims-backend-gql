@@ -5,6 +5,7 @@ import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
+import { DatabaseCommand } from "../../../DatabaseCommand";
 
 /**
  * loads a list of nodes
@@ -40,6 +41,16 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public beforeId?: string;
 
     /**
+     * if true, the pagination is not applied an the rows are just counted
+     */
+    public countMode: boolean = false;
+
+    /**
+     * when countMode and the command was executed, count is the amount of the amount of results
+     */
+    public count?: number;
+
+    /**
      * string with all rows that shoule be queried
      */
     private _rows: string;
@@ -53,7 +64,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @return a string with all rows that should be selected separated by ,
      */
     protected get rows(): string {
-        return this._rows;
+        return this.countMode ? "Count(*)" : this._rows;
     }
 
     /**
@@ -63,24 +74,36 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the array of conditions and a index for the next value
      */
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions: ConditionSpecification[] = [];
+        const conditions = this.countMode ? {conditions: [], i: i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
             if (this.ids.length == 1) {
-                conditions.push({
+                conditions.conditions.push({
                     priority: 1,
-                    text: `main.id = $${i}`,
+                    text: `main.id = $${conditions.i}`,
                     values: [this.ids[0]]
                 });
             } else {
-                conditions.push({
+                conditions.conditions.push({
                     priority: 1,
-                    text: `main.id = ANY($${i})`,
+                    text: `main.id = ANY($${conditions.i})`,
                     values: [this.ids]
                 });
             }
-            i++;
+            conditions.i++;
         }
+        
+        return conditions;
+    }
+
+    /**
+     * generates the conditions for pagination
+     * only called when !this.countMode
+     * @param i the next value index
+     * @returns the conditions for pagination
+     */
+    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+        const conditions: ConditionSpecification[] = [];
         if (this.afterId) {
             conditions.push({
                 priority: 2,
@@ -97,11 +120,23 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             });
             i++;
         }
+        return {conditions: conditions, i: i};
+    }
 
-        return {
-            conditions: conditions,
-            i: i
-        };
+    /**
+     * called when the query is finished
+     * calls getSingleResult for every returned row
+     * @param databaseManager the databaseManager
+     * @param result the result from the query
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        if (!this.countMode) {
+            this.result =  result.rows.map(resultRow => this.getSingleResult(databaseManager, resultRow, result));
+            return [];
+        } else {
+            this.count = result.rowCount;
+            return [];
+        }
     }
 
     /**
@@ -136,7 +171,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the end of the query
      */
     protected generateQueryEnd(i: number): QueryPart {
-        if (this.limit) {
+        if (this.limit && !this.countMode) {
             return {
                 text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
                 values: [this.limit]
