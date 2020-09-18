@@ -82,7 +82,7 @@ let issueFilterConfig: GraphQLInputObjectTypeConfig = {
             description: "Any of the users with the given ids must be an assignee to the issue for it to match this filter"
         },
         labels: {
-            type: GraphQLList(GraphQLNonNull(GraphQLLabelFilter)),
+            type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The issue must have all the labels of at least that are matched by at least one of the given label filters"
         },
         participants: {

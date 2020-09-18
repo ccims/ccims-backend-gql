@@ -2,11 +2,11 @@ import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, 
 import { Project } from "../../../../common/nodes/Project";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
-import issues from "../../listQueries/issues";
 import labels from "../../listQueries/labels";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
+import issuesListQuery from "../../listQueries/issuesListQuery";
 
 let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
@@ -27,7 +27,7 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             type: GraphQLNonNull(GraphQLUser),
             description: "The user who administrates \"owns\" the project"
         },
-        issues: issues(),
+        issues: issuesListQuery("All issues on components that are assigned to this project", project => project.issuesProperty),
         labels: labels(),
         description: {
             type: GraphQLString,
