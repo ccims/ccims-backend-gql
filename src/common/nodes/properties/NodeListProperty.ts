@@ -113,7 +113,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * does
      * @param element the element to add
      */
-    public async add(element: T) : Promise<void> {
+    public async add(element: T): Promise<void> {
         await this.ensureAddDeleteLoadLevel();
         if (!this._ids.has(element.id)) {
             this._ids.add(element.id);
@@ -132,7 +132,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * removes an element from this property if possible
      * @param element
      */
-    public async remove(element: T) : Promise<void> {
+    public async remove(element: T): Promise<void> {
         await this.ensureAddDeleteLoadLevel();
         if (this._ids.has(element.id)) {
             this._ids.delete(element.id);
@@ -148,7 +148,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     /**
      * saves all changes on this property if necessary
      */
-    public save(): void{
+    public save(): void {
         super.save();
         if (this._specification.save) {
             const addRel = this._specification.addRel as (((id: string, node: V) => DatabaseCommand<void>));
@@ -192,7 +192,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 const getIdsCommand = this._specification.loadIds(this._node);
                 this._databaseManager.addCommand(getIdsCommand);
                 await this._databaseManager.executePendingCommands();
-                this.setIds(getIdsCommand.getResult());
+                await this.setIds(getIdsCommand.getResult());
             } else if (level > LoadLevel.None) {
                 if (this._loadLevel >= LoadLevel.Ids) {
                     const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
@@ -214,7 +214,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                     const loadAllCommand = this._specification.loadElements(this._node);
                     this._databaseManager.addCommand(loadAllCommand);
                     await this._databaseManager.executePendingCommands();
-                    this.setElements(loadAllCommand.getResult());
+                    await this.setElements(loadAllCommand.getResult());
                 }
             }
         }
@@ -288,8 +288,8 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * this is treated as the most current version,
      * @param elements the list of elements
      */
-    setElements(elements: T[]): void {
-        this.setIds(elements.map(element => element.id));
+    async setElements(elements: T[]): Promise<void> {
+        await this.setIds(elements.map(element => element.id));
         const newElements = Array.from(this._addedIds).map(id => this._elements.get(id));
         this._elements = elements.reduce((map, element, index, elements) => map.set(element.id, element), new Map<string, T>());
         newElements.forEach(element => {
