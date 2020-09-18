@@ -1,10 +1,10 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { Issue, IssueTableSpecification } from "../../../../nodes/Issue";
+import { Issue, IssueCategory, IssueTableSpecification } from "../../../../nodes/Issue";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
-import { createRelationFilterBySecundary } from "./RelationFilter";
+import { createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
 
 export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
@@ -12,6 +12,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      * filters for issues where any of the users perticipated
      */
     public userParticipated?: string[];
+
+    /**
+     * filter for issues with one of the specified categories
+     */
+    public ofCategory?: IssueCategory[]
 
     public constructor() {
         super(IssueTableSpecification.rows);
@@ -40,6 +45,10 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         
         if (this.userParticipated) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "participant", this.userParticipated, conditions.i));
+            conditions.i++;
+        }
+        if (this.ofCategory) {
+            conditions.conditions.push(createStringListFilter("category", this.ofCategory, conditions.i, 5));
             conditions.i++;
         }
 

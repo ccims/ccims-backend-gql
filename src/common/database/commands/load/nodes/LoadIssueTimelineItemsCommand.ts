@@ -1,8 +1,8 @@
-import { IssueTimelineItem } from "../../../../nodes/timelineItems/IssueTimelineItem";
+import { IssueTimelineItem, IssueTimelineItemType } from "../../../../nodes/timelineItems/IssueTimelineItem";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
-import { createRelationFilterOnOne } from "./RelationFilter";
+import { createStringListFilter } from "./RelationFilter";
 
 export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<IssueTimelineItem> {
 
@@ -10,6 +10,16 @@ export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<
      * filter for timelineItems that are on any of the issues
      */
     public onIssues?: string[];
+
+    /**
+     * if true, no body 
+     */
+    public noBody: boolean = false;
+
+    /**
+     * filters for IssueTimelineItems of the specified types
+     */
+    public types?: IssueTimelineItemType[];
 
     /**
      * creates a new 
@@ -27,7 +37,31 @@ export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<
         const conditions = super.generateConditions(i);
 
         if (this.onIssues) {
-            conditions.conditions.push(createRelationFilterOnOne("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
+            conditions.i++;
+        }
+        if (this.noBody) {
+            conditions.conditions.push({
+                priority: 10,
+                text: "pg_class.relname != $1",
+                values: ["issue_timeline_body"]
+            });
+            conditions.i++;
+        }
+        if (this.types) {
+            if (this.types.length === 1) {
+                conditions.conditions.push({
+                    priority: 10,
+                    text: "pg_class.relname = $1",
+                    values: [this.types[0].tableName]
+                });
+            } else {
+                conditions.conditions.push({
+                    priority: 10,
+                    text: "pg_class.relname = ANY($1)",
+                    values: [this.types.map(type => type.tableName)]
+                });
+            }
             conditions.i++;
         }
 

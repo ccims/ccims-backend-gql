@@ -4,7 +4,7 @@ import { DatabaseManager } from "../../../../DatabaseManager";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { QueryPart } from "../../QueryPart";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
-import { createRelationFilterOnOne } from "../RelationFilter";
+import { createStringListFilter } from "../RelationFilter";
 
 export abstract class LoadIssueTimelineItemsCommandBase<T extends IssueTimelineItem> extends LoadSyncNodeListCommand<T> {
     /**
@@ -21,7 +21,7 @@ export abstract class LoadIssueTimelineItemsCommandBase<T extends IssueTimelineI
         const conditions = super.generateConditions(i);
 
         if (this.onIssues) {
-            conditions.conditions.push(createRelationFilterOnOne("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
             conditions.i++;
         }
 

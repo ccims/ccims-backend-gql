@@ -6,6 +6,7 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { DatabaseCommand } from "../../../DatabaseCommand";
+import { createStringListFilter } from "./RelationFilter";
 
 /**
  * loads a list of nodes
@@ -87,19 +88,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         const conditions = this.countMode ? {conditions: [], i: i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
-            if (this.ids.length == 1) {
-                conditions.conditions.push({
-                    priority: 1,
-                    text: `main.id = $${conditions.i}`,
-                    values: [this.ids[0]]
-                });
-            } else {
-                conditions.conditions.push({
-                    priority: 1,
-                    text: `main.id = ANY($${conditions.i})`,
-                    values: [this.ids]
-                });
-            }
+            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i, 1));
             conditions.i++;
         }
         

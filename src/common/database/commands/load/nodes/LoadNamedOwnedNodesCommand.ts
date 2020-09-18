@@ -1,6 +1,7 @@
 import { NamedOwnedNode } from "../../../../nodes/NamedOwnedNode";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { LoadNamedNodesCommand } from "./LoadNamedNodeCommand";
+import { createStringListFilter } from "./RelationFilter";
 
 /**
  * command to load NamedOwnedNodes
@@ -21,19 +22,7 @@ export abstract class LoadNamedOwnedNodesCommand<T extends NamedOwnedNode> exten
         const conditions = super.generateConditions(i);
 
         if (this.onOwners) {
-            if (this.onOwners.length == 1) {
-                conditions.conditions.push({
-                    text: `main.owner_user_id=$${conditions.i}`,
-                    values: [this.onOwners[0]],
-                    priority: 6
-                });
-            } else {
-                conditions.conditions.push({
-                    text: `main.owner_user_id=ANY($${conditions.i})`,
-                    values: [this.onOwners],
-                    priority: 6
-                });
-            }
+            conditions.conditions.push(createStringListFilter("owner_user_id", this.onOwners, conditions.i, 3));
             conditions.i++;
         }
 
