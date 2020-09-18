@@ -1,5 +1,4 @@
 import { LoadCommand } from "./LoadCommand";
-import { NodeCache } from "../../NodeCache";
 import { QueryResult, QueryResultRow } from "pg";
 import { DatabaseManager } from "../../DatabaseManager";
 import { DatabaseCommand } from "../../DatabaseCommand";

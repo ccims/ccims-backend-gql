@@ -73,8 +73,8 @@ export class ComponentInterface extends NamedNode<ComponentInterface> {
      */
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string) {
         super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description);
-        this.componentProperty = this.registerSaveable(new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId));
-        this.consumedByProperty = this.registerSaveable(new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this));
+        this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
+        this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
     }
 
 }

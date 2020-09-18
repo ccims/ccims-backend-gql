@@ -126,9 +126,9 @@ export class Issue extends SyncNode<Issue> {
         this._estimatedTime = estimatedTime;
         this._spentTime = spentTime;
         this._updatedAt = updateAt;
-        this.bodyProperty = this.registerSaveable(new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId));
-        this.timelineProperty = this.registerSaveable(new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this));
-        this.participantsProperty = this.registerSaveable(new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this));
+        this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
+        this.timelineProperty = new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this);
+        this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,

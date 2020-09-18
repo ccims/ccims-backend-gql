@@ -160,12 +160,12 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      */
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId?: string) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
-        this.projectsProperty = this.registerSaveable(new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this));
-        this.imsSystemProperty = this.registerSaveable(new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId));
-        this.issuesOnLocationProperty = this.registerSaveable(new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this));
-        this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this));
-        this.interfacesProperty = this.registerSaveable(new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this));
-        this.consumedInterfacesProperty = this.registerSaveable(new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this));
+        this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
+        this.imsSystemProperty = new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
+        this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertyDescription, this);
+        this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
+        this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);
+        this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
 
     }
 

@@ -92,7 +92,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
         this._imsType = imsType;
         this._connectionData = connectionData;
         this._endpoint = endpoint;
-        this.componentProperty = this.registerSaveable(new NullableNodeProperty<Component, ImsSystem>(databaseManager, ImsSystem.componentPropertySpecification, this, componentId));
+        this.componentProperty = new NullableNodeProperty<Component, ImsSystem>(databaseManager, ImsSystem.componentPropertySpecification, this, componentId);
     }
 
     /**

@@ -107,9 +107,9 @@ export class Project extends NamedOwnedNode<Project> {
      */
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
-        this.componentsProperty = this.registerSaveable(new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this));
-        this.issuesProperty = this.registerSaveable(new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this));
-        this.usersProperty = this.registerSaveable(new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this));
+        this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
+        this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
+        this.usersProperty = new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this);
     }
 
     /**

@@ -12,7 +12,7 @@ import { NodePropertyBase } from "./NodePropertyBase";
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Property<T> {
     /**
      * the specification of the property
      */
@@ -123,7 +123,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             }
             await this.notifyAdded(element, false);
             if (this._specification.save) {
-                this._node.markChanged();
+                this.markChanged();
             }
         }
     }
@@ -140,7 +140,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             await this.notifyRemoved(element, false);
             this._removedIds.add(element.id);
             if (this._specification.save) {
-                this._node.markChanged();
+                this.markChanged();
             }
         }
     }
@@ -149,6 +149,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * saves all changes on this property if necessary
      */
     public save(): void{
+        super.save();
         if (this._specification.save) {
             const addRel = this._specification.addRel as (((id: string, node: V) => DatabaseCommand<void>));
             const removeRel = this._specification.removeRel as (((id: string, node: V) => DatabaseCommand<void>));
@@ -316,7 +317,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
-                this._node.markChanged();
+                this.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._addedIds.add(element.id);
@@ -344,7 +345,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
-                this._node.markChanged();
+                this.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._removedIds.add(element.id);

@@ -51,6 +51,6 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      */
     protected constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, ownerId: string) {
         super(type, databaseManager, tableSpecification, id, name, description);
-        this.ownerProperty = this.registerSaveable(new NodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId));
+        this.ownerProperty = new NodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId);
     }
 }

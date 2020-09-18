@@ -1,18 +1,15 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { PropertySpecification } from "./PropertySpecification";
+import { Saveable } from "../Saveable";
 
 /**
  * property which represents the one side on a many to one relation
  * @param T the type of the other node
  * @param V the type of the node on which this property is
  */
-export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode> {
+export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode> extends Saveable {
 
-    /**
-     * the databaseManager
-     */
-    protected readonly _databaseManager: DatabaseManager;
     /**
      * the specification of the property
      */
@@ -30,7 +27,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * @param node the node proviced to all generators as last parameter
      */
     protected constructor(databaseManager: DatabaseManager, specification: PropertySpecification<T, V>, node: V) {
-        this._databaseManager = databaseManager;
+        super(databaseManager)
         this.specification = specification;
         this._node = node;
     }

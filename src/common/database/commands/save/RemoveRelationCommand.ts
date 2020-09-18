@@ -1,6 +1,5 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
-import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
 import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";

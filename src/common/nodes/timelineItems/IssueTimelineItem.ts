@@ -52,7 +52,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
         createdById: string | undefined, createdAt: Date, issueId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
-        this.issueProperty = this.registerSaveable(new NodeProperty<Issue, IssueTimelineItem>(databaseManager, IssueTimelineItem.issuePropertySpecification, this, issueId))
+        this.issueProperty = new NodeProperty<Issue, IssueTimelineItem>(databaseManager, IssueTimelineItem.issuePropertySpecification, this, issueId);
     }
 }
 
