@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let deletedIssueCommentConfig: GraphQLObjectTypeConfig<DeletedIssueComment, ResolverContext> = {
+const deletedIssueCommentConfig: GraphQLObjectTypeConfig<DeletedIssueComment, ResolverContext> = {
     name: "DeletedIssueComment",
     description: "An DeletedIssueComment in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -38,5 +38,5 @@ let deletedIssueCommentConfig: GraphQLObjectTypeConfig<DeletedIssueComment, Reso
         }
     })
 };
-let GraphQLDeletedIssueComment = new GraphQLObjectType(deletedIssueCommentConfig);
+const GraphQLDeletedIssueComment = new GraphQLObjectType(deletedIssueCommentConfig);
 export default GraphQLDeletedIssueComment;

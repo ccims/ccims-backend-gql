@@ -1,7 +1,7 @@
 import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
 
-let componentFilterConfig: GraphQLInputObjectTypeConfig = {
+const componentFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentFilter",
     description: "Filters for component matching the given properties",
     fields: () => ({
@@ -23,5 +23,5 @@ let componentFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLComponentFilter = new GraphQLInputObjectType(componentFilterConfig);
+const GraphQLComponentFilter = new GraphQLInputObjectType(componentFilterConfig);
 export default GraphQLComponentFilter;

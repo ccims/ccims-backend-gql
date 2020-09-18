@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLInt, GraphQLString } from "graphql";
 import GraphQLComponentInterfaceFilter from "../../types/filters/GraphQLComponentInterfaceFilter";
 import GraphQLComponentInterfacePage from "../../types/pages/GraphQLComponentInterfacePage";
 
-let consumedInterfaces: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let consumedInterfaces: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (consumedInterfaces === undefined) {
         consumedInterfaces = {

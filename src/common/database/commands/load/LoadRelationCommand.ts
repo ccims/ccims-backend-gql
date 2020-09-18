@@ -50,7 +50,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
     /**
      * called when the query is finished
      * sets the result
-     * 
+     *
      * @param databaseManager the databaseManager to use
      * @param result the result from the query
      * @returns follow up commands
@@ -131,7 +131,7 @@ class LoadIdsManyOneCommand extends DatabaseCommand<string[]> {
      * @param follow up commands
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.result = result.rows.map(row => row["id"]);
+        this.result = result.rows.map(row => row.id);
         return [];
     }
 

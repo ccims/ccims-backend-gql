@@ -5,7 +5,7 @@ import GraphQLIssueLocation from "../nodes/GraphQLIssueLocation";
 import GraphQLIssueLocationEdge from "../edges/GraphQLIssueLocationEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueLocationPage: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issueLocationPage: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueLocationPage",
     description: "A page of multiple issue locations",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let issueLocationPage: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLIssueLocationPage = new GraphQLObjectType(issueLocationPage);
+const GraphQLIssueLocationPage = new GraphQLObjectType(issueLocationPage);
 export default GraphQLIssueLocationPage;

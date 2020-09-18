@@ -23,7 +23,7 @@ export class APIConfig {
             this.jwtSecret = file.jwtSecret;
         } else {
             this.jwtSecret = "";
-            let length = (Math.random() * 85) + 15;
+            const length = (Math.random() * 85) + 15;
             for (let i = 0; i < length; i++) {
                 this.jwtSecret += String.fromCharCode(Math.random() * (126 - 33) + 33);
             }

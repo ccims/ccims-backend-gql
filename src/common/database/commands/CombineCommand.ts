@@ -29,5 +29,5 @@ export class CombineCommand<T> extends DatabaseCommand<T[]> {
         this.commands[0].notifyFollowUpCommandsResult(databaseManager, this.primaryResult as DatabaseCommand<any>[]);
         this.result = this.commands.flatMap(command => command.getResult());
     }
-    
+
 }

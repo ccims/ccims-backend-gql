@@ -1,7 +1,7 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 
-let userFilterConfig: GraphQLInputObjectTypeConfig = {
+const userFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "UserFilter",
     description: "Filter for a user of the system. All parameters given in this filter will be connected via _AND_",
     fields: () => ({
@@ -35,5 +35,5 @@ let userFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLUserFilter = new GraphQLInputObjectType(userFilterConfig);
+const GraphQLUserFilter = new GraphQLInputObjectType(userFilterConfig);
 export default GraphQLUserFilter;

@@ -5,7 +5,7 @@ import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import GraphQLIssueTimelineItemEdge from "../edges/GraphQLIssueTimelineItemEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueTimelineItemPage",
     description: "A page of multiple issue timeline items",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> =
         }
     })
 };
-let GraphQLIssueTimelineItemPage = new GraphQLObjectType(issueTimelineItemPageConfig);
+const GraphQLIssueTimelineItemPage = new GraphQLObjectType(issueTimelineItemPageConfig);
 export default GraphQLIssueTimelineItemPage

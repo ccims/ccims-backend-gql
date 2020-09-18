@@ -6,7 +6,7 @@ import projectsListQuery from "../../listQueries/projectsListQuery";
 import issueComments from "../../listQueries/user/issueComments";
 import GraphQLNode from "../GraphQLNode";
 
-let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
+const userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
     name: "User",
     description: "A user of th ccims. Can be assigned to projects, components and can have multiple ims accounts",
     interfaces: () => ([GraphQLNode]),
@@ -33,5 +33,5 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
         issueComments: issueComments()
     })
 };
-let GraphQLUser = new GraphQLObjectType(userConfig);
+const GraphQLUser = new GraphQLObjectType(userConfig);
 export default GraphQLUser;

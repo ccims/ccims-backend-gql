@@ -7,7 +7,7 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
-let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
+const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
     name: "ComponentInterface",
     description: "An interface offered by a component which can be counsumed by other components",
     interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
@@ -33,5 +33,5 @@ let componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Resolv
             iface => iface.consumedByProperty)
     })
 };
-let GraphQLComponentInterface = new GraphQLObjectType(componentInterfaceConfig);
+const GraphQLComponentInterface = new GraphQLObjectType(componentInterfaceConfig);
 export default GraphQLComponentInterface

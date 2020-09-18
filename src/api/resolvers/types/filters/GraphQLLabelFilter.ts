@@ -1,7 +1,7 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLColor from "../../scalars/GraphQLColor";
 
-let labelFilterConfig: GraphQLInputObjectTypeConfig = {
+const labelFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "LabelFilter",
     description: "A Filter data input for labels.  All parameters given in this filter will be connected via _AND_",
     fields: () => ({
@@ -19,5 +19,5 @@ let labelFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLLabelFilter = new GraphQLInputObjectType(labelFilterConfig);
+const GraphQLLabelFilter = new GraphQLInputObjectType(labelFilterConfig);
 export default GraphQLLabelFilter;

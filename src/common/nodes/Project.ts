@@ -163,7 +163,7 @@ class LoadIssueIdsCommand extends DatabaseCommand<string[]> {
      * @param result the query result
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.result = result.rows.map(row => row["issue_id"]);
+        this.result = result.rows.map(row => row.issue_id);
         return [];
     }
 

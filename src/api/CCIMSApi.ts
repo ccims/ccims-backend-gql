@@ -34,10 +34,10 @@ export class CCIMSApi {
 
     /**
      * Constructs the API server and specifies the routes but doesn't start it yet. This will only prepare the server, start it using `start()`
-     * 
+     *
      * @param port Port on which the API and login server will listen.\
      * If `undefined`, value from config will be used.
-     * 
+     *
      * @param hostIface The IP address of the network interface to which the server will be bound.\
      *  If empty, or `undefined`, the value in the config will be used.\
      * If 0.0.0.0 server will be bound to all availale interfaces.
@@ -55,9 +55,9 @@ export class CCIMSApi {
 
     /**
      * Specifies the routes and the behaviour of the server on those routes.
-     * 
+     *
      * CORS-headers will be sent for all requests to allow usage of the server from all origins
-     * 
+     *
      * Available routes:
      * - POST to `/login`
      *    - Valid user credentials in the body requires
@@ -74,8 +74,8 @@ export class CCIMSApi {
 
     /**
      * Starts the API server
-     * 
-     * When calling this method the server will be bound to the interfaces and the port 
+     *
+     * When calling this method the server will be bound to the interfaces and the port
      * specified in the constructor and start accepting incoming requests.\
      * The server listenes for the following types of requests:
      * - POST to `/login` for authenticating a user and requesting a JWT for the session

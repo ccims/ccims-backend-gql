@@ -205,7 +205,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     /**
      * creates a new component with the specified name, description, owner and a new id
      * also creates the imsSystem for the component with imsType, endpoint and connectionData
-     * @param databaseManager 
+     * @param databaseManager
      * @param name the name of the component, must be shorter than 257 chars
      * @param description the description of the component, must be shorter than 65537 chars
      * @param owner the owner of the component

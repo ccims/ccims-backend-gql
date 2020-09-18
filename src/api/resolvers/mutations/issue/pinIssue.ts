@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLPinIssuePayload from "../../types/mutations/payloads/issue/GraphQLPinIssuePayload";
 import GraphQLPinIssueInput from "../../types/mutations/inputs/issue/GraphQLPinIssueInput";
 
-let pinIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let pinIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (pinIssue === undefined) {
         pinIssue = {

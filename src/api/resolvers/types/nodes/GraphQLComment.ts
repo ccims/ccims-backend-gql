@@ -5,7 +5,7 @@ import GraphQLUser from "./GraphQLUser";
 import { Comment } from "../../../../common/nodes/timelineItems/Comment";
 import { ResolverContext } from "../../../ResolverContext";
 
-let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
+const commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
     name: "Comment",
     description: "An interface specifying an editable text block (e.g. Issue, Comment)",
     fields: () => ({
@@ -44,5 +44,5 @@ let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
         reactions: reactions(),
     })
 };
-let GraphQLComment = new GraphQLInterfaceType(commentConfig);
+const GraphQLComment = new GraphQLInterfaceType(commentConfig);
 export default GraphQLComment;

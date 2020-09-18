@@ -4,7 +4,7 @@ import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 import GraphQLIssueTimelineItemPage from "../../types/pages/GraphQLIssueTimelineItemPage";
 import GraphQLIssueTimelineItemFilter from "../../types/filters/GraphQLIssueTimelineItemFilter";
 
-let timeline: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let timeline: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (timeline === undefined) {
         timeline = {

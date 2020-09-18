@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addLabelToIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const addLabelToIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddLabelToIssueInput",
     description: "The inputs for the addToIssueLabel",
     fields: () => ({
@@ -18,5 +18,5 @@ let addLabelToIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLAddLabelToIssueInput = new GraphQLInputObjectType(addLabelToIssueInputConfig);
+const GraphQLAddLabelToIssueInput = new GraphQLInputObjectType(addLabelToIssueInputConfig);
 export default GraphQLAddLabelToIssueInput;

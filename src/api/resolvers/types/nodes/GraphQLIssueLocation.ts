@@ -4,7 +4,7 @@ import issuesListQuery from "../../listQueries/issuesListQuery";
 import GraphQLNode from "../GraphQLNode";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 
-let issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverContext> = {
+const issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverContext> = {
     name: "IssueLocation",
     description: "A location an issue can be assigned to\n\nCurrently this can be either a component or an interface",
     interfaces: () => ([GraphQLNode]),
@@ -24,5 +24,5 @@ let issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverConte
         issuesOnLocation: issuesListQuery("All issues that are assinged to on this issue location matching (if given) `filterBy`", issueLocation => issueLocation.issuesOnLocationProperty)
     })
 };
-let GraphQLIssueLocation = new GraphQLInterfaceType(issueLocationConfig);
+const GraphQLIssueLocation = new GraphQLInterfaceType(issueLocationConfig);
 export default GraphQLIssueLocation;

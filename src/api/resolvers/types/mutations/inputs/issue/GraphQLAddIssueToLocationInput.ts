@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addIssueToLocationInputConfig: GraphQLInputObjectTypeConfig = {
+const addIssueToLocationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddIssueToLocationInput",
     description: "The inputs for the addIssueToLocation",
     fields: () => ({
@@ -18,5 +18,5 @@ let addIssueToLocationInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLAddIssueToLocationInput = new GraphQLInputObjectType(addIssueToLocationInputConfig);
+const GraphQLAddIssueToLocationInput = new GraphQLInputObjectType(addIssueToLocationInputConfig);
 export default GraphQLAddIssueToLocationInput;

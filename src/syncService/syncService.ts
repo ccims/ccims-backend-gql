@@ -10,7 +10,7 @@ export class SyncService {
 
     public startService(): void {
         if (this.timer === undefined) {
-            var that = this;
+            let that = this;
             this.timer = setInterval(() => {
                 that.sync();
             }, 5 * 60 * 1000);

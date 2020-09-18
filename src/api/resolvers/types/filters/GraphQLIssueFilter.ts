@@ -4,7 +4,7 @@ import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import GraphQLLabelFilter from "./GraphQLLabelFilter";
 
-let issueFilterConfig: GraphQLInputObjectTypeConfig = {
+const issueFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueFilter",
     description: "Filters for Issues. All parameters given in this filter will be connected via _AND_\n\n" +
         "Not specific issues in issue management systems but the issue in the ccims",
@@ -135,5 +135,5 @@ let issueFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLIssueFilter = new GraphQLInputObjectType(issueFilterConfig);
+const GraphQLIssueFilter = new GraphQLInputObjectType(issueFilterConfig);
 export default GraphQLIssueFilter;

@@ -49,7 +49,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     /**
      * abstract constructor for subclasses
      * @param type the type
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
      * @param name the name of the NamedNode

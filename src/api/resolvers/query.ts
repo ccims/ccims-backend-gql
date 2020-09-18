@@ -5,7 +5,7 @@ import currentUser from "./query/currentUser";
 import echo from "./query/echo";
 import node from "./query/node";
 
-let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Query",
     description: "All queries for requesting stuff",
     fields: () => ({
@@ -15,5 +15,5 @@ let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         currentUser: currentUser()
     })
 };
-let query = new GraphQLObjectType(queryConfig);
+const query = new GraphQLObjectType(queryConfig);
 export default query;

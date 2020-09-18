@@ -135,7 +135,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * does nothing on the one side
      */
     save(): void {
-        //do nothing, 
+        // do nothing,
     }
 
 }

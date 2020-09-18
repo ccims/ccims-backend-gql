@@ -1,6 +1,6 @@
 import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
 
-let componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
+const componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentInterfaceFilter",
     description: "Filters for an instance of a component's interface",
     fields: () => ({
@@ -22,5 +22,5 @@ let componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLComponentInterfaceFilter = new GraphQLInputObjectType(componentInterfaceFilterConfig);
+const GraphQLComponentInterfaceFilter = new GraphQLInputObjectType(componentInterfaceFilterConfig);
 export default GraphQLComponentInterfaceFilter;

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLUnpinIssuePayload from "../../types/mutations/payloads/issue/GraphQLUnpinIssuePayload";
 import GraphQLUnpinIssueInput from "../../types/mutations/inputs/issue/GraphQLUnpinIssueInput";
 
-let unpinIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let unpinIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (unpinIssue === undefined) {
         unpinIssue = {

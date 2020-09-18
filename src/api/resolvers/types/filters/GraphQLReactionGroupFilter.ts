@@ -1,7 +1,7 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInputObjectTypeExtensions, GraphQLInputObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 
-let reactionGroupFilterConfig: GraphQLInputObjectTypeConfig = {
+const reactionGroupFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ReactionGroupFilter",
     description: "A filter for reaction groups (a reaction together with the users who reacted). All parameters given in this filter will be connected via _AND_",
     fields: () => ({
@@ -15,5 +15,5 @@ let reactionGroupFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLReactionGroupFilter = new GraphQLInputObjectType(reactionGroupFilterConfig);
+const GraphQLReactionGroupFilter = new GraphQLInputObjectType(reactionGroupFilterConfig);
 export default GraphQLReactionGroupFilter;

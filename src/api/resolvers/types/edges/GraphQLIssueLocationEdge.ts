@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConf
 import GraphQLIssueLocation from "../nodes/GraphQLIssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssueLocationEdge",
     description: "An edge for an IssueLocationPage to link a cursor to an element",
     fields: () => ({
@@ -16,5 +16,5 @@ let issueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLIssueLocationEdge = new GraphQLObjectType(issueLocationEdgeConfig);
+const GraphQLIssueLocationEdge = new GraphQLObjectType(issueLocationEdgeConfig);
 export default GraphQLIssueLocationEdge;

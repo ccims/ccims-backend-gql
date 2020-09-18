@@ -1,14 +1,14 @@
 import { DatabaseManager } from "../database/DatabaseManager";
 
 /**
- * on a saveable, save should be called when the instance should be saved 
+ * on a saveable, save should be called when the instance should be saved
  */
 export abstract class Saveable {
 
     private _isChanged: boolean = false;
 
     protected constructor(protected readonly _databaseManager: DatabaseManager) {
-        
+
     }
 
     /**

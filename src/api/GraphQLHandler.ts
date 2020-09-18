@@ -6,16 +6,16 @@ import { log } from "../log";
 
 /**
  * Express middleware/handler for parsing and processing a graphql request and responding to it
- * 
- * This method generates a express middleware that takes requests and processes the contained graphql request 
+ *
+ * This method generates a express middleware that takes requests and processes the contained graphql request
  * using a database manager contained within the `req.dbManager` and the user from the `req.user`property.
- * 
+ *
  * All requests must conform to the GraphQL-Schema based from `./resolvers/CCIMSSchema.ts`
- * 
+ *
  * @returns An express middleware handler performing the actual CCIMS API work
  */
 export function graphqlHandler(): core.RequestHandler {
-    var handler = new GraphQLHandler();
+    const handler = new GraphQLHandler();
     return (req: ResolverContextOptional, res: core.Response, next: core.NextFunction): any => {
         return handler.handle.call(handler, req, res, next);
     }
@@ -33,7 +33,7 @@ class GraphQLHandler {
 
     /**
      * Initializes a new GraphQLHandler for handling requests to the ccims API
-     * 
+     *
      * For debugging graphiql is also provided.
      */
     public constructor() {
@@ -56,8 +56,8 @@ class GraphQLHandler {
             log(2, "Database manager or logged in user empty");
             res.status(500).end("Error while processing request");
         } else {
-            let resolverRequest: ResolverContext = req as ResolverContext;
-            var result = await this.middleware(resolverRequest, res);
+            const resolverRequest: ResolverContext = req as ResolverContext;
+            const result = await this.middleware(resolverRequest, res);
             req.dbManager.saveAndClearCache();
             return result;
         }

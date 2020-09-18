@@ -18,7 +18,7 @@ export abstract class DatabaseCommand<T> {
      * overrite this method to generate the query
      * @returns the query config
      */
-    public abstract getQueryConfig(): QueryConfig; 
+    public abstract getQueryConfig(): QueryConfig;
 
     /**
      * must be overwritten by subclasses

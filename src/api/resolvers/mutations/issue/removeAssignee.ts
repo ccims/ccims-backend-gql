@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLRemoveAssigneePayload from "../../types/mutations/payloads/issue/GraphQLRemoveAssigneePayload";
 import GraphQLRemoveAssigneeInput from "../../types/mutations/inputs/issue/GraphQLRemoveAssigneeInput";
 
-let removeAssignee: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let removeAssignee: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (removeAssignee === undefined) {
         removeAssignee = {

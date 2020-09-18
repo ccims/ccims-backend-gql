@@ -4,7 +4,7 @@ import GraphQLUser from "./GraphQLUser";
 import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
 import { ResolverContext } from "../../../ResolverContext";
 
-let reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext> = {
+const reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext> = {
     name: "ReactionGroup",
     description: "A relation of users who have reacted with a certain reaction to something",
     interfaces: () => ([GraphQLNode]),
@@ -29,5 +29,5 @@ let reactionGroupConfig: GraphQLObjectTypeConfig<ReactionGroup, ResolverContext>
         }
     })
 }
-let GraphQLReactionGroup = new GraphQLObjectType(reactionGroupConfig);
+const GraphQLReactionGroup = new GraphQLObjectType(reactionGroupConfig);
 export default GraphQLReactionGroup;

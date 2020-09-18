@@ -21,7 +21,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         const queryStart: QueryPart = this.generateQueryStart();
         let text: string = queryStart.text;
         let conditionPart = "";
-        let values: any[] = queryStart.values;
+        const values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
         conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
@@ -42,8 +42,8 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         values.push(...queryEnd.values);
 
         return {
-            text: text,
-            values: values
+            text,
+            values
         }
     }
 

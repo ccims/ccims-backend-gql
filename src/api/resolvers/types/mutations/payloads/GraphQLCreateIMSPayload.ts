@@ -2,7 +2,7 @@ import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graph
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLIMS from "../../nodes/GraphQLIMS";
 
-let createIMSPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const createIMSPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CreateIMSPayload",
     description: "The Payload/Response for the createIMS mutation",
     fields: () => ({
@@ -16,5 +16,5 @@ let createIMSPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLCreateIMSPayload = new GraphQLObjectType(createIMSPayloadConfig);
+const GraphQLCreateIMSPayload = new GraphQLObjectType(createIMSPayloadConfig);
 export default GraphQLCreateIMSPayload;

@@ -34,11 +34,11 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
         public readonly addRel?: (id: string, node: V) => DatabaseCommand<void>,
         public readonly removeRel?: (id: string, node: V) => DatabaseCommand<void>
     ) {
-        
+
     }
 
     /**
-     * specifies that the property loads all elements once at least one element is needed, 
+     * specifies that the property loads all elements once at least one element is needed,
      * and does NOT try to load single nodes
      * node is normally the node which hosts the property, and is necessary to get e.g. the id
      * @param loadFromIds command generator to load elements by a list of ids
@@ -94,8 +94,8 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
         private loadElements: (node: V) => DatabaseCommand<T[]>,
         private loadDynamic: boolean,
         private loadIds?: (node: V) => DatabaseCommand<string[]>,
-    ) { 
-        
+    ) {
+
     }
 
     /**

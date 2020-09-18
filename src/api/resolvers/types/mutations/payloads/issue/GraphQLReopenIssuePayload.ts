@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLReopenedEvent from "../../../nodes/timelineItems/GraphQLReopenedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let reopenIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const reopenIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ReopenIssuePayload",
     description: "The Payload/Response for the reopenIssue mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let reopenIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLReopenIssuePayload = new GraphQLObjectType(reopenIssuePayloadConfig);
+const GraphQLReopenIssuePayload = new GraphQLObjectType(reopenIssuePayloadConfig);
 export default GraphQLReopenIssuePayload;

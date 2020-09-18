@@ -57,8 +57,8 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     private _lastEditedAt: Date;
 
-    //TODO: reactions
-    //TODO? currentUserCanEdit
+    // TODO: reactions
+    // TODO? currentUserCanEdit
 
     /**
      * abstract constructor for extending classes

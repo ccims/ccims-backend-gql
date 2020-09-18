@@ -83,7 +83,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
 
     /**
      * abstract constructor for subclasses
-     * @param databaseManager the databaseManager 
+     * @param databaseManager the databaseManager
      * @param id the id of the NamedNode
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode

@@ -4,7 +4,7 @@ import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 import GraphQLUserPage from "../../types/pages/GraphQLUserPage";
 import GraphQLUserFilter from "../../types/filters/GraphQLUserFilter";
 
-let participants: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let participants: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (participants === undefined) {
         participants = {

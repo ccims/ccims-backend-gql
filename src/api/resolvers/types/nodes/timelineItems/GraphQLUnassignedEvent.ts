@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let unassignedEventConfig: GraphQLObjectTypeConfig<UnassignedEvent, ResolverContext> = {
+const unassignedEventConfig: GraphQLObjectTypeConfig<UnassignedEvent, ResolverContext> = {
     name: "UnassignedEvent",
     description: "An UnassignedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -35,5 +35,5 @@ let unassignedEventConfig: GraphQLObjectTypeConfig<UnassignedEvent, ResolverCont
         }
     })
 };
-let GraphQLUnassignedEvent = new GraphQLObjectType(unassignedEventConfig);
+const GraphQLUnassignedEvent = new GraphQLObjectType(unassignedEventConfig);
 export default GraphQLUnassignedEvent;

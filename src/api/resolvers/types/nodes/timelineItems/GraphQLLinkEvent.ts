@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let linkEventConfig: GraphQLObjectTypeConfig<LinkEvent, ResolverContext> = {
+const linkEventConfig: GraphQLObjectTypeConfig<LinkEvent, ResolverContext> = {
     name: "LinkEvent",
     description: "An LinkEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -35,5 +35,5 @@ let linkEventConfig: GraphQLObjectTypeConfig<LinkEvent, ResolverContext> = {
         }
     })
 };
-let GraphQLLinkEvent = new GraphQLObjectType(linkEventConfig);
+const GraphQLLinkEvent = new GraphQLObjectType(linkEventConfig);
 export default GraphQLLinkEvent;

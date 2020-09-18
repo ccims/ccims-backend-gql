@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let removeIssueFromLocationInputConfig: GraphQLInputObjectTypeConfig = {
+const removeIssueFromLocationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveIssueFromLocationInput",
     description: "The inputs for the removeIssueFromLocation",
     fields: () => ({
@@ -18,5 +18,5 @@ let removeIssueFromLocationInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLRemoveIssueFromLocationInput = new GraphQLInputObjectType(removeIssueFromLocationInputConfig);
+const GraphQLRemoveIssueFromLocationInput = new GraphQLInputObjectType(removeIssueFromLocationInputConfig);
 export default GraphQLRemoveIssueFromLocationInput;

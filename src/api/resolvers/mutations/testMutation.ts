@@ -3,7 +3,7 @@ import { ResolverContext } from "../../ResolverContext";
 import GraphQLTestMutationPayload from "../types/mutations/payloads/GraphQLTestMutationPayload";
 import GraphQLTestMutationInput from "../types/mutations/inputs/GraphQLTestMutationInput";
 
-let testMutation: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let testMutation: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (testMutation === undefined) {
         testMutation = {

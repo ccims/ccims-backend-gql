@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnlinkIssueInput",
     description: "The inputs for the unlinkIssue",
     fields: () => ({
@@ -18,5 +18,5 @@ let unlinkIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLUnlinkIssueInput = new GraphQLInputObjectType(unlinkIssueInputConfig);
+const GraphQLUnlinkIssueInput = new GraphQLInputObjectType(unlinkIssueInputConfig);
 export default GraphQLUnlinkIssueInput;

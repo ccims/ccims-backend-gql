@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let pinnedEventConfig: GraphQLObjectTypeConfig<PinnedEvent, ResolverContext> = {
+const pinnedEventConfig: GraphQLObjectTypeConfig<PinnedEvent, ResolverContext> = {
     name: "PinnedEvent",
     description: "An PinnedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -31,5 +31,5 @@ let pinnedEventConfig: GraphQLObjectTypeConfig<PinnedEvent, ResolverContext> = {
         }
     })
 };
-let GraphQLPinnedEvent = new GraphQLObjectType(pinnedEventConfig);
+const GraphQLPinnedEvent = new GraphQLObjectType(pinnedEventConfig);
 export default GraphQLPinnedEvent;

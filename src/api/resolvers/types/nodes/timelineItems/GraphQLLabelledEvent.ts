@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLLabel from "../GraphQLLabel";
 
-let labelledEventConfig: GraphQLObjectTypeConfig<LabelledEvent, ResolverContext> = {
+const labelledEventConfig: GraphQLObjectTypeConfig<LabelledEvent, ResolverContext> = {
     name: "LabelledEvent",
     description: "An LabelledEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -36,5 +36,5 @@ let labelledEventConfig: GraphQLObjectTypeConfig<LabelledEvent, ResolverContext>
         }
     })
 };
-let GraphQLLabelledEvent = new GraphQLObjectType(labelledEventConfig);
+const GraphQLLabelledEvent = new GraphQLObjectType(labelledEventConfig);
 export default GraphQLLabelledEvent;

@@ -117,7 +117,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * @param byDatabase true if caused by database
      */
     async wasRemovedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
-        //this can only be a temporary state, so just ignore it
+        // this can only be a temporary state, so just ignore it
     }
 
     /**
@@ -125,7 +125,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * does nothing on the one side
      */
     save(): void {
-        //do nothing, 
+        // do nothing,
     }
 
 }

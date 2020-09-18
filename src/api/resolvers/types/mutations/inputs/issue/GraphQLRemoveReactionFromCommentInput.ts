@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let removeReactionFromCommentInputConfig: GraphQLInputObjectTypeConfig = {
+const removeReactionFromCommentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveReactionFromCommentInput",
     description: "The inputs for the removeFromCommentReaction",
     fields: () => ({
@@ -18,5 +18,5 @@ let removeReactionFromCommentInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLRemoveReactionFromCommentInput = new GraphQLInputObjectType(removeReactionFromCommentInputConfig);
+const GraphQLRemoveReactionFromCommentInput = new GraphQLInputObjectType(removeReactionFromCommentInputConfig);
 export default GraphQLRemoveReactionFromCommentInput;

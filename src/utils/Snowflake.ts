@@ -6,7 +6,7 @@ export class SnowflakeGenerator {
     private dateFn: () => number;
 
     public constructor(server?: number, processNumber?: number) {
-        let osId = process.platform.toString().charCodeAt(0) & 0x11111;
+        const osId = process.platform.toString().charCodeAt(0) & 0x11111;
         this.server = ((server || Math.floor(Math.random() * 0b100000 + osId)) & 0b11111) << (12 + 5);
         this.processNumber = ((processNumber || process.pid) & 0b11111) << 12;
         this.lastIncrement = 0;
@@ -18,9 +18,9 @@ export class SnowflakeGenerator {
     }
 
     public generate(): { high: number, low: number } {
-        let time = this.dateFn();
+        const time = this.dateFn();
         this.lastIncrement++;
-        let highPart = (Math.floor(time / 0x400) & 0xffffffff) >>> 0
+        const highPart = (Math.floor(time / 0x400) & 0xffffffff) >>> 0
         return {
             high: highPart,
             low: ((time & 0b1111111111) * (0x400000)) + this.server + this.processNumber + this.lastIncrement
@@ -28,12 +28,12 @@ export class SnowflakeGenerator {
     }
 
     public generateUint32Array(): Uint32Array {
-        let snowflake = this.generate();
+        const snowflake = this.generate();
         return new Uint32Array([snowflake.high, snowflake.low]);
     }
 
     public generateString(): string {
-        let snowflake = this.generate();
+        const snowflake = this.generate();
         return snowflake.high.toString(16).padStart(8, "0") + snowflake.low.toString(16).padStart(8, "0");
     }
 }

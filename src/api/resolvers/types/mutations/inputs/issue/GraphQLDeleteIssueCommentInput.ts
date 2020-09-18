@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let deleteIssueCommentInputConfig: GraphQLInputObjectTypeConfig = {
+const deleteIssueCommentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "DeleteIssueCommentInput",
     description: "The inputs for the deleteIssueComment",
     fields: () => ({
@@ -14,5 +14,5 @@ let deleteIssueCommentInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLDeleteIssueCommentInput = new GraphQLInputObjectType(deleteIssueCommentInputConfig);
+const GraphQLDeleteIssueCommentInput = new GraphQLInputObjectType(deleteIssueCommentInputConfig);
 export default GraphQLDeleteIssueCommentInput;

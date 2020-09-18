@@ -17,7 +17,7 @@ export class CommonConfig {
             this.passwordSecret = file.passwordSecret;
         } else {
             this.passwordSecret = "";
-            let length = (Math.random() * 85) + 15;
+            const length = (Math.random() * 85) + 15;
             for (let i = 0; i < length; i++) {
                 this.passwordSecret += String.fromCharCode(Math.random() * (126 - 33) + 33);
             }

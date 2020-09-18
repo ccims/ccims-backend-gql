@@ -4,7 +4,7 @@ import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 import GraphQLComponentPage from "../../types/pages/GraphQLComponentPage";
 import GraphQLComponentFilter from "../../types/filters/GraphQLComponentFilter";
 
-let pinnedOn: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let pinnedOn: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (pinnedOn === undefined) {
         pinnedOn = {

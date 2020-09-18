@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLIssueFilter from "../../types/filters/GraphQLIssueFilter";
 import GraphQLIssuePage from "../../types/pages/GraphQLIssuePage";
 
-let linkedIssues: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let linkedIssues: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (linkedIssues === undefined) {
         linkedIssues = {

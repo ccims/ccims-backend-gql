@@ -30,7 +30,7 @@ export class LoadLabelCommand extends LoadNamedSyncNodesCommand<Label> {
      * @returns the parsed component
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Label {
-        return new Label(databaseManager, resultRow["id"], resultRow["name"], resultRow["description"], resultRow["color"], resultRow["created_by"], resultRow["created_at"], resultRow["deleted"], resultRow["metadata"]);
+        return new Label(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.color, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.metadata);
     }
 
     /**

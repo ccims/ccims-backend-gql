@@ -23,7 +23,7 @@ export class Page<TNode extends CCIMSNode> {
     public readonly pageInfo: PageInfo;
 
     /**
-     * 
+     *
      * @param hasNext Weather there is another page with th current filter
      * @param hasPrev Weather there is a previous page with the current filter
      * @param nodes All nodes on this page
@@ -32,7 +32,7 @@ export class Page<TNode extends CCIMSNode> {
     public constructor(hasNext: boolean, hasPrev: boolean, nodes: TNode[],
         public readonly cmd: LoadNodeListCommand<TNode>
     ) {
-        //TODO: Calculate totalCound and hasNext/hasPrev for usage in page
+        // TODO: Calculate totalCound and hasNext/hasPrev for usage in page
         this.nodes = nodes.concat();
         this.edges = nodes.map(node => ({ cursor: node.id, node }));
         if (nodes.length > 0) {

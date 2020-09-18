@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 
-let unpinIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const unpinIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UnpinIssueInput",
     description: "The inputs for the unpinIssue",
     fields: () => ({
@@ -18,5 +18,5 @@ let unpinIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLUnpinIssueInput = new GraphQLInputObjectType(unpinIssueInputConfig);
+const GraphQLUnpinIssueInput = new GraphQLInputObjectType(unpinIssueInputConfig);
 export default GraphQLUnpinIssueInput;

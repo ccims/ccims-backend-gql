@@ -4,7 +4,7 @@ import GraphQLCreateUserPayload from "../types/mutations/payloads/GraphQLCreateU
 import GraphQLCreateUserInput from "../types/mutations/inputs/GraphQLCreateUserInput";
 import { User } from "../../../common/nodes/User";
 
-let createUser: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let createUser: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (createUser === undefined) {
         createUser = {
@@ -18,7 +18,7 @@ export default () => {
             },
             resolve: (src, args, context, info) => {
                 const user = User.create(context.dbManager, args.input.username, args.input.displayName, args.input.password, args.input.email);
-                return { clientMutationID: args.input.clientMutationID, user: user };
+                return { clientMutationID: args.input.clientMutationID, user };
             }
         };
     }

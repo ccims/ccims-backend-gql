@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddReactionToCommentPayload from "../../types/mutations/payloads/issue/GraphQLAddReactionToCommentPayload";
 import GraphQLAddReactionToCommentInput from "../../types/mutations/inputs/issue/GraphQLAddReactionToCommentInput";
 
-let addReactionToComment: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let addReactionToComment: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (addReactionToComment === undefined) {
         addReactionToComment = {

@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddAssigneePayload from "../../types/mutations/payloads/issue/GraphQLAddAssigneePayload";
 import GraphQLAddAssigneeInput from "../../types/mutations/inputs/issue/GraphQLAddAssigneeInput";
 
-let addAssignee: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let addAssignee: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (addAssignee === undefined) {
         addAssignee = {

@@ -5,7 +5,7 @@ import GraphQLReactionGroup from "../nodes/GraphQLReactionGroup";
 import GraphQLReactionGroupEdge from "../edges/GraphQLReactionGroupEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let reactionGroupPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const reactionGroupPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ReactionGroupPage",
     description: "A page of reaction groups",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let reactionGroupPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLReactionGroupPage = new GraphQLObjectType(reactionGroupPageConfig);
+const GraphQLReactionGroupPage = new GraphQLObjectType(reactionGroupPageConfig);
 export default GraphQLReactionGroupPage;

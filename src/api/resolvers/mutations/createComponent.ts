@@ -5,7 +5,7 @@ import GraphQLCreateComponentInput from "../types/mutations/inputs/GraphQLCreate
 import { Component } from "../../../common/nodes/Component";
 import { User } from "../../../common/nodes/User";
 
-let createComponent: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let createComponent: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (createComponent === undefined) {
         createComponent = {

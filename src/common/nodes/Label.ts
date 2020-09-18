@@ -29,9 +29,9 @@ export class Label extends NamedSyncNode {
 
     /**
      * Creates a label object for an EXISTING label from database
-     * 
+     *
      * DON'T USE TO CREATE A NEW LABEL!!
-     * 
+     *
      * @param databaseManager The database manager for this node
      * @param id The unique id of this node
      * @param name The display name for this label. Max. 256 characters
@@ -50,7 +50,7 @@ export class Label extends NamedSyncNode {
 
     /**
      * Creates a new label and adds it to the database
-     * 
+     *
      * @param databaseManager The database manager to use for saving
      * @param name The name of the label to display in the GUI
      * @param color The color in which to show the label

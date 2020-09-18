@@ -10,7 +10,7 @@ import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
 
 /**
  * Creates a components query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
- * 
+ *
  * @param description The description text for the components query
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable components query

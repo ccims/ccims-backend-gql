@@ -1,6 +1,6 @@
 import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig, GraphQLID } from "graphql";
 
-let issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
+const issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueLocationFilter",
     description: "Filters for Issues locations (components and interfaces). All parameters given in this filter will be connected via _AND_",
     fields: () => ({
@@ -14,5 +14,5 @@ let issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {
         },
     })
 };
-let GraphQLIssueLocationFilter = new GraphQLInputObjectType(issueLocationFilterConfig);
+const GraphQLIssueLocationFilter = new GraphQLInputObjectType(issueLocationFilterConfig);
 export default GraphQLIssueLocationFilter;

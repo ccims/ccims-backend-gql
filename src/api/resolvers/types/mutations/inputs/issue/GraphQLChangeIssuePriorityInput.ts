@@ -1,7 +1,7 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 import GraphQLPriority from "../../../../enums/GraphQLPriority";
 
-let changeIssuePriorityInputConfig: GraphQLInputObjectTypeConfig = {
+const changeIssuePriorityInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssuePriorityInput",
     description: "The inputs for the changeIssuePriority",
     fields: () => ({
@@ -19,5 +19,5 @@ let changeIssuePriorityInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLChangeIssuePriorityInput = new GraphQLInputObjectType(changeIssuePriorityInputConfig);
+const GraphQLChangeIssuePriorityInput = new GraphQLInputObjectType(changeIssuePriorityInputConfig);
 export default GraphQLChangeIssuePriorityInput;

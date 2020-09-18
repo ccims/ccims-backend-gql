@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let markedAsDuplicateEventConfig: GraphQLObjectTypeConfig<MarkedAsDuplicateEvent, ResolverContext> = {
+const markedAsDuplicateEventConfig: GraphQLObjectTypeConfig<MarkedAsDuplicateEvent, ResolverContext> = {
     name: "MarkedAsDuplicateEvent",
     description: "An MarkedAsDuplicateEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -35,5 +35,5 @@ let markedAsDuplicateEventConfig: GraphQLObjectTypeConfig<MarkedAsDuplicateEvent
         }
     })
 };
-let GraphQLMarkedAsDuplicateEvent = new GraphQLObjectType(markedAsDuplicateEventConfig);
+const GraphQLMarkedAsDuplicateEvent = new GraphQLObjectType(markedAsDuplicateEventConfig);
 export default GraphQLMarkedAsDuplicateEvent;

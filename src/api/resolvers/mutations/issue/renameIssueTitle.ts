@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLRenameIssueTitlePayload from "../../types/mutations/payloads/issue/GraphQLRenameIssueTitlePayload";
 import GraphQLRenameIssueTitleInput from "../../types/mutations/inputs/issue/GraphQLRenameIssueTitleInput";
 
-let renameIssueTitle: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let renameIssueTitle: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (renameIssueTitle === undefined) {
         renameIssueTitle = {

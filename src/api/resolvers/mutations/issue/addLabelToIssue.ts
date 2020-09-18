@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddLabelToIssuePayload from "../../types/mutations/payloads/issue/GraphQLAddLabelToIssuePayload";
 import GraphQLAddLabelToIssueInput from "../../types/mutations/inputs/issue/GraphQLAddLabelToIssueInput";
 
-let addLabelToIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let addLabelToIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (addLabelToIssue === undefined) {
         addLabelToIssue = {

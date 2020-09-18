@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
 import GraphQLLabelPage from "../types/pages/GraphQLLabelPage";
 import GraphQLLabelFilter from "../types/filters/GraphQLLabelFilter";
 
-let labels: GraphQLFieldConfig<any, any, any> | undefined = undefined;
+let labels: GraphQLFieldConfig<any, any, any> | undefined;
 export default () => {
     if (labels === undefined) {
         labels = {

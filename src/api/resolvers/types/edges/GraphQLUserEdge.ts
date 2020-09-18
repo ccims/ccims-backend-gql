@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConf
 import GraphQLUser from "../nodes/GraphQLUser";
 import { ResolverContext } from "../../../ResolverContext";
 
-let userEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const userEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UserEdge",
     description: "An edge for a UserPage to link a cursor to an element",
     fields: () => ({
@@ -16,5 +16,5 @@ let userEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLUserEdge = new GraphQLObjectType(userEdgeConfig);
+const GraphQLUserEdge = new GraphQLObjectType(userEdgeConfig);
 export default GraphQLUserEdge;

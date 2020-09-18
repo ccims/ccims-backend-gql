@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLUnassignedEvent from "../../../nodes/timelineItems/GraphQLUnassignedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let removeAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const removeAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "RemoveAssigneePayload",
     description: "The Payload/Response for the removeAssignee mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let removeAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> =
         }
     })
 };
-let GraphQLRemoveAssigneePayload = new GraphQLObjectType(removeAssigneePayloadConfig);
+const GraphQLRemoveAssigneePayload = new GraphQLObjectType(removeAssigneePayloadConfig);
 export default GraphQLRemoveAssigneePayload;

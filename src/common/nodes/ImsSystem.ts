@@ -105,7 +105,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
 
     /**
      * creates a new ImsSystem with the specififed imsType, endpoint and connectionData
-     * 
+     *
      */
     public static create(databaseManager: DatabaseManager, imsType: ImsType, endpoint: string, connectionData: ConnectionData): ImsSystem {
         const imsSystem = new ImsSystem(databaseManager, databaseManager.idGenerator.generateString(), imsType, endpoint, connectionData);

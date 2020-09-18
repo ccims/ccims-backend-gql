@@ -6,7 +6,7 @@ import { Label } from "../../../../common/nodes/Label";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
 
-let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
+const labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
     description: "A label assignable to issues. A label is per-project",
     interfaces: () => ([GraphQLNode]),
@@ -31,5 +31,5 @@ let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
         projects: projectsListQuery("All projetcs that this label is used on", label => label.projectsProperty)
     })
 };
-let GraphQLLabel = new GraphQLObjectType(labelConfig);
+const GraphQLLabel = new GraphQLObjectType(labelConfig);
 export default GraphQLLabel;
