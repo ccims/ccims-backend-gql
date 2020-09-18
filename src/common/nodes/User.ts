@@ -2,18 +2,23 @@ import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
 import { UserPermissions } from "../../utils/UserPermissions";
+import { CombineCommand } from "../database/commands/CombineCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Issue } from "./Issue";
+import { NamedOwnedNode } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { IssueComment } from "./timelineItems/IssueComment";
+import { Comment } from "./timelineItems/Comment"
 
 /**
  * specification of a table which can contain users
@@ -58,6 +63,107 @@ export class User<T extends User = any> extends CCIMSNode<T> {
 
     private _permissions: UserPermissions;
 
+        /**
+     * Property containing all projects this user is a part of
+     */
+    public readonly projectsProperty: NodeListProperty<Project, User>;
+
+    /**
+     * specification of the projectsProperty
+     */
+    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, User>
+        = NodeListPropertySpecification.loadDynamic<Project, User>(LoadRelationCommand.fromPrimary("user", "project"),
+            (ids, user) => {
+                const command = new LoadProjectsCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadProjectsCommand();
+                command.users = [user.id];
+                return command;
+            })
+            .notifyChanged((project, component) => project.usersProperty)
+            .saveOnPrimary("user", "project");
+
+
+    /**
+     * WARNING do NOT use this to add an assignee to an issue!
+     */
+    public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
+
+    public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User>
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "assignee"),
+            (ids, user) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadIssuesCommand();
+                command.userAssigned = [user.id];
+                return command;
+            })
+            .notifyChanged((issue, user) => issue.assigneesProperty)
+            .noSave();
+
+    public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
+
+    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
+            (ids, user) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadIssuesCommand();
+                command.userParticipated = [user.id];
+                return command;
+            })
+            .notifyChanged((issue, user) => issue.participantsProperty)
+            .noSave();
+
+    public readonly commentsProperty: NodeListProperty<Comment, User>;
+
+    public static readonly commentsPropertySpecification: NodeListPropertySpecification<Comment, User>
+        = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "editedBy"),
+            (ids, user) => {
+                const command = new LoadCommentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadCommentsCommand();
+                command.editedBy = [user.id];
+                return command;
+            })
+            .notifyChanged((comment, user) => comment.editedByProperty)
+            .noSave();
+    
+    public readonly ownedNodesProperty: NodeListProperty<NamedOwnedNode, User>;
+
+    public static readonly ownedNodesPropertySpecification: NodeListPropertySpecification<NamedOwnedNode, User>
+        = NodeListPropertySpecification.loadDynamic<NamedOwnedNode, User>(
+            user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user), 
+                LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
+            (ids, user) => {
+                const command1 = new LoadComponentsCommand();
+                command1.ids = ids;
+                const command2 = new LoadProjectsCommand();
+                command2.ids = ids;
+                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+            },
+            user => {
+                const command1 = new LoadComponentsCommand();
+                command1.ownedBy = [user.id]
+                const command2 = new LoadProjectsCommand();
+                command2.ownedBy = [user.id];
+                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+            })
+            .notifyChanged((namedOwnedNode, user) => namedOwnedNode.ownerProperty)
+            .noSave();
+
     /**
      * Constructor for creating a user from database
      * 
@@ -79,9 +185,10 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         permissions.user = this;
         this._permissions = permissions;
         this.projectsProperty = new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this);
-        this.assignedToIssuesProperty = undefined as any;
-        this.participantOfIssuesProperty = undefined as any;
-        this.issueCommentProperty = undefined as any;
+        this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
+        this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
+        this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
+        this.ownedNodesProperty = new NodeListProperty<NamedOwnedNode, User>(databaseManager, User.ownedNodesPropertySpecification, this);
     }
 
     public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): User {
@@ -209,56 +316,6 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         return this._permissions;
     }
 
-    /**
-     * Property containing all projects this user is a part of
-     */
-    public readonly projectsProperty: NodeListProperty<Project, User>;
 
-    /**
-     * specification of the projectsProperty
-     */
-    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, User>
-        = NodeListPropertySpecification.loadDynamic<Project, User>(LoadRelationCommand.fromPrimary("user", "project"),
-            (ids, user) => {
-                const command = new LoadProjectsCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadProjectsCommand();
-                command.users = [user.id];
-                return command;
-            })
-            .notifyChanged((project, component) => project.usersProperty)
-            .saveOnPrimary("user", "project");
-
-
-    /**
-     * WARNING do NOT use this to add an assignee to an issue!
-     */
-    public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
-
-    public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User> = undefined as any;
-
-    public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
-
-    public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
-        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
-            (ids, user) => {
-                const command = new LoadIssuesCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadIssuesCommand();
-                command.userParticipated = [user.id];
-                return command;
-            })
-            .notifyChanged((issue, component) => issue.participantsProperty)
-            .noSave();
-
-    public readonly issueCommentProperty: NodeListProperty<IssueComment, User>;
-
-    public static readonly issueCommentPropertySpecification: NodeListPropertySpecification<IssueComment, User> = undefined as any;
 
 }

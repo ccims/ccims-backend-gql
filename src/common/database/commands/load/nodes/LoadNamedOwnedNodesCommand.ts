@@ -11,7 +11,7 @@ export abstract class LoadNamedOwnedNodesCommand<T extends NamedOwnedNode> exten
     /**
      * Only select nodes which have one of the given users as owner
      */
-    public onOwners?: string[]
+    public ownedBy?: string[]
 
     /**
      * adds the owner condition
@@ -21,8 +21,8 @@ export abstract class LoadNamedOwnedNodesCommand<T extends NamedOwnedNode> exten
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onOwners) {
-            conditions.conditions.push(createStringListFilter("owner_user_id", this.onOwners, conditions.i, 3));
+        if (this.ownedBy) {
+            conditions.conditions.push(createStringListFilter("owner_user_id", this.ownedBy, conditions.i, 3));
             conditions.i++;
         }
 

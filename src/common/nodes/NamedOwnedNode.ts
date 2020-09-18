@@ -1,3 +1,5 @@
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
@@ -32,10 +34,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
                 command.ids = [id];
                 return command;
             },
-            node => {
-                //TODO reload command
-                return undefined as any;
-            }
+            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand())
             //TODO notify user
         );
 

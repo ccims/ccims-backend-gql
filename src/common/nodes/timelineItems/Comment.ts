@@ -36,12 +36,11 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
             return command;
         },
         comment => {
-            //TODO
             const command = new LoadUsersCommand();
-            //command.onComponents = [command.id];
+            command.editedComments = [comment.id];
             return command;
         })
-        //TODO .notifyChanged((user, comment) => project.componentsProperty)
+        .notifyChanged((user, comment) => user.commentsProperty)
         .saveOnPrimary("comment", "editedBy");
 
     public readonly lastEditedByProperty: NullableNodeProperty<User, Comment>;

@@ -86,6 +86,15 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
     public static fromManySide(tableName: string, rowName: string): ((node: CCIMSNode) => DatabaseCommand<string[]>) {
         return node => new LoadIdsManyOneCommand(tableName, rowName, node);
     }
+
+    /**
+     * creates a command which loads the one side
+     * @param tableName the name of the table on the one side
+     * @param rowName the name of the row on the one side
+     */
+    public static fromManySideBase(tableName: string, rowName: string, node: CCIMSNode):  DatabaseCommand<string[]> {
+        return new LoadIdsManyOneCommand(tableName, rowName, node);
+    }
 }
 
 /**

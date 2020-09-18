@@ -1,10 +1,10 @@
-import { IssueTimelineItem, IssueTimelineItemType } from "../../../../nodes/timelineItems/IssueTimelineItem";
-import { ConditionSpecification } from "../ConditionSpecification";
-import { QueryPart } from "../QueryPart";
-import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
-import { createStringListFilter } from "./RelationFilter";
+import { IssueTimelineItem, IssueTimelineItemType } from "../../../../../nodes/timelineItems/IssueTimelineItem";
+import { ConditionSpecification } from "../../ConditionSpecification";
+import { QueryPart } from "../../QueryPart";
+import { LoadMultipleNodeListsCommand } from "../LoadMultipleNodeListsCommand";
+import { createStringListFilter } from "../RelationFilter";
 
-export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<IssueTimelineItem> {
+export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTimelineItem> extends LoadMultipleNodeListsCommand<T> {
 
     /**
      * filter for timelineItems that are on any of the issues

@@ -56,7 +56,7 @@ function namedOwnedNodeListQuery<TSource extends CCIMSNode, TNode extends NamedO
         ...baseQuery,
         addParams: (cmd: LoadNamedOwnedNodesCommand<TNode>, args: any) => {
             baseQuery.addParams(cmd, args);
-            cmd.onOwners = args.filterBy?.owner;
+            cmd.ownedBy = args.filterBy?.owner;
         }
     };
 };

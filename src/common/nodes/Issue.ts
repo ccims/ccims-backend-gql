@@ -1,6 +1,6 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/LoadIssueTimelineItemsCommand";
+import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { LoadBodiesCommand } from "../database/commands/load/nodes/timeline/LoadBodiesCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
@@ -103,6 +103,26 @@ export class Issue extends SyncNode<Issue> {
             .saveOnPrimary("issue", "participant");
 
     /**
+     * do not use this to add / remove assignees directly!
+     */
+    public readonly assigneesProperty: NodeListProperty<User, Issue>;
+
+    private static readonly assigneesPropertySpecification: NodeListPropertySpecification<User, Issue>
+        = NodeListPropertySpecification.loadDynamic<User, Issue>(LoadRelationCommand.fromPrimary("issue", "assignee"),
+            (ids, issue) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadUsersCommand();
+                command.assignedToIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((user, issue) => user.assignedToIssuesProperty)
+            .saveOnPrimary("issue", "assignee");
+
+    /**
      * abstract constructor for extending classes
      * @param type the type of this node
      * @param databaseManager the databaseManager
@@ -129,6 +149,7 @@ export class Issue extends SyncNode<Issue> {
         this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
         this.timelineProperty = new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this);
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
+        this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,

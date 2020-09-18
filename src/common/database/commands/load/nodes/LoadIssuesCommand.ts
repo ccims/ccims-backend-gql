@@ -14,6 +14,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public userParticipated?: string[];
 
     /**
+     * filters for issues where any of the users is assigned
+     */
+    public userAssigned?: string[];
+
+    /**
      * filter for issues with one of the specified categories
      */
     public ofCategory?: IssueCategory[]
@@ -45,6 +50,10 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         
         if (this.userParticipated) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "participant", this.userParticipated, conditions.i));
+            conditions.i++;
+        }
+        if (this.userAssigned) {
+            conditions.conditions.push(createRelationFilterBySecundary("issue", "assignee", this.userAssigned, conditions.i));
             conditions.i++;
         }
         if (this.ofCategory) {

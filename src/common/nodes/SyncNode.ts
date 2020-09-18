@@ -41,7 +41,6 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 return command;
             },
             syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand())
-            //TODO notifier?
         );
 
     private readonly _createdAt: Date;
