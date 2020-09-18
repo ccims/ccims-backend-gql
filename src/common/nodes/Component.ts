@@ -106,6 +106,30 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             .saveOnPrimary("component", "issue");
 
     /**
+     * property with all issues which are pinned on this component
+     * do NOT pin an issue via this property
+     */
+    public readonly pinnedIssuesProperty: NodeListProperty<Issue, Component>;
+
+    /**
+     * specification of the pinnedIssuesProperty
+     */
+    private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinnedIssue"),
+            (ids, component) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            component => {
+                const command = new LoadIssuesCommand();
+                command.onComponents = [component.id];
+                return command;
+            })
+            .notifyChanged((issue, component) => issue.componentsProperty)
+            .saveOnPrimary("component", "pinnedIssue");
+
+    /**
      * property with all componentInterfaces of this component
      */
     public readonly interfacesProperty: NodeListProperty<ComponentInterface, Component>;
@@ -167,7 +191,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);
         this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
-
+        this.pinnedIssuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.pinnedIssuesPropertySpecification, this);
     }
 
     /**

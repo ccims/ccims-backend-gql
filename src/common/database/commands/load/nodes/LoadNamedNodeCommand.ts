@@ -1,8 +1,6 @@
 import { NamedNode } from "../../../../nodes/NamedNode";
-import { NamedOwnedNode } from "../../../../nodes/NamedOwnedNode";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
-import { SignatureHelpRetriggeredReason } from "typescript";
 
 /**
  * command to load a named node
