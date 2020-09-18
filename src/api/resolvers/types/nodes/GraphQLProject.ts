@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
-import components from "../../listQueries/components";
-import users from "../../listQueries/users";
+import componentsListQuery from "../../listQueries/componentsListQuery";
+import usersListQuery from "../../listQueries/usersListQuery";
 import issues from "../../listQueries/issues";
 import GraphQLUser from "./GraphQLUser";
 import labels from "../../listQueries/labels";
@@ -21,8 +21,8 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The human readable name of this project\n\nMax. 256 characters"
         },
-        components: components("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
-        users: users("All users that participate in this project and (if given)match `filterBy`", project => project.usersProperty),
+        components: componentsListQuery("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
+        users: usersListQuery("All users that participate in this project and (if given)match `filterBy`", project => project.usersProperty),
         owner: {
             type: GraphQLNonNull(GraphQLUser),
             description: "The user who administrates \"owns\" the project"

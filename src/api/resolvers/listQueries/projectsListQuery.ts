@@ -8,8 +8,17 @@ import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
 import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
 import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
 
-export default <TSource extends CCIMSNode>(description: string, propertyProvider?: (node: TSource) => NodeListProperty<Project, TSource>):
-    GraphQLFieldConfig<TSource, ResolverContext> => {
+/**
+ * Creates a projects query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
+ * 
+ * @param description The description text for the projects query
+ * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
+ * @returns A GraphQLFieldConfig with fields needed for a resolvable projects query
+ */
+function projectsListQuery<TSource extends CCIMSNode>(
+    description: string,
+    propertyProvider?: (node: TSource) => NodeListProperty<Project, TSource>
+): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = namedOwnedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
     return {
         ...baseQuery,
@@ -23,6 +32,7 @@ export default <TSource extends CCIMSNode>(description: string, propertyProvider
         }
     };
 };
+export default projectsListQuery;
 
 /*export default <TSource extends CCIMSNode>(propertyProvider?: (node: TSource) => NodeListProperty<Project, TSource>): GraphQLFieldConfig<TSource, ResolverContext> => {
     return {
