@@ -1,9 +1,9 @@
 CREATE DOMAIN id AS varchar(32);
 
 
-CREATE TYPE issue_category AS ENUM ('Bug', 'FeatureRequest', 'Unclassified');
-CREATE TYPE priority AS ENUM ('Low', 'Medium', 'High');
-CREATE TYPE ims_type AS ENUM ('GitHub', 'GitLab', 'Jira', 'Redmine');
+CREATE TYPE issue_category AS ENUM ('BUG', 'FEATURE_REQUEST', 'UNCLASSIFIED');
+CREATE TYPE priority AS ENUM ('LOW', 'MEDIUM', 'HIGH');
+CREATE TYPE ims_type AS ENUM ('GITHUB', 'GITLAB', 'JIRA', 'REDMINE', 'CCIMS');
 
 CREATE TABLE node (
     id id PRIMARY KEY

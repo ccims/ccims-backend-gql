@@ -211,7 +211,13 @@ export class Issue extends SyncNode<Issue> {
 }
 
 export enum IssueCategory {
-    Bug = "Bug", 
-    FeatureRequest = "FeatureRequst",
-    Unclassified = "Unclassified"
+    Bug = "BUG", 
+    FeatureRequest = "FEATURE_REQUEST",
+    Unclassified = "UNCLASSIFIED"
+}
+
+export enum IssuePriority {
+    Low = "LOW",
+    Medium = "MEDIUM",
+    High = "HIGH"
 }

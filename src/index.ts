@@ -1,4 +1,4 @@
-import { SyncService } from "./syncService/SyncService";
+import { SyncService } from "./syncService/syncService";
 import { CCIMSApi } from "./api/CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { printSchema } from "graphql";
@@ -6,6 +6,7 @@ import { log } from "./log";
 import { Client } from "pg";
 import { config } from "./config/Config";
 import { SnowflakeGenerator } from "./utils/Snowflake";
+import { initTypeParsers } from "./common/database/DatabaseManager";
 
 console.log("Hello world");
 
@@ -20,6 +21,7 @@ if (true) {
     const pgClient: Client = new Client(config.postgres);
     const backendApi = new CCIMSApi(pgClient, idGen);
     pgClient.connect().then(() => {
+        initTypeParsers(pgClient);
         backendApi.start();
     })
 } else {

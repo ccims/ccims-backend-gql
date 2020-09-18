@@ -38,6 +38,7 @@
         "jest": "^26.4.2",
         "jsonwebtoken": "^8.5.1",
         "pg": "^8.3.3",
+        "pg-types": "^3.0.1",
         "postgres-interval": "^2.1.0",
         "ts-jest": "^26.3.0",
         "typescript": "^4.0.2"
