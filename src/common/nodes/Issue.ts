@@ -277,13 +277,12 @@ export class Issue extends SyncNode<Issue> {
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
     }
 
-    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
-        category: IssueCategory, startDate?: Date, dueDate?: Date, estimatedTime?: number, spentTime?: number): Promise<Issue> {
+    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
-        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, isOpen, isDuplicate, category, startDate, dueDate,
-            estimatedTime, spentTime, createdAt, bodyId, false);
+        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.Unclassified, undefined, undefined,
+            undefined, undefined, createdAt, bodyId, false);
         issue.markNew();
         databaseManager.addCachedNode(issue);
 
