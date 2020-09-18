@@ -24,8 +24,6 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
      */
     public readonly issueProperty: NodeProperty<Issue, IssueTimelineItem>;
 
-    public readonly
-
     /**
      * specification of issueProperty
      */
