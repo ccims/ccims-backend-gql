@@ -1,8 +1,6 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
-import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
-import GraphQLComponentInterfacePage from "../types/pages/GraphQLComponentInterfacePage";
-import GraphQLComponentInterfaceFilter from "../types/filters/GraphQLComponentInterfaceFilter";
+import { GraphQLFieldConfig, GraphQLInt, GraphQLString } from "graphql";
+import GraphQLComponentInterfaceFilter from "../../types/filters/GraphQLComponentInterfaceFilter";
+import GraphQLComponentInterfacePage from "../../types/pages/GraphQLComponentInterfacePage";
 
 let consumedInterfaces: GraphQLFieldConfig<any, any, any> | undefined = undefined;
 export default () => {

@@ -38,9 +38,8 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         issues: issues(),
         issuesOnLocation: issuesOnLocation(),
         projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
-        interfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.interfacesProperty),
+        interfaces: interfacesListQuery("Requests component interfaces which this component offers", component => component.interfacesProperty),
         consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty)
-        //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
     })
 };
 let GraphQLComponent = new GraphQLObjectType(componentConfig);
