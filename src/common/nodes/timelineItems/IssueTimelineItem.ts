@@ -14,8 +14,8 @@ import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNo
 * does not specifiy the metadata, because this is up to the save method
 */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
-   = new NodeTableSpecification<IssueTimelineItem>("issue_timelineItem", SyncNodeTableSpecification, 
-   new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
+    = new NodeTableSpecification<IssueTimelineItem>("issue_timelineItem", SyncNodeTableSpecification,
+        new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {
 
@@ -38,6 +38,14 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
             (issue, timelineItem) => issue.timelineProperty
         );
 
+    /**
+     * Async property getter for issueProperty
+     * @returns A promise of the issue this timeline item belongs to
+     */
+    public async issue(): Promise<Issue> {
+        return this.issueProperty.get();
+    }
+
 
     /**
      * abstract constructor for extending classes
@@ -58,7 +66,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
 
 export class IssueTimelineItemType {
 
-    private constructor (public readonly tableName: string) {
+    private constructor(public readonly tableName: string) {
 
     }
 

@@ -17,10 +17,10 @@ import { User } from "../User";
 * does not specifiy the metadata, because this is up to the save method
 */
 export const CommentTableSpecification: NodeTableSpecification<Comment>
-   = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification, 
-   RowSpecification.fromProperty("body", "body"),
-   RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
-   new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
+    = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification,
+        RowSpecification.fromProperty("body", "body"),
+        RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
+        new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
 
 export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
@@ -30,18 +30,18 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     private static readonly editedByPropertySpecification: NodeListPropertySpecification<User, Comment>
         = NodeListPropertySpecification.loadDynamic<User, Comment>(LoadRelationCommand.fromPrimary("comment", "editedBy"),
-        (ids, comment) => {
-            const command = new LoadUsersCommand();
-            command.ids = ids;
-            return command;
-        },
-        comment => {
-            const command = new LoadUsersCommand();
-            command.editedComments = [comment.id];
-            return command;
-        })
-        .notifyChanged((user, comment) => user.commentsProperty)
-        .saveOnPrimary("comment", "editedBy");
+            (ids, comment) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            comment => {
+                const command = new LoadUsersCommand();
+                command.editedComments = [comment.id];
+                return command;
+            })
+            .notifyChanged((user, comment) => user.commentsProperty)
+            .saveOnPrimary("comment", "editedBy");
 
     public readonly lastEditedByProperty: NullableNodeProperty<User, Comment>;
 
