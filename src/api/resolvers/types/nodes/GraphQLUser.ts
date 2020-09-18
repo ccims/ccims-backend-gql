@@ -25,7 +25,7 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             description: "The name of the user to display in the GUI"
         },
         email: {
-            type: GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: "The mail address of the user"
         },
         projects: projects(),

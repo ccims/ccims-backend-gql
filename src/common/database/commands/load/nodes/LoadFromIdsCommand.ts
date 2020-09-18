@@ -4,6 +4,7 @@ import { LoadComponentsCommand } from "./LoadComponentsCommand";
 import { LoadImsSystemsCommand } from "./LoadImsSystemsCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
+import { LoadUsersCommand } from "./LoadUsersCommand";
 
 /**
  * map with method to create command for each table name
@@ -12,7 +13,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["component", () => new LoadComponentsCommand()],
     ["component_interface", () => new LoadComponentInterfacesCommand()],
     ["project", () => new LoadProjectsCommand()],
-    ["ims_system", () => new LoadImsSystemsCommand()]
+    ["ims_system", () => new LoadImsSystemsCommand()],
+    ["users", () => new LoadUsersCommand()]
 ]);
 
 /**

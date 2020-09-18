@@ -148,13 +148,15 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
         const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
+        let returnValue: T;
         if (cacheResult) {
-            return cacheResult as T;
+            returnValue = cacheResult as T;
         } else {
             const newNode: T = this.getNodeResult(databaseManager, resultRow, result);
             databaseManager.addCachedNode(newNode);
-            return newNode;
+            returnValue = newNode;
         }
+        return returnValue;
     }
 
     /**

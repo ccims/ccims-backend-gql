@@ -5,7 +5,7 @@ import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import { ResolverContext } from "../../../ResolverContext";
 
-let projectPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+let projectPageConfig: GraphQLObjectTypeConfig<, ResolverContext> = {
     name: "ProjectPage",
     description: "A page of projects",
     interfaces: () => ([GraphQLPage]),

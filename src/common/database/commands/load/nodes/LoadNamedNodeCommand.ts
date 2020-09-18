@@ -28,36 +28,20 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
         const conditions = super.generateConditions(i);
 
         if (this.onName) {
-            if (this.onName.length == 1) {
-                conditions.conditions.push({
-                    text: `main.name=$${conditions.i}`,
-                    values: [this.onName[0]],
-                    priority: 4
-                });
-            } else {
-                conditions.conditions.push({
-                    text: `main.name=ANY($${conditions.i})`,
-                    values: [this.onName],
-                    priority: 4
-                });
-            }
+            conditions.conditions.push({
+                text: `main.name ~ $${conditions.i}`,
+                values: [this.onName],
+                priority: 4
+            });
             conditions.i++;
         }
 
         if (this.onDescription) {
-            if (this.onDescription.length == 1) {
-                conditions.conditions.push({
-                    text: `main.description=$${conditions.i}`,
-                    values: [this.onDescription[0]],
-                    priority: 7
-                });
-            } else {
-                conditions.conditions.push({
-                    text: `main.description=ANY($${conditions.i})`,
-                    values: [this.onDescription],
-                    priority: 7
-                });
-            }
+            conditions.conditions.push({
+                text: `main.description ~ $${conditions.i}`,
+                values: [this.onDescription],
+                priority: 7
+            });
             conditions.i++;
         }
 

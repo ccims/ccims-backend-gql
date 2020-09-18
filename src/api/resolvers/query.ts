@@ -1,8 +1,10 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLResolveInfo } from "graphql";
 import node from "./query/node";
 import echo from "./query/echo";
 import projects from "./listQueries/projects";
 import { ResolverContext } from "../ResolverContext";
+import currentUser from "./query/currentUser";
+import { LoadProjectsCommand } from "../../common/database/commands/load/nodes/LoadProjectsCommand";
 
 let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Query",
@@ -10,7 +12,8 @@ let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         node,
         echo,
-        projects: projects()
+        projects: projects(),
+        currentUser: currentUser()
     })
 };
 let query = new GraphQLObjectType(queryConfig);
