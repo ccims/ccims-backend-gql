@@ -154,7 +154,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             }
             return [];
         } else {
-            this.count = result.rowCount;
+            this.count = Number.parseInt(result.rows[0]["count"]);
             return [];
         }
     }
