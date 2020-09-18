@@ -21,8 +21,8 @@ let projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The human readable name of this project\n\nMax. 256 characters"
         },
-        components: components(),
-        users: users(),
+        components: components("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
+        users: users("All users that participate in this project and (if given)match `filterBy`", project => project.usersProperty),
         owner: {
             type: GraphQLNonNull(GraphQLUser),
             description: "The user who administrates \"owns\" the project"

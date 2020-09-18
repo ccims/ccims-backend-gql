@@ -1,37 +1,23 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt } from "graphql";
-import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
+import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
+import { LoadComponentsCommand } from "../../../common/database/commands/load/nodes/LoadComponentsCommand";
+import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
+import { Component } from "../../../common/nodes/Component";
+import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
+import { ResolverContext } from "../../ResolverContext";
 import GraphQLComponentFilter from "../types/filters/GraphQLComponentFilter";
+import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
+import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
 
-let components: GraphQLFieldConfig<any, any, any> | undefined = undefined;
-
-export default () => {
-    if (components === undefined) {
-        components = {
-            type: GraphQLComponentPage,
-            description: "Components which are part of this project and match the filter.\n\nIf no filter is given, all components will be returned",
-            args: {
-                after: {
-                    type: GraphQLString,
-                    description: "Return only components AFTER the one with the specified cursor (exclusive)"
-                },
-                before: {
-                    type: GraphQLString,
-                    description: "Return only components BEFORE the one with the specified cursor (exclusive)"
-                },
-                filterBy: {
-                    type: GraphQLComponentFilter,
-                    description: "Return only components matching this filter"
-                },
-                first: {
-                    type: GraphQLInt,
-                    description: "Return at most the first n components"
-                },
-                last: {
-                    type: GraphQLInt,
-                    description: "Return at most the last n components"
-                }
-            }
-        };
-    }
-    return components;
+export default <TSource extends CCIMSNode>(description: string, propertyProvider?: (node: TSource) => NodeListProperty<Component, TSource>):
+    GraphQLFieldConfig<TSource, ResolverContext> => {
+    const baseQuery = namedOwnedNodeListQuery<TSource, Component>(GraphQLComponentPage, GraphQLComponentFilter, description, "components", propertyProvider);
+    return {
+        ...baseQuery,
+        resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
+            const cmd = new LoadComponentsCommand();
+            baseQuery.addParams(cmd, args);
+            cmd.imsTypes = args.filterBy?.imsType;
+            return baseQuery.createResult(src, context, cmd);
+        }
+    };
 };

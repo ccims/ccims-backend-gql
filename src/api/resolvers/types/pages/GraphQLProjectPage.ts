@@ -1,11 +1,12 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLList, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { Project } from "../../../../common/nodes/Project";
+import { ResolverContext } from "../../../ResolverContext";
+import { Page } from "../../utils/Page";
 import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
 import GraphQLProject from "../nodes/GraphQLProject";
 import GraphQLPage from "./GraphQLPage";
-import GraphQLPageInfo from "./GraphQLPageInfo";
-import { ResolverContext } from "../../../ResolverContext";
 
-let projectPageConfig: GraphQLObjectTypeConfig<, ResolverContext> = {
+let projectPageConfig: GraphQLObjectTypeConfig<Page<Project>, ResolverContext> = {
     name: "ProjectPage",
     description: "A page of projects",
     interfaces: () => ([GraphQLPage]),
@@ -17,7 +18,7 @@ let projectPageConfig: GraphQLObjectTypeConfig<, ResolverContext> = {
         edges: {
             type: GraphQLList(GraphQLProjectEdge),
             description: "Edges to all nodes containing the cursor"
-        },
+        }/*,
         pageInfo: {
             type: GraphQLNonNull(GraphQLPageInfo),
             description: "Information about the current page (like length, first/last element)"
@@ -25,7 +26,7 @@ let projectPageConfig: GraphQLObjectTypeConfig<, ResolverContext> = {
         totalCount: {
             type: GraphQLNonNull(GraphQLInt),
             description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
-        }
+        }*/
     })
 };
 let GraphQLProjectPage = new GraphQLObjectType(projectPageConfig);
