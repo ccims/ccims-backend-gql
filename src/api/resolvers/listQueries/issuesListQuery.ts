@@ -39,7 +39,7 @@ function issuesListQuery<TSource extends CCIMSNode>(
             cmd.linksToIssues = args.filterBy?.linksIssues;
             cmd.linkedByIssues = args.filterBy?.linkedIssues;
             cmd.reactions = args.filterBy?.reactions;
-            cmd.assignees = args.filterBy?.assignees;
+            cmd.userAssigned = args.filterBy?.assignees;
             cmd.labels = args.filterBy?.labels;
             cmd.userParticipated = args.filterBy?.participants;
             cmd.onLocations = args.filterBy?.locations;

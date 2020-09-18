@@ -59,13 +59,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * If set and `true`, only issues that are open are selected. If `false`, only closed issue
-     * TODO
      */
     public isOpen?: boolean;
 
     /**
      * If set and `true`, only issues that are a duplicate of another issue are selected. If `false`, only issues which are not marked as duplicate
-     * TODO
      */
     public isDuplicate?: boolean;
 
@@ -81,13 +79,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * Select only issues linking __to__ one of the given issues (origin of the relation)
-     * TODO
      */
     public linksToIssues?: string[];
 
     /**
      * Select only issues __being linked to__ one of the given issues (destination of the relation)
-     * TODO
      */
     public linkedByIssues?: string[];
 
@@ -98,14 +94,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public reactions?: string[][];
 
     /**
-     * Select only issues that have at least one of these assignees
-     * TODO
-     */
-    public assignees?: string[];
-
-    /**
      * Select only issues that have one of these labels assigned
-     * TODO
      */
     public labels?: string[];
 
@@ -133,49 +122,41 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
 
     /**
      * Select only issues that have a start date after this date (inclusive)
-     * TODO
      */
     public startDateAfter?: Date;
 
     /**
      * Select only issues that have a start date before this date (inclusive)
-     * TODO
      */
     public startDateBefore?: Date;
 
     /**
      * Select only issues that have a due date after this date (inclusive)
-     * TODO
      */
     public dueDateAfter?: Date;
 
     /**
      * Select only issues that have a due date before this date (inclusive)
-     * TODO
      */
     public dueDateBefore?: Date;
 
     /**
      * Select only issues that have an estimated time which is at __least__ the given time span in milliseconds (inclusive)
-     * TODO
      */
     public estimatedTimeGreaterThan?: number;
 
     /**
      * Select only issues that have an estimated time which is at __most__ the given time span in milliseconds (inclusive)
-     * TODO
      */
     public estimatedTimeLowerThan?: number;
 
     /**
      * Select only issues that have an spent time which is at __least__ the given time span in milliseconds (inclusive)
-     * TODO
      */
     public spentTimeGreaterThan?: number;
 
     /**
      * Select only issues that have an spent time which is at __most__ the given time span in milliseconds (inclusive)
-     * TODO
      */
     public spentTimeLowerThan?: number;
 
@@ -301,6 +282,99 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
                 priority: 5,
                 text: `main.updated_at<=$${conditions.i}`,
                 values: [this.updatedBefore],
+            });
+            conditions.i++;
+        }
+        if (this.isOpen) {
+            conditions.conditions.push({
+                priority: 4,
+                text: `main.is_open = $${conditions.i}`,
+                values: [this.isOpen],
+            });
+            conditions.i++;
+        }
+        if (this.isDuplicate) {
+            conditions.conditions.push({
+                priority: 4,
+                text: `main.isDuplicate = $${conditions.i}`,
+                values: [this.isDuplicate],
+            });
+            conditions.i++;
+        }
+        if (this.linkedByIssues) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "linkedIssue", this.linkedByIssues, conditions.i));
+            conditions.i++;
+        }
+        if (this.linksToIssues) {
+            conditions.conditions.push(createRelationFilterBySecundary("issue", "linkedIssue", this.linksToIssues, conditions.i));
+            conditions.i++;
+        }
+        if (this.labels) {
+            conditions.conditions.push(createRelationFilterBySecundary("issue", "label", this.labels, conditions.i));
+            conditions.i++;
+        }
+        if (this.startDateAfter) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.start_date>=$${conditions.i}`,
+                values: [this.startDateAfter],
+            });
+            conditions.i++;
+        }
+        if (this.startDateBefore) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.start_date<=$${conditions.i}`,
+                values: [this.startDateBefore],
+            });
+            conditions.i++;
+        }
+        if (this.dueDateAfter) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.due_date>=$${conditions.i}`,
+                values: [this.dueDateAfter],
+            });
+            conditions.i++;
+        }
+        if (this.dueDateBefore) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.due_date<=$${conditions.i}`,
+                values: [this.dueDateBefore],
+            });
+            conditions.i++;
+        }
+
+        if (this.estimatedTimeGreaterThan) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.estimated_time>=$${conditions.i}`,
+                values: [this.estimatedTimeGreaterThan],
+            });
+            conditions.i++;
+        }
+        if (this.estimatedTimeLowerThan) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.estimated_time<=$${conditions.i}`,
+                values: [this.estimatedTimeLowerThan],
+            });
+            conditions.i++;
+        }
+        if (this.spentTimeGreaterThan) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.spent_time>=$${conditions.i}`,
+                values: [this.spentTimeGreaterThan],
+            });
+            conditions.i++;
+        }
+        if (this.spentTimeLowerThan) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.spent_time<=$${conditions.i}`,
+                values: [this.spentTimeLowerThan],
             });
             conditions.i++;
         }
