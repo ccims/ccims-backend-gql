@@ -2,9 +2,11 @@ import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadComponentInterfacesCommand } from "./LoadComponentInterfacesCommand";
 import { LoadComponentsCommand } from "./LoadComponentsCommand";
 import { LoadImsSystemsCommand } from "./LoadImsSystemsCommand";
+import { LoadIssuesCommand } from "./LoadIssuesCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
 import { LoadUsersCommand } from "./LoadUsersCommand";
+import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
 
 /**
  * map with method to create command for each table name
@@ -14,7 +16,9 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["component_interface", () => new LoadComponentInterfacesCommand()],
     ["project", () => new LoadProjectsCommand()],
     ["ims_system", () => new LoadImsSystemsCommand()],
-    ["users", () => new LoadUsersCommand()]
+    ["users", () => new LoadUsersCommand()],
+    ["issue_timeline_body", () => new LoadBodiesCommand()],
+    ["issue_issue", () => new LoadIssuesCommand()]
 ]);
 
 /**

@@ -70,7 +70,7 @@ export class LoadIssueTimelineItemsCommand extends LoadMultipleNodeListsCommand<
         if (this.limit && !this.countMode) {
             return {
                 text: `ORDER BY main.created_at ${this.first ? "ASC" : "DESC"}, main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
-                values: [this.limit]
+                values: [this.limit + 1]
             }
         } else {
             return {

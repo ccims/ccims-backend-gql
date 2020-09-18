@@ -5,6 +5,9 @@ import { Client } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
 import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
+import { setTypeParser } from "pg-types"
+import { IssueCategory, IssuePriority } from "../nodes/Issue";
+import { ImsType } from "../nodes/ImsSystem";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -130,5 +133,13 @@ export class DatabaseManager implements NodeCache {
         await this.executePendingCommands();
         this.nodes.clear();
     }
+}
 
+export async function initTypeParsers(client: Client): Promise<void> {
+    const issueCategoryOid = (await client.query("SELECT 'issue_category'::regtype::oid;")).rows[0]["oid"];
+    const priorityOid = (await client.query("SELECT 'priority'::regtype::oid;")).rows[0]["oid"];
+    const imsTypeOid = (await client.query("SELECT 'ims_type'::regtype::oid;")).rows[0]["oid"];
+    setTypeParser(issueCategoryOid, value => IssueCategory[value as keyof typeof IssueCategory]);
+    setTypeParser(priorityOid, value => IssuePriority[value as keyof typeof IssuePriority]);
+    setTypeParser(imsTypeOid, value => ImsType[value as keyof typeof ImsType]);
 }

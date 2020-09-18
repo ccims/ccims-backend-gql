@@ -12,10 +12,11 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
  * enum with all (currently not) supported issue management systems
  */
 export enum ImsType {
-    GitHub = "GitHub",
-    GitLab = "GitLab",
-    Jira = "Jira",
-    Redmine = "Redmine"
+    GitHub = "GITHUB",
+    GitLab = "GITLAB",
+    Jira = "JIRA",
+    Redmine = "REDMINE",
+    CCIMS = "CCIMS"
 }
 
 /**
