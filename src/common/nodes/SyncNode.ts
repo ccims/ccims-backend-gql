@@ -1,6 +1,6 @@
-import {CCIMSNode, CCIMSNodeTableSpecification}  from "./CCIMSNode";
-import {NodeType} from "./NodeType";
-import {SyncMetadata} from "./SyncMetadata";
+import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
+import { NodeType } from "./NodeType";
+import { SyncMetadata } from "./SyncMetadata";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { DatabaseCommand } from "../database/DatabaseCommand";
@@ -11,6 +11,7 @@ import { User } from "./User";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { Issue } from "./Issue";
 
 /**
  * a table specification for a sync node
@@ -18,7 +19,7 @@ import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand"
  */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
-    RowSpecification.fromProperty("deleted", "isDeleted"));
+        RowSpecification.fromProperty("deleted", "isDeleted"));
 
 /**
  * a syncNode
@@ -42,6 +43,14 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
             },
             syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand())
         );
+
+    /**
+     * Property getter to get the creator user object
+     * @returns A promise of a user or `undefined` who created this sync node
+     */
+    public async createdBy(): Promise<User | undefined> {
+        return await this.createdByProperty.get()
+    }
 
     private readonly _createdAt: Date;
 
@@ -119,9 +128,9 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
         if (this.isNew) {
-            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => {entries: [...node._metadata ?? []]})]);
+            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => { entries: [...node._metadata ?? []] })]);
         } else if (this._metadata) {
-            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => {entries: [...node._metadata ?? []]})]);
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => { entries: [...node._metadata ?? []] })]);
         } else {
             return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
         }

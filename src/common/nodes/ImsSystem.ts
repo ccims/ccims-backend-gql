@@ -31,10 +31,10 @@ export interface ConnectionData {
  */
 export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
     = new NodeTableSpecification<ImsSystem>("ims_system", CCIMSNodeTableSpecification,
-    RowSpecification.fromProperty("ims_type", "imsType"),
-    RowSpecification.fromProperty("endpoint", "endpoint"),
-    RowSpecification.fromProperty("connection_data", "connectionData"),
-    new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));
+        RowSpecification.fromProperty("ims_type", "imsType"),
+        RowSpecification.fromProperty("endpoint", "endpoint"),
+        RowSpecification.fromProperty("connection_data", "connectionData"),
+        new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));
 
 /**
  * An issue management system. This will be an instance of one of the available IMS Types.
@@ -65,17 +65,25 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
      * specification of the componentProperty
      */
     private static componentPropertySpecification: NodePropertySpecification<Component, ImsSystem>
-    = new NodePropertySpecification<Component, ImsSystem>(
-        (id, imsSystem) => {
-            const command  = new LoadComponentsCommand();
-            command.ids = [id];
-            return command;
-        },
-        imsSystem => {
-            return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand());
-        },
-        (component, imsSystem) => component.imsSystemProperty
-    );
+        = new NodePropertySpecification<Component, ImsSystem>(
+            (id, imsSystem) => {
+                const command = new LoadComponentsCommand();
+                command.ids = [id];
+                return command;
+            },
+            imsSystem => {
+                return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand());
+            },
+            (component, imsSystem) => component.imsSystemProperty
+        );
+
+    /**
+     * Async getter function for the componentProperty
+     * @returns A promise of the component which is using this ims or `undefined` if none
+     */
+    public async component(): Promise<Component | undefined> {
+        return this.componentProperty.get();
+    }
 
     /**
      * warning: this does only create a new ImsSystem instance, but not a new ImsSystem
@@ -87,7 +95,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
      * @param connectionData the connectionData
      * @param componentId the id of the component on which this ImsSystem is
      */
-    public constructor (databaseManager: DatabaseManager, id: string, imsType: ImsType, endpoint: string, connectionData: ConnectionData, componentId?: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, imsType: ImsType, endpoint: string, connectionData: ConnectionData, componentId?: string) {
         super(NodeType.ImsSystem, databaseManager, ImsSystemTableSpecification, id);
         this._imsType = imsType;
         this._connectionData = connectionData;

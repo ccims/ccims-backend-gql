@@ -50,6 +50,14 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
         );
 
     /**
+     * Async getter function for the component which offers this component interface
+     * @returns A promise of the component that offers this component interface
+     */
+    public async component(): Promise<Component> {
+        return this.componentProperty.get();
+    }
+
+    /**
      * property with all componentInterfaces of this component
      */
     public readonly consumedByProperty: NodeListProperty<Component, ComponentInterface>;

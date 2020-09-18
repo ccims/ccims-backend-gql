@@ -30,13 +30,21 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     private static readonly ownerPropertySpecification: NodePropertySpecification<User, NamedOwnedNode>
         = new NodePropertySpecification<User, NamedOwnedNode>(
             (id, node) => {
-                const command  = new LoadUsersCommand();
+                const command = new LoadUsersCommand();
                 command.ids = [id];
                 return command;
             },
             node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
             (user, node) => user.ownedNodesProperty
         );
+
+    /**
+     * Async getter funtion for the ownerProperty
+     * @returns A promise of the user owning this node
+     */
+    public async owner(): Promise<User> {
+        return this.ownerProperty.get();
+    }
 
     /**
      * abstract constructor for subclasses
@@ -48,7 +56,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      * @param description the description of the NamedNode
      * @param ownerId the id of the owner of the NamedNode
      */
-    protected constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, ownerId: string) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, ownerId: string) {
         super(type, databaseManager, tableSpecification, id, name, description);
         this.ownerProperty = new NodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId);
     }

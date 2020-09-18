@@ -73,6 +73,15 @@ export class Issue extends SyncNode<Issue> {
             // no notifier because this is never allowed to change
         );
 
+    /**
+     * Async getter function for the bodyProperty returning only the body __text__
+     * @returns A promise of the body __text__ of this issue
+     */
+    public async body(): Promise<string> {
+        return (await this.bodyProperty.get()).body
+    }
+
+
     public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
 
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
