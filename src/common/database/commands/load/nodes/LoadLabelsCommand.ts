@@ -1,14 +1,10 @@
 import { QueryResult, QueryResultRow } from "pg";
-import { Component, ComponentTableSpecification } from "../../../../nodes/Component";
-import { ImsType } from "../../../../nodes/ImsSystem";
+import { Color } from "../../../../Color";
+import { Label, LabelTableSpecification } from "../../../../nodes/Label";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNamedOwnedNodesCommand } from "./LoadNamedOwnedNodesCommand";
-import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
-import { Label, LabelTableSpecification } from "../../../../nodes/Label";
-import { Color } from "../../../../Color";
 
 /**
  * command to load a list of components
