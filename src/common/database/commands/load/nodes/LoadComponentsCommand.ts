@@ -1,15 +1,16 @@
-import { QueryResultRow, QueryResult } from "pg";
+import { QueryResult, QueryResultRow } from "pg";
 import { Component, ComponentTableSpecification } from "../../../../nodes/Component";
+import { ImsType } from "../../../../nodes/ImsSystem";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNodeListCommand } from "./LoadNodeListCommand";
+import { LoadNamedOwnedNodesCommand } from "./LoadNamedOwnedNodesCommand";
 import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
 
 /**
  * command to load a list of components
  */
-export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
+export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component> {
 
     /**
      * load the components which are registered on any of the projects
@@ -20,6 +21,11 @@ export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
      * filters the components which consume any of the specified componentInterfaces
      */
     public consumesInterface?: string[];
+
+    /**
+     * select only components that have one of the given ims types
+     */
+    public imsTypes?: ImsType[];
 
     /**
      * creates a new LoadComponentsCommand
@@ -54,8 +60,8 @@ export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
-        const conditions= super.generateConditions(i);
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+        const conditions = super.generateConditions(i);
 
         if (this.onProjects) {
             conditions.conditions.push(createRelationFilterByPrimary("project", "component", this.onProjects, i));
@@ -63,6 +69,22 @@ export class LoadComponentsCommand extends LoadNodeListCommand<Component> {
         }
         if (this.consumesInterface) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "consumedComponentInterface", this.consumesInterface, conditions.i));
+            conditions.i++;
+        }
+        if (this.imsTypes) {
+            if (this.imsTypes.length == 1) {
+                conditions.conditions.push({
+                    text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=$${conditions.i})`,
+                    values: [this.imsTypes],
+                    priority: 6
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=ANY($${conditions.i}))`,
+                    values: [this.imsTypes],
+                    priority: 6
+                });
+            }
             conditions.i++;
         }
 

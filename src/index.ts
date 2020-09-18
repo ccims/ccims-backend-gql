@@ -1,12 +1,10 @@
-import { SyncService } from "./syncService/syncService";
+import { printSchema } from "graphql";
+import { Client } from "pg";
 import { CCIMSApi } from "./api/CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
-import { printSchema } from "graphql";
-import { log } from "./log";
-import { Client } from "pg";
+import { initTypeParsers } from "./common/database/DatabaseManager";
 import { config } from "./config/Config";
 import { SnowflakeGenerator } from "./utils/Snowflake";
-import { initTypeParsers } from "./common/database/DatabaseManager";
 
 console.log("Hello world");
 

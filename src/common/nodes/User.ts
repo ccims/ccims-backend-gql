@@ -1,17 +1,17 @@
-import { DatabaseManager } from "../database/DatabaseManager";
-import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
-import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
-import { NodeType } from "./NodeType";
-import { UserPermissions } from "../../utils/UserPermissions";
-import { NodeListProperty } from "./properties/NodeListProperty";
-import { Project } from "./Project";
-import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
+import { UserPermissions } from "../../utils/UserPermissions";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import { DatabaseManager } from "../database/DatabaseManager";
+import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Issue } from "./Issue";
+import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
+import { NodeType } from "./NodeType";
+import { Project } from "./Project";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { IssueComment } from "./timelineItems/IssueComment";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 
@@ -226,7 +226,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             },
             user => {
                 const command = new LoadProjectsCommand();
-                command.onUsers = [user.id];
+                command.users = [user.id];
                 return command;
             })
             .notifyChanged((project, component) => project.usersProperty)

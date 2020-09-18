@@ -12,12 +12,12 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
     /**
      * select only nodes when their name matches this _POSIX_ RegEx
      */
-    public onName?: string;
+    public name?: string;
 
     /**
      * select only nodes when their description matches this _POSIX_ RegEx
      */
-    public onDescription?: string;
+    public description?: string;
 
     /**
      * adds the id condition
@@ -27,19 +27,19 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onName) {
+        if (this.name) {
             conditions.conditions.push({
                 text: `main.name ~ $${conditions.i}`,
-                values: [this.onName],
+                values: [this.name],
                 priority: 4
             });
             conditions.i++;
         }
 
-        if (this.onDescription) {
+        if (this.description) {
             conditions.conditions.push({
                 text: `main.description ~ $${conditions.i}`,
-                values: [this.onDescription],
+                values: [this.description],
                 priority: 7
             });
             conditions.i++;

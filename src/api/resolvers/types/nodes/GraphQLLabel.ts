@@ -4,6 +4,7 @@ import GraphQLColor from "../../scalars/GraphQLColor";
 import projects from "../../listQueries/projects";
 import { Label } from "../../../../common/nodes/Label";
 import { ResolverContext } from "../../../ResolverContext";
+import components from "../../listQueries/components";
 
 let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
@@ -26,7 +27,8 @@ let labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
             type: GraphQLColor,
             description: "The color of the label in the GUI"
         },
-        projects: projects()
+        components: components("The components this label is available on", label => label.componentsProperty),
+        projects: projects("All projetcs that this label is used on", label => label.projectsProperty)
     })
 };
 let GraphQLLabel = new GraphQLObjectType(labelConfig);

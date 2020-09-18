@@ -1,12 +1,10 @@
-import { QueryResultRow, QueryResult } from "pg";
+import { QueryResult, QueryResultRow } from "pg";
 import { Project, ProjectTableSpecification } from "../../../../nodes/Project";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNodeListCommand } from "./LoadNodeListCommand";
-import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
 import { LoadNamedOwnedNodesCommand } from "./LoadNamedOwnedNodesCommand";
-import components from "../../../../../api/resolvers/listQueries/components";
+import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
 
 /**
  * command to load a list of projects
@@ -16,17 +14,17 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
     /**
      * select the projects with have one of the specified components
      */
-    public onComponents?: string[];
+    public components?: string[];
 
     /**
      * select the projects with have one of the specified users as participants
      */
-    public onUsers?: string[];
+    public users?: string[];
 
     /**
      * select only projects which have one of the given issues on a component assigned to them
      */
-    public onIssues?: string[];
+    public issuesOnComponent?: string[];
 
     /**
      * creates a new LoadProjectsCommand
@@ -63,26 +61,26 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onComponents) {
-            conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.onComponents, conditions.i));
+        if (this.components) {
+            conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.components, conditions.i));
             conditions.i++;
         }
-        if (this.onUsers) {
-            conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.onUsers, conditions.i));
+        if (this.users) {
+            conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.users, conditions.i));
             conditions.i++;
         }
 
-        if (this.onIssues) {
-            if (this.onIssues.length == 1) {
+        if (this.issuesOnComponent) {
+            if (this.issuesOnComponent.length == 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=$${conditions}))`,
-                    values: [this.onIssues[0]],
+                    values: [this.issuesOnComponent[0]],
                     priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=ANY($${conditions})))`,
-                    values: [this.onIssues],
+                    values: [this.issuesOnComponent],
                     priority: 5
                 });
             }

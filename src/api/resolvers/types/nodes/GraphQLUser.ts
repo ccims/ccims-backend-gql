@@ -28,7 +28,7 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             type: GraphQLString,
             description: "The mail address of the user"
         },
-        projects: projects(),
+        projects: projects("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
         assignedToIssues: assignedToIssues(),
         participantOfIssues: participantOfIssues(),
         issueComments: issueComments()

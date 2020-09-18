@@ -5,7 +5,7 @@ import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSy
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ComponentInterface } from "./ComponentInterface";
-import { ConnectionData, ImsSystem, ImsType } from "./ImsSystem";
+import { ImsSystem } from "./ImsSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertyDescription } from "./IssueLocation";
 import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
@@ -14,7 +14,6 @@ import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
@@ -54,7 +53,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             },
             component => {
                 const command = new LoadProjectsCommand();
-                command.onComponents = [component.id];
+                command.components = [component.id];
                 return command;
             })
             .notifyChanged((project, component) => project.componentsProperty)

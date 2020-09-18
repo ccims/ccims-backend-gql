@@ -1,38 +1,25 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";
-import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
-import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
-import { ResolverContext } from "../../ResolverContext";
-import { User } from "../../../common/nodes/User";
+import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { LoadProjectsCommand } from "../../../common/database/commands/load/nodes/LoadProjectsCommand";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
-import { Project } from "../../../common/nodes/Project";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { Page } from "../utils/Page";
-import namedNodeListQuery from "./namedNodeListQuery";
+import { Project } from "../../../common/nodes/Project";
+import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
+import { ResolverContext } from "../../ResolverContext";
+import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
+import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
 import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
 
 export default <TSource extends CCIMSNode>(description: string, propertyProvider?: (node: TSource) => NodeListProperty<Project, TSource>):
     GraphQLFieldConfig<TSource, ResolverContext> => {
-    const baseQuery = namedOwnedNodeListQuery(GraphQLProjectPage, GraphQLProjectFilter, description, "projects");
+    const baseQuery = namedOwnedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
             const cmd = new LoadProjectsCommand();
-            cmd.onComponents = args.filterBy?.components;
-            cmd.onUsers = args.filterBy?.users;
-            cmd.onIssues = args.filterBy?.issues;
-            if (propertyProvider) {
-                const property = propertyProvider(src);
-                const result = await property.getFilteredElements(cmd);
-                //TODO: Calculate totalCound and hasNext/hasPrev for usage in page
-                return new Page(false, false, result, result.length);
-            } else {
-                context.dbManager.addCommand(cmd);
-                await context.dbManager.executePendingCommands();
-                const result = cmd.getResult();
-                //TODO: Calculate totalCound and hasNext/hasPrev for usage in page
-                return new Page(false, false, result, result.length);
-            }
+            baseQuery.addParams(cmd, args);
+            cmd.components = args.filterBy?.components;
+            cmd.users = args.filterBy?.users;
+            cmd.issuesOnComponent = args.filterBy?.issues;
+            return baseQuery.createResult(src, context, cmd);
         }
     };
 };

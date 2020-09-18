@@ -15,17 +15,17 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
     /**
      * select only users that have a username that matches the given posix RegEx
      */
-    public onUsername?: string;
+    public username?: string;
 
     /**
      * select only users that have a display name that matches the given posix RegEx
      */
-    public onDisplayName?: string;
+    public displayName?: string;
 
     /**
      * select only users that have an email that matches the given posix RegEx
      */
-    public onEmail?: string;
+    public email?: string;
 
     /**
      * select only users that are participant of at least on of the given projects
@@ -35,17 +35,17 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
     /**
      * select only users that are assigned to one of the given issues
      */
-    public onAssignedToIssues?: string[];
+    public assignedToIssues?: string[];
 
     /**
      * select only users that are a participant of one ofthe given issues
      */
-    public onParticipantOfIssue?: string[];
+    public participantOfIssue?: string[];
 
     /**
-     * select only users that created aat leas one of the given comments
+     * select only users that created/edited at least one of the given comments
      */
-    public onComments?: string[];
+    public editedComments?: string[];
 
     /**
      * creates a new LoadUsersCommand
@@ -82,28 +82,28 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onUsername) {
+        if (this.username) {
             conditions.conditions.push({
                 text: `main.username ~ $${conditions.i}`,
-                values: [this.onUsername],
+                values: [this.username],
                 priority: 5
             });
             conditions.i++;
         }
 
-        if (this.onDisplayName) {
+        if (this.displayName) {
             conditions.conditions.push({
                 text: `main.displayname ~ $${conditions.i}`,
-                values: [this.onDisplayName],
+                values: [this.displayName],
                 priority: 5
             });
             conditions.i++;
         }
 
-        if (this.onEmail) {
+        if (this.email) {
             conditions.conditions.push({
                 text: `main.email ~ $${conditions.i}`,
-                values: [this.onEmail],
+                values: [this.email],
                 priority: 5
             });
             conditions.i++;
@@ -114,18 +114,18 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
             conditions.i++;
         }
 
-        if (this.onAssignedToIssues) {
-            conditions.conditions.push(createRelationFilterByPrimary("issue", "assignee", this.onAssignedToIssues, conditions.i));
+        if (this.assignedToIssues) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "assignee", this.assignedToIssues, conditions.i));
             conditions.i++;
         }
 
-        if (this.onParticipantOfIssue) {
-            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.onParticipantOfIssue, conditions.i));
+        if (this.participantOfIssue) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssue, conditions.i));
             conditions.i++;
         }
 
-        if (this.onComments) {
-            conditions.conditions.push(createRelationFilterByPrimary("comment", "editedBy", this.onComments, conditions.i));
+        if (this.editedComments) {
+            conditions.conditions.push(createRelationFilterByPrimary("comment", "editedBy", this.editedComments, conditions.i));
             conditions.i++;
         }
         return conditions;

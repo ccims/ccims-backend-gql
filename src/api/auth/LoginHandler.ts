@@ -82,7 +82,7 @@ class LoginHandler {
         log(7, userInfo);
         if (UserCredentials.checkCredentialStructure(userInfo)) {
             const cmd = new LoadUsersCommand();
-            cmd.onUsernames = [userInfo.username];
+            cmd.username = "^userInfo.username$";
             req.dbManager.addCommand(cmd);
             await req.dbManager.executePendingCommands();
             const result = cmd.getResult();

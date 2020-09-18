@@ -41,7 +41,7 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         },
         issues: issues(),
         issuesOnLocation: issuesOnLocation(),
-        projects: projects(),
+        projects: projects("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
         interfaces: interfaces(),
         consumedInterfaces: consumedInterfaces()
         //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client

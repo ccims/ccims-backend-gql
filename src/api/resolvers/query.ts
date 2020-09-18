@@ -12,7 +12,7 @@ let queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         node,
         echo,
-        projects: projects(),
+        projects: projects("Requests all projects within the current ccims instance mathcing the `filterBy`"),
         currentUser: currentUser()
     })
 };

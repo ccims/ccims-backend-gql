@@ -1,6 +1,8 @@
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { PageInfo } from "./PageInfo";
 import node from "../query/node";
+import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { DatabaseManager } from "../../../common/database/DatabaseManager";
 
 /**
  * A page containing multipe CCIMS Nodes
@@ -23,18 +25,16 @@ export class Page<TNode extends CCIMSNode> {
     public readonly pageInfo: PageInfo;
 
     /**
-     * Creates a new page by creating edges
      * 
-     * @param nodes The nodes on this page
-     * @param pageInfo The information about this page
-     * @param totalCount The total number of elements matching a filter
+     * @param hasNext Weather there is another page with th current filter
+     * @param hasPrev Weather there is a previous page with the current filter
+     * @param nodes All nodes on this page
+     * @param cmd The command used for getting the nodes. Needed for calculating totalCount when requested
      */
-    constructor(hasNext: boolean, hasPrev: boolean, nodes: TNode[],
-        /**
-         * The total number of nodes matching a filter
-         */
-        public readonly totalCount: number
+    public constructor(hasNext: boolean, hasPrev: boolean, nodes: TNode[],
+        public readonly cmd: LoadNodeListCommand<TNode>
     ) {
+        //TODO: Calculate totalCound and hasNext/hasPrev for usage in page
         this.nodes = nodes.concat();
         this.edges = nodes.map(node => ({ cursor: node.id, node }));
         if (nodes.length > 0) {
@@ -42,6 +42,5 @@ export class Page<TNode extends CCIMSNode> {
         } else {
             this.pageInfo = new PageInfo(false, false, undefined, undefined);
         }
-        this.totalCount = totalCount;
     }
 }
