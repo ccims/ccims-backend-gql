@@ -5,10 +5,10 @@ import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import componentsListQuery from "../../listQueries/componentsListQuery";
 import issueComments from "../../listQueries/issue/issueComments";
 import locations from "../../listQueries/issue/locations";
-import reactions from "../../listQueries/issue/reactions";
 import timeline from "../../listQueries/issue/timeline";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
+import reactionsListQuery from "../../listQueries/reactionsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
@@ -98,7 +98,7 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             "If no filter is given, all issues will be returned", issue => issue.linksToIssuesProperty),
         linkedByIssues: issuesListQuery("All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.linkedByIssuesProperty),
-        reactions: reactions(),
+        reactions: reactionsListQuery("All reactions that have been added to the body of this issue", issue => issue.reactionsProperty),
         assignees: usersListQuery("All users who are explicitely assigned to issue, matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.assigneesProperty),
         labels: labelsListQuery("All labels that are currently assigned to this issue", issue => issue.labelsProperty),

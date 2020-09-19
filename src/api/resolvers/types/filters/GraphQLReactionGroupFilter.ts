@@ -6,8 +6,8 @@ const reactionGroupFilterConfig: GraphQLInputObjectTypeConfig = {
     description: "A filter for reaction groups (a reaction together with the users who reacted). All parameters given in this filter will be connected via _AND_",
     fields: () => ({
         reaction: {
-            type: GraphQLList(GraphQLNonNull(GraphQLString)),
-            description: "The reactions name must match any one or more of the given strings"
+            type: GraphQLString,
+            description: "The reactions name must match this regex"
         },
         users: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),

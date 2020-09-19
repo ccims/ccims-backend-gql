@@ -22,6 +22,7 @@ import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCom
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { Label } from "./Label";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { ReactionGroup } from "./ReactionGroup";
 
 
 /**
@@ -269,6 +270,12 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
+
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
+
+    //TODO
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
+
     /**
      * abstract constructor for extending classes
      * @param type the type of this node
@@ -303,6 +310,7 @@ export class Issue extends SyncNode<Issue> {
         this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {

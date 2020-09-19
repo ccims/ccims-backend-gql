@@ -11,6 +11,7 @@ import { NodePropertySpecification } from "../properties/NodePropertySpecificati
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
+import { ReactionGroup } from "../ReactionGroup";
 
 /**
  * a table specification for a Comment
@@ -57,7 +58,12 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     private _lastEditedAt: Date;
 
-    // TODO: reactions
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Comment>;
+
+    //TODO
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Comment> = undefined as any;
+
+
     // TODO? currentUserCanEdit
 
     /**
@@ -77,6 +83,7 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         this._body = body;
         this.editedByProperty = new NodeListProperty<User, Comment>(databaseManager, Comment.editedByPropertySpecification, this);
         this.lastEditedByProperty = new NullableNodeProperty<User, Comment>(databaseManager, Comment.lastEditedByPropertySpecification, this, lastEditedById);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, Comment>(databaseManager, Comment.reactionsPropertySpecification, this);
     }
 
     public get body(): string {
