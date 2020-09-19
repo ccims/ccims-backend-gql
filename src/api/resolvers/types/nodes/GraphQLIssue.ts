@@ -3,9 +3,9 @@ import { Issue } from "../../../../common/nodes/Issue";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import componentsListQuery from "../../listQueries/componentsListQuery";
-import issueComments from "../../listQueries/issue/issueComments";
 import locations from "../../listQueries/issue/locations";
 import timeline from "../../listQueries/issue/timeline";
+import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
 import reactionsListQuery from "../../listQueries/reactionsListQuery";
@@ -93,7 +93,7 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             type: GraphQLTimeSpan,
             description: "The time already spent on work on this issue.\n\nThis is only for displaying and has no effect on the ccims but will be synce to other ims"
         },
-        issueComments: issueComments(),
+        issueComments: issueCommentsListQuery("All issue comments on this issue", issue => issue.commentsProperty),
         linksToIssues: issuesListQuery("All issues linked to from issue (this issue is __origin__ of relation, matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.linksToIssuesProperty),
         linkedByIssues: issuesListQuery("All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.\n" +
