@@ -29,9 +29,11 @@ import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { IssueComment } from "./timelineItems/IssueComment";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { LinkEvent } from "./timelineItems/LinkEvent";
+import { PinnedEvent } from "./timelineItems/PinnedEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
 import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
+import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
 
@@ -450,6 +452,9 @@ export class Issue extends SyncNode<Issue> {
         otherLocationsCommand.hasIssueOnLocation = [this.id];
         const interfacesToRemove = await component.interfacesProperty.getFilteredElements(otherLocationsCommand);
         await Promise.all(interfacesToRemove.map(location => this.removeFromLocationInternal(location, atDate, asUser)));
+        if (await this.pinnedOnProperty.hasId(component.id)) {
+            await this.unpinOnComponentInternal(component, atDate, asUser);
+        }
         return event;
     }
 
@@ -570,6 +575,59 @@ export class Issue extends SyncNode<Issue> {
         await this.participatedAt(asUser, atDate);
         return comment;
     }
+
+    /**
+     * pinns the issue on the specified component
+     * @param component
+     * @param atDate
+     * @param asUser
+     * @returns the PinnedComment
+     * @throws error if the issue is not on the specified component
+     */
+    public async pinOnComponent(component: Component, atDate: Date, asUser?: User): Promise<PinnedEvent | undefined> {
+        if (!(await this.componentsProperty.hasId(component.id))) {
+            if (!(await this.pinnedOnProperty.hasId(component.id))) {
+                await this.pinnedOnProperty.add(component);
+                const event =  await PinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
+                await this.participatedAt(asUser, atDate);
+                return event;
+            } else {
+                return undefined;
+            }
+        } else {
+            throw new Error("Cannot pin issue on component, issue is not on specified component");
+        }
+    }
+
+    /**
+     * unpins this issue on the specified component
+     * @param component the component where to unpin this issue
+     * @param atDate
+     * @param asUser
+     * @throws error if the issue is currently not pinned on the specified component
+     * @returns the UnpinnedEvent
+     */
+    public async unpinOnComponent(component: Component, atDate: Date, asUser?: User): Promise<UnpinnedEvent> {
+        if (await this.pinnedOnProperty.hasId(component.id)) {
+            return this.unpinOnComponentInternal(component, atDate, asUser);
+        } else {
+            throw new Error("Cannon unpin the issue on the specified component, issue is currently not pinned on the specified component");
+        }
+    }
+
+    /**
+     * requires that this issue is currently pinned on the specified component
+     * @param component
+     * @param atDate
+     * @param asUser
+     */
+    private async unpinOnComponentInternal(component: Component, atDate: Date, asUser?: User): Promise<UnpinnedEvent> {
+        await this.pinnedOnProperty.remove(component);
+        const event = await UnpinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
+        this.participatedAt(asUser, atDate);
+        return event;
+    }
+
 
     public get updatedAt(): Date {
         return this._updatedAt;

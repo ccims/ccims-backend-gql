@@ -161,11 +161,13 @@ CREATE TABLE issue_timeline_removedFromComponentEvent (
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_pinnedEvent (
-    Like issue_timelineItem
+    Like issue_timelineItem,
+    component id NOT NULL
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_unpinnedEvent (
-    LIKE issue_timelineItem
+    LIKE issue_timelineItem,
+    component id NOT NULL
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_assignedEvent (
