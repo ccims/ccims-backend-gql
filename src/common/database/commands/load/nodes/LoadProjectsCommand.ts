@@ -27,6 +27,11 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
     public issuesOnComponent?: string[];
 
     /**
+     * Select only projects where at least one of the given labels is available (on a acomponent assigned to this project)
+     */
+    public labels?: string[];
+
+    /**
      * creates a new LoadProjectsCommand
      */
     public constructor() {
@@ -82,6 +87,23 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=ANY($${conditions})))`,
                     values: [this.issuesOnComponent],
                     priority: 5
+                });
+            }
+            conditions.i++;
+        }
+
+        if (this.labels) {
+            if (this.labels.length == 1) {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$${conditions}))`,
+                    values: [this.labels[0]],
+                    priority: 7
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=ANY($${conditions})))`,
+                    values: [this.labels],
+                    priority: 7
                 });
             }
             conditions.i++;

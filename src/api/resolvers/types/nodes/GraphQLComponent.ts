@@ -9,6 +9,7 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLIMS from "./GraphQLIMS";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
+import labelsListQuery from "../../listQueries/labelsListQuery";
 
 const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -39,7 +40,8 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         issuesOnLocation: issuesListQuery<IssueLocation>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
         projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
         interfaces: interfacesListQuery("Requests component interfaces which this component offers", component => component.interfacesProperty),
-        consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty)
+        consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
+        labels: labelsListQuery("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
     })
 };
 const GraphQLComponent = new GraphQLObjectType(componentConfig);

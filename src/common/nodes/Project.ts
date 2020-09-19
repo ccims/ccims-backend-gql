@@ -13,6 +13,8 @@ import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User } from "./User";
+import { Label } from "./Label";
+import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 
 /**
  * the specification of the table which contains projects
@@ -98,6 +100,33 @@ export class Project extends NamedOwnedNode<Project> {
             .noSave();
 
     /**
+     * Property of all labels that are available on this project (all labels on all components on this project)
+     * IT IS __NOT__ POSSIBLE TO ADD A LABEL TO A PROJECT VIA THIS PROPERTY
+     */
+    public readonly labelsProperty: NodeListProperty<Label, Project>;
+
+    /**
+     * Specification for the labelsProperty loading all ids of labels and the corresponding labels
+     */
+    private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Project> =
+        NodeListPropertySpecification.loadDynamic<Label, Project>(
+            project => new LoadLabelsIdsCommand(project.id),
+            (ids, project) => {
+                const command = new LoadLabelsCommand();
+                command.ids = ids;
+                return command
+            },
+            (project) => {
+                const command = new LoadLabelsCommand();
+                command.onProjects = [project.id];
+                return command;
+            }
+        )
+            .notifyChanged((label, project) => label.projectsProperty)
+            .noSave();
+
+
+    /**
      * creates a new Component instance
      * note: this does NOT create a actually new component, for this @see Project.create
      * @param databaseManager the databaseManager
@@ -111,6 +140,7 @@ export class Project extends NamedOwnedNode<Project> {
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
         this.usersProperty = new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this);
+        this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
     }
 
     /**
@@ -164,6 +194,41 @@ class LoadIssueIdsCommand extends DatabaseCommand<string[]> {
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         this.result = result.rows.map(row => row.issue_id);
+        return [];
+    }
+
+}
+
+/**
+ * command to laod all ids of labels on a project
+ */
+class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadLabelsIdsCommand
+     * @param projectId the id of the project
+     */
+    public constructor(private readonly projectId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(): QueryConfig<any[]> {
+        return {
+            text: "SELECT DISTINCT ON(label_id) label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            values: [this.projectId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.label_id);
         return [];
     }
 

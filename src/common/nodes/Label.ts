@@ -9,6 +9,12 @@ import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { SyncMetadataMap } from "./SyncNode";
+import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import { DatabaseCommand } from "../database/DatabaseCommand";
+import { QueryConfig, QueryResult } from "pg";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { Issue } from "./Issue";
 
 /**
  * specification of a table which can contain labels
@@ -46,6 +52,9 @@ export class Label extends NamedSyncNode {
         isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, createdById, createdAt, isDeleted, metadata);
         this._color = color;
+        this.projectsProperty = new NodeListProperty<Project, Label>(databaseManager, Label.projectsPropertySpecifiaction, this);
+        this.componentsProperty = new NodeListProperty<Component, Label>(databaseManager, Label.componentsPropertySpecifiaction, this);
+        this.issuesProperty = new NodeListProperty<Issue, Label>(databaseManager, Label.issuesPropertySpecifiaction, this);
     }
 
     /**
@@ -105,22 +114,114 @@ export class Label extends NamedSyncNode {
     /**
      * A property of components on which this label exists
      */
-    public readonly componentsProperty: NodeListProperty<Component, Label> = undefined as any;
+    public readonly componentsProperty: NodeListProperty<Component, Label>;
 
     /**
      * The specificaition for the property of components
      */
-    private readonly componentsPropertySpecifiaction: NodeListPropertySpecification<Component, Label> = undefined as any;
+    private static readonly componentsPropertySpecifiaction: NodeListPropertySpecification<Component, Label> =
+        NodeListPropertySpecification.loadDynamic<Component, Label>(
+            LoadRelationCommand.fromSecundary("component", "label"),
+            (ids, label) => {
+                const command = new LoadComponentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            (label) => {
+                const command = new LoadComponentsCommand();
+                command.labels = [label.id];
+                return command;
+            }
+        )
+            .notifyChanged((component, label) => component.labelsProperty)
+            .noSave();
 
     /**
-     * A property of projects on which this label is __used__
+     * A property of projects on which this label is available on (on components assigned to the project)
+     * IT IS __NOT__ POSSIBLE TO ADD A PROJECT TO A LABEL VIA THIS PROPERTY
      */
-    public readonly projectsProperty: NodeListProperty<Project, Label> = undefined as any;
+    public readonly projectsProperty: NodeListProperty<Project, Label>;
 
 
     /**
      * The specification for the projects property
      */
-    private readonly projectsPropertySpecifiaction: NodeListPropertySpecification<Project, Label> = undefined as any;
+    private static readonly projectsPropertySpecifiaction: NodeListPropertySpecification<Project, Label> =
+        NodeListPropertySpecification.loadDynamic<Project, Label>(
+            label => new LoadProjectIdsCommand(label.id),
+            (ids, label) => {
+                const command = new LoadProjectsCommand();
+                command.ids = ids;
+                return command;
+            },
+            (label) => {
+                const command = new LoadProjectsCommand();
+                command.labels = [label.id];
+                return command;
+            }
+        )
+            .notifyChanged((project, label) => project.labelsProperty)
+            .noSave();
+
+    /**
+ * A property of issues to which this label is assigned
+ * do NOT assign a label to an issue via this property
+ */
+    public readonly issuesProperty: NodeListProperty<Issue, Label>;
+
+    /**
+     * The specificaition for the property of issues
+     */
+    private static readonly issuesPropertySpecifiaction: NodeListPropertySpecification<Issue, Label> =
+        NodeListPropertySpecification.loadDynamic<Issue, Label>(
+            LoadRelationCommand.fromSecundary("issue", "label"),
+            (ids, label) => {
+                const command = new LoadIssuesCommand();
+                command.ids = ids;
+                return command;
+            },
+            (label) => {
+                const command = new LoadIssuesCommand();
+                command.labels = [label.id];
+                return command;
+            }
+        )
+            .notifyChanged((issue, label) => issue.labelsProperty)
+            .noSave();
+
+}
+
+/**
+ * command to laod all ids of labels on a project
+ */
+class LoadProjectIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadProjectIdsCommand
+     * @param labelId the id of the label
+     */
+    public constructor(private readonly labelId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(): QueryConfig<any[]> {
+        return {
+            text: "SELECT DISTINCT ON(project_id) project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$1);",
+            values: [this.labelId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.project_id);
+        return [];
+    }
 
 }

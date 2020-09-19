@@ -2,11 +2,11 @@ import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, 
 import { Project } from "../../../../common/nodes/Project";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
-import labels from "../../listQueries/labels";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import labelsListQuery from "../../listQueries/labelsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
-import issuesListQuery from "../../listQueries/issuesListQuery";
 
 const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
@@ -28,7 +28,8 @@ const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             description: "The user who administrates \"owns\" the project"
         },
         issues: issuesListQuery("All issues on components that are assigned to this project", project => project.issuesProperty),
-        labels: labels(),
+        labels: labelsListQuery("All labels which are available on this project, matching the given filter.\n" +
+            "If no filter is given, all labels will be returned", project => project.labelsProperty),
         description: {
             type: GraphQLString,
             description: "A textual description of this project.\n\nMax. 65536 characters"

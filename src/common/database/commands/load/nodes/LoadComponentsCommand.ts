@@ -38,6 +38,11 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
     public hasIssue?: string[];
 
     /**
+     * Select only Components that have at least one of these labels
+     */
+    public labels?: string[];
+
+    /**
      * creates a new LoadComponentsCommand
      */
     public constructor() {
@@ -93,7 +98,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
             if (this.imsTypes.length === 1) {
                 conditions.conditions.push({
                     text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=$${conditions.i})`,
-                    values: [this.imsTypes],
+                    values: [this.imsTypes[0]],
                     priority: 6
                 });
             } else {
@@ -103,6 +108,11 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
                     priority: 6
                 });
             }
+            conditions.i++;
+        }
+
+        if (this.labels) {
+            conditions.conditions.push(createRelationFilterBySecundary("component", "label", this.labels, conditions.i));
             conditions.i++;
         }
 

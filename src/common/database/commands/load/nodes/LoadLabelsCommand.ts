@@ -5,16 +5,32 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
+import { createRelationFilterByPrimary } from "./RelationFilter";
 
 /**
  * command to load a list of components
  */
-export class LoadLabelCommand extends LoadNamedSyncNodesCommand<Label> {
+export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
 
     /**
      * Select only components which have one of the specified colors
      */
     public colors?: Color[];
+
+    /**
+     * Select only labels that are on components assigned to at least one of these projects
+     */
+    public onProjects?: string[];
+
+    /**
+     * Select only labels that are on one of these components
+     */
+    public onComponents?: string[];
+
+    /**
+     * Select only labels that are assigned to one of these issues
+     */
+    public assignedToIssues?: string[];
 
     /**
      * creates a new LoadComponentsCommand
@@ -56,7 +72,7 @@ export class LoadLabelCommand extends LoadNamedSyncNodesCommand<Label> {
             if (this.colors.length === 1) {
                 conditions.conditions.push({
                     text: `main.color=$${conditions.i}`,
-                    values: [this.colors],
+                    values: [this.colors[0]],
                     priority: 6
                 });
             } else {
@@ -66,6 +82,33 @@ export class LoadLabelCommand extends LoadNamedSyncNodesCommand<Label> {
                     priority: 6
                 });
             }
+            conditions.i++;
+        }
+
+        if (this.onProjects) {
+            if (this.onProjects.length === 1) {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
+                    values: [this.onProjects[0]],
+                    priority: 5
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i})))`,
+                    values: [this.onProjects],
+                    priority: 5
+                });
+            }
+            conditions.i++;
+        }
+
+        if (this.onComponents) {
+            conditions.conditions.push(createRelationFilterByPrimary("component", "label", this.onComponents, conditions.i));
+            conditions.i++;
+        }
+
+        if (this.assignedToIssues) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "label", this.assignedToIssues, conditions.i));
             conditions.i++;
         }
 
