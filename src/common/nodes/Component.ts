@@ -18,6 +18,8 @@ import { NodeListPropertySpecification } from "./properties/NodeListPropertySpec
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
+import { Label } from "./Label";
+import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 
 /**
  * the specification of the table which contains components
@@ -180,6 +182,29 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             .notifyChanged((componentInterface, component) => componentInterface.consumedByProperty)
             .saveOnPrimary("component", "consumedComponentInterface");
 
+    /**
+     * Property of all labels on thic component
+     */
+    public readonly labelsProperty: NodeListProperty<Label, Component>;
+
+    /**
+     * Specification for the labelsProperty
+     */
+    private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Component> =
+        NodeListPropertySpecification.loadDynamic<Label, Component>(LoadRelationCommand.fromPrimary("component", "label"),
+            (ids, component) => {
+                const command = new LoadLabelsCommand();
+                command.ids = ids;
+                return command;
+            },
+            (component) => {
+                const command = new LoadLabelsCommand();
+                command.onComponents = [component.id];
+                return command;
+            })
+            .notifyChanged((label, component) => label.componentsProperty)
+            .saveOnPrimary("component", "label");
+
 
     /**
      * creates a new Component instance
@@ -200,6 +225,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);
         this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
         this.pinnedIssuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.pinnedIssuesPropertySpecification, this);
+        this.labelsProperty = new NodeListProperty<Label, Component>(databaseManager, Component.labelsPropertySpecification, this);
     }
 
     /**

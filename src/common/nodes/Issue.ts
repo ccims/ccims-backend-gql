@@ -19,6 +19,8 @@ import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadI
 import { Component } from "./Component";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
+import { Label } from "./Label";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
@@ -175,7 +177,7 @@ export class Issue extends SyncNode<Issue> {
                 command.hasIssue = [issue.id];
                 return command;
             })
-            .notifyChanged((issueLocation, issue) => issueLocation.issuesOnLocationProperty)
+            .notifyChanged((issueLocation, issue) => issueLocation.issuesProperty)
             .noSave();
 
     /**
@@ -251,6 +253,30 @@ export class Issue extends SyncNode<Issue> {
             .noSave();
 
     /**
+     * Property conaining all labels currently assigned to this issue
+     * do NOT assign a label to an issue via this property
+     */
+    public readonly labelsProperty: NodeListProperty<Label, Issue>;
+
+    /**
+     * Specification for the labelsProperty property
+     */
+    private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Issue>
+        = NodeListPropertySpecification.loadDynamic<Label, Issue>(LoadRelationCommand.fromPrimary("issue", "label"),
+            (ids, issue) => {
+                const command = new LoadLabelsCommand();
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadLabelsCommand();
+                command.assignedToIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((label, issue) => label.issuesProperty)
+            .saveOnPrimary("issue", "label");
+
+    /**
      * abstract constructor for extending classes
      * @param type the type of this node
      * @param databaseManager the databaseManager
@@ -283,6 +309,7 @@ export class Issue extends SyncNode<Issue> {
         this.pinnedOnProperty = new NodeListProperty<Component, Issue>(databaseManager, Issue.pinnedOnPropertySpecification, this);
         this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
+        this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {

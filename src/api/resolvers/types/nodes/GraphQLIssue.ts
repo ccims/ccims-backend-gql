@@ -4,11 +4,11 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import componentsListQuery from "../../listQueries/componentsListQuery";
 import issueComments from "../../listQueries/issue/issueComments";
-import labels from "../../listQueries/issue/labels";
 import locations from "../../listQueries/issue/locations";
 import reactions from "../../listQueries/issue/reactions";
 import timeline from "../../listQueries/issue/timeline";
 import issuesListQuery from "../../listQueries/issuesListQuery";
+import labelsListQuery from "../../listQueries/labelsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
@@ -101,7 +101,7 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         reactions: reactions(),
         assignees: usersListQuery("All users who are explicitely assigned to issue, matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.assigneesProperty),
-        labels: labels(),
+        labels: labelsListQuery("All labels that are currently assigned to this issue", issue => issue.labelsProperty),
         participants: usersListQuery("All users participating on this issue (by writing a comment, etc.), matching the given filter.\n" +
             "If no filter is given, all users will be returned", issue => issue.participantsProperty),
         pinnedOn: componentsListQuery("All components where this issue has been pinned, matching the given filter.\n" +
