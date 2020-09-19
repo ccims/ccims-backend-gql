@@ -71,7 +71,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
         if (this.createdAfter) {
             conditions.conditions.push({
-                text: `main.created_by >= $${conditions.i}`,
+                text: `main.created_after >= $${conditions.i}`,
                 values: [this.createdAfter],
                 priority: 4
             });
@@ -80,7 +80,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
         if (this.createdBefore) {
             conditions.conditions.push({
-                text: `main.created_by <= $${conditions.i}`,
+                text: `main.created_before <= $${conditions.i}`,
                 values: [this.createdBefore],
                 priority: 4
             });
