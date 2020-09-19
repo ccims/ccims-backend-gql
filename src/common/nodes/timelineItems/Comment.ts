@@ -60,7 +60,7 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Comment>;
 
-    //TODO
+    // TODO
     private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Comment> = undefined as any;
 
 

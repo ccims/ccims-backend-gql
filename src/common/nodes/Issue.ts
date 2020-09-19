@@ -26,9 +26,16 @@ import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
 import { Body } from "./timelineItems/Body";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { IssueComment } from "./timelineItems/IssueComment";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
+import { LinkEvent } from "./timelineItems/LinkEvent";
+import { PinnedEvent } from "./timelineItems/PinnedEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
+import { RenamedTitleEvent } from "./timelineItems/RenamedTitleEvent";
+import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
+import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
+import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
 import { IssueComment } from "./timelineItems/IssueComment";
 
@@ -285,7 +292,7 @@ export class Issue extends SyncNode<Issue> {
 
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
-    //TODO
+    // TODO
     private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
 
     /**
@@ -351,6 +358,16 @@ export class Issue extends SyncNode<Issue> {
         return this._title;
     }
 
+    /**
+     * do NOT use this to change the title
+     */
+    public set title(value: string) {
+        if (this._title !== value) {
+            this._title = value;
+            this.markChanged();
+        }
+    }
+
     public get isOpen(): boolean {
         return this._isOpen;
     }
@@ -390,10 +407,6 @@ export class Issue extends SyncNode<Issue> {
         return this._spentTime;
     }
 
-    public get updatedAt(): Date {
-        return this._updatedAt;
-    }
-
     /**
      * adds this issue to the specified component
      * also adds the issue to the component as location
@@ -429,7 +442,7 @@ export class Issue extends SyncNode<Issue> {
      * @param component the component
      */
     public async removeFromComponent(component: Component, atDate: Date, asUser?: User): Promise<RemovedFromComponentEvent> {
-        if ((await this.componentsProperty.getIds()).length == 1) {
+        if ((await this.componentsProperty.getIds()).length === 1) {
             throw new Error("Cannot remove the last component on which an issue is");
         }
         if (await this.componentsProperty.hasId(component.id)) {
@@ -456,6 +469,9 @@ export class Issue extends SyncNode<Issue> {
         otherLocationsCommand.hasIssueOnLocation = [this.id];
         const interfacesToRemove = await component.interfacesProperty.getFilteredElements(otherLocationsCommand);
         await Promise.all(interfacesToRemove.map(location => this.removeFromLocationInternal(location, atDate, asUser)));
+        if (await this.pinnedOnProperty.hasId(component.id)) {
+            await this.unpinOnComponentInternal(component, atDate, asUser);
+        }
         return event;
     }
 
@@ -525,6 +541,126 @@ export class Issue extends SyncNode<Issue> {
         const event = await RemovedFromLocationEvent.create(this._databaseManager, asUser, atDate, this, location);
         await this.participatedAt(asUser, atDate);
         return event;
+    }
+
+    /**
+     * links this issue to the provided issue, if possible
+     * @param linkedIssue the issue to link this issue to
+     * @param atDate
+     * @param asUser
+     */
+    public async addLinkedIssue(linkedIssue: Issue, atDate: Date, asUser?: User): Promise<LinkEvent | undefined> {
+        if (!(await this.linksToIssuesProperty.hasId(linkedIssue.id))) {
+            await this.linkedByIssuesProperty.add(linkedIssue);
+            await WasLinkedEvent.create(this._databaseManager, asUser, atDate, linkedIssue, this);
+            const event = await LinkEvent.create(this._databaseManager, asUser, atDate, this, linkedIssue);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * links this issue to the provided issue, if possible
+     * otherwise it throws an error
+     * @param linkedIssue the issue to link this issue to
+     * @param atDate
+     * @param asUser
+     */
+    public async removeLinkedIssue(unlinkedIssue: Issue, atDate: Date, asUser?: User): Promise<UnlinkEvent> {
+        if ((await this.linksToIssuesProperty.hasId(unlinkedIssue.id))) {
+            await this.linkedByIssuesProperty.remove(unlinkedIssue);
+            await WasLinkedEvent.create(this._databaseManager, asUser, atDate, unlinkedIssue, this);
+            const event = await UnlinkEvent.create(this._databaseManager, asUser, atDate, this, unlinkedIssue);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("This issue is not linked to the provided issue");
+        }
+    }
+
+    /**
+     * adds an IssueComment to this Issue
+     * @param body the text of the comment
+     * @param atDate the date when to add the comment
+     * @param asUser the user who adds the comment
+     * @returns the added IssueComment
+     */
+    public async addIssueComment(body: string, atDate: Date, asUser?: User): Promise<IssueComment> {
+        const comment = await IssueComment.create(this._databaseManager, asUser, atDate, this, body);
+        await this.participatedAt(asUser, atDate);
+        return comment;
+    }
+
+    /**
+     * pinns the issue on the specified component
+     * @param component
+     * @param atDate
+     * @param asUser
+     * @returns the PinnedComment
+     * @throws error if the issue is not on the specified component
+     */
+    public async pinOnComponent(component: Component, atDate: Date, asUser?: User): Promise<PinnedEvent | undefined> {
+        if (!(await this.componentsProperty.hasId(component.id))) {
+            if (!(await this.pinnedOnProperty.hasId(component.id))) {
+                await this.pinnedOnProperty.add(component);
+                const event =  await PinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
+                await this.participatedAt(asUser, atDate);
+                return event;
+            } else {
+                return undefined;
+            }
+        } else {
+            throw new Error("Cannot pin issue on component, issue is not on specified component");
+        }
+    }
+
+    /**
+     * unpins this issue on the specified component
+     * @param component the component where to unpin this issue
+     * @param atDate
+     * @param asUser
+     * @throws error if the issue is currently not pinned on the specified component
+     * @returns the UnpinnedEvent
+     */
+    public async unpinOnComponent(component: Component, atDate: Date, asUser?: User): Promise<UnpinnedEvent> {
+        if (await this.pinnedOnProperty.hasId(component.id)) {
+            return this.unpinOnComponentInternal(component, atDate, asUser);
+        } else {
+            throw new Error("Cannon unpin the issue on the specified component, issue is currently not pinned on the specified component");
+        }
+    }
+
+    /**
+     * requires that this issue is currently pinned on the specified component
+     * @param component
+     * @param atDate
+     * @param asUser
+     */
+    private async unpinOnComponentInternal(component: Component, atDate: Date, asUser?: User): Promise<UnpinnedEvent> {
+        await this.pinnedOnProperty.remove(component);
+        const event = await UnpinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
+        await this.participatedAt(asUser, atDate);
+        return event;
+    }
+
+    /**
+     * changes the title and creates a RenamedTitleEvent
+     * @param newTitle
+     * @param atDate
+     * @param asUser
+     */
+    public async changeTitle(newTitle: string, atDate: Date, asUser?: User): Promise<RenamedTitleEvent> {
+        this.title = newTitle;
+        const event = await RenamedTitleEvent.create(this._databaseManager, asUser, atDate, this, this.title, newTitle);
+        await this.participatedAt(asUser, atDate);
+        return event;
+    }
+
+
+    public get updatedAt(): Date {
+        return this._updatedAt;
     }
 
     /**

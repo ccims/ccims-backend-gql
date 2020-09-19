@@ -54,7 +54,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Creates a NEW reaction group for a comment
-     * 
+     *
      * @param databaseManager The database manager to use
      * @param originComment The comment for which this reaction group is
      * @param reactionName The name of the reaction
@@ -78,7 +78,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Sets a new origin for the reaction group
-     * 
+     *
      * @param id The id of the issue or issue comment to be set as new origin
      */
     public async setOriginCommentId(id: string) {
@@ -105,7 +105,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Sets a new origin for the reaction group
-     * 
+     *
      * @param comment The issue comment or issue to be set as origin of the reaction group
      */
     public async setOriginComment(comment: IssueComment | Issue) {
@@ -139,7 +139,7 @@ export class ReactionGroup extends SyncNode {
         if (result[0] instanceof IssueComment) {
             return result[0];
         } else if (result[0] instanceof Body) {
-            return await result[0].issue();
+            return result[0].issue();
         } else {
             throw new Error("The currently set origin id is no valid comment/issue");
         }
@@ -174,7 +174,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Add a new user who reacted in this group
-     * 
+     *
      * @param user The user to be added as new user reacting
      */
     public addUser(user: User) {
@@ -189,7 +189,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Remove the given user from this reaction group
-     * 
+     *
      * @param user The user to be removed from the list of users who reacted
      */
     public removeUser(user: User) {
@@ -204,7 +204,7 @@ export class ReactionGroup extends SyncNode {
 
     /**
      * Async getter function for the users who are part of this reaction group
-     * 
+     *
      * __NOTE__: This will potentially only return a subset of users (as many as specified in `config.api.numReactionUsers`)
      * For the total count please use the `totalUserCount` function
      */

@@ -2,12 +2,12 @@ import { QueryResultRow, QueryResult } from "pg";
 import { IssueComment, IssueCommentTableSpecification } from "../../../../../nodes/timelineItems/IssueComment";
 import { DatabaseManager } from "../../../../DatabaseManager";
 import { QueryPart } from "../../QueryPart";
-import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsCommandBase";
+import { LoadCommentsCommandBase } from "./LoadCommentsCommandBase";
 
 /**
  * command to load IssueComments
  */
-export class LoadIssueCommentsCommand extends LoadIssueTimelineItemsCommandBase<IssueComment> {
+export class LoadIssueCommentsCommand extends LoadCommentsCommandBase<IssueComment> {
 
     /**
      * creates a new LoadIssueCommentCommand

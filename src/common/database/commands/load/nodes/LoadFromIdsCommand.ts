@@ -10,7 +10,14 @@ import { LoadAddedToComponentEventsCommand } from "./timeline/LoadAddedToCompone
 import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
 import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEvents";
 import { LoadIssueCommentsCommand } from "./timeline/LoadIssueCommentsCommand";
+import { LoadLinkEventsCommand } from "./timeline/LoadLinkEventsCommand";
+import { LoadPinnedEventsCommand } from "./timeline/LoadPinnedEventsCommand";
 import { LoadRemovedFromComponentEventsCommand } from "./timeline/LoadRemovedFromComponentEventsCommand";
+import { LoadRenamedTitleEventsCommand } from "./timeline/LoadRenamedTitleEventsCommand";
+import { LoadUnlinkEventsCommand } from "./timeline/LoadUnlinkEventsCommand";
+import { LoadUnpinnedEventsCommand } from "./timeline/LoadUnpinnedEventsCommand";
+import { LoadWasLinkedEventsCommand } from "./timeline/LoadWasLinkedEventsCommand";
+import { LoadWasUnlinkedEventsCommand } from "./timeline/LoadWasUnlinkedEventsCommand";
 
 /**
  * map with method to create command for each table name
@@ -26,7 +33,14 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_categoryChangedEvent", () => new LoadCategoryChangedEventsCommand()],
     ["issue_timeline_addedToComponentEvent", () => new LoadAddedToComponentEventsCommand()],
     ["issue_timeline_removedFromComponentEvent", () => new LoadRemovedFromComponentEventsCommand()],
-    ["issue_timeline_issueComment", () => new LoadIssueCommentsCommand()]
+    ["issue_timeline_issueComment", () => new LoadIssueCommentsCommand()],
+    ["issue_timeline_linkEvent", () => new LoadLinkEventsCommand()],
+    ["issue_timeline_unlinkEvent", () => new LoadUnlinkEventsCommand()],
+    ["issue_timeline_wasLinkedEvent", () => new LoadWasLinkedEventsCommand()],
+    ["issue_timeline_wasUnlinkedEvent", () => new LoadWasUnlinkedEventsCommand()],
+    ["issue_timeline_pinnedEvent", () => new LoadPinnedEventsCommand()],
+    ["issue_timeline_unpinnedEvent", () => new LoadUnpinnedEventsCommand()],
+    ["issue_timeline_renamedTitleEvent", () => new LoadRenamedTitleEventsCommand()]
 ]);
 
 /**

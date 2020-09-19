@@ -28,7 +28,7 @@ export class IssueComment extends Comment<IssueComment> {
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, body: string, lastEditedById: string | undefined, lastEditedAt: Date,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.Body, databaseManager, IssueCommentTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, metadata);
+        super(NodeType.IssueComment, databaseManager, IssueCommentTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, metadata);
     }
 
     /**
