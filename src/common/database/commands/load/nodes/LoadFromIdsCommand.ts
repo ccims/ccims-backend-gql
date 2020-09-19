@@ -9,6 +9,7 @@ import { LoadUsersCommand } from "./LoadUsersCommand";
 import { LoadAddedToComponentEventsCommand } from "./timeline/LoadAddedToComponentEventsCommand";
 import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
 import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEvents";
+import { LoadIssueCommentsCommand } from "./timeline/LoadIssueCommentsCommand";
 import { LoadRemovedFromComponentEventsCommand } from "./timeline/LoadRemovedFromComponentEventsCommand";
 
 /**
@@ -24,7 +25,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_issue", () => new LoadIssuesCommand()],
     ["issue_timeline_categoryChangedEvent", () => new LoadCategoryChangedEventsCommand()],
     ["issue_timeline_addedToComponentEvent", () => new LoadAddedToComponentEventsCommand()],
-    ["issue_timeline_removedFromComponentEvent", () => new LoadRemovedFromComponentEventsCommand()]
+    ["issue_timeline_removedFromComponentEvent", () => new LoadRemovedFromComponentEventsCommand()],
+    ["issue_timeline_issueComment", () => new LoadIssueCommentsCommand()]
 ]);
 
 /**
