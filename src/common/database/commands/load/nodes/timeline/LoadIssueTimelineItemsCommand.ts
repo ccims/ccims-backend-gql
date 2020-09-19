@@ -47,7 +47,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    public generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onIssues) {

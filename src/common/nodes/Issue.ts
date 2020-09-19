@@ -26,6 +26,7 @@ import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
 import { Body } from "./timelineItems/Body";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { IssueComment } from "./timelineItems/IssueComment";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { LinkEvent } from "./timelineItems/LinkEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
@@ -530,8 +531,9 @@ export class Issue extends SyncNode<Issue> {
         if (!(await this.linksToIssuesProperty.hasId(linkedIssue.id))) {
             await this.linkedByIssuesProperty.add(linkedIssue);
             await WasLinkedEvent.create(this._databaseManager, asUser, atDate, linkedIssue, this);
+            const event = await LinkEvent.create(this._databaseManager, asUser, atDate, this, linkedIssue);
             await this.participatedAt(asUser, atDate);
-            return LinkEvent.create(this._databaseManager, asUser, atDate, this, linkedIssue);
+            return event;
         } else {
             return undefined;
         }
@@ -548,11 +550,25 @@ export class Issue extends SyncNode<Issue> {
         if ((await this.linksToIssuesProperty.hasId(unlinkedIssue.id))) {
             await this.linkedByIssuesProperty.remove(unlinkedIssue);
             await WasLinkedEvent.create(this._databaseManager, asUser, atDate, unlinkedIssue, this);
+            const event = await UnlinkEvent.create(this._databaseManager, asUser, atDate, this, unlinkedIssue);
             await this.participatedAt(asUser, atDate);
-            return UnlinkEvent.create(this._databaseManager, asUser, atDate, this, unlinkedIssue);
+            return event;
         } else {
             throw new Error("This issue is not linked to the provided issue");
         }
+    }
+
+    /**
+     * adds an IssueComment to this Issue
+     * @param body the text of the comment
+     * @param atDate the date when to add the comment
+     * @param asUser the user who adds the comment
+     * @returns the added IssueComment
+     */
+    public async addIssueComment(body: string, atDate: Date, asUser?: User): Promise<IssueComment> {
+        const comment = await IssueComment.create(this._databaseManager, asUser, atDate, this, body);
+        await this.participatedAt(asUser, atDate);
+        return comment;
     }
 
     public get updatedAt(): Date {
