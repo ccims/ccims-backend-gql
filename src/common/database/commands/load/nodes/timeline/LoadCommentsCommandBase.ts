@@ -60,5 +60,5 @@ export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIss
 
         return conditions;
     }
-    
+
 }

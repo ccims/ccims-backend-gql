@@ -27,8 +27,11 @@ import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
 import { Body } from "./timelineItems/Body";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
+import { LinkEvent } from "./timelineItems/LinkEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
+import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
+import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
 
 
@@ -280,7 +283,7 @@ export class Issue extends SyncNode<Issue> {
 
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
-    //TODO
+    // TODO
     private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
 
     /**
@@ -384,10 +387,6 @@ export class Issue extends SyncNode<Issue> {
         return this._spentTime;
     }
 
-    public get updatedAt(): Date {
-        return this._updatedAt;
-    }
-
     /**
      * adds this issue to the specified component
      * also adds the issue to the component as location
@@ -423,7 +422,7 @@ export class Issue extends SyncNode<Issue> {
      * @param component the component
      */
     public async removeFromComponent(component: Component, atDate: Date, asUser?: User): Promise<RemovedFromComponentEvent> {
-        if ((await this.componentsProperty.getIds()).length == 1) {
+        if ((await this.componentsProperty.getIds()).length === 1) {
             throw new Error("Cannot remove the last component on which an issue is");
         }
         if (await this.componentsProperty.hasId(component.id)) {
@@ -519,6 +518,45 @@ export class Issue extends SyncNode<Issue> {
         const event = await RemovedFromLocationEvent.create(this._databaseManager, asUser, atDate, this, location);
         await this.participatedAt(asUser, atDate);
         return event;
+    }
+
+    /**
+     * links this issue to the provided issue, if possible
+     * @param linkedIssue the issue to link this issue to
+     * @param atDate
+     * @param asUser
+     */
+    public async addLinkedIssue(linkedIssue: Issue, atDate: Date, asUser?: User): Promise<LinkEvent | undefined> {
+        if (!(await this.linksToIssuesProperty.hasId(linkedIssue.id))) {
+            await this.linkedByIssuesProperty.add(linkedIssue);
+            await WasLinkedEvent.create(this._databaseManager, asUser, atDate, linkedIssue, this);
+            await this.participatedAt(asUser, atDate);
+            return LinkEvent.create(this._databaseManager, asUser, atDate, this, linkedIssue);
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * links this issue to the provided issue, if possible
+     * otherwise it throws an error
+     * @param linkedIssue the issue to link this issue to
+     * @param atDate
+     * @param asUser
+     */
+    public async removeLinkedIssue(unlinkedIssue: Issue, atDate: Date, asUser?: User): Promise<UnlinkEvent> {
+        if ((await this.linksToIssuesProperty.hasId(unlinkedIssue.id))) {
+            await this.linkedByIssuesProperty.remove(unlinkedIssue);
+            await WasLinkedEvent.create(this._databaseManager, asUser, atDate, unlinkedIssue, this);
+            await this.participatedAt(asUser, atDate);
+            return UnlinkEvent.create(this._databaseManager, asUser, atDate, this, unlinkedIssue);
+        } else {
+            throw new Error("This issue is not linked to the provided issue");
+        }
+    }
+
+    public get updatedAt(): Date {
+        return this._updatedAt;
     }
 
     /**
