@@ -6,6 +6,7 @@ export class APIConfig {
     public readonly jwtSecret: string;
     public readonly debugNoLogin: boolean;
     public readonly schemaLocation: string;
+    public readonly numReactionUsers: number;
 
     public constructor(filePath: string) {
         const file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
@@ -37,6 +38,11 @@ export class APIConfig {
             this.schemaLocation = file.schemaLocation;
         } else {
             this.schemaLocation = "./schema/schema.graphql";
+        }
+        if (typeof file.numReactionUsers === "number") {
+            this.numReactionUsers = file.numReactionUsers;
+        } else {
+            this.numReactionUsers = 5;
         }
     }
 }

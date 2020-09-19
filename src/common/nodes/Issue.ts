@@ -1,34 +1,35 @@
+import { log } from "../../log";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
+import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
+import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
+import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { LoadBodiesCommand } from "../database/commands/load/nodes/timeline/LoadBodiesCommand";
+import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { Component } from "./Component";
+import { ComponentInterface } from "./ComponentInterface";
+import { IssueLocation } from "./IssueLocation";
+import { Label } from "./Label";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { ReactionGroup } from "./ReactionGroup";
 import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
-import { Body } from "./timelineItems/Body";
-import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
-import { User } from "./User";
-import { IssueLocation } from "./IssueLocation";
-import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
-import { Component } from "./Component";
-import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
-import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { Label } from "./Label";
-import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
-import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
+import { Body } from "./timelineItems/Body";
+import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
+import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
-import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
-import { ComponentInterface } from "./ComponentInterface";
-import { log } from "../../log";
+import { User } from "./User";
 
 
 /**
@@ -276,6 +277,12 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
+
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
+
+    //TODO
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
+
     /**
      * abstract constructor for extending classes
      * @param type the type of this node
@@ -310,6 +317,7 @@ export class Issue extends SyncNode<Issue> {
         this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {

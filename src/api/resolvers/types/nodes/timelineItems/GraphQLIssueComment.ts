@@ -1,13 +1,13 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLUser from "../GraphQLUser";
-import GraphQLDate from "../../../scalars/GraphQLDate";
-import reactions from "../../../listQueries/issue/reactions";
-import GraphQLIssue from "../GraphQLIssue";
-import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
-import GraphQLComment from "../GraphQLComment";
-import GraphQLNode from "../../GraphQLNode";
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { IssueComment } from "../../../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../../../ResolverContext";
+import reactionsListQuery from "../../../listQueries/reactionsListQuery";
+import GraphQLDate from "../../../scalars/GraphQLDate";
+import GraphQLNode from "../../GraphQLNode";
+import GraphQLComment from "../GraphQLComment";
+import GraphQLIssue from "../GraphQLIssue";
+import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
+import GraphQLUser from "../GraphQLUser";
 
 const issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
     name: "IssueComment",
@@ -50,7 +50,7 @@ const issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext>
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions: reactions(),
+        reactions: reactionsListQuery("All reactions on this issue comment", comment => comment.reactionsProperty),
     })
 };
 const GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
