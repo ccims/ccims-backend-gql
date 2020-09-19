@@ -50,7 +50,7 @@ export class RemoveRelationCommand extends DatabaseCommand<void> {
         return [];
     }
 
-   /**
+    /**
      * creates a generator for a RemoveRelationCommand for properties on the primary node
      * @param primary the primary id column name
      * @param secundary the secundary id column name

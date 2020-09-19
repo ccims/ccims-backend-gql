@@ -6,7 +6,7 @@ import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
-export const CategoryChangedEventTableSpecification: NodeTableSpecification<CategoryChangedEvent> 
+export const CategoryChangedEventTableSpecification: NodeTableSpecification<CategoryChangedEvent>
     = new NodeTableSpecification("issue_timeline_categoryChangedEvent", IssueTimelineItemTableSpecification,
     )
 
@@ -21,7 +21,7 @@ export class CategoryChangedEvent extends IssueTimelineItem {
         isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(NodeType.CategoryChangedEvent, databaseManager, CategoryChangedEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
-        
+
         this._oldCategory = oldCategory;
         this._newCategory = newCategory;
     }

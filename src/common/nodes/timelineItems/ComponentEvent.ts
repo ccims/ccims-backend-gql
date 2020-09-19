@@ -25,13 +25,13 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
             },
             componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand())
         );
-    
+
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, componentId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(type, databaseManager, tableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
-        
+
         this.componentProperty = new NodeProperty<Component, ComponentEvent>(databaseManager, ComponentEvent.componentPropertySpecification, this, componentId);
     }
 }

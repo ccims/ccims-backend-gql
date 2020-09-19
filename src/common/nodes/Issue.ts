@@ -22,6 +22,11 @@ import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCom
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
+import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
+import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
+import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
+import { ComponentInterface } from "./ComponentInterface";
+import { log } from "../../log";
 
 
 /**
@@ -350,18 +355,31 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * adds this issue to the specified component
-     * returnes 
+     * also adds the issue to the component as location
      * @param component the component
+     * @returns the event if the issue was added, otherwise undefined
      */
     public async addToComponent(component: Component, atDate: Date, asUser?: User): Promise<AddedToComponentEvent | undefined> {
         if (!(await this.componentsProperty.hasId(component.id))) {
-            await this.componentsProperty.add(component);
-            const event = await AddedToComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
-            await this.participatedAt(asUser, atDate);
+            const event = await this.addToComponentInternal(component, atDate, asUser);
+            await this.addToLocationInternal(component, atDate, asUser);
             return event;
         } else {
             return undefined;
         }
+    }
+
+    /**
+     * requires that this issue is NOT already on the specified component
+     * @param component
+     * @param atDate
+     * @param asUser
+     */
+    private async addToComponentInternal(component: Component, atDate: Date, asUser?: User): Promise<AddedToComponentEvent | undefined> {
+        await this.componentsProperty.add(component);
+        const event = await AddedToComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
+        await this.participatedAt(asUser, atDate);
+        return event;
     }
 
     /**
@@ -374,13 +392,98 @@ export class Issue extends SyncNode<Issue> {
             throw new Error("Cannot remove the last component on which an issue is");
         }
         if (await this.componentsProperty.hasId(component.id)) {
-            await this.componentsProperty.remove(component);
-            const event = await RemovedFromComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
-            await this.participatedAt(asUser, atDate);
-            return event;
+            return this.removeFromComponentInternal(component, atDate, asUser);
         } else {
             throw new Error("The issue id not on the specified component");
         }
+    }
+
+    /**
+     * requires that this issue is on the specified component and that the component can be removed
+     * @param component
+     * @param atDate
+     * @param asUser
+     */
+    private async removeFromComponentInternal(component: Component, atDate: Date, asUser?: User): Promise<RemovedFromComponentEvent> {
+        await this.componentsProperty.remove(component);
+        const event = await RemovedFromComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
+        await this.participatedAt(asUser, atDate);
+        if (await this.locationsProperty.hasId(component.id)) {
+            await this.removeFromLocationInternal(component, atDate, asUser);
+        }
+        const otherLocationsCommand = new LoadComponentInterfacesCommand();
+        otherLocationsCommand.hasIssueOnLocation = [this.id];
+        const interfacesToRemove = await component.interfacesProperty.getFilteredElements(otherLocationsCommand);
+        await Promise.all(interfacesToRemove.map(location => this.removeFromLocationInternal(location, atDate, asUser)));
+        return event;
+    }
+
+    /**
+     * adds this issue to the specified location
+     * if the location is a ComponentInterface, the component is added as component if necessary
+     * if the location is a Component, the location is added as a component if necessary
+     * @param location the IssueLocation to add this issue to
+     * @returns the event if the issue was added, otherwise undefined
+     */
+    public async addToLocation(location: IssueLocation, atDate: Date, asUser?: User): Promise<AddedToLocationEvent | undefined> {
+        if (!(await this.locationsProperty.hasId(location.id))) {
+            if (location instanceof Component) {
+                if (!(await this.componentsProperty.hasId(location.id))) {
+                    await this.addToComponentInternal(location as Component, atDate, asUser);
+                }
+            } else if (location instanceof ComponentInterface) {
+                if (!(await this.componentsProperty.hasId((location as ComponentInterface).componentProperty.getId()))) {
+                    await this.addToComponentInternal(await (location as ComponentInterface).componentProperty.get(), atDate, asUser);
+                }
+            } else {
+                log(1, "unknown location type: not a Component, not a ComponentInterface");
+                log(1, location);
+                throw new Error("Internal server error");
+            }
+            return this.addToLocationInternal(location, atDate, asUser);
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * requires that this issue is not on the specified location
+     * @param location
+     * @param atDate
+     * @param asUser
+     */
+    private async addToLocationInternal(location: IssueLocation, atDate: Date, asUser?: User): Promise<AddedToLocationEvent | undefined> {
+        await this.locationsProperty.add(location);
+        const event = await AddedToLocationEvent.create(this._databaseManager, asUser, atDate, this, location);
+        await this.participatedAt(asUser, atDate);
+        return event;
+    }
+
+    /**
+     * removes this issue from the specified location
+     * throws an error if this issue is not on the specified location
+     * @param component the component
+     * @returns the event
+     */
+    public async removeFromLocation(location: IssueLocation, atDate: Date, asUser?: User): Promise<RemovedFromLocationEvent> {
+        if (await this.locationsProperty.hasId(location.id)) {
+            return this.removeFromLocationInternal(location, atDate, asUser);
+        } else {
+            throw new Error("The issue id not on the specified location");
+        }
+    }
+
+    /**
+     * requires that this issue is on the specified location
+     * @param location
+     * @param atDate
+     * @param asUser
+     */
+    private async removeFromLocationInternal(location: IssueLocation, atDate: Date, asUser?: User): Promise<RemovedFromLocationEvent> {
+        await this.locationsProperty.remove(location);
+        const event = await RemovedFromLocationEvent.create(this._databaseManager, asUser, atDate, this, location);
+        await this.participatedAt(asUser, atDate);
+        return event;
     }
 
     /**

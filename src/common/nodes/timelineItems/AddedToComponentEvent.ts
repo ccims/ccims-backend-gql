@@ -7,7 +7,7 @@ import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { ComponentEvent, ComponentEventTableSpecification } from "./ComponentEvent";
 
-export const AddedToComponentEventTableSpecification: NodeTableSpecification<ComponentEvent> 
+export const AddedToComponentEventTableSpecification: NodeTableSpecification<AddedToComponentEvent>
     = new NodeTableSpecification("issue_timeline_addedToComponentEvent", ComponentEventTableSpecification);
 
 export class AddedToComponentEvent extends ComponentEvent {
@@ -22,11 +22,11 @@ export class AddedToComponentEvent extends ComponentEvent {
     /**
      * WARNING: this does NOT add the issue to the specified component, but does only create the event
      * this does NOT check if the component is already added to the issue
-     * @param databaseManager 
-     * @param createdBy 
-     * @param createdAt 
-     * @param issue 
-     * @param component 
+     * @param databaseManager
+     * @param createdBy
+     * @param createdAt
+     * @param issue
+     * @param component
      */
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, component: Component): Promise<AddedToComponentEvent> {
         const event = new AddedToComponentEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, component.id, false);
