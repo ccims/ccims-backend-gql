@@ -51,7 +51,7 @@ export class AddRelationCommand extends DatabaseCommand<void> {
         return [];
     }
 
-   /**
+    /**
      * creates a generator for a AddRelationCommand for properties on the primary node
      * @param primary the primary id column name
      * @param secundary the secundary id column name

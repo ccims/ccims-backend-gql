@@ -85,7 +85,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
 
     /**
      * Async getter function for the ims of this component
-     * @returns A promise of a ims that belongs to this component or `undefined` 
+     * @returns A promise of a ims that belongs to this component or `undefined`
      */
     public async ims(): Promise<ImsSystem | undefined> {
         return this.imsSystemProperty.get();

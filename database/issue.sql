@@ -148,8 +148,7 @@ CREATE TABLE issue_timeline_addedToLocationEvent (
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_removedFromLocationEvent (
-    LIKE issue_timelineItem,
-    removedLocation id NOT NULL 
+    LIKE issue_timeline_addedToLocationEvent
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_addedToComponentEvent (
@@ -158,8 +157,7 @@ CREATE TABLE issue_timeline_addedToComponentEvent (
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_removedFromComponentEvent (
-    LIKE issue_timelineItem,
-    removedComponent id NOT NULL
+    LIKE issue_timeline_addedToComponentEvent
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_pinnedEvent (
