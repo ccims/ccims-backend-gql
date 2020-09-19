@@ -59,6 +59,15 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     /**
+     * returnes true if this property contains the specified id
+     * @param id the id to check for
+     */
+    public async hasId(id: string): Promise<boolean> {
+        await this.ensureLoadLevel(LoadLevel.Ids);
+        return this._ids.has(id);
+    }
+
+    /**
      * get all elements
      */
     public async getElements(): Promise<T[]> {

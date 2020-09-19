@@ -20,6 +20,8 @@ import { Component } from "./Component";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
+import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 
 
 /**
@@ -315,11 +317,14 @@ export class Issue extends SyncNode<Issue> {
         return this._category;
     }
 
-    public async changeCategory(newCategory: IssueCategory, atDate: Date, asUser?: User): Promise<void> {
+    public async changeCategory(newCategory: IssueCategory, atDate: Date, asUser?: User): Promise<CategoryChangedEvent | undefined> {
         if (newCategory !== this._category) {
-            await CategoryChangedEvent.create(this._databaseManager, asUser, atDate, this, this._category, newCategory);
+            const event = await CategoryChangedEvent.create(this._databaseManager, asUser, atDate, this, this._category, newCategory);
             this._category = newCategory;
             await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
         }
     }
 
@@ -341,6 +346,41 @@ export class Issue extends SyncNode<Issue> {
 
     public get updatedAt(): Date {
         return this._updatedAt;
+    }
+
+    /**
+     * adds this issue to the specified component
+     * returnes 
+     * @param component the component
+     */
+    public async addToComponent(component: Component, atDate: Date, asUser?: User): Promise<AddedToComponentEvent | undefined> {
+        if (!(await this.componentsProperty.hasId(component.id))) {
+            await this.componentsProperty.add(component);
+            const event = await AddedToComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * removes this issue from the specified component
+     * throws an error if this issue is already on the specified component
+     * @param component the component
+     */
+    public async removeFromComponent(component: Component, atDate: Date, asUser?: User): Promise<RemovedFromComponentEvent> {
+        if ((await this.componentsProperty.getIds()).length == 1) {
+            throw new Error("Cannot remove the last component on which an issue is");
+        }
+        if (await this.componentsProperty.hasId(component.id)) {
+            await this.componentsProperty.remove(component);
+            const event = await RemovedFromComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The issue id not on the specified component");
+        }
     }
 
     /**
