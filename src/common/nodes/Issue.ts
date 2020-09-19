@@ -38,7 +38,6 @@ import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
 import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
-import { IssueComment } from "./timelineItems/IssueComment";
 
 
 /**
