@@ -19,12 +19,13 @@ import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadI
 import { Component } from "./Component";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 
 
 /**
-* a table specification for a Comment
-* does not specifiy the metadata, because this is up to the save method
-*/
+ * a table specification for a Comment
+ * does not specifiy the metadata, because this is up to the save method
+ */
 export const IssueTableSpecification: NodeTableSpecification<Issue>
     = new NodeTableSpecification<Issue>("issue_issue", SyncNodeTableSpecification,
         RowSpecification.fromProperty("title", "title"),
@@ -312,6 +313,14 @@ export class Issue extends SyncNode<Issue> {
 
     public get category(): IssueCategory {
         return this._category;
+    }
+
+    public async changeCategory(newCategory: IssueCategory, atDate: Date, asUser?: User): Promise<void> {
+        if (newCategory !== this._category) {
+            await CategoryChangedEvent.create(this._databaseManager, asUser, atDate, this, this._category, newCategory);
+            this._category = newCategory;
+            await this.participatedAt(asUser, atDate);
+        }
     }
 
     public get startDate(): Date | undefined {

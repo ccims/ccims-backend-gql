@@ -206,7 +206,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             conditions.i++;
         }
         if (this.onProjects) {
-            if (this.onProjects.length == 1) {
+            if (this.onProjects.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
                     text: `main.component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
@@ -222,7 +222,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             conditions.i++;
         }
         if (this.editedBy) {
-            if (this.editedBy.length == 1) {
+            if (this.editedBy.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
                     text: `EXISTS(SELECT 1 FROM relation_comment_editedBy WHERE comment_id=main.body_id AND editedBy_id=$${conditions.i})`,

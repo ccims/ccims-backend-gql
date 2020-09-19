@@ -53,7 +53,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         }
 
         if (this.createdBy) {
-            if (this.createdBy.length == 1) {
+            if (this.createdBy.length === 1) {
                 conditions.conditions.push({
                     text: `main.created_by=$${conditions.i}`,
                     values: [this.createdBy[0]],

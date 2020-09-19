@@ -87,9 +87,9 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         if (this._lastEditedAt < atDate) {
             this.lastEditedAt = atDate;
             this._body = value;
-            this._lastEditedAt
+            this._lastEditedAt = atDate;
             this.markChanged();
-            (await this.issueProperty.get()).participatedAt(asUser, atDate);
+            await (await this.issueProperty.get()).participatedAt(asUser, atDate);
         }
     }
 

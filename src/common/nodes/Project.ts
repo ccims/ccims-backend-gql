@@ -119,17 +119,18 @@ export class Project extends NamedOwnedNode<Project> {
      * @param description the description of the project, must be shorter than 65537 chars
      * @param owner the owner of the project
      */
-    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Project {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Project> {
         if (name.length > 256) {
-            throw new Error("the specified name is too long");
+            throw new Error("The specified name is too long");
         }
         if (description.length > 65536) {
-            throw new Error("the specified description is too long");
+            throw new Error("The specified description is too long");
         }
 
         const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
         project.markNew();
         databaseManager.addCachedNode(project);
+        await owner.ownedNodesProperty.add(project);
         return project;
     }
 }

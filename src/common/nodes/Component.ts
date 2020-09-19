@@ -86,7 +86,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @returns A promise of a ims that belongs to this component or `undefined` 
      */
     public async ims(): Promise<ImsSystem | undefined> {
-        return await this.imsSystemProperty.get();
+        return this.imsSystemProperty.get();
     }
 
     /**
@@ -213,7 +213,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param endpoint the endpoint of the associated imsSystemn
      * @param connectionData the connectionData of the associated imsSystem
      */
-    public static create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Component {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Component> {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
         }
@@ -224,6 +224,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
         component.markNew();
         databaseManager.addCachedNode(component);
+        await owner.ownedNodesProperty.add(component);
         return component;
     }
 }

@@ -63,7 +63,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
 
     private _permissions: UserPermissions;
 
-        /**
+    /**
      * Property containing all projects this user is a part of
      */
     public readonly projectsProperty: NodeListProperty<Project, User>;
@@ -276,7 +276,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         if (inputHash !== oldHash) {
             return false;
         }
-        if (oldAlgorithm.trim().toLowerCase() != config.common.passwordAlgorithm.trim().toLowerCase()) {
+        if (oldAlgorithm.trim().toLowerCase() !== config.common.passwordAlgorithm.trim().toLowerCase()) {
             log(6, "Rehashed user password for " + this._username);
             const newHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
             this.passwordHash = newHash;

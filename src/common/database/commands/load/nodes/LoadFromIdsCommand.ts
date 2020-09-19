@@ -7,6 +7,7 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
 import { LoadUsersCommand } from "./LoadUsersCommand";
 import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
+import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEvents";
 
 /**
  * map with method to create command for each table name
@@ -18,7 +19,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["ims_system", () => new LoadImsSystemsCommand()],
     ["users", () => new LoadUsersCommand()],
     ["issue_timeline_body", () => new LoadBodiesCommand()],
-    ["issue_issue", () => new LoadIssuesCommand()]
+    ["issue_issue", () => new LoadIssuesCommand()],
+    ["issue_timeline_categoryChangedEvent", () => new LoadCategoryChangedEventsCommand()]
 ]);
 
 /**

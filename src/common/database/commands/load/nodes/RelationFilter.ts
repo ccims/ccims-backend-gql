@@ -17,7 +17,7 @@ function createFilter(tableName: string, primary: string, secundary: string, fil
     verifyIsAllowedSqlIdent(primary);
     verifyIsAllowedSqlIdent(secundary);
 
-    if (ids.length == 1) {
+    if (ids.length === 1) {
         return {
             priority: 2,
             text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=$${i})`,
@@ -70,7 +70,7 @@ export function createRelationFilterBySecundary(primary: string, secundary: stri
  */
 export function createStringListFilter(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(rowName);
-    if (ids.length == 1) {
+    if (ids.length === 1) {
         return {
             priority,
             text: `main.${rowName}=$${i}`,
@@ -97,7 +97,7 @@ export function createStringListFilter(rowName: string, ids: string[], i: number
 export function createRelationFilterOnMany(tableName: string, rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
     verifyIsAllowedSqlIdent(tableName);
     verifyIsAllowedSqlIdent(rowName);
-    if (ids.length == 1) {
+    if (ids.length === 1) {
         return {
             priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=$${i})`,

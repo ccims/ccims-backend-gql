@@ -264,7 +264,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                     idsToLoad.push(id);
                 }
             }));
-            if (this._loadLevel == LoadLevel.Complete) {
+            if (this._loadLevel === LoadLevel.Complete) {
                 const loadCommand = this._specification.loadFromIds(idsToLoad, this._node);
                 this._databaseManager.addCommand(loadCommand);
                 await this._databaseManager.executePendingCommands();
@@ -291,7 +291,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     async setElements(elements: T[]): Promise<void> {
         await this.setIds(elements.map(element => element.id));
         const newElements = Array.from(this._addedIds).map(id => this._elements.get(id));
-        this._elements = elements.reduce((map, element, index, elements) => map.set(element.id, element), new Map<string, T>());
+        this._elements = elements.reduce((map, element, index, items) => map.set(element.id, element), new Map<string, T>());
         newElements.forEach(element => {
             if (element) {
                 this._elements.set(element.id, element);
