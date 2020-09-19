@@ -99,7 +99,7 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> extends Saveable {
      * marks this node as deleted
      * this also marks this node as changed
      */
-    protected markDeleted(): void {
+    public async markDeleted(): Promise<void> {
         this._isDeleted = true;
         this.markChanged();
     }

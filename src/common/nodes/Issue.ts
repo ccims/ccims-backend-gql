@@ -26,6 +26,7 @@ import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
 import { Body } from "./timelineItems/Body";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
+import { DeletedIssueComment } from "./timelineItems/DeletedIssueComment";
 import { IssueComment } from "./timelineItems/IssueComment";
 import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { LinkEvent } from "./timelineItems/LinkEvent";
@@ -650,6 +651,24 @@ export class Issue extends SyncNode<Issue> {
         const event = await RenamedTitleEvent.create(this._databaseManager, asUser, atDate, this, this.title, newTitle);
         await this.participatedAt(asUser, atDate);
         return event;
+    }
+
+    /**
+     * delets an issueComment
+     * @param issueComment 
+     * @param atDate 
+     * @param asUser 
+     */
+    public async deleteComment(issueComment: IssueComment, atDate: Date, asUser: User): Promise<DeletedIssueComment | undefined> {
+        if (!issueComment.isDeleted) {
+            await issueComment.setBody("", atDate);
+            const deletedIssueComment = await DeletedIssueComment.create(this._databaseManager, await issueComment.createdBy(), issueComment.createdAt, this, asUser, atDate);
+            await issueComment.markDeleted();
+            await this.participatedAt(asUser, atDate);
+            return deletedIssueComment;
+        } else {
+            return undefined;
+        }
     }
 
 
