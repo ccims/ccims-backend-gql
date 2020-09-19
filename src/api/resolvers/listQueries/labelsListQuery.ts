@@ -9,11 +9,11 @@ import namedSyncNodeListQuery from "./namedSyncNodeListQuery";
 import { LoadLabelsCommand } from "../../../common/database/commands/load/nodes/LoadLabelsCommand";
 
 /**
- * Creates a components query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
+ * Creates a labels query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
  *
- * @param description The description text for the components query
+ * @param description The description text for the labels query
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
- * @returns A GraphQLFieldConfig with fields needed for a resolvable components query
+ * @returns A GraphQLFieldConfig with fields needed for a resolvable labels query
  */
 function labelsListQuery<TSource extends CCIMSNode>(
     description: string,

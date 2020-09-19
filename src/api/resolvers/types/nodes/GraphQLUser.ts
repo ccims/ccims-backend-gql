@@ -1,9 +1,9 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
+import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
-import issueComments from "../../listQueries/user/issueComments";
 import GraphQLNode from "../GraphQLNode";
 
 const userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
@@ -30,7 +30,7 @@ const userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
         projects: projectsListQuery("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
         assignedToIssues: issuesListQuery("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
         participantOfIssues: issuesListQuery("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
-        issueComments: issueComments()
+        issueComments: issueCommentsListQuery("All issue comments (not including issues) written by this user", user => user.commentsProperty)
     })
 };
 const GraphQLUser = new GraphQLObjectType(userConfig);

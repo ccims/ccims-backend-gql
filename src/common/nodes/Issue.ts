@@ -30,10 +30,11 @@ import { IssueTimelineItem } from "./timelineItems/IssueTimelineItem";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
 import { User } from "./User";
+import { IssueComment } from "./timelineItems/IssueComment";
 
 
 /**
- * a table specification for a Comment
+ * a table specification for an Issue
  * does not specifiy the metadata, because this is up to the save method
  */
 export const IssueTableSpecification: NodeTableSpecification<Issue>
@@ -277,6 +278,10 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
+    public readonly commentsProperty: NodeListProperty<IssueComment, Issue>;
+
+    //TODO
+    private static readonly commentsPropertySpecification: NodeListPropertySpecification<IssueComment, Issue> = undefined as any;
 
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
@@ -318,6 +323,7 @@ export class Issue extends SyncNode<Issue> {
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
         this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
+        this.commentsProperty = new NodeListProperty<IssueComment, Issue>(databaseManager, Issue.commentsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {
