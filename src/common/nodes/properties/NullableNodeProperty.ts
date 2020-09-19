@@ -60,7 +60,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
             await this.ensureLoaded();
             this._node.markChanged();
             if (this._element) {
-                this.notifyRemoved(this._element, false);
+                await this.notifyRemoved(this._element, false);
             }
         }
         if (value) {
@@ -69,7 +69,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
             } else {
                 this._element = value;
                 this._id = value.id;
-                this.notifyAdded(value, false);
+                await this.notifyAdded(value, false);
             }
         } else {
             this._id = undefined;

@@ -95,4 +95,19 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
     }
 
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, component: Component): Promise<ComponentInterface> {
+        if (name.length > 256) {
+            throw new Error("The specified name is too long");
+        }
+        if (description.length > 65536) {
+            throw new Error("The specified description is too long");
+        }
+
+        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, component.id);
+        componentInterface.markNew();
+        databaseManager.addCachedNode(componentInterface);
+        await component.interfacesProperty.add(componentInterface);
+        return componentInterface;
+    }
+
 }

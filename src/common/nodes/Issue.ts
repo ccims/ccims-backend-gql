@@ -21,12 +21,13 @@ import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadCompo
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { Label } from "./Label";
+import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 
 
 /**
-* a table specification for a Comment
-* does not specifiy the metadata, because this is up to the save method
-*/
+ * a table specification for a Comment
+ * does not specifiy the metadata, because this is up to the save method
+ */
 export const IssueTableSpecification: NodeTableSpecification<Issue>
     = new NodeTableSpecification<Issue>("issue_issue", SyncNodeTableSpecification,
         RowSpecification.fromProperty("title", "title"),
@@ -304,13 +305,12 @@ export class Issue extends SyncNode<Issue> {
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
     }
 
-    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string, isOpen: boolean, isDuplicate: boolean,
-        category: IssueCategory, startDate?: Date, dueDate?: Date, estimatedTime?: number, spentTime?: number): Promise<Issue> {
+    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
-        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, isOpen, isDuplicate, category, startDate, dueDate,
-            estimatedTime, spentTime, createdAt, bodyId, false);
+        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.Unclassified, undefined, undefined,
+            undefined, undefined, createdAt, bodyId, false);
         issue.markNew();
         databaseManager.addCachedNode(issue);
 
@@ -340,6 +340,14 @@ export class Issue extends SyncNode<Issue> {
 
     public get category(): IssueCategory {
         return this._category;
+    }
+
+    public async changeCategory(newCategory: IssueCategory, atDate: Date, asUser?: User): Promise<void> {
+        if (newCategory !== this._category) {
+            await CategoryChangedEvent.create(this._databaseManager, asUser, atDate, this, this._category, newCategory);
+            this._category = newCategory;
+            await this.participatedAt(asUser, atDate);
+        }
     }
 
     public get startDate(): Date | undefined {

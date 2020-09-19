@@ -16,7 +16,7 @@ import { ResolverContextOptional } from "../ResolverContext";
  * @returns An express middleware/handler for verifying passed user credentials and generating/returning a new json web token for that user
  */
 export function loginHandler(secret?: string): core.RequestHandler {
-    let handler = new LoginHandler(secret);
+    const handler = new LoginHandler(secret);
     return (req: core.Request, res: core.Response, next: core.NextFunction): void => {
         handler.handle.call(handler, req, res, next);
     };

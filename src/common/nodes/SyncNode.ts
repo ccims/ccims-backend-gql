@@ -34,6 +34,9 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
 
     public createdByProperty: NullableNodeProperty<User, SyncNode>;
 
+    /**
+     * has no notifier because a user does NOT know which SyncNodes he created
+     */
     private static createdByPropertySpecification: NodePropertySpecification<User, SyncNode>
         = new NodePropertySpecification<User, SyncNode>(
             (id, syncNode) => {
@@ -49,7 +52,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @returns A promise of a user or `undefined` who created this sync node
      */
     public async createdBy(): Promise<User | undefined> {
-        return await this.createdByProperty.get()
+        return this.createdByProperty.get()
     }
 
     private readonly _createdAt: Date;
@@ -79,7 +82,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * returnes true if this SyncNode was created with metadata, otherwise false
      */
     public get isMetadataPresent(): boolean {
-        return this._metadata != undefined;
+        return this._metadata !== undefined;
     }
 
     /**
