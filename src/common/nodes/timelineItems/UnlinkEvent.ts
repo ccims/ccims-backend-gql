@@ -31,7 +31,7 @@ export class UnlinkEvent extends IssueTimelineItem {
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, linkedIssueId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.AddedToComponentEvent, databaseManager, UnlinkEventTableSpecification, id,
+        super(NodeType.UnlinkEvent, databaseManager, UnlinkEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
         this.unlinkedIssueProperty = new NodeProperty<Issue, UnlinkEvent>(databaseManager, UnlinkEvent.unlinkedIssuePropertySpecification, this, linkedIssueId);

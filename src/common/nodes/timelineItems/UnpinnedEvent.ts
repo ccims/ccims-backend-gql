@@ -15,7 +15,7 @@ export class UnpinnedEvent extends ComponentEvent {
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, componentId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.AddedToComponentEvent, databaseManager, UnpinnedEventTableSpecification, id,
+        super(NodeType.UnpinnedEvent, databaseManager, UnpinnedEventTableSpecification, id,
             createdById, createdAt, issueId, componentId, isDeleted, metadata);
     }
 

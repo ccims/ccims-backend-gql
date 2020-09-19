@@ -31,7 +31,7 @@ export class WasLinkedEvent extends IssueTimelineItem {
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, linkedIssueId: string,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.AddedToComponentEvent, databaseManager, WasLinkedEventTableSpecification, id,
+        super(NodeType.WasLinkedEvent, databaseManager, WasLinkedEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
         this.linkedByIssueProperty = new NodeProperty<Issue, WasLinkedEvent>(databaseManager, WasLinkedEvent.linkedByIssuePropertySpecification, this, linkedIssueId);

@@ -32,6 +32,7 @@ import { LinkEvent } from "./timelineItems/LinkEvent";
 import { PinnedEvent } from "./timelineItems/PinnedEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
+import { RenamedTitleEvent } from "./timelineItems/RenamedTitleEvent";
 import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
 import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
@@ -351,6 +352,16 @@ export class Issue extends SyncNode<Issue> {
         return this._title;
     }
 
+    /**
+     * do NOT use this to change the title
+     */
+    public set title(value: string) {
+        if (this._title !== value) {
+            this._title = value;
+            this.markChanged();
+        }
+    }
+
     public get isOpen(): boolean {
         return this._isOpen;
     }
@@ -624,7 +635,20 @@ export class Issue extends SyncNode<Issue> {
     private async unpinOnComponentInternal(component: Component, atDate: Date, asUser?: User): Promise<UnpinnedEvent> {
         await this.pinnedOnProperty.remove(component);
         const event = await UnpinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
-        this.participatedAt(asUser, atDate);
+        await this.participatedAt(asUser, atDate);
+        return event;
+    }
+
+    /**
+     * changes the title and creates a RenamedTitleEvent
+     * @param newTitle
+     * @param atDate
+     * @param asUser
+     */
+    public async changeTitle(newTitle: string, atDate: Date, asUser?: User): Promise<RenamedTitleEvent> {
+        this.title = newTitle;
+        const event = await RenamedTitleEvent.create(this._databaseManager, asUser, atDate, this, this.title, newTitle);
+        await this.participatedAt(asUser, atDate);
         return event;
     }
 
