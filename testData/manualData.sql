@@ -1,6 +1,6 @@
 INSERT INTO public.users(
 	id, username, displayname, pw_hash, email, permissions)
-	VALUES ('0', 'root', 'Root', '', null, '{}');
+	VALUES ('0', 'root', 'Root', '', null, '{"global":{"addRemoveProjects":true,"addRemoveComponents":true,"globalAdmin":true},"project":[],"component":[["5d2b386fc10dc002",{"editIssues":true,"moderate":true,"editIssueLocation":true,"componentAdmin":true,"changeIMS":true}],["5d2b46195e780002",{"editIssues":true,"moderate":true,"editIssueLocation":true,"componentAdmin":true,"changeIMS":true}],["5d2b46955e62c002",{"editIssues":true,"moderate":true,"editIssueLocation":true,"componentAdmin":true,"changeIMS":true}]]}');
 	
 INSERT INTO public.project(
 	id, name, owner_user_id, description)
