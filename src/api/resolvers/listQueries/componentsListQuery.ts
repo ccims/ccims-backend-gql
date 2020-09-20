@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { LoadComponentsCommand } from "../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { Component } from "../../../common/nodes/Component";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLComponentFilter from "../types/filters/GraphQLComponentFilter";
 import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
@@ -15,9 +15,9 @@ import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable components query
  */
-function componentsListQuery<TSource extends CCIMSNode>(
+function componentsListQuery<TSource extends CCIMSNode, TProperty extends Partial<Component>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<Component, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = namedOwnedNodeListQuery<TSource, Component>(GraphQLComponentPage, GraphQLComponentFilter, description, "components", propertyProvider);
     return {

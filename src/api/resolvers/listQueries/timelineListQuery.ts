@@ -7,6 +7,7 @@ import nodeListQuery from "./nodeListQuery";
 import GraphQLIssueTimelineItemPage from "../types/pages/GraphQLIssueTimelineItemPage";
 import GraphQLIssueTimelineItemFilter from "../types/filters/GraphQLIssueTimelineItemFilter";
 import { LoadIssueTimelineItemsCommand } from "../../../common/database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 
 /**
@@ -16,9 +17,9 @@ import { LoadIssueTimelineItemsCommand } from "../../../common/database/commands
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable timeline items query
  */
-function timelineItemsListQuery<TSource extends CCIMSNode>(
+function timelineItemsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IssueTimelineItem>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<IssueTimelineItem, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = nodeListQuery<TSource, IssueTimelineItem>(GraphQLIssueTimelineItemPage, GraphQLIssueTimelineItemFilter, description, "timeline items", propertyProvider);
     return {

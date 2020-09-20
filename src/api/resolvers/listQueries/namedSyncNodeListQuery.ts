@@ -2,6 +2,7 @@ import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLObjectType } from "g
 import { LoadNamedSyncNodesCommand } from "../../../common/database/commands/load/nodes/LoadNamedSyncNode";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { NamedSyncNode } from "../../../common/nodes/NamedSyncNode";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import { Page } from "../utils/Page";
@@ -49,7 +50,7 @@ function namedSyncNodeListQuery<TSource extends CCIMSNode, TNode extends NamedSy
     filterType: GraphQLInputObjectType,
     description: string,
     nodeNamePlural: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<TNode, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<Partial<TNode> & CCIMSNode>
 ): namedSyncNodeListQueryType<TSource, TNode> {
     const baseQuery = syncNodeListQuery<TSource, TNode>(pageType, filterType, description, nodeNamePlural, propertyProvider);
     return {

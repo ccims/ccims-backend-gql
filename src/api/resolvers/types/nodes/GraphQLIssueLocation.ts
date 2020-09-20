@@ -3,6 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import GraphQLNode from "../GraphQLNode";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
+import { Issue } from "../../../../common/nodes/Issue";
 
 const issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverContext> = {
     name: "IssueLocation",
@@ -21,7 +22,7 @@ const issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverCon
             type: GraphQLString,
             description: "A textual description (of the fuction) of this issue location.\n\nMax. 65536 characters"
         },
-        issuesOnLocation: issuesListQuery("All issues that are assinged to on this issue location matching (if given) `filterBy`", issueLocation => issueLocation.issuesOnLocationProperty)
+        issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assinged to on this issue location matching (if given) `filterBy`", issueLocation => issueLocation.issuesOnLocationProperty)
     })
 };
 const GraphQLIssueLocation = new GraphQLInterfaceType(issueLocationConfig);

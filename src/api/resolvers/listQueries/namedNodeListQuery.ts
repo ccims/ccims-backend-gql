@@ -2,6 +2,7 @@ import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLObjectType } from "g
 import { LoadNamedNodesCommand } from "../../../common/database/commands/load/nodes/LoadNamedNodeCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { NamedNode } from "../../../common/nodes/NamedNode";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import { Page } from "../utils/Page";
@@ -49,7 +50,7 @@ function namedNodeListQuery<TSource extends CCIMSNode, TNode extends NamedNode>(
     filterType: GraphQLInputObjectType,
     description: string,
     nodeNamePlural: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<TNode, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<Partial<TNode> & CCIMSNode>
 ): namedNodeListQueryType<TSource, TNode> {
     const baseQuery = nodeListQuery<TSource, TNode>(pageType, filterType, description, nodeNamePlural, propertyProvider);
     return {

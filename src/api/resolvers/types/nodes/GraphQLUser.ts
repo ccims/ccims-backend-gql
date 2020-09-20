@@ -1,4 +1,7 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { Issue } from "../../../../common/nodes/Issue";
+import { Project } from "../../../../common/nodes/Project";
+import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
 import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
@@ -27,10 +30,10 @@ const userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             type: GraphQLString,
             description: "The mail address of the user"
         },
-        projects: projectsListQuery("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
-        assignedToIssues: issuesListQuery("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
-        participantOfIssues: issuesListQuery("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
-        issueComments: issueCommentsListQuery("All issue comments (not including issues) written by this user", user => user.commentsProperty)
+        projects: projectsListQuery<User, Project>("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
+        assignedToIssues: issuesListQuery<User, Issue>("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
+        participantOfIssues: issuesListQuery<User, Issue>("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
+        issueComments: issueCommentsListQuery<User, IssueComment>("All issue comments (not including issues) written by this user", user => user.commentsProperty)
     })
 };
 const GraphQLUser = new GraphQLObjectType(userConfig);

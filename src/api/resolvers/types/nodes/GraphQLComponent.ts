@@ -10,6 +10,10 @@ import GraphQLIMS from "./GraphQLIMS";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
 import labelsListQuery from "../../listQueries/labelsListQuery";
+import { Issue } from "../../../../common/nodes/Issue";
+import { Project } from "../../../../common/nodes/Project";
+import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
+import { Label } from "../../../../common/nodes/Label";
 
 const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -36,12 +40,12 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLIMS,
             description: "The IMS instance used by this component."
         },
-        issues: issuesListQuery("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
-        issuesOnLocation: issuesListQuery<IssueLocation>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
-        projects: projectsListQuery("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
-        interfaces: interfacesListQuery("Requests component interfaces which this component offers", component => component.interfacesProperty),
-        consumedInterfaces: interfacesListQuery("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
-        labels: labelsListQuery("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
+        issues: issuesListQuery<Component, Issue>("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
+        issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
+        projects: projectsListQuery<Component, Project>("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
+        interfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces which this component offers", component => component.interfacesProperty),
+        consumedInterfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
+        labels: labelsListQuery<Component, Label>("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
     })
 };
 const GraphQLComponent = new GraphQLObjectType(componentConfig);

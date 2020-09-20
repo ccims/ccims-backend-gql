@@ -7,6 +7,8 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
+import { Issue } from "../../../../common/nodes/Issue";
+import { Component } from "../../../../common/nodes/Component";
 const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, ResolverContext> = {
     name: "ComponentInterface",
     description: "An interface offered by a component which can be counsumed by other components",
@@ -28,8 +30,8 @@ const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Reso
             type: GraphQLNonNull(GraphQLComponent),
             description: "The parent component of this interface which offers it"
         },
-        issuesOnLocation: issuesListQuery<IssueLocation>("All issues that are assigned to this component interface matching (if given) `filterBy`", iface => iface.issuesOnLocationProperty),
-        consumedBy: componentsListQuery("Components which consume the interface and match the filter.\n\nIf no filter is given, all components will be returned",
+        issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this component interface matching (if given) `filterBy`", iface => iface.issuesOnLocationProperty),
+        consumedBy: componentsListQuery<ComponentInterface, Component>("Components which consume the interface and match the filter.\n\nIf no filter is given, all components will be returned",
             iface => iface.consumedByProperty)
     })
 };

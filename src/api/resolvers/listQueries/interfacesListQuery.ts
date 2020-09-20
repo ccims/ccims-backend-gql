@@ -3,10 +3,10 @@ import GraphQLComponentInterfacePage from "../types/pages/GraphQLComponentInterf
 import GraphQLComponentInterfaceFilter from "../types/filters/GraphQLComponentInterfaceFilter";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import namedNodeListQuery from "./namedNodeListQuery";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ComponentInterface } from "../../../common/nodes/ComponentInterface";
 import { ResolverContext } from "../../ResolverContext";
 import { LoadComponentInterfacesCommand } from "../../../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 /**
  * Creates a interfaces query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -15,9 +15,9 @@ import { LoadComponentInterfacesCommand } from "../../../common/database/command
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable interfaces query
  */
-function interfacesListQuery<TSource extends CCIMSNode>(
+function interfacesListQuery<TSource extends CCIMSNode, TProperty extends Partial<ComponentInterface>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<ComponentInterface, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = namedNodeListQuery<TSource, ComponentInterface>(GraphQLComponentInterfacePage, GraphQLComponentInterfaceFilter, description, "component interfaces", propertyProvider);
     return {

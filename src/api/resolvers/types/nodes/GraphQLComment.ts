@@ -1,4 +1,5 @@
 import { GraphQLBoolean, GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
 import { Comment } from "../../../../common/nodes/timelineItems/Comment";
 import { ResolverContext } from "../../../ResolverContext";
 import reactionsListQuery from "../../listQueries/reactionsListQuery";
@@ -41,7 +42,7 @@ const commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions: reactionsListQuery("All reactions that have been added to this comment", comment => comment.reactionsProperty),
+        reactions: reactionsListQuery<Comment, ReactionGroup>("All reactions that have been added to this comment", comment => comment.reactionsProperty),
     })
 };
 const GraphQLComment = new GraphQLInterfaceType(commentConfig);

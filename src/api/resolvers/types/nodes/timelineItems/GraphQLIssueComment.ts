@@ -1,4 +1,5 @@
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { ReactionGroup } from "../../../../../common/nodes/ReactionGroup";
 import { IssueComment } from "../../../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../../../ResolverContext";
 import reactionsListQuery from "../../../listQueries/reactionsListQuery";
@@ -50,7 +51,7 @@ const issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext>
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions: reactionsListQuery("All reactions on this issue comment", comment => comment.reactionsProperty),
+        reactions: reactionsListQuery<IssueComment, ReactionGroup>("All reactions on this issue comment", comment => comment.reactionsProperty),
     })
 };
 const GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);

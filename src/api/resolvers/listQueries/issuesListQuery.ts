@@ -7,6 +7,7 @@ import { Issue } from "../../../common/nodes/Issue";
 import { ResolverContext } from "../../ResolverContext";
 import syncNodeListQuery from "./syncNodeListQuery";
 import { LoadIssuesCommand } from "../../../common/database/commands/load/nodes/LoadIssuesCommand";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 /**
  * Creates a interfaces query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -15,9 +16,9 @@ import { LoadIssuesCommand } from "../../../common/database/commands/load/nodes/
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable interfaces query
  */
-function issuesListQuery<TSource extends CCIMSNode>(
+function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Issue>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<Issue, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = syncNodeListQuery<TSource, Issue>(GraphQLIssuePage, GraphQLIssueFilter, description, "issues", propertyProvider);
     return {

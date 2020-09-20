@@ -1,6 +1,7 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { User } from "../../../common/nodes/User";
 import { ResolverContext } from "../../ResolverContext";
@@ -15,9 +16,9 @@ import nodeListQuery from "./nodeListQuery";
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable users query
  */
-function usersListQuery<TSource extends CCIMSNode>(
+function usersListQuery<TSource extends CCIMSNode, TProperty extends Partial<User>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<User, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = nodeListQuery<TSource, User>(GraphQLUserPage, GraphQLUserFilter, description, "users", propertyProvider);
     return {

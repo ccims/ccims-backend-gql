@@ -6,6 +6,7 @@ import { LoadSyncNodeListCommand } from "../../../common/database/commands/load/
 import { Page } from "../utils/Page";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import nodeListQuery from "./nodeListQuery";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 type syncNodeListQueryType<TSource extends CCIMSNode, TNode extends SyncNode> = GraphQLFieldConfig<TSource, ResolverContext> &
 {
@@ -49,7 +50,7 @@ function syncNodeListQuery<TSource extends CCIMSNode, TNode extends SyncNode>(
     filterType: GraphQLInputObjectType,
     description: string,
     nodeNamePlural: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<TNode, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<Partial<TNode> & CCIMSNode>
 ): syncNodeListQueryType<TSource, TNode> {
     const baseQuery = nodeListQuery<TSource, TNode>(pageType, filterType, description, nodeNamePlural, propertyProvider);
     return {

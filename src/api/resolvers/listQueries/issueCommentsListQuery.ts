@@ -1,6 +1,7 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { LoadIssueCommentsCommand } from "../../../common/database/commands/load/nodes/timeline/LoadIssueCommentsCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { IssueComment } from "../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../ResolverContext";
@@ -15,9 +16,9 @@ import syncNodeListQuery from "./syncNodeListQuery";
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable issue comments query
  */
-function issueCommentsListQuery<TSource extends CCIMSNode>(
+function issueCommentsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IssueComment>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<IssueComment, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = syncNodeListQuery<TSource, IssueComment>(GraphQLIssueCommentPage, GraphQLIssueCommentFilter, description, "issue comments", propertyProvider);
     return {

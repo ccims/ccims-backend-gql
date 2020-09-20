@@ -2,6 +2,7 @@ import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { LoadProjectsCommand } from "../../../common/database/commands/load/nodes/LoadProjectsCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { Project } from "../../../common/nodes/Project";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
@@ -15,9 +16,9 @@ import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable projects query
  */
-function projectsListQuery<TSource extends CCIMSNode>(
+function projectsListQuery<TSource extends CCIMSNode, TProperty extends Partial<Project>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<Project, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = namedOwnedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
     return {

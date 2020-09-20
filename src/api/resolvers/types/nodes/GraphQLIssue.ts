@@ -1,5 +1,12 @@
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { Component } from "../../../../common/nodes/Component";
 import { Issue } from "../../../../common/nodes/Issue";
+import { IssueLocation } from "../../../../common/nodes/IssueLocation";
+import { Label } from "../../../../common/nodes/Label";
+import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
+import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
+import { IssueTimelineItem } from "../../../../common/nodes/timelineItems/IssueTimelineItem";
+import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import componentsListQuery from "../../listQueries/componentsListQuery";
@@ -93,21 +100,21 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             type: GraphQLTimeSpan,
             description: "The time already spent on work on this issue.\n\nThis is only for displaying and has no effect on the ccims but will be synce to other ims"
         },
-        issueComments: issueCommentsListQuery("All issue comments on this issue", issue => issue.commentsProperty),
-        linksToIssues: issuesListQuery("All issues linked to from issue (this issue is __origin__ of relation, matching the given filter.\n" +
+        issueComments: issueCommentsListQuery<Issue, IssueComment>("All issue comments on this issue", issue => issue.timelineProperty),
+        linksToIssues: issuesListQuery<Issue, Issue>("All issues linked to from issue (this issue is __origin__ of relation, matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.linksToIssuesProperty),
-        linkedByIssues: issuesListQuery("All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.\n" +
+        linkedByIssues: issuesListQuery<Issue, Issue>("All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.linkedByIssuesProperty),
-        reactions: reactionsListQuery("All reactions that have been added to the body of this issue", issue => issue.reactionsProperty),
-        assignees: usersListQuery("All users who are explicitely assigned to issue, matching the given filter.\n" +
+        reactions: reactionsListQuery<Issue, ReactionGroup>("All reactions that have been added to the body of this issue", issue => issue.reactionsProperty),
+        assignees: usersListQuery<Issue, User>("All users who are explicitely assigned to issue, matching the given filter.\n" +
             "If no filter is given, all issues will be returned", issue => issue.assigneesProperty),
-        labels: labelsListQuery("All labels that are currently assigned to this issue", issue => issue.labelsProperty),
-        participants: usersListQuery("All users participating on this issue (by writing a comment, etc.), matching the given filter.\n" +
+        labels: labelsListQuery<Issue, Label>("All labels that are currently assigned to this issue", issue => issue.labelsProperty),
+        participants: usersListQuery<Issue, User>("All users participating on this issue (by writing a comment, etc.), matching the given filter.\n" +
             "If no filter is given, all users will be returned", issue => issue.participantsProperty),
-        pinnedOn: componentsListQuery("All components where this issue has been pinned, matching the given filter.\n" +
+        pinnedOn: componentsListQuery<Issue, Component>("All components where this issue has been pinned, matching the given filter.\n" +
             "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
-        timeline: timelineItemsListQuery("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
-        locations: locationsListQuery("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty)
+        timeline: timelineItemsListQuery<Issue, IssueTimelineItem>("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
+        locations: locationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty)
     })
 };
 const GraphQLIssue = new GraphQLObjectType(issueConfig);

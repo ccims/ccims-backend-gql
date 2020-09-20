@@ -7,6 +7,7 @@ import { NodeListProperty } from "../../../common/nodes/properties/NodeListPrope
 import { ResolverContext } from "../../ResolverContext";
 import namedSyncNodeListQuery from "./namedSyncNodeListQuery";
 import { LoadLabelsCommand } from "../../../common/database/commands/load/nodes/LoadLabelsCommand";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 /**
  * Creates a labels query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -15,9 +16,9 @@ import { LoadLabelsCommand } from "../../../common/database/commands/load/nodes/
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable labels query
  */
-function labelsListQuery<TSource extends CCIMSNode>(
+function labelsListQuery<TSource extends CCIMSNode, TProperty extends Partial<Label>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<Label, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = namedSyncNodeListQuery<TSource, Label>(GraphQLLabelPage, GraphQLLabelFilter, description, "labels", propertyProvider);
     return {

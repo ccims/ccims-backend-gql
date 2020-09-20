@@ -1,6 +1,7 @@
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql";
 import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import { Page } from "../utils/Page";
@@ -46,7 +47,7 @@ function nodeListQuery<TSource extends CCIMSNode, TNode extends CCIMSNode>(
     filterType: GraphQLInputObjectType,
     description: string,
     nodeNamePlural: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<TNode, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<Partial<TNode> & CCIMSNode>
 ): nodeListQueryType<TSource, TNode> {
     return {
         type: pageType,

@@ -289,11 +289,6 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
-    public readonly commentsProperty: NodeListProperty<IssueComment, Issue>;
-
-    // TODO
-    private static readonly commentsPropertySpecification: NodeListPropertySpecification<IssueComment, Issue> = undefined as any;
-
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
     // TODO
@@ -334,7 +329,6 @@ export class Issue extends SyncNode<Issue> {
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
         this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
-        this.commentsProperty = new NodeListProperty<IssueComment, Issue>(databaseManager, Issue.commentsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {
@@ -739,6 +733,25 @@ export class Issue extends SyncNode<Issue> {
         }
         if (participant) {
             await this.participantsProperty.add(participant);
+        }
+    }
+
+    /**
+     * marks this node as deleted
+     * this also marks this node as changed
+     */
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await Promise.all((await this.timelineProperty.getElements()).map(item => item.markDeleted()));
+            await this.assigneesProperty.clear();
+            await this.participantsProperty.clear();
+            await this.labelsProperty.clear();
+            await this.locationsProperty.clear();
+            await this.componentsProperty.clear();
+            await this.pinnedOnProperty.clear();
+            await this.linksToIssuesProperty.clear();
+            await this.linkedByIssuesProperty.clear();
         }
     }
 

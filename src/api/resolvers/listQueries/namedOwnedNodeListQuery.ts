@@ -6,6 +6,7 @@ import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { NamedOwnedNode } from "../../../common/nodes/NamedOwnedNode";
 import { Page } from "../utils/Page";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 type namedOwnedNodeListQueryType<TSource extends CCIMSNode, TNode extends NamedOwnedNode> = GraphQLFieldConfig<TSource, ResolverContext> &
 {
@@ -49,7 +50,7 @@ function namedOwnedNodeListQuery<TSource extends CCIMSNode, TNode extends NamedO
     filterType: GraphQLInputObjectType,
     description: string,
     nodeNamePlural: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<TNode, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<Partial<TNode> & CCIMSNode>
 ): namedOwnedNodeListQueryType<TSource, TNode> {
     const baseQuery = namedNodeListQuery<TSource, TNode>(pageType, filterType, description, nodeNamePlural, propertyProvider);
     return {

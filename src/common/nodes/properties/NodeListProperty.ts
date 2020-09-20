@@ -4,13 +4,14 @@ import { NodeListPropertySpecification } from "./NodeListPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
+import { ListProperty } from "./ListProperty";
 
 /**
  * property which represents the many side of a relation
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends Property<T, V> {
+export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends Property<T, V> implements ListProperty<T> {
     /**
      * the specification of the property
      */
@@ -78,7 +79,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param filter the filter to filter other nodes
      * @returns the array of filtered elements
      */
-    public async getFilteredElements(filter: LoadNodeListCommand<T>): Promise<T[]> {
+    public async getFilteredElements<S extends T>(filter: LoadNodeListCommand<S>): Promise<S[]> {
         await this.ensureAddDeleteLoadLevel();
         filter.ids = Array.from((this._ids));
         this._databaseManager.addCommand(filter);

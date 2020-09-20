@@ -7,6 +7,7 @@ import { ResolverContext } from "../../ResolverContext";
 import nodeListQuery from "./nodeListQuery";
 import GraphQLIssueLocationPage from "../types/pages/GraphQLIssueLocationPage";
 import GraphQLIssueLocationFilter from "../types/filters/GraphQLIssueLocationFilter";
+import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 
 /**
  * Creates a issue locations query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -15,9 +16,9 @@ import GraphQLIssueLocationFilter from "../types/filters/GraphQLIssueLocationFil
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable issue locations query
  */
-function locationsListQuery<TSource extends CCIMSNode>(
+function locationsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IssueLocation>>(
     description: string,
-    propertyProvider?: (node: TSource) => NodeListProperty<IssueLocation, TSource>
+    propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
     const baseQuery = nodeListQuery<TSource, IssueLocation>(GraphQLIssueLocationPage, GraphQLIssueLocationFilter, description, "issue locations", propertyProvider);
     return {
