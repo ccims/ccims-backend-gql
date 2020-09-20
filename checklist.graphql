@@ -746,9 +746,6 @@ type Query {
   ): ProjectPage
 }
 type Mutation {
-  testMutation(
-    input: TestMutationInput
-  ): TestMutationPayload
   createIssue(
     input: CreateIssueInput
   ): CreateIssuePayload
@@ -830,18 +827,6 @@ type Mutation {
   removeReactionFromComment(
     input: RemoveReactionFromCommentInput
   ): RemoveReactionFromCommentPayload
-  createProject(
-    input: CreateProjectInput
-  ): CreateProjectPayload
-  createComponent(
-    input: CreateComponentInput
-  ): CreateComponentPayload
-  createIMS(
-    input: CreateIMSInput
-  ): CreateIMSPayload
-  createUser(
-    input: CreateUserInput
-  ): CreateUserPayload
 }
 type TestMutationPayload {
   clientMutationID: String

@@ -20,7 +20,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
             const imsType = PreconditionCheck.checkEnum<ImsType>(input, "imsType", ImsType);
             const endpoint = PreconditionCheck.checkString(input, "endpoint");
-            const connectionData = PreconditionCheck.checkNonNull(input, "connectionData"); //TODO: Check that Connection data
+            const connectionData = PreconditionCheck.checkNonNull(input, "connectionData"); // TODO: Check that Connection data
 
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
@@ -65,14 +65,14 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("All ids given for the consumedInterfaces must must be valid ids of existing component interfaces");
             }
 
-            const ims = await ImsSystem.create(context.dbManager, imsType, endpoint, connectionData);
+            const ims = ImsSystem.create(context.dbManager, imsType, endpoint, connectionData);
             const component = await Component.create(context.dbManager, name, description, owner);
-            component.imsSystemProperty.set(ims);
+            await component.imsSystemProperty.set(ims);
             if (projectCmd) {
-                component.projectsProperty.addAll(projectCmd.getResult());
+                await component.projectsProperty.addAll(projectCmd.getResult());
             }
             if (interfacesCmd) {
-                component.consumedInterfacesProperty.addAll(interfacesCmd?.getResult());
+                await component.consumedInterfacesProperty.addAll(interfacesCmd?.getResult());
             }
             owner.permissions.setComponentPermissions(component.id, new ComponentPermission(true, true, true, true, true));
             await context.dbManager.save();

@@ -58,7 +58,7 @@ class GraphQLHandler {
         } else {
             const resolverRequest: ResolverContext = req as ResolverContext;
             const result = await this.middleware(resolverRequest, res);
-            req.dbManager.saveAndClearCache();
+            await req.dbManager.saveAndClearCache();
             return result;
         }
     }

@@ -4,6 +4,7 @@ import { NodeListPropertySpecification } from "./NodeListPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
+import { Project } from "../Project";
 
 /**
  * property which represents the many side of a relation
@@ -136,7 +137,9 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     public async addAll(elements: T[]): Promise<void> {
-        await Promise.all(elements.map(element => this.add(element)));
+        for (const element of elements) {
+            await this.add(element);
+        }
     }
 
     /**
