@@ -216,7 +216,7 @@ export class UserPermissions {
 /**
  * An interface specifying the structure of the permissions when saved to the database
  */
-interface DatabsePermissions {
+export interface DatabsePermissions {
     global: GlobalPermissions,
     project: [string, ProjectPermission][],
     component: [string, ComponentPermission][]
@@ -226,7 +226,7 @@ interface DatabsePermissions {
 /**
  * Project specific permissions of a user
  */
-class ProjectPermission {
+export class ProjectPermission {
     public constructor(
         /**
          * `true` iff a user can add components to ar remove them from the current project
@@ -248,7 +248,7 @@ class ProjectPermission {
     }
 }
 
-class ComponentPermission {
+export class ComponentPermission {
     public constructor(
         /**
          * `true` iff the user is allowed to create/edit/delete his own issues on this component
@@ -281,7 +281,7 @@ class ComponentPermission {
     }
 }
 
-class GlobalPermissions {
+export class GlobalPermissions {
     public constructor(
         /**
          * `true` iff a user is allowed to create and delete projects

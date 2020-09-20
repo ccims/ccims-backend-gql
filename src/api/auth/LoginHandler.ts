@@ -17,8 +17,8 @@ import { ResolverContextOptional } from "../ResolverContext";
  */
 export function loginHandler(secret?: string): core.RequestHandler {
     const handler = new LoginHandler(secret);
-    return (req: core.Request, res: core.Response, next: core.NextFunction): void => {
-        handler.handle.call(handler, req, res, next);
+    return async (req: core.Request, res: core.Response, next: core.NextFunction): Promise<void> => {
+        await handler.handle.call(handler, req, res, next);
     };
 }
 
@@ -41,7 +41,7 @@ class LoginHandler {
      */
     constructor(secret?: string) {
         this.secret = secret || config.api.jwtSecret;
-        if (this.secret.length == 0) {
+        if (this.secret.length === 0) {
             this.secret = config.api.jwtSecret;
         }
     }
@@ -86,7 +86,7 @@ class LoginHandler {
             req.dbManager.addCommand(cmd);
             await req.dbManager.executePendingCommands();
             const result = cmd.getResult();
-            if (result.length == 1 && result[0].verifyPasswordAndRehash(userInfo.password)) {
+            if (result.length === 1 && result[0].verifyPasswordAndRehash(userInfo.password)) {
                 const webToken = jwt.sign({
                     name: result[0].username,
                 }, this.secret, {

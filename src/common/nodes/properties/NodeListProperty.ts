@@ -137,7 +137,9 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     public async addAll(elements: T[]): Promise<void> {
-        await Promise.all(elements.map(element => this.add(element)));
+        for (const element of elements) {
+            await this.add(element);
+        }
     }
 
     /**

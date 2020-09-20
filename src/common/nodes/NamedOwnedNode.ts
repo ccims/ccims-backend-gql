@@ -14,7 +14,7 @@ import { User } from "./User";
  */
 export const NamedOwnedNodeTableSpecification: NodeTableSpecification<NamedOwnedNode>
     = new NodeTableSpecification<NamedOwnedNode>("node", NamedNodeTableSpecification,
-        new RowSpecification("owner_user_id", component => component.id));
+        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
 
 /**
  * a NamedOwnedNode is a NamedNode with an owner
@@ -68,7 +68,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      * this also marks this node as changed
      */
     public async markDeleted(): Promise<void> {
-        if(!this.isDeleted) {
+        if (!this.isDeleted) {
             await super.markDeleted();
             await this.ownerProperty.markDeleted();
         }
