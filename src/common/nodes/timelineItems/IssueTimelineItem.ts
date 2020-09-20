@@ -35,6 +35,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
                 return command;
             },
             timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand()),
+            undefined,
             (issue, timelineItem) => issue.timelineProperty
         );
 

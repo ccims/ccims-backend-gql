@@ -25,7 +25,8 @@ export class AssignedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee", new LoadUsersCommand())
+            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee", new LoadUsersCommand()),
+            User.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

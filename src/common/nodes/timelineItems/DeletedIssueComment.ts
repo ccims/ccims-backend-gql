@@ -27,7 +27,8 @@ export class DeletedIssueComment extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            deletedByProperty => new GetWithReloadCommand(deletedByProperty, "deleted_by", new LoadUsersCommand())
+            deletedByProperty => new GetWithReloadCommand(deletedByProperty, "deleted_by", new LoadUsersCommand()),
+            User.deletedId
         );
 
 

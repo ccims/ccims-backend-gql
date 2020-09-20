@@ -25,7 +25,8 @@ export class UnlinkEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand())
+            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand()),
+            Issue.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

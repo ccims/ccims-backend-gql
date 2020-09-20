@@ -63,6 +63,8 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
  * An issue
  */
 export class Issue extends SyncNode<Issue> {
+    public static readonly deletedId = "deleted_6";
+
     private _title: string;
 
     private _isOpen: boolean;
@@ -90,7 +92,8 @@ export class Issue extends SyncNode<Issue> {
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand())
+            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand()),
+            undefined
             // no notifier because this is never allowed to change
         );
 

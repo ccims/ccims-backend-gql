@@ -34,6 +34,8 @@ export const ComponentTableSpecification: NodeTableSpecification<Component>
  */
 export class Component extends NamedOwnedNode implements IssueLocation {
 
+    public static readonly deletedId = "deleted_2";
+
     /**
      * property for issues which are located on this component
      */
@@ -80,6 +82,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             component => {
                 return new GetWithReloadCommand(component, "imsSystem_id", new LoadImsSystemsCommand());
             },
+            undefined,
             (imsSystem, component) => imsSystem.componentProperty
         );
 

@@ -44,7 +44,8 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 command.ids = [id];
                 return command;
             },
-            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand())
+            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand()),
+            User.deletedId
         );
 
     /**

@@ -4,6 +4,7 @@ import { Saveable } from "../Saveable";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
+import { log } from "../../../log";
 
 /**
  * @see NodeProperty, but supports undefined for the other node
@@ -96,6 +97,18 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
                 if (reloadResult) {
                     this._id = reloadResult.id;
                     this._element = reloadResult;
+                    this.notifyAdded(this._element, false);
+                } else if (this._specification.deletedId) {
+                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
+                    this._databaseManager.addCommand(loadDeletedCommand);
+                    await this._databaseManager.executePendingCommands();
+                    if (loadDeletedCommand.getResult().length === 0) {
+                        log(2, "error: deleted command does not exist");
+                        throw new Error("Internal server error");
+                    }
+                    this._id = this._specification.deletedId;
+                    this._element = loadDeletedCommand.getResult()[0];
+                    this.notifyAdded(this._element, false);
                 } else {
                     this._element = undefined;
                     this._id = undefined;

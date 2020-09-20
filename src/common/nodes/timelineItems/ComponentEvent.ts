@@ -23,7 +23,8 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
                 command.ids = [id];
                 return command;
             },
-            componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand())
+            componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand()),
+            Component.deletedId,
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
