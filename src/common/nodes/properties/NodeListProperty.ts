@@ -1,18 +1,16 @@
 import { CCIMSNode } from "../CCIMSNode";
-import { Saveable } from "../Saveable";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodeListPropertySpecification } from "./NodeListPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
-import { NodePropertyBase } from "./NodePropertyBase";
 
 /**
  * property which represents the many side of a relation
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Property<T> {
+export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends Property<T, V> {
     /**
      * the specification of the property
      */
@@ -46,7 +44,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param node the node proviced to all generators as last parameter
      */
     public constructor(databaseManager: DatabaseManager, specification: NodeListPropertySpecification<T, V>, node: V) {
-        super(databaseManager, specification, node);
+        super(databaseManager, node, specification);
         this._specification = specification;
     }
 

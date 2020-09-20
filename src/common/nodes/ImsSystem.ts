@@ -42,8 +42,6 @@ export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
  */
 export class ImsSystem extends CCIMSNode<ImsSystem> {
 
-    public static readonly deletedId = "deleted_4";
-
     /**
      * the type if the ims
      */

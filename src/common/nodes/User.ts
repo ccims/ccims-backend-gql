@@ -38,8 +38,6 @@ export const UserTableSpecification: NodeTableSpecification<User>
  */
 export class User<T extends User = any> extends CCIMSNode<T> {
 
-    public static readonly deletedId = "deleted_0";
-
     /**
      * The username used to login, a system wide unique string with
      * Max. 100 characters

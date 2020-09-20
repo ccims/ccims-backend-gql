@@ -2,6 +2,7 @@ import { GetWithReloadCommand } from "../../database/commands/GetWithReloadComma
 import { LoadComponentsCommand } from "../../database/commands/load/nodes/LoadComponentsCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
+import { DeletedNodes } from "../DeletedNodes";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
@@ -24,7 +25,7 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
                 return command;
             },
             componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand()),
-            Component.deletedId,
+            DeletedNodes.Component
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

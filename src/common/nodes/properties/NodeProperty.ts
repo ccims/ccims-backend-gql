@@ -11,7 +11,7 @@ import { log } from "../../../log";
  * @param T the type of the other node
  * @param V the type of the node on which this property is
  */
-export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Property<T> {
+export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
      * the specification of the property
@@ -21,10 +21,6 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * the id of the other node
      */
     private _id: string;
-    /**
-     * the other node if already loaded
-     */
-    private _element?: T;
 
     /**
      * creates a new NodeProperty with the provided specification
@@ -76,7 +72,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
     /**
      * ensures that this property is loaded
      */
-    private async ensureLoaded(): Promise<void> {
+    protected async ensureLoaded(): Promise<void> {
         if (!this._element && this._id) {
             const loadCommand = this._specification.loadFromId(this._id, this._node);
             this._databaseManager.addCommand(loadCommand);

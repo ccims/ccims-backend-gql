@@ -1,6 +1,7 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { DeletedNodes } from "./DeletedNodes";
 import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
@@ -35,7 +36,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
                 return command;
             },
             node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
-            User.deletedId,
+            DeletedNodes.User,
             (user, node) => user.ownedNodesProperty
         );
 
@@ -60,5 +61,16 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, ownerId: string) {
         super(type, databaseManager, tableSpecification, id, name, description);
         this.ownerProperty = new NodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId);
+    }
+
+    /**
+     * marks this node as deleted
+     * this also marks this node as changed
+     */
+    public async markDeleted(): Promise<void> {
+        if(!this.isDeleted) {
+            await super.markDeleted();
+            this.ownerProperty.markDeleted();
+        }
     }
 }

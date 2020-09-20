@@ -28,8 +28,6 @@ export const ProjectTableSpecification: NodeTableSpecification<Project>
  */
 export class Project extends NamedOwnedNode<Project> {
 
-    public static readonly deletedId = "deleted_1";
-
     /**
      * property with the components on this project
      */

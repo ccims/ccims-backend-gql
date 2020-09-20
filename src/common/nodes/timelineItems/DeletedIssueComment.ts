@@ -2,6 +2,7 @@ import { GetWithReloadCommand } from "../../database/commands/GetWithReloadComma
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
+import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
@@ -28,7 +29,7 @@ export class DeletedIssueComment extends IssueTimelineItem {
                 return command;
             },
             deletedByProperty => new GetWithReloadCommand(deletedByProperty, "deleted_by", new LoadUsersCommand()),
-            User.deletedId
+            DeletedNodes.User
         );
 
 

@@ -34,8 +34,6 @@ export const ComponentTableSpecification: NodeTableSpecification<Component>
  */
 export class Component extends NamedOwnedNode implements IssueLocation {
 
-    public static readonly deletedId = "deleted_2";
-
     /**
      * property for issues which are located on this component
      */
@@ -255,5 +253,16 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         databaseManager.addCachedNode(component);
         await owner.ownedNodesProperty.add(component);
         return component;
+    }
+
+        /**
+     * marks this node as deleted
+     * this also marks this node as changed
+     */
+    public async markDeleted(): Promise<void> {
+        if(!this.isDeleted) {
+            await super.markDeleted();
+            
+        }
     }
 }

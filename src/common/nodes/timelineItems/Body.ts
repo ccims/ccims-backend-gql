@@ -14,8 +14,6 @@ export const BodyTableSpecification: NodeTableSpecification<Body>
 
 export class Body extends Comment<Body> {
 
-    public static readonly deletedId = "deleted_7";
-
     private readonly _initialTitle: string;
 
     /**

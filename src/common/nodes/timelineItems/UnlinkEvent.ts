@@ -1,6 +1,7 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadIssuesCommand } from "../../database/commands/load/nodes/LoadIssuesCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
+import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
@@ -26,7 +27,7 @@ export class UnlinkEvent extends IssueTimelineItem {
                 return command;
             },
             unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand()),
-            Issue.deletedId
+            DeletedNodes.Issue
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

@@ -9,7 +9,7 @@ import { log } from "../../../log";
 /**
  * @see NodeProperty, but supports undefined for the other node
  */
-export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
      * the specification of this property
@@ -19,10 +19,6 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * if present, the id of the other node
      */
     private _id?: string;
-    /**
-     * the other node
-     */
-    private _element?: T;
 
     /**
      * creates a new nullable node property with the provided specification
@@ -81,7 +77,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * ensures that this property is loaded
      */
-    private async ensureLoaded(): Promise<void> {
+    protected async ensureLoaded(): Promise<void> {
         if (!this._element && this._id) {
             const loadCommand = this._specification.loadFromId(this._id, this._node);
             this._databaseManager.addCommand(loadCommand);

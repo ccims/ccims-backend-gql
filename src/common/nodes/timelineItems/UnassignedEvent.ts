@@ -1,6 +1,7 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
+import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
@@ -26,7 +27,7 @@ export class UnassignedEvent extends IssueTimelineItem {
                 return command;
             },
             unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removedAssignee", new LoadUsersCommand()),
-            User.deletedId
+            DeletedNodes.User
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

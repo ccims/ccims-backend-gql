@@ -25,8 +25,6 @@ export const ComponentInterfaceTableSpecification: NodeTableSpecification<Compon
  */
 export class ComponentInterface extends NamedNode<ComponentInterface> implements IssueLocation {
 
-    public static readonly deletedId = "deleted_5";
-
     /**
      * property for issues which are located on this component
      */

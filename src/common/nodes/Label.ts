@@ -28,8 +28,6 @@ export const LabelTableSpecification: NodeTableSpecification<Label>
  */
 export class Label extends NamedSyncNode {
 
-    public static readonly deletedId = "deleted_8";
-
     /**
      * The color in which to show the label
      */

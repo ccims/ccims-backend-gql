@@ -14,7 +14,7 @@ export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
     /**
      * a list of functions which generate nodes which should be notified on remove or add
      */
-    public readonly notifiers: ((element: T, node: V) => Property<V>)[];
+    public readonly notifiers: ((element: T, node: V) => Property<V, T>)[];
 
     /**
      * creates a specification for for a NodeProperty
@@ -26,7 +26,7 @@ export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
         public readonly loadFromId: (id: string, node: V) => LoadNodeListCommand<T>,
         public readonly reload: (node: V) => DatabaseCommand<T | undefined>,
         public readonly deletedId: string | undefined,
-        ...notifiers: ((element: T, node: V) => Property<V>)[]
+        ...notifiers: ((element: T, node: V) => Property<V, T>)[]
     ) {
         this.notifiers = notifiers;
     }
