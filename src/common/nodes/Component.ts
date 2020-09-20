@@ -20,6 +20,7 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
+import { log } from "../../log";
 
 /**
  * the specification of the table which contains components
@@ -263,6 +264,27 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         if(!this.isDeleted) {
             await super.markDeleted();
             await Promise.all((await this.interfacesProperty.getElements()).map(componentInterface => componentInterface.markDeleted()));
+            await this.pinnedIssuesProperty.clear();
+            await this.labelsProperty.clear();
+            await this.consumedInterfacesProperty.clear();
+            const imsSystem = await this.ims();
+            await this.imsSystemProperty.set(undefined);
+            if (imsSystem) {
+                await imsSystem.markDeleted();
+            }
+            await this.issuesOnLocationProperty.clear();
+            const issues = await this.issuesProperty.getElements();
+            await Promise.all(issues.map(async issue => {
+                if ((await issue.componentsProperty.getIds()).length === 1) {
+                    await issue.markDeleted();
+                } else {
+                    try {
+                        await issue.removeFromComponent(this, new Date());
+                    } catch {
+                        log(2, `could not remove issue ${issue.id} from component ${this.id}`);
+                    }
+                }
+            }));
         }
     }
 }

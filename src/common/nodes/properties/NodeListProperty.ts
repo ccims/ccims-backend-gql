@@ -157,6 +157,14 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     /**
+     * removes all elements
+     */
+    public async clear(): Promise<void> {
+        const elements = await this.getElements();
+        await Promise.all(elements.map(element => this.remove(element)));
+    }
+
+    /**
      * saves all changes on this property if necessary
      */
     public save(): void {
