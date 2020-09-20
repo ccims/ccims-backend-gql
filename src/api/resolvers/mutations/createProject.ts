@@ -9,18 +9,22 @@ import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/L
 import { LoadComponentsCommand } from "../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { Component } from "../../../common/nodes/Component";
 import { User } from "../../../common/nodes/User";
+import { ProjectPermission } from "../../../utils/UserPermissions";
 
 function createProject(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateProjectPayload, GraphQLCreateProjectInput, "Creates a new project");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
-            const input = base.argsCheck(args);
+            const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveProjects);
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkString(input, "description", 65536);
             const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
             const userIds = new Set(PreconditionCheck.checkNullableStringList(input, "users", 32));
+            if ((componentIds.size > 0 || userIds.size > 0) && (ownerUserId !== context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
+                throw new Error("You are not the owner of the new project, you can't add users or components")
+            }
             userIds.add(ownerUserId)
             const userCmd = new LoadUsersCommand();
             userCmd.ids = Array.from(userIds);
@@ -54,6 +58,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             if (components && components.length > 1) {
                 await project.componentsProperty.addAll(components);
             }
+            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true, true));
             await context.dbManager.save();
             return base.createResult(args, { project })
         }

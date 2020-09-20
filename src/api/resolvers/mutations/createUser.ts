@@ -11,7 +11,7 @@ function createUser(): GraphQLFieldConfig<any, ResolverContext> {
     return {
         ...base,
         resolve: async (src, args, context, info) => {
-            const input = base.argsCheck(args);
+            const input = base.initMutation(args, context, perm => true);
             const username = PreconditionCheck.checkString(input, "username", 100);
             const displayName = PreconditionCheck.checkString(input, "displayName", 200);
             const password = PreconditionCheck.checkString(input, "password");

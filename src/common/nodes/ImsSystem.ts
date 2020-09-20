@@ -12,10 +12,10 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
  * enum with all (currently not) supported issue management systems
  */
 export enum ImsType {
-    GitHub = "GitHub",
-    GitLab = "GitLab",
-    Jira = "Jira",
-    Redmine = "Redmine",
+    GitHub = "GITHUB",
+    GitLab = "GITLAB",
+    Jira = "JIRA",
+    Redmine = "REDMINE",
     CCIMS = "CCIMS"
 }
 
@@ -31,7 +31,7 @@ export interface ConnectionData {
  */
 export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
     = new NodeTableSpecification<ImsSystem>("ims_system", CCIMSNodeTableSpecification,
-        RowSpecification.fromProperty("ims_type", "imsType"),
+        RowSpecification.fromProperty("type", "imsType"),
         RowSpecification.fromProperty("endpoint", "endpoint"),
         RowSpecification.fromProperty("connection_data", "connectionData"),
         new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));

@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLInputObjectType, GraphQLFieldConfig, GraphQLNonNull } from "graphql";
 import { ResolverContext } from "../../ResolverContext";
+import { UserPermissions } from "../../../utils/UserPermissions";
 
 type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     /**
@@ -14,10 +15,23 @@ type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
      * @returns The `input` property of the args
      */
     argsCheck: (args: any) => any;
+    /**
+     * Check weather the current user is allowed to perform this mutation based on his permissions
+     * 
+     * __CAUTION__ This will always suceed if the current user is a global admin
+     * 
+     * @param context The context object provided by the resolve function containing the user
+     * @param neededPermissions A predicate function returning `true`/`false`depending on the permissions passed to it
+     */
+    userAllowed: (context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => void;
+    /**
+     * Combined `argsCheck` and `userAllowed` into one method
+     */
+    initMutation: (args: any, context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => any;
 };
 
 function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType, description: string): baseMutationType {
-    return {
+    const base = {
         type: payload,
         description,
         args: {
@@ -43,7 +57,17 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
                 throw new Error("The input for the mutation must be set");
             }
             return args.input;
+        },
+        userAllowed: (context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => {
+            if (!context.user.permissions.globalPermissions.globalAdmin && !neededPermissions(context.user.permissions)) {
+                throw new Error(`You are not permitted to perform this permission`);
+            }
+        },
+        initMutation: (args: any, context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => {
+            base.userAllowed(context, neededPermissions);
+            return base.argsCheck(args);
         }
     };
+    return base;
 }
 export default baseMutation;

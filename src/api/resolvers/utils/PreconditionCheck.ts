@@ -64,10 +64,10 @@ export default class PreconditionCheck {
         if (!args[property]) {
             throw new Error(`The ${property} input must be set`);
         }
-        if (!Object.keys(enumType).includes(args[property])) {
-            const key = Object.values(enumType).find(args[property]);
-            if (key) {
-                return key as TEnum;
+        if (!Object.values(enumType).includes(args[property])) {
+            const value = enumType[args[property]];
+            if (value) {
+                return value as TEnum;
             }
             throw new Error(`The ${property} input must be a valid enum item`);
         }
