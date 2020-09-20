@@ -86,7 +86,7 @@ export class UserPermissions {
     /**
      * Returns a list of project ids where the project based permissions match the given filter.
      * Editing this list won't change the users permissions
-     * 
+     *
      * @param filter The filter function to determine which permissions to keep
      */
     public filterProject(filter: (permissions: ProjectPermission) => boolean): string[] {
@@ -96,7 +96,7 @@ export class UserPermissions {
     /**
      * Returns a list of component ids where the component based permissions match the given filter.
      * Editing this list won't change the users permissions
-     * 
+     *
      * @param filter The filter function to determine which permissions to keep
      */
     public filterComponent(filter: (permissions: ComponentPermission) => boolean): string[] {

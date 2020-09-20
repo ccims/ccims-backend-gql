@@ -25,7 +25,8 @@ export class WasLinkedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            wasLinkedEvent => new GetWithReloadCommand(wasLinkedEvent, "linked_by", new LoadIssuesCommand())
+            wasLinkedEvent => new GetWithReloadCommand(wasLinkedEvent, "linked_by", new LoadIssuesCommand()),
+            Issue.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

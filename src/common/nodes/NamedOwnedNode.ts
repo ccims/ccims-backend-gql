@@ -35,6 +35,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
                 return command;
             },
             node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
+            User.deletedId,
             (user, node) => user.ownedNodesProperty
         );
 

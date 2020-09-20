@@ -1,6 +1,8 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadIssueLocationsCommand } from "../../database/commands/load/nodes/LoadIssueLocationsCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
+import { Component } from "../Component";
+import { ComponentInterface } from "../ComponentInterface";
 import { IssueLocation } from "../IssueLocation";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
@@ -23,7 +25,8 @@ export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> ext
                 command.ids = [id];
                 return command;
             },
-            issueLocationEvent => new GetWithReloadCommand(issueLocationEvent, "location", new LoadIssueLocationsCommand())
+            issueLocationEvent => new GetWithReloadCommand(issueLocationEvent, "location", new LoadIssueLocationsCommand()),
+            ComponentInterface.deletedId
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

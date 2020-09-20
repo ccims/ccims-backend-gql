@@ -19,7 +19,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
     public name?: string;
 
     /**
-     * Select only issue locations that match this regex 
+     * Select only issue locations that match this regex
      */
     public description?: string;
 

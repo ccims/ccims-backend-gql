@@ -53,7 +53,8 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
                 command.ids = [id];
                 return command;
             },
-            comment => new GetWithReloadCommand(comment, "last_edited_by", new LoadUsersCommand())
+            comment => new GetWithReloadCommand(comment, "last_edited_by", new LoadUsersCommand()),
+            User.deletedId
         );
 
     private _lastEditedAt: Date;

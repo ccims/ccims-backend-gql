@@ -3,7 +3,7 @@ const path = require("path");
 
 var databaseScript = "";
 
-var files = ["reset.sql", "common.sql", "issue.sql", "user.sql", "project.sql", "ims.sql"];
+var files = ["reset.sql", "common.sql", "issue.sql", "user.sql", "project.sql", "ims.sql", "deletedNodes.sql"];
 files.filter(name => name.match(/.*\.sql/i)).forEach(name => {
     databaseScript += fs.readFileSync(path.join(__dirname, "..", "database", name), { encoding: "utf-8" });
 });

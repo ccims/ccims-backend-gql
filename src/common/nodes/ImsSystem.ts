@@ -41,6 +41,9 @@ export const ImsSystemTableSpecification: NodeTableSpecification<ImsSystem>
  * E.g. One GitHub Repository's issue page.
  */
 export class ImsSystem extends CCIMSNode<ImsSystem> {
+
+    public static readonly deletedId = "deleted_4";
+
     /**
      * the type if the ims
      */
@@ -74,6 +77,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
             imsSystem => {
                 return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand());
             },
+            undefined,
             (component, imsSystem) => component.imsSystemProperty
         );
 

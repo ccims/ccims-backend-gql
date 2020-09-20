@@ -12,7 +12,6 @@ import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { Issue } from "./Issue";
-import { createJSDocThisTag } from "typescript";
 
 /**
  * the specification of the table which contains components
@@ -25,6 +24,8 @@ export const ComponentInterfaceTableSpecification: NodeTableSpecification<Compon
  * a component can have interfaces, which can be locations for issues
  */
 export class ComponentInterface extends NamedNode<ComponentInterface> implements IssueLocation {
+
+    public static readonly deletedId = "deleted_5";
 
     /**
      * property for issues which are located on this component
@@ -43,9 +44,8 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
                 command.ids = [id];
                 return command;
             },
-            componentInterface => {
-                return new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand());
-            },
+            componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand()),
+            undefined,
             (component, componentInterface) => component.interfacesProperty
         );
 

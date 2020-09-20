@@ -25,7 +25,8 @@ export class UnassignedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removedAssignee", new LoadUsersCommand())
+            unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removedAssignee", new LoadUsersCommand()),
+            User.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

@@ -86,8 +86,8 @@ CREATE TABLE issue_timeline_unlinkEvent (
 
 CREATE TABLE issue_timeline_comment (
     LIKE issue_timelineItem,
-    last_edited_at timestamp,
-    last_edited_by id,
+    last_edited_at timestamp NOT NULL,
+    last_edited_by id NOT NULL,
     body varchar(65536) NOT NULL 
 ) INHERITS (issue_timelineItem);
 

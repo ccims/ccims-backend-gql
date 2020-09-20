@@ -25,7 +25,8 @@ export class LinkEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue", new LoadIssuesCommand())
+            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue", new LoadIssuesCommand()),
+            Issue.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

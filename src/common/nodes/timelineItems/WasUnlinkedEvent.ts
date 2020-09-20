@@ -25,7 +25,8 @@ export class WasUnlinkedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by", new LoadIssuesCommand())
+            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by", new LoadIssuesCommand()),
+            Issue.deletedId
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,
