@@ -6,3 +6,7 @@ INSERT INTO component_interface (id, name, description, host_component_id) VALUE
 INSERT INTO issue_issue (id, metadata, deleted, created_at, created_by, title, updated_at, is_open, category, body_id) VALUES ('deleted_6', '{"entries":[]}', true, now(), 'deleted_0', 'Deleted Issue', now(), false, 'UNCLASSIFIED', 'deleted_7');
 INSERT INTO issue_timeline_body (id, metadata, deleted, created_at, created_by, issue, last_edited_at, last_edited_by, body, initial_title) VALUES ('deleted_7', '{"entries":[]}', true, now(), 'deleted_0', 'deleted_6', now(), 'deleted_0', '', 'Deleted Issue');
 INSERT INTO issue_label (id, metadata, deleted, created_at, created_by, name, description, color) VALUES ('deleted_8', '{"entries":[]}', true, now(), 'deleted_0', 'Deleted Label', 'A Label which was deleted', '#FFFFFFFF');
+
+INSERT INTO public.users(
+	id, username, displayname, pw_hash, email, permissions)
+	VALUES ('0', 'root', 'Root', '', null, '{"global":{"addRemoveProjects":true,"addRemoveComponents":true,"globalAdmin":true},"project":[],"component":[]}');
