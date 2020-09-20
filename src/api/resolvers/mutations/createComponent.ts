@@ -4,26 +4,18 @@ import GraphQLCreateComponentPayload from "../types/mutations/payloads/GraphQLCr
 import GraphQLCreateComponentInput from "../types/mutations/inputs/GraphQLCreateComponentInput";
 import { Component } from "../../../common/nodes/Component";
 import { User } from "../../../common/nodes/User";
+import baseMutation from "./baseMutation";
 
-let createComponent: GraphQLFieldConfig<any, ResolverContext> | undefined;
-export default () => {
-    if (createComponent === undefined) {
-        createComponent = {
-            type: GraphQLCreateComponentPayload,
-            description: "Creates a new component",
-            args: {
-                input: {
-                    type: GraphQLCreateComponentInput,
-                    description: "The data for the mutation"
-                }
-            },
-            resolve: (source, args, context, info) => {
-                if (context.dbManager) {
+function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
+    const base = baseMutation(GraphQLCreateComponentPayload, GraphQLCreateComponentInput, "Creates a new component in the ccims and adds it to the given users");
+    return {
+        ...base,
+        resolve: async (src, args, context, info) => {
+            const input = base.argsCheck(args);
 
-                }
-                return undefined;
-            }
-        };
-    }
-    return createComponent;
-};
+            /*const component = await Component.create();
+            return base.createResult(args, {component});*/
+        }
+    };
+}
+export default createComponent;

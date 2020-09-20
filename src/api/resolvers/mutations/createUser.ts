@@ -10,14 +10,14 @@ function createUser(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateUserPayload, GraphQLCreateUserInput, "Creates a new user in the system");
     return {
         ...base,
-        resolve: (src, args, context, info) => {
+        resolve: async (src, args, context, info) => {
             const input = base.argsCheck(args);
             const username = PreconditionCheck.checkString(input, "username", 100);
             const displayName = PreconditionCheck.checkString(input, "displayName", 200);
             const password = PreconditionCheck.checkString(input, "password");
             const email = PreconditionCheck.checkNullableString(input, "email", 320);
-            const user = User.create(context.dbManager, username, displayName, password, email);
-            context.dbManager.save();
+            const user = await User.create(context.dbManager, username, displayName, password, email);
+            await context.dbManager.save();
             return base.createResult(args, { user });
         }
     };

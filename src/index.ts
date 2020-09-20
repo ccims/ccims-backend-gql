@@ -12,16 +12,16 @@ export function functionToTest(a: number, b: number): number {
     return a + b;
 }
 
-
-// const syncService = new SyncService();
-if (true) {
-    const idGen = new SnowflakeGenerator();
-    const pgClient: Client = new Client(config.postgres);
-    const backendApi = new CCIMSApi(pgClient, idGen);
-    pgClient.connect().then(() => {
-        initTypeParsers(pgClient);
+(async () => {
+    // const syncService = new SyncService();
+    if (true) {
+        const idGen = new SnowflakeGenerator();
+        const pgClient: Client = new Client(config.postgres);
+        const backendApi = new CCIMSApi(pgClient, idGen);
+        await pgClient.connect()
+        await initTypeParsers(pgClient)
         backendApi.start();
-    })
-} else {
-    console.log(printSchema(ccimsSchema));
-}
+    } else {
+        console.log(printSchema(ccimsSchema));
+    }
+})();

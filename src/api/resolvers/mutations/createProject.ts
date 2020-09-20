@@ -49,12 +49,12 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             }
             const project = await Project.create(context.dbManager, name, description, owner);
             if (users.length > 1) {
-                project.usersProperty.addAll(users);
+                await project.usersProperty.addAll(users);
             }
             if (components && components.length > 1) {
-                project.componentsProperty.addAll(components);
+                await project.componentsProperty.addAll(components);
             }
-            context.dbManager.save();
+            await context.dbManager.save();
             return base.createResult(args, { project })
         }
     }
