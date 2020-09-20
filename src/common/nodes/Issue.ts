@@ -292,7 +292,7 @@ export class Issue extends SyncNode<Issue> {
 
     public readonly commentsProperty: NodeListProperty<IssueComment, Issue>;
 
-    //TODO
+    // TODO
     private static readonly commentsPropertySpecification: NodeListPropertySpecification<IssueComment, Issue> = undefined as any;
 
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
@@ -665,9 +665,9 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * delets an issueComment
-     * @param issueComment 
-     * @param atDate 
-     * @param asUser 
+     * @param issueComment
+     * @param atDate
+     * @param asUser
      */
     public async deleteComment(issueComment: IssueComment, atDate: Date, asUser: User): Promise<DeletedIssueComment | undefined> {
         if (!issueComment.isDeleted) {
@@ -684,8 +684,8 @@ export class Issue extends SyncNode<Issue> {
     /**
      * adds a user as assignee to this issue, if not already
      * @param assignee the user to assign
-     * @param atDate 
-     * @param asUser 
+     * @param atDate
+     * @param asUser
      * @returns the AssignedEvent if the user was assigned, otherwise undefined
      */
     public async assignUser(assignee: User, atDate: Date, asUser?: User): Promise<AssignedEvent | undefined> {
@@ -703,8 +703,8 @@ export class Issue extends SyncNode<Issue> {
     /**
      * removes a user as assignee
      * @param assigneeToRemove the user to unassign
-     * @param atDate 
-     * @param asUser 
+     * @param atDate
+     * @param asUser
      * @returns the event
      * @throws error if the user was not assigned to this issue
      */

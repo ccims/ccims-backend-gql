@@ -19,7 +19,7 @@ type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
 function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType, description: string): baseMutationType {
     return {
         type: payload,
-        description: description,
+        description,
         args: {
             input: {
                 type: GraphQLNonNull(input),

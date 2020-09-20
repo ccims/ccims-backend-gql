@@ -92,7 +92,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
                 if (reloadResult) {
                     this._id = reloadResult.id;
                     this._element = reloadResult;
-                    this.notifyAdded(this._element, false);
+                    await this.notifyAdded(this._element, false);
                 } else if (this._specification.deletedId) {
                     const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
                     this._databaseManager.addCommand(loadDeletedCommand);
@@ -103,7 +103,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
                     }
                     this._id = this._specification.deletedId;
                     this._element = loadDeletedCommand.getResult()[0];
-                    this.notifyAdded(this._element, false);
+                    await this.notifyAdded(this._element, false);
                 } else {
                     log(3, `self destruct ${this._node.id}`);
                     await this._node.markDeleted();

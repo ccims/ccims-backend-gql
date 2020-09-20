@@ -17,7 +17,7 @@ import { log } from "../log";
 export function graphqlHandler(): core.RequestHandler {
     const handler = new GraphQLHandler();
     return async (req: ResolverContextOptional, res: core.Response, next: core.NextFunction): Promise<any> => {
-        return await handler.handle.call(handler, req, res, next);
+        return handler.handle.call(handler, req, res, next);
     }
 }
 
