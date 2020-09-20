@@ -120,11 +120,9 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> extends Saveable {
      */
     public save(): void {
         super.save();
-        if (this.isChanged) {
-            const command = this.getSaveCommandsInternal();
-            if (command) {
-                this._databaseManager.addCommand(command);
-            }
+        const command = this.getSaveCommandsInternal();
+        if (command) {
+            this._databaseManager.addCommand(command);
         }
     }
 

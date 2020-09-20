@@ -141,7 +141,11 @@ export class DatabaseManager {
      */
     public async save(): Promise<void> {
         await this.executePendingCommands();
-        this.toSave.forEach(saveable => saveable.save());
+        this.toSave.forEach(saveable => {
+            if (saveable.isChanged) {
+                saveable.save();
+            }
+        });
         await this.executePendingCommands();
         this.toSave.clear();
     }
