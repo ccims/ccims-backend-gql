@@ -1,6 +1,7 @@
 import { Comment } from "../../../../../nodes/timelineItems/Comment";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsCommandBase";
+import { createRelationFilterBySecundary } from "../RelationFilter";
 
 export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIssueTimelineItemsCommandBase<T> {
     /**
@@ -19,9 +20,19 @@ export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIss
     public lastEditedAfter?: Date;
 
     /**
+     * Select only comments that were deited by at least one of the given users
+     */
+    public editedBy?: string[];
+
+    /**
      * filters for Comments where the body matches the provided regex
      */
     public body?: string;
+
+    /**
+     * Select only comments on issues that are assigned to at least one of these components
+     */
+    public onComponents?: string[];
 
     /**
      * adds the id condition
@@ -55,6 +66,28 @@ export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIss
                 text: `main.body ~ $${conditions.i}`,
                 values: [this.body],
             });
+            conditions.i++;
+        }
+
+        if (this.onComponents) {
+            if (this.onComponents.length === 1) {
+                conditions.conditions.push({
+                    text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=$${conditions.i})`,
+                    values: [this.onComponents[0]],
+                    priority: 6
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY($${conditions.i}))`,
+                    values: [this.onComponents],
+                    priority: 6
+                });
+            }
+            conditions.i++;
+        }
+
+        if (this.editedBy) {
+            conditions.conditions.push(createRelationFilterBySecundary("comment", "editedBy", this.editedBy, conditions.i));
             conditions.i++;
         }
 

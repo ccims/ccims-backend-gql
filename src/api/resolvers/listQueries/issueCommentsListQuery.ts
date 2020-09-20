@@ -27,11 +27,17 @@ function issueCommentsListQuery<TSource extends CCIMSNode>(
             baseQuery.addParams(cmd, args);
             cmd.onIssues = args.filterBy?.issue;
             cmd.editedBy = args.filterBy?.editedBy;
-            cmd.editedAfter = args.filterBy?.editedAfter;
-            cmd.editedBefore = args.filterBy?.editedBefore;
+            cmd.lastEditedAfter = args.filterBy?.editedAfter;
+            cmd.lastEditedBefore = args.filterBy?.editedBefore;
             cmd.body = args.filterBy?.body;
             cmd.reactions = args.filterBy?.reactions;
-            cmd.currentUserCanEdit = args.filterBy?.currentUserCanEdit;
+            if (typeof args.filterBy?.currentUserCanEdit === "boolean") {
+                if (args.filterBy?.currentUserCanEdit) {
+                    cmd.onComponents = context.user.permissions.filterComponent(permissions => permissions.editIssues || permissions.moderate || permissions.componentAdmin);
+                } else {
+                    cmd.onComponents = context.user.permissions.filterComponent(permissions => !(permissions.editIssues || permissions.moderate || permissions.componentAdmin));
+                }
+            }
             return baseQuery.createResult(src, context, cmd);
         }
     };

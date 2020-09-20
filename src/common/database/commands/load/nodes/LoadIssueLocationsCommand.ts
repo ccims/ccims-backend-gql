@@ -14,6 +14,16 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
     public hasIssueOnLocation?: string[];
 
     /**
+     * Select only issue locations that match this regex
+     */
+    public name?: string;
+
+    /**
+     * Select only issue locations that match this regex 
+     */
+    public description?: string;
+
+    /**
      * creates a new LoadIssueLocationsCommand
      */
     public constructor() {
@@ -31,6 +41,24 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
 
         if (this.hasIssueOnLocation) {
             conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
+            conditions.i++;
+        }
+
+        if (this.name) {
+            conditions.conditions.push({
+                text: `main.name ~ $${conditions.i}`,
+                values: [this.name],
+                priority: 4
+            });
+            conditions.i++;
+        }
+
+        if (this.description) {
+            conditions.conditions.push({
+                text: `main.description ~ $${conditions.i}`,
+                values: [this.description],
+                priority: 5
+            });
             conditions.i++;
         }
 

@@ -3,12 +3,12 @@ import { Issue } from "../../../../common/nodes/Issue";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import componentsListQuery from "../../listQueries/componentsListQuery";
-import locations from "../../listQueries/issue/locations";
-import timeline from "../../listQueries/issue/timeline";
 import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
+import locationsListQuery from "../../listQueries/locationsListQuery";
 import reactionsListQuery from "../../listQueries/reactionsListQuery";
+import timelineItemsListQuery from "../../listQueries/timelineListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
@@ -106,8 +106,8 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             "If no filter is given, all users will be returned", issue => issue.participantsProperty),
         pinnedOn: componentsListQuery("All components where this issue has been pinned, matching the given filter.\n" +
             "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
-        timeline: timeline(),
-        locations: locations()
+        timeline: timelineItemsListQuery("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
+        locations: locationsListQuery("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty)
     })
 };
 const GraphQLIssue = new GraphQLObjectType(issueConfig);

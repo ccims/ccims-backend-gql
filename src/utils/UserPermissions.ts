@@ -84,6 +84,26 @@ export class UserPermissions {
     }
 
     /**
+     * Returns a list of project ids where the project based permissions match the given filter.
+     * Editing this list won't change the users permissions
+     * 
+     * @param filter The filter function to determine which permissions to keep
+     */
+    public filterProject(filter: (permissions: ProjectPermission) => boolean): string[] {
+        return [...this._projectPermissions].filter(([id, permissions]) => filter(permissions)).map(([id, permissions]) => id);
+    }
+
+    /**
+     * Returns a list of component ids where the component based permissions match the given filter.
+     * Editing this list won't change the users permissions
+     * 
+     * @param filter The filter function to determine which permissions to keep
+     */
+    public filterComponent(filter: (permissions: ComponentPermission) => boolean): string[] {
+        return [...this._componentPermissions].filter(([id, permissions]) => filter(permissions)).map(([id, permissions]) => id);
+    }
+
+    /**
      * Sets the permissions of this user on the specified project and notifies the user object
      *
      * If no user was set yet, this will fail
