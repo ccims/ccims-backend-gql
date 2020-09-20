@@ -164,6 +164,18 @@ export class Project extends NamedOwnedNode<Project> {
         await project.usersProperty.add(owner);
         return project;
     }
+
+    /**
+     * marks this node as deleted
+     * this also marks this node as changed
+     */
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.componentsProperty.clear();
+            await this.usersProperty.clear();
+        }
+    }
 }
 
 /**
