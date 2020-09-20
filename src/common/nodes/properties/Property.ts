@@ -15,6 +15,11 @@ export abstract class Property<T extends CCIMSNode, V extends CCIMSNode> extends
     protected readonly _node: V;
 
     /**
+     * the current executed command
+     */
+    protected currentCommand?: Promise<any>;
+
+    /**
      * the specification of the property
      */
     private readonly specification : PropertySpecification<T, V>;

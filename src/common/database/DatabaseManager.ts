@@ -101,16 +101,17 @@ export class DatabaseManager {
      */
     public async executePendingCommands(): Promise<void> {
         if (this.pendingCommands.length > 0) {
-             try {
+            const pending = this.pendingCommands;
+            this.pendingCommands = [];
+            try {
                 await this.pgClient.query("BEGIN;");
-                await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
+                await Promise.all(pending.map(cmd => this.executeCommand(cmd)));
                 await this.pgClient.query("COMMIT;");
             } catch (e) {
                 await this.pgClient.query("ROLLBACK;");
                 log(2, "database command failed");
                 log(8, e);
             }
-            this.pendingCommands = [];
         }
     }
 

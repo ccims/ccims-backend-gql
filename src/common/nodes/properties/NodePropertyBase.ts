@@ -27,7 +27,19 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
         super(databaseManager, node, specification);
     }
 
-    protected abstract async ensureLoaded(): Promise<void>;
+    /**
+     * ensures that this property is loaded
+     */
+    protected async ensureLoaded(): Promise<void> {
+        if (this.currentCommand) {
+            await this.currentCommand;
+        }
+        this.currentCommand = this.ensureLoadedInternal();
+        await this.currentCommand;
+        this.currentCommand = undefined;
+    }
+
+    protected abstract async ensureLoadedInternal(): Promise<void>;
 
     public async markDeleted(): Promise<void> {
         await this.ensureLoaded();

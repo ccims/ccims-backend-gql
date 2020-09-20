@@ -137,9 +137,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     public async addAll(elements: T[]): Promise<void> {
-        for (const element of elements) {
-            await this.add(element);
-        }
+        await Promise.all(elements.map(element => this.add(element)));
     }
 
     /**
@@ -206,38 +204,47 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param level the level to reach
      */
     private async ensureLoadLevel(level: LoadLevel): Promise<void> {
+        if (this.currentCommand) {
+            await this.currentCommand;
+        }
         if (this._loadLevel < level) {
-            if (level === LoadLevel.Ids && this._specification.loadDynamic) {
-                if (!this._specification.loadIds) {
-                    throw new Error("necessary generator not present");
-                }
-                const getIdsCommand = this._specification.loadIds(this._node);
-                this._databaseManager.addCommand(getIdsCommand);
+            this.currentCommand = this.ensureLoadLevelInternal(level);
+            await this.currentCommand;
+            this.currentCommand = undefined;
+        }
+    }
+
+    private async ensureLoadLevelInternal(level: LoadLevel): Promise<void> {
+        if (level === LoadLevel.Ids && this._specification.loadDynamic) {
+            if (!this._specification.loadIds) {
+                throw new Error("necessary generator not present");
+            }
+            const getIdsCommand = this._specification.loadIds(this._node);
+            this._databaseManager.addCommand(getIdsCommand);
+            await this._databaseManager.executePendingCommands();
+            await this.setIds(getIdsCommand.getResult());
+        } else if (level > LoadLevel.None) {
+            if (this._loadLevel >= LoadLevel.Ids) {
+                const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
+                const loadOtherCommand = this._specification.loadFromIds(notLoadedIds, this._node);
+                this._databaseManager.addCommand(loadOtherCommand);
                 await this._databaseManager.executePendingCommands();
-                await this.setIds(getIdsCommand.getResult());
-            } else if (level > LoadLevel.None) {
-                if (this._loadLevel >= LoadLevel.Ids) {
-                    const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
-                    const loadOtherCommand = this._specification.loadFromIds(notLoadedIds, this._node);
-                    this._databaseManager.addCommand(loadOtherCommand);
-                    await this._databaseManager.executePendingCommands();
-                    loadOtherCommand.getResult().forEach(element => {
-                        this._elements.set(element.id, element);
-                        // a notify is not necessary because this was already done when the ids were loaded
-                    });
-                    notLoadedIds.forEach(id => {
-                        if (!this._elements.has(id)) {
-                            this._ids.delete(id);
-                            // a notify is not possible
-                        }
-                    });
-                    this._loadLevel = LoadLevel.Complete;
-                } else {
-                    const loadAllCommand = this._specification.loadElements(this._node);
-                    this._databaseManager.addCommand(loadAllCommand);
-                    await this._databaseManager.executePendingCommands();
-                    await this.setElements(loadAllCommand.getResult());
-                }
+                loadOtherCommand.getResult().forEach(element => {
+                    this._elements.set(element.id, element);
+                    // a notify is not necessary because this was already done when the ids were loaded
+                });
+                notLoadedIds.forEach(id => {
+                    if (!this._elements.has(id)) {
+                        this._ids.delete(id);
+                        // a notify is not possible
+                    }
+                });
+                this._loadLevel = LoadLevel.Complete;
+            } else {
+                const loadAllCommand = this._specification.loadElements(this._node);
+                this._databaseManager.addCommand(loadAllCommand);
+                await this._databaseManager.executePendingCommands();
+                await this.setElements(loadAllCommand.getResult());
             }
         }
     }

@@ -77,7 +77,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * ensures that this property is loaded
      */
-    protected async ensureLoaded(): Promise<void> {
+    protected async ensureLoadedInternal(): Promise<void> {
         if (!this._element && this._id) {
             const loadCommand = this._specification.loadFromId(this._id, this._node);
             this._databaseManager.addCommand(loadCommand);
