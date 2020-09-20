@@ -7,6 +7,7 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
 import { LoadUsersCommand } from "./LoadUsersCommand";
 import { LoadAddedToComponentEventsCommand } from "./timeline/LoadAddedToComponentEventsCommand";
+import { LoadAssignedEventsCommand } from "./timeline/LoadAssignedEventsCommand";
 import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
 import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEvents";
 import { LoadDeletedIssueCommentsCommand } from "./timeline/LoadDeletedIssueCommentsCommand";
@@ -15,6 +16,7 @@ import { LoadLinkEventsCommand } from "./timeline/LoadLinkEventsCommand";
 import { LoadPinnedEventsCommand } from "./timeline/LoadPinnedEventsCommand";
 import { LoadRemovedFromComponentEventsCommand } from "./timeline/LoadRemovedFromComponentEventsCommand";
 import { LoadRenamedTitleEventsCommand } from "./timeline/LoadRenamedTitleEventsCommand";
+import { LoadUnassignedEventsCommand } from "./timeline/LoadUnassignedEventsCommand";
 import { LoadUnlinkEventsCommand } from "./timeline/LoadUnlinkEventsCommand";
 import { LoadUnpinnedEventsCommand } from "./timeline/LoadUnpinnedEventsCommand";
 import { LoadWasLinkedEventsCommand } from "./timeline/LoadWasLinkedEventsCommand";
@@ -42,7 +44,9 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_pinnedEvent", () => new LoadPinnedEventsCommand()],
     ["issue_timeline_unpinnedEvent", () => new LoadUnpinnedEventsCommand()],
     ["issue_timeline_renamedTitleEvent", () => new LoadRenamedTitleEventsCommand()],
-    ["issue_timeline_deletedIssueComment", () => new LoadDeletedIssueCommentsCommand()]
+    ["issue_timeline_deletedIssueComment", () => new LoadDeletedIssueCommentsCommand()],
+    ["issue_timeline_assignedEvent", () => new LoadAssignedEventsCommand()],
+    ["issue_timeline_unassignedEvent", () => new LoadUnassignedEventsCommand()]
 ]);
 
 /**
