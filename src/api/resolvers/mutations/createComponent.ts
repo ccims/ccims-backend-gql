@@ -76,7 +76,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
             owner.permissions.setComponentPermissions(component.id, new ComponentPermission(true, true, true, true, true));
             await context.dbManager.save();
-            return base.createResult(args, { component });
+            return base.createResult(args, { component, ims });
         }
     };
 }
