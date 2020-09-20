@@ -1,3 +1,5 @@
+import { ImsType } from "../../../common/nodes/ImsSystem";
+
 export default class PreconditionCheck {
     public static checkString(args: any, property: string, maxLength?: number): string {
         const checked = PreconditionCheck.checkNullableString(args, property, maxLength);
@@ -49,5 +51,26 @@ export default class PreconditionCheck {
             }
             return list;
         }
+    }
+
+    public static checkNonNull(args: any, property: string): any {
+        if (typeof args[property] === "undefined" || args[property] === null) {
+            throw new Error(`The ${property} input must be set and can't be undefined`);
+        }
+        return args[property];
+    }
+
+    public static checkEnum<TEnum>(args: any, property: string, enumType: any): TEnum {
+        if (!args[property]) {
+            throw new Error(`The ${property} input must be set`);
+        }
+        if (!Object.keys(enumType).includes(args[property])) {
+            const key = Object.values(enumType).find(args[property]);
+            if (key) {
+                return key as TEnum;
+            }
+            throw new Error(`The ${property} input must be a valid enum item`);
+        }
+        return args[property];
     }
 }

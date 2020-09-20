@@ -19,7 +19,10 @@ import { Issue } from "./Issue";
  */
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
-        RowSpecification.fromProperty("deleted", "isDeleted"));
+        RowSpecification.fromProperty("deleted", "isDeleted"),
+        new RowSpecification("created_by", (syncNode => syncNode.createdByProperty.getId())),
+        RowSpecification.fromProperty("created_at", "createdAt")
+    );
 
 /**
  * a syncNode
@@ -52,7 +55,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @returns A promise of a user or `undefined` who created this sync node
      */
     public async createdBy(): Promise<User | undefined> {
-        return this.createdByProperty.get()
+        return await this.createdByProperty.get()
     }
 
     private readonly _createdAt: Date;

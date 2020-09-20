@@ -11,11 +11,11 @@ const createIMSInputConfig: GraphQLInputObjectTypeConfig = {
             description: "An arbitraty string to return together with the mutation result"
         },
         imsType: {
-            type: GraphQLIMSType,
+            type: GraphQLNonNull(GraphQLIMSType),
             description: "The type/system this IMS is an instance of"
         },
         endpoint: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: `The endpoint where to reach the IMS instance.
 
 In the most cases this will be a URL in the form of
@@ -29,7 +29,7 @@ See the documentation for the IMS extions for information which keys are expecte
 In rare cases depending on the IMS type this might be empty or not a URL`
         },
         connectionData: {
-            type: GraphQLJSON,
+            type: GraphQLNonNull(GraphQLJSON),
             description: `Data needed for the connection to the IMS API.
 
 See the documentation for the IMS extions for information which keys are expected.

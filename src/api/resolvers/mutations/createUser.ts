@@ -3,27 +3,23 @@ import { ResolverContext } from "../../ResolverContext";
 import GraphQLCreateUserPayload from "../types/mutations/payloads/GraphQLCreateUserPayload";
 import GraphQLCreateUserInput from "../types/mutations/inputs/GraphQLCreateUserInput";
 import { User } from "../../../common/nodes/User";
+import baseMutation from "./baseMutation";
+import PreconditionCheck from "../utils/PreconditionCheck";
 
-let createUser: GraphQLFieldConfig<any, ResolverContext> | undefined;
-export default () => {
-    if (createUser === undefined) {
-        createUser = {
-            type: GraphQLCreateUserPayload,
-            description: "Creates a new User",
-            args: {
-                input: {
-                    type: GraphQLCreateUserInput,
-                    description: "The data for the mutation"
-                }
-            },
-            /**
-             * Creates a new user from a given CreateUserInput
-             */
-            resolve: (src, args, context, info) => {
-                const user = User.create(context.dbManager, args.input.username, args.input.displayName, args.input.password, args.input.email);
-                return { clientMutationID: args.input.clientMutationID, user };
-            }
-        };
-    }
-    return createUser;
-};
+function createUser(): GraphQLFieldConfig<any, ResolverContext> {
+    const base = baseMutation(GraphQLCreateUserPayload, GraphQLCreateUserInput, "Creates a new user in the system");
+    return {
+        ...base,
+        resolve: (src, args, context, info) => {
+            const input = base.argsCheck(args);
+            const username = PreconditionCheck.checkString(input, "username", 100);
+            const displayName = PreconditionCheck.checkString(input, "displayName", 200);
+            const password = PreconditionCheck.checkString(input, "password");
+            const email = PreconditionCheck.checkNullableString(input, "email", 320);
+            const user = User.create(context.dbManager, username, displayName, password, email);
+            context.dbManager.save();
+            return base.createResult(args, { user });
+        }
+    };
+}
+export default createUser;

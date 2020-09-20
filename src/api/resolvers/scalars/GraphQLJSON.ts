@@ -2,7 +2,7 @@ import { GraphQLScalarType, ValueNode, astFromValue, Kind, GraphQLScalarTypeConf
 
 const color: GraphQLScalarTypeConfig<any, string> = {
     name: "JSON",
-    description: "The \`JSON\`scalar is a string in the a JSON format\n\n" +
+    description: "The \`JSON\` scalar is a string in the a JSON format\n\n" +
         "Example: `{\"numbers\": [1,2,3,4]}`",
     serialize: (value: any): string => {
         return JSON.stringify(value);
