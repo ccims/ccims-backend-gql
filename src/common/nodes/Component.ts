@@ -255,14 +255,14 @@ export class Component extends NamedOwnedNode implements IssueLocation {
         return component;
     }
 
-        /**
+    /**
      * marks this node as deleted
      * this also marks this node as changed
      */
     public async markDeleted(): Promise<void> {
         if(!this.isDeleted) {
             await super.markDeleted();
-            
+            await Promise.all((await this.interfacesProperty.getElements()).map(componentInterface => componentInterface.markDeleted()));
         }
     }
 }

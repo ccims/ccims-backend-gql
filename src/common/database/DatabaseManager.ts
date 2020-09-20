@@ -139,7 +139,7 @@ export class DatabaseManager {
     /**
      * saves all nodes
      */
-    public async save() {
+    public async save(): Promise<void> {
         await this.executePendingCommands();
         this.toSave.forEach(saveable => saveable.save());
         await this.executePendingCommands();
@@ -150,7 +150,7 @@ export class DatabaseManager {
      * adds a savable to save
      * @param saveable the saveable which will be saved with the next save
      */
-    public addChanged(saveable: Saveable) {
+    public addChanged(saveable: Saveable): void {
         this.toSave.add(saveable);
     }
 }

@@ -70,7 +70,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     public async markDeleted(): Promise<void> {
         if(!this.isDeleted) {
             await super.markDeleted();
-            this.ownerProperty.markDeleted();
+            await this.ownerProperty.markDeleted();
         }
     }
 }
