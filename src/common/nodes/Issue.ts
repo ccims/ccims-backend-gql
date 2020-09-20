@@ -24,6 +24,7 @@ import { ReactionGroup } from "./ReactionGroup";
 import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
+import { AssignedEvent } from "./timelineItems/AssignedEvent";
 import { Body } from "./timelineItems/Body";
 import { CategoryChangedEvent } from "./timelineItems/CategoryChangedEvent";
 import { DeletedIssueComment } from "./timelineItems/DeletedIssueComment";
@@ -34,6 +35,7 @@ import { PinnedEvent } from "./timelineItems/PinnedEvent";
 import { RemovedFromComponentEvent } from "./timelineItems/RemovedFromComponentEvent";
 import { RemovedFromLocationEvent } from "./timelineItems/RemovedFromLocationEvent";
 import { RenamedTitleEvent } from "./timelineItems/RenamedTitleEvent";
+import { UnassignedEvent } from "./timelineItems/UnassignedEvent";
 import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
 import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
@@ -673,6 +675,44 @@ export class Issue extends SyncNode<Issue> {
             return deletedIssueComment;
         } else {
             return undefined;
+        }
+    }
+
+    /**
+     * adds a user as assignee to this issue, if not already
+     * @param assignee the user to assign
+     * @param atDate 
+     * @param asUser 
+     * @returns the AssignedEvent if the user was assigned, otherwise undefined
+     */
+    public async assignUser(assignee: User, atDate: Date, asUser?: User): Promise<AssignedEvent | undefined> {
+        if (!(await this.assigneesProperty.hasId(assignee.id))) {
+            await this.assigneesProperty.add(assignee);
+            const event = await AssignedEvent.create(this._databaseManager, asUser, atDate, this, assignee);
+            await this.participatedAt(asUser, atDate);
+            await this.participatedAt(assignee, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * removes a user as assignee
+     * @param assigneeToRemove the user to unassign
+     * @param atDate 
+     * @param asUser 
+     * @returns the event
+     * @throws error if the user was not assigned to this issue
+     */
+    public async unassignUser(assigneeToRemove: User, atDate: Date, asUser?: User): Promise<UnassignedEvent> {
+        if (await this.assigneesProperty.hasId(assigneeToRemove.id)) {
+            await this.assigneesProperty.remove(assigneeToRemove);
+            const event = await UnassignedEvent.create(this._databaseManager, asUser, atDate, this, assigneeToRemove);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The unser to unassigned in not assigned to the issue");
         }
     }
 
