@@ -23,8 +23,8 @@ import { LoadUsersCommand } from "../../common/database/commands/load/nodes/Load
  */
 export function jwtVerifier(secret?: string): core.RequestHandler {
     const verifier = new JWTVerifier(secret);
-    return (req: core.Request, res: core.Response, next: core.NextFunction) => {
-        verifier.handle.call(verifier, req, res, next);
+    return async (req: core.Request, res: core.Response, next: core.NextFunction) => {
+        await verifier.handle.call(verifier, req, res, next);
     };
 }
 

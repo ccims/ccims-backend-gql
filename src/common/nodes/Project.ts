@@ -163,6 +163,7 @@ export class Project extends NamedOwnedNode<Project> {
         project.markNew();
         databaseManager.addCachedNode(project);
         await owner.ownedNodesProperty.add(project);
+        await project.usersProperty.add(owner);
         return project;
     }
 }
