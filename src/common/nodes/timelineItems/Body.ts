@@ -9,8 +9,8 @@ import { Comment, CommentTableSpecification } from "./Comment";
  * does not specifiy the metadata, because this is up to the save method
  */
 export const BodyTableSpecification: NodeTableSpecification<Body>
-   = new NodeTableSpecification<Body>("issue_timeline_body", CommentTableSpecification,
-   RowSpecification.fromProperty("initial_title", "initialTitle"));
+    = new NodeTableSpecification<Body>("issue_timeline_body", CommentTableSpecification,
+        RowSpecification.fromProperty("initial_title", "initialTitle"));
 
 export class Body extends Comment<Body> {
 
@@ -41,6 +41,6 @@ export class Body extends Comment<Body> {
      * marks this noda as new, and therefore also as changed
      */
     markNew(): void {
-        this.markNew();
+        super.markNew();
     }
 }

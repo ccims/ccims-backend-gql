@@ -47,6 +47,7 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
             const tableName = row.relname;
             const command: LoadNodeListCommand<T> = commands.get(tableName) ?? this.getLoadCommand(tableName);
             command.ids?.push(id);
+            commands.set(id, command);
         });
         const commandsList = Array.from(commands.values());
         this.commands = commandsList;

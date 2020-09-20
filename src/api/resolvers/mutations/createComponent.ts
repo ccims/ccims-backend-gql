@@ -28,7 +28,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const projectIds = new Set(PreconditionCheck.checkNullableStringList(input, "projects", 32));
             const consumedInterfacesIds = new Set(PreconditionCheck.checkNullableStringList(input, "consumedInterfaces", 32));
 
-            if (Array.from(projectIds).some(id => context.user.permissions.getProjectPermissions(id).addRemoveComponents) && !context.user.permissions.globalPermissions.globalAdmin) {
+            if (Array.from(projectIds).some(id => !context.user.permissions.getProjectPermissions(id).addRemoveComponents) && !context.user.permissions.globalPermissions.globalAdmin) {
                 throw new Error("You are not permitted to add the component to at least one of the specified pojects");
             }
 

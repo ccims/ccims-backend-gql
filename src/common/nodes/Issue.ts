@@ -40,6 +40,9 @@ import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
 import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
+import MarkdownIt from "markdown-it";
+import { config } from "../../config/Config";
+const mdRenderer = new MarkdownIt(config.markdown);
 
 
 /**
@@ -56,6 +59,7 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
         RowSpecification.fromProperty("due_date", "dueDate"),
         RowSpecification.fromProperty("estimated_time", "estimatedTime"),
         RowSpecification.fromProperty("spent_time", "spentTime"),
+        RowSpecification.fromProperty("updated_at", "updatedAt"),
         new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
 
 
@@ -102,6 +106,14 @@ export class Issue extends SyncNode<Issue> {
      */
     public async body(): Promise<string> {
         return (await this.bodyProperty.get()).body
+    }
+
+    /**
+     * Async getter function for the bodyProperty but rendered out to html returning the rendered version of the markdown
+     * @returns A promise of the body __html__ of this issue
+     */
+    public async bodyRendered(): Promise<string> {
+        return mdRenderer.render(await this.body());
     }
 
 
@@ -603,7 +615,7 @@ export class Issue extends SyncNode<Issue> {
         if (!(await this.componentsProperty.hasId(component.id))) {
             if (!(await this.pinnedOnProperty.hasId(component.id))) {
                 await this.pinnedOnProperty.add(component);
-                const event =  await PinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
+                const event = await PinnedEvent.create(this._databaseManager, asUser, atDate, this, component);
                 await this.participatedAt(asUser, atDate);
                 return event;
             } else {

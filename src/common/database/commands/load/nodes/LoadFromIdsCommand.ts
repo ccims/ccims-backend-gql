@@ -21,6 +21,8 @@ import { LoadUnlinkEventsCommand } from "./timeline/LoadUnlinkEventsCommand";
 import { LoadUnpinnedEventsCommand } from "./timeline/LoadUnpinnedEventsCommand";
 import { LoadWasLinkedEventsCommand } from "./timeline/LoadWasLinkedEventsCommand";
 import { LoadWasUnlinkedEventsCommand } from "./timeline/LoadWasUnlinkedEventsCommand";
+import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
+import { LoadLabelsCommand } from "./LoadLabelsCommand";
 
 /**
  * map with method to create command for each table name
@@ -33,6 +35,7 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["users", () => new LoadUsersCommand()],
     ["issue_timeline_body", () => new LoadBodiesCommand()],
     ["issue_issue", () => new LoadIssuesCommand()],
+    ["issue_label", () => new LoadLabelsCommand()],
     ["issue_timeline_categoryChangedEvent", () => new LoadCategoryChangedEventsCommand()],
     ["issue_timeline_addedToComponentEvent", () => new LoadAddedToComponentEventsCommand()],
     ["issue_timeline_removedFromComponentEvent", () => new LoadRemovedFromComponentEventsCommand()],

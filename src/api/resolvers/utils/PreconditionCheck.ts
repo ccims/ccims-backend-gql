@@ -73,4 +73,53 @@ export default class PreconditionCheck {
         }
         return args[property];
     }
+
+    public static checkNullableDate(args: any, property: string, earliest?: Date, latest?: Date): Date | undefined {
+        if (typeof args[property] === "undefined") {
+            return undefined;
+        } else if (typeof args[property] === "object" && args[property] instanceof Date) {
+            const date: Date = args[property];
+            if (earliest && earliest > date) {
+                throw new Error(`The ${property} input must be a date after ${earliest.toISOString()}`);
+            }
+            if (latest && latest < date) {
+                throw new Error(`The ${property} input must be a date before ${latest.toISOString()}`);
+            }
+            if (new Date(0) <= date) {
+                return date;
+            }
+        }
+        throw new Error(`The type given for the ${property} input must be a date after ${new Date(0).toISOString()} or undefined`);
+    }
+
+    public static checkDate(args: any, property: string, earliest?: Date, latest?: Date): Date {
+        const date = this.checkNullableDate(args, property, earliest, latest);
+        if (typeof date === "undefined") {
+            throw new Error(`The ${property} input must be a date and can't be \`undefined\``);
+        }
+        return date;
+    }
+
+    public static checkNullableTimespan(args: any, property: string, maxTimespan?: number): number | undefined {
+        if (typeof args[property] === "undefined") {
+            return undefined;
+        } else if (typeof args[property] === "number") {
+            const timespan: number = args[property];
+            if (!Number.isSafeInteger(timespan)) {
+                throw new Error(`The ${property} input must be a integer number`);
+            }
+            if (!isFinite(timespan) || timespan < 0) {
+                throw new Error(`The ${property} input must be a finite number >=0`);
+            }
+        }
+        throw new Error(`The ${property} input must be a valid timepan (whole number in milliseconds) greater than 0 or \`undefined\``);
+    }
+
+    public static checkTimespan(args: any, property: string, maxTimespan?: number): number {
+        const timespan = this.checkTimespan(args, property, maxTimespan);
+        if (typeof timespan === "undefined") {
+            throw new Error(`The ${property} input must be a non null timespan (whole number in milliseconds)`);
+        }
+        return timespan;
+    }
 }

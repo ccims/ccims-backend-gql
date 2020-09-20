@@ -5,6 +5,7 @@ import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { initTypeParsers } from "./common/database/DatabaseManager";
 import { config } from "./config/Config";
 import { SnowflakeGenerator } from "./utils/Snowflake";
+import MarkdownIt from "markdown-it";
 
 console.log("Hello world");
 
