@@ -7,8 +7,8 @@ INSERT INTO public.project(
 	VALUES ('1', 'Project1', '0', 'This is a test');
 	
 INSERT INTO public.relation_user_project(
-	user_id, project_id, added_date)
-	VALUES ('0', '1', 'today');
+	user_id, project_id)
+	VALUES ('0', '1');
 	
 INSERT INTO public.component(
 	id, name, description, owner_user_id, imssystem_id)
