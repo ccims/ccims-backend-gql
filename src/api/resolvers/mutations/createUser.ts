@@ -16,6 +16,9 @@ export default () => {
                     description: "The data for the mutation"
                 }
             },
+            /**
+             * Creates a new user from a given CreateUserInput
+             */
             resolve: (src, args, context, info) => {
                 const user = User.create(context.dbManager, args.input.username, args.input.displayName, args.input.password, args.input.email);
                 return { clientMutationID: args.input.clientMutationID, user };
