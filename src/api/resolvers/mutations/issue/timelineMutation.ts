@@ -40,7 +40,7 @@ type timelineMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     /**
      * Executes the given load command and checks the users permission for hat issue. If positive, returns the issue
      */
-    getIssue: (cmd: LoadIssuesCommand, context: ResolverContext, neededPermissions: (permissions: ComponentPermission) => boolean) => Promise<Issue>;
+    getIssue: (cmd: LoadIssuesCommand, context: ResolverContext, neededPermissions: (permissions: ComponentPermission, issue: Issue) => boolean) => Promise<Issue>;
 };
 
 function timelineMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType, description: string): timelineMutationType {
@@ -48,22 +48,22 @@ function timelineMutation(payload: GraphQLObjectType, input: GraphQLInputObjectT
     return {
         ...base,
         initTimelineMutation: (args: any, context: ResolverContext): { cmd: LoadIssuesCommand, input: any } => {
-            const input = base.argsCheck(args);
-            const issueId = PreconditionCheck.checkString(input, "issue", 32);
+            const inputArgs = base.argsCheck(args);
+            const issueId = PreconditionCheck.checkString(inputArgs, "issue", 32);
             const issueCmd = new LoadIssuesCommand();
             issueCmd.ids = [issueId];
-            return { cmd: issueCmd, input };
+            return { cmd: issueCmd, input: inputArgs };
         },
-        getIssue: async (cmd: LoadIssuesCommand, context: ResolverContext, neededPermissions: (permissions: ComponentPermission) => boolean): Promise<Issue> => {
+        getIssue: async (cmd: LoadIssuesCommand, context: ResolverContext, neededPermissions: (permissions: ComponentPermission, issue: Issue) => boolean): Promise<Issue> => {
             context.dbManager.addCommand(cmd);
             await context.dbManager.executePendingCommands();
             if (cmd.getResult().length !== 1) {
                 throw new Error(`The given id is no valid issue id`);
             }
             const issue = cmd.getResult()[0];
-            if (!(await issue.componentsProperty.getIds()).some(id => {
+            if (!context.user.permissions.globalPermissions.globalAdmin && !(await issue.componentsProperty.getIds()).some(id => {
                 const perm = context.user.permissions.getComponentPermissions(id);
-                return neededPermissions(perm);
+                return neededPermissions(perm, issue);
             })) {
                 throw new Error(`You have to have the permission to perform this mutation on the issue`);
             }

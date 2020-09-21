@@ -20,7 +20,7 @@ function addAssignee(): GraphQLFieldConfig<any, ResolverContext> {
             userCmd.ids = [userId];
             context.dbManager.addCommand(userCmd);
 
-            const issue = await base.getIssue(cmd, context, perm => perm.componentAdmin || perm.editIssues || perm.moderate);
+            const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id) || perm.moderate);
 
             if (userCmd.getResult().length !== 1) {
                 throw new Error(`The given id is no valid user id`);
