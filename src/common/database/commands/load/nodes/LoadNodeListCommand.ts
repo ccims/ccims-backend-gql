@@ -187,12 +187,17 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     protected generateQueryEnd(i: number): QueryPart {
         if (this.limit && !this.countMode) {
             return {
-                text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
+                text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i};`,
                 values: [this.limit + 1]
+            }
+        } else if (!this.countMode) {
+            return {
+                text: "ORDER BY main.id;",
+                values: []
             }
         } else {
             return {
-                text: "ORDER BY main.id",
+                text: ";",
                 values: []
             }
         }
