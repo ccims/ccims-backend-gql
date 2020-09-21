@@ -63,15 +63,15 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onComponents) {
+        if (this.onComponents !== undefined) {
             conditions.conditions.push(createStringListFilter("host_component_id", this.onComponents, conditions.i));
             conditions.i++;
         }
-        if (this.consumedByComponent) {
+        if (this.consumedByComponent !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "consumedComponentInterface", this.consumedByComponent, conditions.i));
             conditions.i++;
         }
-        if (this.hasIssueOnLocation) {
+        if (this.hasIssueOnLocation !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }

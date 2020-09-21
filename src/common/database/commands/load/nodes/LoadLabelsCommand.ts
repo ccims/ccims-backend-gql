@@ -68,7 +68,7 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.colors) {
+        if (this.colors !== undefined) {
             if (this.colors.length === 1) {
                 conditions.conditions.push({
                     text: `main.color=$${conditions.i}`,
@@ -85,7 +85,7 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
             conditions.i++;
         }
 
-        if (this.onProjects) {
+        if (this.onProjects !== undefined) {
             if (this.onProjects.length === 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
@@ -102,12 +102,12 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
             conditions.i++;
         }
 
-        if (this.onComponents) {
+        if (this.onComponents !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "label", this.onComponents, conditions.i));
             conditions.i++;
         }
 
-        if (this.assignedToIssues) {
+        if (this.assignedToIssues !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issue", "label", this.assignedToIssues, conditions.i));
             conditions.i++;
         }

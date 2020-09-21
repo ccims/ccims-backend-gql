@@ -39,12 +39,12 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.hasIssueOnLocation) {
+        if (this.hasIssueOnLocation !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }
 
-        if (this.name) {
+        if (this.name !== undefined) {
             conditions.conditions.push({
                 text: `main.name ~ $${conditions.i}`,
                 values: [this.name],
@@ -53,7 +53,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
             conditions.i++;
         }
 
-        if (this.description) {
+        if (this.description !== undefined) {
             conditions.conditions.push({
                 text: `main.description ~ $${conditions.i}`,
                 values: [this.description],

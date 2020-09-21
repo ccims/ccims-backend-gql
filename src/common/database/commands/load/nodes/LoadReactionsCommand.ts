@@ -61,7 +61,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.reaction) {
+        if (this.reaction !== undefined) {
             conditions.conditions.push({
                 text: `main.reaction ~ $${conditions.i}`,
                 values: [this.reaction],
@@ -70,7 +70,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
             conditions.i++;
         }
 
-        if (this.ofOrigin) {
+        if (this.ofOrigin !== undefined) {
             if (this.ofOrigin.length === 1) {
                 conditions.conditions.push({
                     text: `main.origin=$${conditions.i}`,
@@ -87,7 +87,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
             conditions.i++;
         }
 
-        if (this.users) {
+        if (this.users !== undefined) {
             if (this.users.length === 1) {
                 conditions.conditions.push({
                     text: `main.users[i]=$${conditions.i}`,

@@ -60,9 +60,9 @@ export default class PreconditionCheck {
         return args[property];
     }
 
-    public static checkEnum<TEnum>(args: any, property: string, enumType: any): TEnum {
-        if (!args[property]) {
-            throw new Error(`The ${property} input must be set`);
+    public static checkNullableEnum<TEnum>(args: any, property: string, enumType: any): TEnum | undefined {
+        if (typeof args[property] === "undefined") {
+            return undefined;
         }
         if (!Object.values(enumType).includes(args[property])) {
             const value = enumType[args[property]];
@@ -72,6 +72,14 @@ export default class PreconditionCheck {
             throw new Error(`The ${property} input must be a valid enum item`);
         }
         return args[property];
+    }
+
+    public static checkEnum<TEnum>(args: any, property: string, enumType: any): TEnum {
+        const value = this.checkNullableEnum<TEnum>(args, property, enumType);
+        if (typeof value === "undefined") {
+            throw new Error(`The ${property} input must be set`);
+        }
+        return value;
     }
 
     public static checkNullableDate(args: any, property: string, earliest?: Date, latest?: Date): Date | undefined {

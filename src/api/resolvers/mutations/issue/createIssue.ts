@@ -19,7 +19,7 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const title = PreconditionCheck.checkString(input, "title", 256);
             const body = PreconditionCheck.checkNullableString(input, "body", 65536) ?? "";
             const componentIDs = new Set(PreconditionCheck.checkStringList(input, "componentIDs", 32));
-            const category = PreconditionCheck.checkEnum<IssueCategory>(input, "category", IssueCategory);
+            const category = PreconditionCheck.checkNullableEnum<IssueCategory>(input, "category", IssueCategory) ?? IssueCategory.Unclassified;
             const labelIds = new Set(PreconditionCheck.checkNullableStringList(input, "labels", 32));
             const assigneeIds = new Set(PreconditionCheck.checkNullableStringList(input, "assignees", 32));
             const locationIds = new Set(PreconditionCheck.checkNullableStringList(input, "locations", 32));
