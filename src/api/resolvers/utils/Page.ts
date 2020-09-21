@@ -23,6 +23,11 @@ export class Page<TNode extends CCIMSNode> {
     public readonly pageInfo: PageInfo;
 
     /**
+     * The total number of elements on the page; TODO: Add actual count; this is temporary
+     */
+    public readonly totalCount: number;
+
+    /**
      *
      * @param hasNext Weather there is another page with th current filter
      * @param hasPrev Weather there is a previous page with the current filter
@@ -35,6 +40,7 @@ export class Page<TNode extends CCIMSNode> {
         // TODO: Calculate totalCound and hasNext/hasPrev for usage in page
         this.nodes = nodes.concat();
         this.edges = nodes.map(node => ({ cursor: node.id, node }));
+        this.totalCount = nodes.length;
         if (nodes.length > 0) {
             this.pageInfo = new PageInfo(hasNext, hasPrev, nodes[0].id, nodes[nodes.length - 1].id);
         } else {

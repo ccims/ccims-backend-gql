@@ -67,11 +67,11 @@ const issueFilterConfig: GraphQLInputObjectTypeConfig = {
         },
         linksIssues: {
             type: GraphQLBoolean,
-            description: "If given, filters for issues which do/don't link other issues"
+            description: "If given, filters for issues which do/don't link __to__ other issues"
         },
         linkedIssues: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The issue must link at least one of the issues with the given ids"
+            description: "The issue must link __to__ at least one of the issues with the given ids"
         },
         reactions: {
             type: GraphQLList(GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLString)))),

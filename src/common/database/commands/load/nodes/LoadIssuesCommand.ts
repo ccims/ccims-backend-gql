@@ -88,6 +88,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public linkedByIssues?: string[];
 
     /**
+     * Select only issues, that link to at least one other issue
+     */
+    public linksToAnyIssues?: boolean;
+
+    /**
      * Select only issues that have all of the reactions in one of the given list entries on their body
      * TODO
      */
@@ -308,6 +313,21 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.linksToIssues) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "linkedIssue", this.linksToIssues, conditions.i));
             conditions.i++;
+        }
+        if (typeof this.linksToAnyIssues !== "undefined") {
+            if (this.linksToAnyIssues) {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
+                    values: [],
+                    priority: 4
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.id!=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
+                    values: [],
+                    priority: 4
+                });
+            }
         }
         if (this.labels) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "label", this.labels, conditions.i));

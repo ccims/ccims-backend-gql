@@ -121,7 +121,13 @@ export class DatabaseManager {
      */
     private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
         const commandConfig = command.getQueryConfig();
-        const result = await this.pgClient.query(commandConfig);
+        let result;
+        try {
+            result = await this.pgClient.query(commandConfig);
+        } catch (e) {
+            console.log("blub")
+            throw e;
+        }
         const followUpCommands = command.setDatabaseResult(this, result);
         await Promise.all(followUpCommands.map(cmd => this.executeCommand(cmd)));
         command.notifyFollowUpCommandsResult(this, followUpCommands);

@@ -20,13 +20,13 @@ function createFilter(tableName: string, primary: string, secundary: string, fil
     if (ids.length === 1) {
         return {
             priority: 2,
-            text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=$${i})`,
+            text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary}_id FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}_id=$${i})`,
             values: [ids[0]]
         }
     } else {
         return {
             priority: 2,
-            text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=ANY($${i}))`,
+            text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary}_id FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}_id=ANY($${i}))`,
             values: [ids]
         }
     }
