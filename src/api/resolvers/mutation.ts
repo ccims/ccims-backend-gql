@@ -5,6 +5,7 @@ import issueMutations from "./issueMutations";
 import createProject from "./mutations/createProject";
 import createComponent from "./mutations/createComponent";
 import createUser from "./mutations/createUser";
+import createLabel from "./mutations/createLabel";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -14,7 +15,8 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         ...issueMutations,
         createProject: createProject(),
         createComponent: createComponent(),
-        createUser: createUser()
+        createUser: createUser(),
+        createLabel: createLabel()
     })
 };
 const mutation = new GraphQLObjectType(mutationConfig);
