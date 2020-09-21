@@ -128,9 +128,14 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
                 text: `ORDER BY main.created_at ${this.first ? "ASC" : "DESC"}, main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
                 values: [this.limit + 1]
             }
+        } else if (!this.countMode) {
+            return {
+                text: "ORDER BY main.created_at ASC, main.id ASC;",
+                values: []
+            }
         } else {
             return {
-                text: "ORDER BY main.created_at ASC, main.id ASC",
+                text: ";",
                 values: []
             }
         }

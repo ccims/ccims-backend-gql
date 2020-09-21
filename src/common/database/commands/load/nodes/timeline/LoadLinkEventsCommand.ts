@@ -25,7 +25,7 @@ export class LoadLinkEventsCommand extends LoadIssueTimelineItemsCommandBase<Lin
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): LinkEvent {
         return new LinkEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.linked_issue,
+            resultRow.linked_issue, resultRow.deleted,
             this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 

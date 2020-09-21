@@ -2,7 +2,6 @@ import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInt, GraphQLObjectTy
 import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import { Page } from "../utils/Page";
 
@@ -103,7 +102,7 @@ function nodeListQuery<TSource extends CCIMSNode, TNode extends CCIMSNode>(
                 await context.dbManager.executePendingCommands();
                 result = cmd.getResult();
             }
-            return new Page(false, false, result, cmd);
+            return new Page(cmd.hasNext, cmd.hasPrevious, result, cmd, context.dbManager);
         }
     };
 };

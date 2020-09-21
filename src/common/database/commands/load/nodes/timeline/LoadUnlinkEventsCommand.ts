@@ -25,7 +25,7 @@ export class LoadUnlinkEventsCommand extends LoadIssueTimelineItemsCommandBase<U
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnlinkEvent {
         return new UnlinkEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.linked_issue_to_remove,
+            resultRow.linked_issue_to_remove, resultRow.deleted,
             this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 
