@@ -52,7 +52,7 @@ export class Page<TNode extends CCIMSNode> {
         this.datbaseManager.addCommand(this.cmd);
         await this.datbaseManager.executePendingCommands();
         this.cmd.countMode = false;
-        if (this.cmd.count) {
+        if (this.cmd.count !== undefined) {
             return this.cmd.count;
         } else {
             log(2, "command did not work as expected: countMode did not work");
