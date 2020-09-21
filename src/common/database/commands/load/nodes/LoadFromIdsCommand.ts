@@ -25,6 +25,8 @@ import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { LoadLabelsCommand } from "./LoadLabelsCommand";
 import { LoadLabelledEventCommand } from "./timeline/LoadLabelledEventCommand";
 import { LoadUnlabelledEventCommand } from "./timeline/LoadUnlabelledEventCommand";
+import { LoadStartDateChangedEventsCommand } from "./timeline/LoadStartDateChangedEventsCommand";
+import { LoadDueDateChangedEventsCommand } from "./timeline/LoadDueDateChangedEventsCommand";
 
 /**
  * map with method to create command for each table name
@@ -54,6 +56,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_unassignedEvent", () => new LoadUnassignedEventsCommand()],
     ["issue_timeline_labelledEvent", () => new LoadLabelledEventCommand()],
     ["issue_timeline_unlabelledEvent", () => new LoadUnlabelledEventCommand()],
+    ["issue_timeline_startDateChangedEvent", () => new LoadStartDateChangedEventsCommand()],
+    ["issue_timneline_dueDateChangedEvent", () => new LoadDueDateChangedEventsCommand()]
 ]);
 
 /**
