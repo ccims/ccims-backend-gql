@@ -83,7 +83,7 @@ function nodeListQuery<TSource extends CCIMSNode, TNode extends CCIMSNode>(
                     cmd.limit = args.first;
                 } else if (args.last) {
                     cmd.first = false;
-                    cmd.limit = args.first;
+                    cmd.limit = args.last;
                 }
             }
         },

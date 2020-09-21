@@ -5,7 +5,7 @@ export class PostgresConfig {
     public readonly user: string;
     public readonly password: string;
     public readonly database: string;
-    public readonly server: string;
+    public readonly host: string;
     public readonly port: number;
 
     public constructor(filePath: string) {
@@ -31,10 +31,10 @@ export class PostgresConfig {
         } else {
             this.database = "ccims";
         }
-        if (typeof file?.server === "string") {
-            this.server = file.server;
+        if (typeof file?.host === "string") {
+            this.host = file.host;
         } else {
-            this.server = "localhost";
+            this.host = "localhost";
         }
         if (typeof file?.port === "number") {
             this.port = file.port;

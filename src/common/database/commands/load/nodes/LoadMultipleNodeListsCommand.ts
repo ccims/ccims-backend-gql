@@ -39,19 +39,23 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
      * @returns the command which actually loads the node
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.resultIds = [];
-        const commands: Map<string, LoadNodeListCommand<T>> = new Map();
-        result.rows.forEach(row => {
-            const id: string = row.id;
-            this.resultIds?.push(id);
-            const tableName = row.relname;
-            const command: LoadNodeListCommand<T> = commands.get(tableName) ?? this.getLoadCommand(tableName);
-            command.ids?.push(id);
-            commands.set(id, command);
-        });
-        const commandsList = Array.from(commands.values());
-        this.commands = commandsList;
-        return commandsList;
+        if (!this.countMode) {
+            this.resultIds = [];
+            const commands: Map<string, LoadNodeListCommand<T>> = new Map();
+            result.rows.forEach(row => {
+                const id: string = row.id;
+                this.resultIds?.push(id);
+                const tableName = row.relname;
+                const command: LoadNodeListCommand<T> = commands.get(tableName) ?? this.getLoadCommand(tableName);
+                command.ids?.push(id);
+                commands.set(id, command);
+            });
+            const commandsList = Array.from(commands.values());
+            this.commands = commandsList;
+            return commandsList;
+        } else {
+            return super.setDatabaseResult(databaseManager, result);
+        }  
     }
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
@@ -65,19 +69,26 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
      * @param commands the list of follow-up commands
      */
     public notifyFollowUpCommandsResult(databaseManager: DatabaseManager, commands: DatabaseCommand<any>[]): void {
-        const nodesMap: Map<string, T> = new Map();
-        this.commands?.forEach(command => {
-            command.getResult().forEach(node => {
-                nodesMap.set(node.id, node);
+        if (!this.countMode) {
+            const nodesMap: Map<string, T> = new Map();
+            this.commands?.forEach(command => {
+                command.getResult().forEach(node => {
+                    nodesMap.set(node.id, node);
+                });
             });
-        });
-        this.result = this.resultIds?.reduce((res, id) => {
-            const node = nodesMap.get(id);
-            if (node) {
-                res.push(node);
+            this.result = this.resultIds?.reduce((res, id) => {
+                const node = nodesMap.get(id);
+                if (node) {
+                    res.push(node);
+                }
+                return res;
+            }, new Array<T>());
+            if (!this.first) {
+                this.result = this.result?.reverse();
             }
-            return res;
-        }, new Array<T>());
+        } else {
+            super.notifyFollowUpCommandsResult(databaseManager, commands);
+        }
     }
 
     protected generateQueryStart(): QueryPart {
