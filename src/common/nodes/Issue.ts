@@ -42,6 +42,8 @@ import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
 import MarkdownIt from "markdown-it";
 import { config } from "../../config/Config";
+import { LabelledEvent } from "./timelineItems/LabelledEvent";
+import { UnlabelledEvent } from "./timelineItems/UnlabelledEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -683,6 +685,42 @@ export class Issue extends SyncNode<Issue> {
             return deletedIssueComment;
         } else {
             return undefined;
+        }
+    }
+
+    /**
+     * Add/Assign a label to this issue
+     * 
+     * @param label The label node to be added to the issue
+     * @param atDate The date at which the label was added
+     * @param asUser The user who added the label
+     */
+    public async addLabel(label: Label, atDate: Date, asUser?: User): Promise<LabelledEvent | undefined> {
+        if (!(await this.labelsProperty.hasId(label.id))) {
+            await this.labelsProperty.add(label);
+            const event = await LabelledEvent.create(this._databaseManager, asUser, atDate, this, label);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Remove/Unassign a label from this issue
+     * 
+     * @param label The label node to be added to the issue
+     * @param atDate The date at which the label was added
+     * @param asUser The user who added the label
+     */
+    public async removeLabel(label: Label, atDate: Date, asUser?: User): Promise<UnlabelledEvent | undefined> {
+        if (await this.labelsProperty.hasId(label.id)) {
+            await this.labelsProperty.remove(label);
+            const event = await UnlabelledEvent.create(this._databaseManager, asUser, atDate, this, label);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The given label is currently not assigned to this issue");
         }
     }
 
