@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { log } from "../log";
 
 export class MarkdownConfig {
     public readonly html: boolean;
@@ -12,8 +11,7 @@ export class MarkdownConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            log(3, `${filePath} file for Mardown config not found. Using defaults.`);
-            log(8, e);
+            console.log(3, `${filePath} file for Mardown config not found. Using defaults.`);
         }
         if (typeof file?.html === "boolean") {
             this.html = file.html;

@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import crypto from "crypto";
-import { log } from "../log";
 
 export class CommonConfig {
     public readonly logLevel: number;
@@ -12,8 +11,7 @@ export class CommonConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            log(3, `${filePath} file for the common config not found. Using defaults`);
-            log(8, e);
+            console.log(3, `${filePath} file for the common config not found. Using defaults`);
         }
         if (typeof file?.logLevel === "number") {
             this.logLevel = file.logLevel;
