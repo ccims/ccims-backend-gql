@@ -1,15 +1,16 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLUser from "../GraphQLUser";
-import GraphQLDate from "../../../scalars/GraphQLDate";
-import reactions from "../../../listQueries/issue/reactions";
-import GraphQLIssue from "../GraphQLIssue";
-import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
-import GraphQLComment from "../GraphQLComment";
-import GraphQLNode from "../../GraphQLNode";
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { ReactionGroup } from "../../../../../common/nodes/ReactionGroup";
 import { IssueComment } from "../../../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../../../ResolverContext";
+import reactionsListQuery from "../../../listQueries/reactionsListQuery";
+import GraphQLDate from "../../../scalars/GraphQLDate";
+import GraphQLNode from "../../GraphQLNode";
+import GraphQLComment from "../GraphQLComment";
+import GraphQLIssue from "../GraphQLIssue";
+import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
+import GraphQLUser from "../GraphQLUser";
 
-let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
+const issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> = {
     name: "IssueComment",
     description: "A commemt on an issue. Not including th issue body itself",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLComment, GraphQLNode]),
@@ -50,8 +51,8 @@ let issueCommentConfig: GraphQLObjectTypeConfig<IssueComment, ResolverContext> =
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions: reactions(),
+        reactions: reactionsListQuery<IssueComment, ReactionGroup>("All reactions on this issue comment", comment => comment.reactionsProperty),
     })
 };
-let GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
+const GraphQLIssueComment = new GraphQLObjectType(issueCommentConfig);
 export default GraphQLIssueComment;

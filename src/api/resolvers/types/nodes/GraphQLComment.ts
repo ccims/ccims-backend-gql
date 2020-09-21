@@ -1,11 +1,12 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLBoolean, GraphQLList, GraphQLString, GraphQLID, GraphQLInterfaceTypeConfig } from "graphql";
-import reactions from "../../listQueries/issue/reactions";
+import { GraphQLBoolean, GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
+import { Comment } from "../../../../common/nodes/timelineItems/Comment";
+import { ResolverContext } from "../../../ResolverContext";
+import reactionsListQuery from "../../listQueries/reactionsListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLUser from "./GraphQLUser";
-import { Comment } from "../../../../common/nodes/Comment";
-import { ResolverContext } from "../../../ResolverContext";
 
-let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
+const commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
     name: "Comment",
     description: "An interface specifying an editable text block (e.g. Issue, Comment)",
     fields: () => ({
@@ -41,8 +42,8 @@ let commentConfig: GraphQLInterfaceTypeConfig<Comment, ResolverContext> = {
             type: GraphQLNonNull(GraphQLBoolean),
             description: "`true` iff the user authenticated by the given JWT is permitted to edit this comment.\n\nThis only refers to editing the core comment (title, body, etc.)"
         },
-        reactions: reactions(),
+        reactions: reactionsListQuery<Comment, ReactionGroup>("All reactions that have been added to this comment", comment => comment.reactionsProperty),
     })
 };
-let GraphQLComment = new GraphQLInterfaceType(commentConfig);
+const GraphQLComment = new GraphQLInterfaceType(commentConfig);
 export default GraphQLComment;

@@ -2,7 +2,7 @@ import { GraphQLInterfaceType, GraphQLID, GraphQLInterfaceTypeConfig } from "gra
 import { ResolverContext } from "../../ResolverContext";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 
-let nodeConfig: GraphQLInterfaceTypeConfig<CCIMSNode, ResolverContext> = {
+const nodeConfig: GraphQLInterfaceTypeConfig<CCIMSNode, ResolverContext> = {
     name: "Node",
     description: "An object which can be identified by an ID - called a node",
     fields: () => ({
@@ -12,5 +12,5 @@ let nodeConfig: GraphQLInterfaceTypeConfig<CCIMSNode, ResolverContext> = {
         }
     })
 };
-let GraphQLNode = new GraphQLInterfaceType(nodeConfig);
+const GraphQLNode = new GraphQLInterfaceType(nodeConfig);
 export default GraphQLNode;

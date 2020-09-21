@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addIssueToComponentInputConfig: GraphQLInputObjectTypeConfig = {
+const addIssueToComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddIssueToComponentInput",
     description: "The inputs for the addIssueToComponent",
     fields: () => ({
@@ -18,5 +18,5 @@ let addIssueToComponentInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLAddIssueToComponentInput = new GraphQLInputObjectType(addIssueToComponentInputConfig);
+const GraphQLAddIssueToComponentInput = new GraphQLInputObjectType(addIssueToComponentInputConfig);
 export default GraphQLAddIssueToComponentInput;

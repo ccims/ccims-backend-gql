@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLPinnedEvent from "../../../nodes/timelineItems/GraphQLPinnedEvent";
 
-let pinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const pinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "PinIssuePayload",
     description: "The Payload/Response for the pinIssue mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let pinIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLPinIssuePayload = new GraphQLObjectType(pinIssuePayloadConfig);
+const GraphQLPinIssuePayload = new GraphQLObjectType(pinIssuePayloadConfig);
 export default GraphQLPinIssuePayload;

@@ -4,7 +4,7 @@ import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import GraphQLLabelFilter from "./GraphQLLabelFilter";
 
-let issueFilterConfig: GraphQLInputObjectTypeConfig = {
+const issueFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueFilter",
     description: "Filters for Issues. All parameters given in this filter will be connected via _AND_\n\n" +
         "Not specific issues in issue management systems but the issue in the ccims",
@@ -67,11 +67,11 @@ let issueFilterConfig: GraphQLInputObjectTypeConfig = {
         },
         linksIssues: {
             type: GraphQLBoolean,
-            description: "If given, filters for issues which do/don't link other issues"
+            description: "If given, filters for issues which do/don't link __to__ other issues"
         },
         linkedIssues: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The issue must link at least one of the issues with the given ids"
+            description: "The issue must link __to__ at least one of the issues with the given ids"
         },
         reactions: {
             type: GraphQLList(GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLString)))),
@@ -82,7 +82,7 @@ let issueFilterConfig: GraphQLInputObjectTypeConfig = {
             description: "Any of the users with the given ids must be an assignee to the issue for it to match this filter"
         },
         labels: {
-            type: GraphQLList(GraphQLNonNull(GraphQLLabelFilter)),
+            type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The issue must have all the labels of at least that are matched by at least one of the given label filters"
         },
         participants: {
@@ -135,5 +135,5 @@ let issueFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLIssueFilter = new GraphQLInputObjectType(issueFilterConfig);
+const GraphQLIssueFilter = new GraphQLInputObjectType(issueFilterConfig);
 export default GraphQLIssueFilter;

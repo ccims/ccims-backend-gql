@@ -1,7 +1,7 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../../ResolverContext";
 
-let removeReactionFromCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const removeReactionFromCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "RemoveReactionFromCommentPayload",
     description: "The Payload/Response for the removeFromCommentReaction mutation",
     fields: () => ({
@@ -11,5 +11,5 @@ let removeReactionFromCommentPayloadConfig: GraphQLObjectTypeConfig<any, Resolve
         }
     })
 };
-let GraphQLRemoveReactionFromCommentPayload = new GraphQLObjectType(removeReactionFromCommentPayloadConfig);
+const GraphQLRemoveReactionFromCommentPayload = new GraphQLObjectType(removeReactionFromCommentPayloadConfig);
 export default GraphQLRemoveReactionFromCommentPayload;

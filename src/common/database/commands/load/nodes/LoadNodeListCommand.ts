@@ -5,13 +5,15 @@ import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
+import { DatabaseCommand } from "../../../DatabaseCommand";
+import { createStringListFilter } from "./RelationFilter";
 
 /**
  * loads a list of nodes
  * @param T the type of CCISNode to query
  */
 export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListCommand<T> {
-    
+
     /**
      * filter by a list of ids
      * the priority for this filter is 1
@@ -40,6 +42,26 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     public beforeId?: string;
 
     /**
+     * if true, the pagination is not applied an the rows are just counted
+     */
+    public countMode: boolean = false;
+
+    /**
+     * when countMode and the command was executed, count is the amount of the amount of results
+     */
+    public count?: number;
+
+    /**
+     * true if forwards paginating and there are more results
+     */
+    public hasNext: boolean = false;
+
+    /**
+     * true if backwards paginating and there are more results
+     */
+    public hasPrevious: boolean = false;
+
+    /**
      * string with all rows that shoule be queried
      */
     private _rows: string;
@@ -53,7 +75,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @return a string with all rows that should be selected separated by ,
      */
     protected get rows(): string {
-        return this._rows;
+        return this.countMode ? "Count(*)" : this._rows;
     }
 
     /**
@@ -62,26 +84,26 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): {conditions: ConditionSpecification[], i: number} {
-        const conditions: ConditionSpecification[] = [];
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+        const conditions = this.countMode ? {conditions: [], i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
-            if (this.ids.length == 1) {
-                conditions.push({
-                    priority: 1,
-                    text: `main.id = $${i})`,
-                    values: [this.ids[0]]
-                });
-            } else {
-                conditions.push({
-                    priority: 1,
-                    text: `main.id = ANY($${i})`,
-                    values: [this.ids]
-                });
-            }
-            i++;
+            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i, 1));
+            conditions.i++;
         }
-        if (this.afterId) {
+
+        return conditions;
+    }
+
+    /**
+     * generates the conditions for pagination
+     * only called when !this.countMode
+     * @param i the next value index
+     * @returns the conditions for pagination
+     */
+    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+        const conditions: ConditionSpecification[] = [];
+        if (this.afterId !== undefined) {
             conditions.push({
                 priority: 2,
                 text: `main.id > $${i}`,
@@ -89,7 +111,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             });
             i++;
         }
-        if (this.beforeId) {
+        if (this.beforeId !== undefined) {
             conditions.push({
                 priority: 2,
                 text: `main.id < $${i}`,
@@ -97,11 +119,36 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             });
             i++;
         }
+        return {conditions, i};
+    }
 
-        return {
-            conditions: conditions, 
-            i: i
-        };
+    /**
+     * called when the query is finished
+     * calls getSingleResult for every returned row
+     * @param databaseManager the databaseManager
+     * @param result the result from the query
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        if (!this.countMode) {
+            const res = result.rows.map(resultRow => this.getSingleResult(databaseManager, resultRow, result));
+            if (this.limit && res.length > this.limit) {
+                if (this.first) {
+                    this.hasNext = true;
+                } else {
+                    this.hasPrevious = true;
+                }
+                this.result = res.slice(0, this.limit);
+            } else {
+                this.result = res;
+            }
+            if (!this.first) {
+                this.result = this.result.reverse();
+            }
+            return [];
+        } else {
+            this.count = Number.parseInt(result.rows[0].count);
+            return [];
+        }
     }
 
     /**
@@ -112,14 +159,16 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the parsed element
      */
     protected getSingleResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): T {
-        const cacheResult = databaseManager.getCachedNode(resultRow["id"]);
+        const cacheResult = databaseManager.getCachedNode(resultRow.id);
+        let returnValue: T;
         if (cacheResult) {
-            return cacheResult as T;
+            returnValue = cacheResult as T;
         } else {
             const newNode: T = this.getNodeResult(databaseManager, resultRow, result);
             databaseManager.addCachedNode(newNode);
-            return newNode;
+            returnValue = newNode;
         }
+        return returnValue;
     }
 
     /**
@@ -136,14 +185,19 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @returns the end of the query
      */
     protected generateQueryEnd(i: number): QueryPart {
-        if (this.limit) {
+        if (this.limit && !this.countMode) {
             return {
-                text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i}`,
-                values: [this.limit] 
+                text: `ORDER BY main.id ${this.first ? "ASC" : "DESC"} LIMIT $${i};`,
+                values: [this.limit + 1]
+            }
+        } else if (!this.countMode) {
+            return {
+                text: "ORDER BY main.id;",
+                values: []
             }
         } else {
             return {
-                text: "ORDER BY main.id",
+                text: ";",
                 values: []
             }
         }

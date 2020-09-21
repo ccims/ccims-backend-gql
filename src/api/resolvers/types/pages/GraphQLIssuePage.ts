@@ -5,7 +5,7 @@ import GraphQLIssue from "../nodes/GraphQLIssue";
 import GraphQLPageInfo from "./GraphQLPageInfo";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issuePageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const issuePageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IssuePage",
     description: "A page of multiple issues",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let issuePageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLIssuePage = new GraphQLObjectType(issuePageConfig);
+const GraphQLIssuePage = new GraphQLObjectType(issuePageConfig);
 export default GraphQLIssuePage;

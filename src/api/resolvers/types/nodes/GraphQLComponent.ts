@@ -1,20 +1,21 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig, GraphQLInt } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLUser from "./GraphQLUser";
-import GraphQLIMSType from "../../enums/GraphQLIMSType";
-import issues from "../../listQueries/issues";
-import issuesOnLocation from "../../listQueries/issuesOnLocation";
-import projects from "../../listQueries/projects";
-import interfaces from "../../listQueries/interfaces";
-import consumedInterfaces from "../../listQueries/consumedInterfaces";
-import GraphQLIssueLocation from "./GraphQLIssueLocation";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
+import { IssueLocation } from "../../../../common/nodes/IssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLIssuePage from "../pages/GraphQLIssuePage";
-import GraphQLIssueFilter from "../filters/GraphQLIssueFilter";
+import interfacesListQuery from "../../listQueries/interfacesListQuery";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import projectsListQuery from "../../listQueries/projectsListQuery";
+import GraphQLNode from "../GraphQLNode";
 import GraphQLIMS from "./GraphQLIMS";
+import GraphQLIssueLocation from "./GraphQLIssueLocation";
+import GraphQLUser from "./GraphQLUser";
+import labelsListQuery from "../../listQueries/labelsListQuery";
+import { Issue } from "../../../../common/nodes/Issue";
+import { Project } from "../../../../common/nodes/Project";
+import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
+import { Label } from "../../../../common/nodes/Label";
 
-let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
+const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
     description: "A component known to ccims.\n\nA component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)",
     interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
@@ -39,13 +40,13 @@ let componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLIMS,
             description: "The IMS instance used by this component."
         },
-        issues: issues(),
-        issuesOnLocation: issuesOnLocation(),
-        projects: projects(),
-        interfaces: interfaces(),
-        consumedInterfaces: consumedInterfaces()
-        //TODO: Note: I didn't add the IMS data becaus that might contain sensitive information wich shouldn't be passed to the client
+        issues: issuesListQuery<Component, Issue>("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
+        issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
+        projects: projectsListQuery<Component, Project>("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
+        interfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces which this component offers", component => component.interfacesProperty),
+        consumedInterfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
+        labels: labelsListQuery<Component, Label>("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
     })
 };
-let GraphQLComponent = new GraphQLObjectType(componentConfig);
+const GraphQLComponent = new GraphQLObjectType(componentConfig);
 export default GraphQLComponent;

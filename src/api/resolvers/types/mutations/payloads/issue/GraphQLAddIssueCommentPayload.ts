@@ -4,7 +4,7 @@ import GraphQLIssueComment from "../../../nodes/timelineItems/GraphQLIssueCommen
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let addIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddIssueCommentPayload",
     description: "The Payload/Response for the addIssueComment mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let addIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> 
         }
     })
 };
-let GraphQLAddIssueCommentPayload = new GraphQLObjectType(addIssueCommentPayloadConfig);
+const GraphQLAddIssueCommentPayload = new GraphQLObjectType(addIssueCommentPayloadConfig);
 export default GraphQLAddIssueCommentPayload;

@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLComponent from "../GraphQLComponent";
 
-let addedToComponentEventConfig: GraphQLObjectTypeConfig<AddedToComponentEvent, ResolverContext> = {
+const addedToComponentEventConfig: GraphQLObjectTypeConfig<AddedToComponentEvent, ResolverContext> = {
     name: "AddedToComponentEvent",
     description: "An AddedToComponentEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -36,5 +36,5 @@ let addedToComponentEventConfig: GraphQLObjectTypeConfig<AddedToComponentEvent, 
         }
     })
 };
-let GraphQLAddedToComponentEvent = new GraphQLObjectType(addedToComponentEventConfig);
+const GraphQLAddedToComponentEvent = new GraphQLObjectType(addedToComponentEventConfig);
 export default GraphQLAddedToComponentEvent;

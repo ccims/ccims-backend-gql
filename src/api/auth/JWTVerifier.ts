@@ -2,17 +2,18 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { ResolverContext } from "../ResolverContext";
+import { ResolverContext, ResolverContextOptional } from "../ResolverContext";
+import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * Express middleware for verifying a JWT given by the client
- * 
+ *
  * Initializes and returns a handler for verifying a given JWT to authorize a user to a restricted resource
- * 
+ *
  * The handler expects the request to contain a `Authorization` header field with the following content:
- * 
+ *
  *    Bearer [JWT_TOKEN]
- * 
+ *
  * If either this header isn't provided correctly or the token provided is invalid, the request will be responded to with a
  * 401 status code and an error message speciying the reason
  * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
@@ -21,9 +22,9 @@ import { ResolverContext } from "../ResolverContext";
  * @returns An express middleware for verifying passed json web tokens
  */
 export function jwtVerifier(secret?: string): core.RequestHandler {
-    var verifier = new JWTVerifier(secret);
-    return (req: core.Request, res: core.Response, next: core.NextFunction) => {
-        verifier.handle.call(verifier, req, res, next);
+    const verifier = new JWTVerifier(secret);
+    return async (req: core.Request, res: core.Response, next: core.NextFunction) => {
+        await verifier.handle.call(verifier, req, res, next);
     };
 }
 
@@ -39,7 +40,7 @@ class JWTVerifier {
 
     /**
      * Initializes the JWT verifier. To handle a request to a restricted resource, call `handle(res, req, next)`
-     * 
+     *
      * @param secret The secret used for verifying the signed JWTs. This should be a long, very hard to guess string.\
      * It must be the same as the one used for signing the JWT during login.\
      * If empty or `undefined`, the secret from the config will be utilized.
@@ -53,47 +54,68 @@ class JWTVerifier {
 
     /**
      * Handles a request to a restricted resource (like the API) where a valid JWT is needed for accessing it.
-     * 
+     *
      * The handler expects the request to contain a `Authorization` header field with the following content:
-     * 
+     *
      *    Bearer [JWT_TOKEN]
-     * 
+     *
      * If either this header isn't provided correctly or the token provided is invalid, the request will be responded to with a
      * 401 status code and an error message speciying the reason
-     * 
-     * If header and token are valid and the user is a valid user, the provided `next` function will be called 
+     *
+     * If header and token are valid and the user is a valid user, the provided `next` function will be called
      * without further action to grant access to the restricted ressource
-     * 
+     *
      * __NOTICE__: If the `debugNoLogin` field in the `api.json` config file is set to `true`, the JWT and user verification will be __fully bypassed__
-     * 
+     *
      * @param req The request data provided by express.\
      * This must have a valid `Authorization: Bearer [JWT_TOKEN]` header.
      * @param res A valid express respone object. This will only be used in case, verification wasn't successfull.
      * @param next The next function to call the next middleware.\
      * This will be called once the provided JWT was sucessfully verified as a valid token
      */
-    public handle(req: ResolverContext, res: core.Response, next: core.NextFunction) {
+    public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction) {
         if (config.api.debugNoLogin) {
+            if (req.dbManager) {
+                const cmd = new LoadUsersCommand();
+                cmd.ids = ["0"];
+                req.dbManager.addCommand(cmd);
+                await req.dbManager.executePendingCommands();
+                const result = cmd.getResult();
+                req.user = result[0];
+            }
             next();
+            return;
+        }
+        if (!req.dbManager) {
+            log(2, "Database manager undefined during JWT verification");
+            res.status(500).end("Error during token verification");
             return;
         }
         log(5, "JWT verifying");
         if (req.headers.authorization) {
             const token = req.headers.authorization.split(" ")[1];
-            jwt.verify(token, this.secret, (err, payload) => {
+            jwt.verify(token, this.secret, async (err, payload) => {
                 if (err || !payload) {
                     log(3, "Token verification failed");
                     res.status(401).end("Token invalid. Request new one");
                 } else {
                     const checkedPayload: JWTPayload = payload as JWTPayload;
                     if (JWTPayload.checkJWTPayload(checkedPayload)) {
-                        const userId = checkedPayload.iss;
-                        const user = undefined; //TODO load user from database manager
                         log(7, checkedPayload);
-                        log(5, "User verified");
-                        //TODO: Load user
-                        req.user = user;
-                        next();
+                        const userId = checkedPayload.iss;
+                        const cmd = new LoadUsersCommand();
+                        cmd.ids = [userId];
+                        req.dbManager?.addCommand(cmd);
+                        await req.dbManager?.executePendingCommands();
+                        const result = cmd.getResult();
+                        if (result.length == 1 && result[0].id == userId && result[0].username == checkedPayload.name) {
+                            log(5, "User verified");
+                            req.user = result[0];
+                            next();
+                        } else {
+                            log(3, "Illegal token payload for user " + checkedPayload.name);
+                            res.status(401).end("Illegal token");
+                        }
                     } else {
                         log(3, "Token has no correct payload");
                         res.status(401).end("Illegal token");
@@ -109,9 +131,9 @@ class JWTVerifier {
 
 /**
  * Class specifying the structure a valid JWT payload must have
- * 
+ *
  * This class also provides a static method for checking weather a given instance is valid
- * 
+ *
  * For valid Fields of a JWT payload see https://tools.ietf.org/html/rfc7519#section-4.1.2
  * In this case the iss, sub and name claims are required to be present
  */
@@ -158,9 +180,9 @@ class JWTPayload {
 
     /**
      * Returns weather the given object is a valid JWT payload.
-     * 
+     *
      * The given object must have all the fields specified by this class with the correct type to be a valid payload
-     * 
+     *
      * __NOTICE__: THis doesn't check weather the user is valid or the date is within the optional interval from nbf to exp
      * @param payload The JWTPayload-like object to be checked for correct structure
      */

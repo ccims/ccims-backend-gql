@@ -1,6 +1,5 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
-import { NodeCache } from "../../NodeCache";
 import { QueryPart } from "./QueryPart";
 import { ConditionSpecification } from "./ConditionSpecification";
 import { DatabaseManager } from "../../DatabaseManager";
@@ -20,29 +19,31 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      */
     public getQueryConfig(): QueryConfig<any[]> {
         const queryStart: QueryPart = this.generateQueryStart();
-        let text: string = queryStart.text + " WHERE";
-        let values: any[] = queryStart.values;
+        let text: string = queryStart.text;
+        let conditionPart = "";
+        const values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
         conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
 
         for (let i = 0; i < conditionSpecifications.length - 1; i++) {
-            text += `(${conditionSpecifications[i].text}) AND `;
+            conditionPart += `(${conditionSpecifications[i].text}) AND `;
             values.push(...conditionSpecifications[i].values);
         }
         if (conditionSpecifications.length > 0) {
             const i = conditionSpecifications.length - 1;
-            text += `(${conditionSpecifications[i].text})`;
+            conditionPart += `(${conditionSpecifications[i].text})`;
             values.push(...conditionSpecifications[i].values);
+            text += " WHERE " + conditionPart;
         }
 
         const queryEnd: QueryPart = this.generateQueryEnd(values.length + 1);
-        text += queryEnd.text;
+        text += " " + queryEnd.text;
         values.push(...queryEnd.values);
 
         return {
-            text: text,
-            values: values
+            text,
+            values
         }
     }
 
@@ -61,7 +62,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
     protected generateQueryEnd(i: number): QueryPart {
         return {
             text: ";",
-            values: [] 
+            values: []
         }
     }
 
@@ -74,6 +75,6 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * @param i the first index of query parameter to use
      * @result the parameters and a new i
      */
-    protected abstract generateConditions(i: number): {conditions: ConditionSpecification[], i: number}
+    protected abstract generateConditions(i: number): { conditions: ConditionSpecification[], i: number }
 
 }

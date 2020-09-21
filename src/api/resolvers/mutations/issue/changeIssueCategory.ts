@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLChangeIssueCategoryPayload from "../../types/mutations/payloads/issue/GraphQLChangeIssueCategoryPayload";
 import GraphQLChangeIssueCategoryInput from "../../types/mutations/inputs/issue/GraphQLChangeIssueCategoryInput";
 
-let changeIssueCategory: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let changeIssueCategory: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (changeIssueCategory === undefined) {
         changeIssueCategory = {

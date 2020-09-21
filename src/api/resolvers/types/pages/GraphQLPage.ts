@@ -1,8 +1,8 @@
-import { GraphQLInterfaceType, GraphQLNonNull, GraphQLInt, GraphQLInterfaceTypeConfig, GraphQLObjectType, GraphQLResolveInfo } from "graphql";
-import GraphQLPageInfo from "./GraphQLPageInfo";
+import { GraphQLInt, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLNonNull } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLPageInfo from "./GraphQLPageInfo";
 
-let pageConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
+const pageConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
     name: "Page",
     description: "A page of elements\n\nContains edges and nodes as well as some information and a node count",
     fields: () => ({
@@ -16,5 +16,5 @@ let pageConfig: GraphQLInterfaceTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLPage = new GraphQLInterfaceType(pageConfig);
+const GraphQLPage = new GraphQLInterfaceType(pageConfig);
 export default GraphQLPage;

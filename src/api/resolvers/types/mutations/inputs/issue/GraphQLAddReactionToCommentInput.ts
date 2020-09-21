@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let addReactionToCommentInputConfig: GraphQLInputObjectTypeConfig = {
+const addReactionToCommentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "AddReactionToCommentInput",
     description: "The inputs for the addToCommentReaction",
     fields: () => ({
@@ -18,5 +18,5 @@ let addReactionToCommentInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLAddReactionToCommentInput = new GraphQLInputObjectType(addReactionToCommentInputConfig);
+const GraphQLAddReactionToCommentInput = new GraphQLInputObjectType(addReactionToCommentInputConfig);
 export default GraphQLAddReactionToCommentInput;

@@ -1,8 +1,9 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLComponent from "../../nodes/GraphQLComponent";
+import GraphQLIMS from "../../nodes/GraphQLIMS";
 
-let createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CreateComponentPayload",
     description: "The Payload/Response for the createComponent mutation",
     fields: () => ({
@@ -13,8 +14,12 @@ let createComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> 
         component: {
             type: GraphQLComponent,
             description: "The component created by this mutation"
+        },
+        ims: {
+            type: GraphQLIMS,
+            description: "The IMS of the component created by this mutation"
         }
     })
 };
-let GraphQLCreateComponentPayload = new GraphQLObjectType(createComponentPayloadConfig);
+const GraphQLCreateComponentPayload = new GraphQLObjectType(createComponentPayloadConfig);
 export default GraphQLCreateComponentPayload;

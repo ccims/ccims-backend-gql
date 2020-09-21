@@ -1,12 +1,12 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 
-let projectFilterConfig: GraphQLInputObjectTypeConfig = {
+const projectFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ProjectFilter",
     description: "Filter for a Project. All parameters given in this filter will be connected via _AND_",
     fields: () => ({
         name: {
-            type: GraphQLList(GraphQLNonNull(GraphQLString)),
-            description: "The name of the project must match any of the given strings"
+            type: GraphQLString,
+            description: "The name of the project must match the given RegEx"
         },
         components: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
@@ -30,5 +30,5 @@ let projectFilterConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLProjectFilter = new GraphQLInputObjectType(projectFilterConfig);
+const GraphQLProjectFilter = new GraphQLInputObjectType(projectFilterConfig);
 export default GraphQLProjectFilter;

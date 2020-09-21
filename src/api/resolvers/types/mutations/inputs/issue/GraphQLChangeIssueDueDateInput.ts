@@ -1,7 +1,7 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 import GraphQLDate from "../../../../scalars/GraphQLDate";
 
-let changeIssueDueDateInputConfig: GraphQLInputObjectTypeConfig = {
+const changeIssueDueDateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "ChangeIssueDueDateInput",
     description: "The inputs for the changeIssueDueDate",
     fields: () => ({
@@ -19,5 +19,5 @@ let changeIssueDueDateInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLChangeIssueDueDateInput = new GraphQLInputObjectType(changeIssueDueDateInputConfig);
+const GraphQLChangeIssueDueDateInput = new GraphQLInputObjectType(changeIssueDueDateInputConfig);
 export default GraphQLChangeIssueDueDateInput;

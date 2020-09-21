@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let reopenedEventConfig: GraphQLObjectTypeConfig<ReopenedEvent, ResolverContext> = {
+const reopenedEventConfig: GraphQLObjectTypeConfig<ReopenedEvent, ResolverContext> = {
     name: "ReopenedEvent",
     description: "An ReopenedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -31,5 +31,5 @@ let reopenedEventConfig: GraphQLObjectTypeConfig<ReopenedEvent, ResolverContext>
         }
     })
 };
-let GraphQLReopenedEvent = new GraphQLObjectType(reopenedEventConfig);
+const GraphQLReopenedEvent = new GraphQLObjectType(reopenedEventConfig);
 export default GraphQLReopenedEvent;

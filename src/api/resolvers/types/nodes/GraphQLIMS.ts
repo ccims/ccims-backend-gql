@@ -4,7 +4,7 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
 
-let imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IMS",
     description: "An issue management system. This will be an __instance__ of one of the available IMS Types.\n\nE.g. One GitHub Repository's issue page.",
     interfaces: () => ([GraphQLNode]),
@@ -23,5 +23,5 @@ let imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLIMS = new GraphQLObjectType(imsConfig);
+const GraphQLIMS = new GraphQLObjectType(imsConfig);
 export default GraphQLIMS;

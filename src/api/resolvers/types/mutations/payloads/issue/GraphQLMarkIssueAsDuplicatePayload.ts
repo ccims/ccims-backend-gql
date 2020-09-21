@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLMarkedAsDuplicateEvent from "../../../nodes/timelineItems/GraphQLMarkedAsDuplicateEvent";
 
-let markIssueAsDuplicatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const markIssueAsDuplicatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "MarkIssueAsDuplicatePayload",
     description: "The Payload/Response for the markIssueAsDuplicate mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let markIssueAsDuplicatePayloadConfig: GraphQLObjectTypeConfig<any, ResolverCont
         }
     })
 };
-let GraphQLMarkIssueAsDuplicatePayload = new GraphQLObjectType(markIssueAsDuplicatePayloadConfig);
+const GraphQLMarkIssueAsDuplicatePayload = new GraphQLObjectType(markIssueAsDuplicatePayloadConfig);
 export default GraphQLMarkIssueAsDuplicatePayload;

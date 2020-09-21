@@ -4,11 +4,12 @@ import { Saveable } from "../Saveable";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
+import { log } from "../../../log";
 
 /**
  * @see NodeProperty, but supports undefined for the other node
  */
-export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
      * the specification of this property
@@ -18,10 +19,6 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * if present, the id of the other node
      */
     private _id?: string;
-    /**
-     * the other node
-     */
-    private _element?: T;
 
     /**
      * creates a new nullable node property with the provided specification
@@ -30,7 +27,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * @param specification  the specification of this property
      * @param node the node which contains this property
      */
-    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id?: string, ) {
+    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id?: string) {
         super(databaseManager, specification, node);
         this._id = id;
         this._specification = specification;
@@ -60,7 +57,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
             await this.ensureLoaded();
             this._node.markChanged();
             if (this._element) {
-                this.notifyRemoved(this._element, false);
+                await this.notifyRemoved(this._element, false);
             }
         }
         if (value) {
@@ -69,7 +66,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
             } else {
                 this._element = value;
                 this._id = value.id;
-                this.notifyAdded(value, false);
+                await this.notifyAdded(value, false);
             }
         } else {
             this._id = undefined;
@@ -80,14 +77,14 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * ensures that this property is loaded
      */
-    private async ensureLoaded(): Promise<void> {
+    protected async ensureLoadedInternal(): Promise<void> {
         if (!this._element && this._id) {
             const loadCommand = this._specification.loadFromId(this._id, this._node);
             this._databaseManager.addCommand(loadCommand);
             await this._databaseManager.executePendingCommands();
             const result = loadCommand.getResult();
-            if (result) {
-                this._element = result;
+            if (result.length > 0) {
+                this._element = result[0];
             } else {
                 const reloadCommand = this._specification.reload(this._node);
                 this._databaseManager.addCommand(reloadCommand);
@@ -96,6 +93,18 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
                 if (reloadResult) {
                     this._id = reloadResult.id;
                     this._element = reloadResult;
+                    await this.notifyAdded(this._element, false);
+                } else if (this._specification.deletedId) {
+                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
+                    this._databaseManager.addCommand(loadDeletedCommand);
+                    await this._databaseManager.executePendingCommands();
+                    if (loadDeletedCommand.getResult().length === 0) {
+                        log(2, "error: deleted command does not exist");
+                        throw new Error("Internal server error");
+                    }
+                    this._id = this._specification.deletedId;
+                    this._element = loadDeletedCommand.getResult()[0];
+                    await this.notifyAdded(this._element, false);
                 } else {
                     this._element = undefined;
                     this._id = undefined;
@@ -135,7 +144,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
      * does nothing on the one side
      */
     save(): void {
-        //do nothing, 
+        // do nothing,
     }
 
 }

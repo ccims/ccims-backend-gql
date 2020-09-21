@@ -4,10 +4,9 @@ import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/createProject";
 import createComponent from "./mutations/createComponent";
-import createIMS from "./mutations/createIMS";
 import createUser from "./mutations/createUser";
 
-let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
     description: "Mutations to change the data within the ccims",
     fields: () => ({
@@ -15,9 +14,8 @@ let mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         ...issueMutations,
         createProject: createProject(),
         createComponent: createComponent(),
-        createIMS: createIMS(),
         createUser: createUser()
     })
 };
-let mutation = new GraphQLObjectType(mutationConfig);
+const mutation = new GraphQLObjectType(mutationConfig);
 export default mutation;

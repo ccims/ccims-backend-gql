@@ -29,16 +29,16 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
         public readonly save: boolean,
         public readonly loadFromIds: (ids: string[], node: V) => DatabaseCommand<T[]>,
         public readonly loadElements: (node: V) => DatabaseCommand<T[]>,
-        public readonly notifiers: ((element: T, node: V) => Property<V>)[],
+        public readonly notifiers: ((element: T, node: V) => Property<V, T>)[],
         public readonly loadIds?: (node: V) => DatabaseCommand<string[]>,
         public readonly addRel?: (id: string, node: V) => DatabaseCommand<void>,
         public readonly removeRel?: (id: string, node: V) => DatabaseCommand<void>
     ) {
-        
+
     }
 
     /**
-     * specifies that the property loads all elements once at least one element is needed, 
+     * specifies that the property loads all elements once at least one element is needed,
      * and does NOT try to load single nodes
      * node is normally the node which hosts the property, and is necessary to get e.g. the id
      * @param loadFromIds command generator to load elements by a list of ids
@@ -78,7 +78,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
  */
  class NodeListPropertySpecificationBuilder<T extends CCIMSNode, V extends CCIMSNode> {
 
-    private notifiers: ((element: T, node: V) => Property<V>)[] = [];
+    private notifiers: ((element: T, node: V) => Property<V, T>)[] = [];
 
     /**
      * creates a new NodesPropertySpecificationBuilder
@@ -94,16 +94,15 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
         private loadElements: (node: V) => DatabaseCommand<T[]>,
         private loadDynamic: boolean,
         private loadIds?: (node: V) => DatabaseCommand<string[]>,
-        private loadFromId?: (id: string, node: V) => DatabaseCommand<T | undefined>
-    ) { 
-        
+    ) {
+
     }
 
     /**
      * adds a notify callback when a change on this property occures
      * @param toNotify generates the property to notify out of element
      */
-    public notifyChanged(toNotify: (element: T, node: V) => Property<V>): NodeListPropertySpecificationBuilder<T, V> {
+    public notifyChanged(toNotify: (element: T, node: V) => Property<V, T>): NodeListPropertySpecificationBuilder<T, V> {
         this.notifiers.push(toNotify);
         return this;
     }

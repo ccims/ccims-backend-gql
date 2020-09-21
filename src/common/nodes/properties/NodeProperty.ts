@@ -3,6 +3,7 @@ import { NodePropertyBase } from "./NodePropertyBase";
 import { Property } from "./Property";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
+import { log } from "../../../log";
 
 /**
  * property which represents the one side on a many to one relation
@@ -10,7 +11,7 @@ import { DatabaseManager } from "../../database/DatabaseManager";
  * @param T the type of the other node
  * @param V the type of the node on which this property is
  */
-export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Property<T> {
+export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
      * the specification of the property
@@ -20,10 +21,6 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * the id of the other node
      */
     private _id: string;
-    /**
-     * the other node if already loaded
-     */
-    private _element?: T;
 
     /**
      * creates a new NodeProperty with the provided specification
@@ -32,7 +29,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * @param specification  the specification of this property
      * @param node the node which contains this property
      */
-    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id: string, ) {
+    public constructor(databaseManager: DatabaseManager, specification: NodePropertySpecification<T, V>, node: V, id: string) {
         super(databaseManager, specification, node);
         this._id = id;
         this._specification = specification;
@@ -53,7 +50,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
         return this._element as T;
     }
 
-   /**
+    /**
      * sets  the element of this property
      * @param value the element to set, this might be undefined
      */
@@ -62,27 +59,24 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
             await this.ensureLoaded();
             this._node.markChanged();
             if (this._element) {
-                this.notifyRemoved(this._element, false);
+                await this.notifyRemoved(this._element, false);
             }
             this._element = value;
             this._id = value.id;
-            this.notifyAdded(value, false);
+            await this.notifyAdded(value, false);
         } else {
             this._element = value;
         }
     }
 
-    /**
-     * ensures that this property is loaded
-     */
-    private async ensureLoaded(): Promise<void> {
+    protected async ensureLoadedInternal(): Promise<void> {
         if (!this._element && this._id) {
             const loadCommand = this._specification.loadFromId(this._id, this._node);
             this._databaseManager.addCommand(loadCommand);
             await this._databaseManager.executePendingCommands();
             const result = loadCommand.getResult();
-            if (result) {
-                this._element = result;
+            if (result.length > 0) {
+                this._element = result[0];
             } else {
                 const reloadCommand = this._specification.reload(this._node);
                 this._databaseManager.addCommand(reloadCommand);
@@ -91,8 +85,22 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
                 if (reloadResult) {
                     this._id = reloadResult.id;
                     this._element = reloadResult;
+                    await this.notifyAdded(this._element, false);
+                } else if (this._specification.deletedId) {
+                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
+                    this._databaseManager.addCommand(loadDeletedCommand);
+                    await this._databaseManager.executePendingCommands();
+                    if (loadDeletedCommand.getResult().length === 0) {
+                        log(2, "error: deleted command does not exist");
+                        throw new Error("Internal server error");
+                    }
+                    this._id = this._specification.deletedId;
+                    this._element = loadDeletedCommand.getResult()[0];
+                    await this.notifyAdded(this._element, false);
                 } else {
-                    throw new Error("inconsistent database state: no property found")
+                    log(3, `self destruct ${this._node.id}`);
+                    await this._node.markDeleted();
+                    throw new Error("Internal server error");
                 }
             }
         }
@@ -117,7 +125,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * @param byDatabase true if caused by database
      */
     async wasRemovedBy(element: T, byDatabaseUpdate: boolean): Promise<void> {
-        //this can only be a temporary state, so just ignore it
+        // this can only be a temporary state, so just ignore it
     }
 
     /**
@@ -125,7 +133,7 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
      * does nothing on the one side
      */
     save(): void {
-        //do nothing, 
+        // do nothing,
     }
 
 }

@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLClosedEvent from "../../../nodes/timelineItems/GraphQLClosedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let closeIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const closeIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CloseIssuePayload",
     description: "The Payload/Response for the closeIssue mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let closeIssuePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLCloseIssuePayload = new GraphQLObjectType(closeIssuePayloadConfig);
+const GraphQLCloseIssuePayload = new GraphQLObjectType(closeIssuePayloadConfig);
 export default GraphQLCloseIssuePayload;

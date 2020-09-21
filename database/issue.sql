@@ -1,16 +1,15 @@
 CREATE TABLE issue_issue (
     LIKE syncNode,
     title varchar(256),
-    created_at timestamp NOT NULL,
-    created_by id NOT NULL,
     updated_at timestamp NOT NULL,
     is_open bool NOT NULL DEFAULT true,
     is_duplicate bool NOT NULL DEFAULT false,
-    category issue_category,
+    category issue_category NOT NULL,
     start_date timestamp,
     due_date timestamp,
-    estimated_time interval,
-    spent_time interval
+    estimated_time int,
+    spent_time int,
+    body_id id NOT NULL
 ) INHERITS (node);
 
 -- relattions for issue --
@@ -39,13 +38,17 @@ CREATE TABLE relation_issue_label (
     PRIMARY KEY (issue_id, label_id)
 );
 
+CREATE TABLE relation_comment_editedBy (
+    comment_id id NOT NULL,
+    editedBy_id id NOT NULL,
+    PRIMARY KEY (comment_id, editedBy_id)
+);
+
 -- end --
 
 CREATE TABLE issue_timelineItem (
     LIKE syncNode,
-    issue id NOT NULL,
-    created_at timestamp NOT NULL,
-    created_by id
+    issue id NOT NULL
 ) INHERITS (node);
 
 CREATE TABLE issue_timeline_referencedByOtherEvent (
@@ -83,8 +86,8 @@ CREATE TABLE issue_timeline_unlinkEvent (
 
 CREATE TABLE issue_timeline_comment (
     LIKE issue_timelineItem,
-    last_edited_at timestamp,
-    edited_by id[],
+    last_edited_at timestamp NOT NULL,
+    last_edited_by id NOT NULL,
     body varchar(65536) NOT NULL 
 ) INHERITS (issue_timelineItem);
 
@@ -99,12 +102,12 @@ CREATE TABLE issue_timeline_deletedComment (
     deleted_at timestamp NOT NULL
 ) INHERITS (issue_timelineItem);
 
-CREATE TABLE issue_timeline_labledEvent (
+CREATE TABLE issue_timeline_labelledEvent (
     LIKE issue_timelineItem,
     label id NOT NULL
 ) INHERITS (issue_timelineItem);
 
-CREATE TABLE issue_timeline_unlabledEvent (
+CREATE TABLE issue_timeline_unlabelledEvent (
     LIKE issue_timelineItem,
     label id NOT NULL
 ) INHERITS (issue_timelineItem);
@@ -145,8 +148,7 @@ CREATE TABLE issue_timeline_addedToLocationEvent (
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_removedFromLocationEvent (
-    LIKE issue_timelineItem,
-    removedLocation id NOT NULL 
+    LIKE issue_timeline_addedToLocationEvent
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_addedToComponentEvent (
@@ -155,16 +157,17 @@ CREATE TABLE issue_timeline_addedToComponentEvent (
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_removedFromComponentEvent (
-    LIKE issue_timelineItem,
-    removedComponent id NOT NULL
+    LIKE issue_timeline_addedToComponentEvent
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_pinnedEvent (
-    Like issue_timelineItem
+    Like issue_timelineItem,
+    component id NOT NULL
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_unpinnedEvent (
-    LIKE issue_timelineItem
+    LIKE issue_timelineItem,
+    component id NOT NULL
 ) INHERITS (issue_timelineItem);
 
 CREATE TABLE issue_timeline_assignedEvent (

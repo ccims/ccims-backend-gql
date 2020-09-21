@@ -1,16 +1,18 @@
 -- IMS Tables
-DROP TABLE IF EXISTS user_ims_credentials;
-DROP TABLE IF EXISTS ims_systems;
+DROP TABLE IF EXISTS user_ims_credential;
+DROP TABLE IF EXISTS ims_system;
 
 -- Project/Component tables
+DROP TABLE IF EXISTS relation_component_consumedComponentInterface;
 DROP TABLE IF EXISTS relation_component_label;
 DROP TABLE IF EXISTS relation_component_issue;
-DROP TABLE IF EXISTS projects;
-DROP TABLE IF EXISTS components;
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS component;
 DROP TABLE IF EXISTS relation_project_component;
 DROP TABLE IF EXISTS relation_component_pinnedIssue;
-DROP TABLE IF EXISTS component_interfaces;
-DROP TABLE IF EXISTS relation_componentInterface_issue;
+DROP TABLE IF EXISTS component_interface;
+DROP TABLE IF EXISTS relation_issueLocation_issue;
+DROP TABLE IF EXISTS issue_location;
 
 -- User Tables
 DROP TABLE IF EXISTS users;
@@ -37,8 +39,8 @@ DROP TABLE IF EXISTS issue_timeline_dueDateChangedEvent;
 DROP TABLE IF EXISTS issue_timeline_startDateChangedEvent;
 DROP TABLE IF EXISTS issue_timeline_priorityChangedEvent;
 DROP TABLE IF EXISTS issue_timeline_renamedTitleEvent;
-DROP TABLE IF EXISTS issue_timeline_unlabledEvent;
-DROP TABLE IF EXISTS issue_timeline_labledEvent;
+DROP TABLE IF EXISTS issue_timeline_unlabelledEvent;
+DROP TABLE IF EXISTS issue_timeline_labelledEvent;
 DROP TABLE IF EXISTS issue_timeline_deletedComment;
 DROP TABLE IF EXISTS issue_timeline_body;
 DROP TABLE IF EXISTS issue_timeline_comment;
@@ -53,6 +55,7 @@ DROP TABLE IF EXISTS relation_issue_label;
 DROP TABLE IF EXISTS relation_issue_participant;
 DROP TABLE IF EXISTS relation_issue_assignee;
 DROP TABLE IF EXISTS relation_issue_linkedIssue;
+DROP TABLE IF EXISTS relation_comment_editedBy;
 DROP TABLE IF EXISTS issue_issue;
 
 -- Common

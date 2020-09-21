@@ -1,15 +1,20 @@
-CREATE TABLE projects
-(
-    name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL
-) INHERITS (node);
-
-CREATE TABLE components
+CREATE TABLE project
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL,
     description character varying(65536) NOT NULL
 ) INHERITS (node);
+
+CREATE TABLE issue_location (
+    name character varying(256) NOT NULL,
+    description character varying(65536) NOT NULL
+) INHERITS (node);
+
+CREATE TABLE component
+(
+    owner_user_id id NOT NULL,
+    imsSystem_id id NOT NULL
+) INHERITS (issue_location);
 
 CREATE TABLE relation_project_component
 (
@@ -39,17 +44,21 @@ CREATE TABLE relation_component_label
     PRIMARY KEY (component_id, label_id)
 );
 
-CREATE TABLE component_interfaces
+CREATE TABLE component_interface
 (
-    name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL,
-    description character varying(65536) NOT NULL,
     host_component_id id NOT NULL
-) INHERITS (node);
+) INHERITS (issue_location);
 
-CREATE TABLE relation_componentInterface_issue
+CREATE TABLE relation_issueLocation_issue
 (
-    componentInterface_id id NOT NULL,
+    issueLocation_id id NOT NULL,
     issue_id id NOT NULL,
-    PRIMARY KEY (componentInterface_id, issue_id)
+    PRIMARY KEY (issueLocation_id, issue_id)
+);
+
+CREATE TABLE relation_component_consumedComponentInterface
+(
+    component_id id NOT NULL,
+    consumedComponentInterface_id id NOT NULL,
+    PRIMARY KEY (component_id, consumedComponentInterface_id)
 );

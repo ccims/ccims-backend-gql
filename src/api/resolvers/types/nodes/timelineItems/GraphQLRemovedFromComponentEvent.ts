@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLComponent from "../GraphQLComponent";
 
-let removedFromComponentEventConfig: GraphQLObjectTypeConfig<RemovedFromComponentEvent, ResolverContext> = {
+const removedFromComponentEventConfig: GraphQLObjectTypeConfig<RemovedFromComponentEvent, ResolverContext> = {
     name: "RemovedFromComponentEvent",
     description: "An RemovedFromComponentEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -36,5 +36,5 @@ let removedFromComponentEventConfig: GraphQLObjectTypeConfig<RemovedFromComponen
         }
     })
 };
-let GraphQLRemovedFromComponentEvent = new GraphQLObjectType(removedFromComponentEventConfig);
+const GraphQLRemovedFromComponentEvent = new GraphQLObjectType(removedFromComponentEventConfig);
 export default GraphQLRemovedFromComponentEvent;

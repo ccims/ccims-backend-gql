@@ -1,7 +1,8 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import GraphQLDate from "../../scalars/GraphQLDate";
+import GraphQLIssueTimelineItemType from "../../enums/GraphQLIssueTimelineItemType";
 
-let issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
+const issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueTimelineItemFilter",
     description: "Filters for certain timeline events. All parameters given in this filter will be connected via _AND_\n\n" +
         "__Please note:__ It's currently __not__ possible to filter for specific properties of an event. Might be added in future",
@@ -17,8 +18,12 @@ let issueTimelineItemFilterConfig: GraphQLInputObjectTypeConfig = {
         createdBefore: {
             type: GraphQLDate,
             description: "The timeline event must have occurred before the given date (inclusive) to match the filter"
+        },
+        type: {
+            type: GraphQLList(GraphQLNonNull(GraphQLIssueTimelineItemType)),
+            description: "The type of the timeline item must match one of the given ones"
         }
     })
 };
-let GraphQLIssueTimelineItemFilter = new GraphQLInputObjectType(issueTimelineItemFilterConfig);
+const GraphQLIssueTimelineItemFilter = new GraphQLInputObjectType(issueTimelineItemFilterConfig);
 export default GraphQLIssueTimelineItemFilter;

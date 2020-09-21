@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddIssueToLocationPayload from "../../types/mutations/payloads/issue/GraphQLAddIssueToLocationPayload";
 import GraphQLAddIssueToLocationInput from "../../types/mutations/inputs/issue/GraphQLAddIssueToLocationInput";
 
-let addIssueToLocation: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let addIssueToLocation: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (addIssueToLocation === undefined) {
         addIssueToLocation = {

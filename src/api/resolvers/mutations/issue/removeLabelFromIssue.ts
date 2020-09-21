@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLRemoveLabelFromIssuePayload from "../../types/mutations/payloads/issue/GraphQLRemoveLabelFromIssuePayload";
 import GraphQLRemoveLabelFromIssueInput from "../../types/mutations/inputs/issue/GraphQLRemoveLabelFromIssueInput";
 
-let removeLabelFromIssue: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let removeLabelFromIssue: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (removeLabelFromIssue === undefined) {
         removeLabelFromIssue = {

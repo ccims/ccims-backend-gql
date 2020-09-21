@@ -1,5 +1,4 @@
 import { LoadCommand } from "./LoadCommand";
-import { NodeCache } from "../../NodeCache";
 import { QueryResult, QueryResultRow } from "pg";
 import { DatabaseManager } from "../../DatabaseManager";
 import { DatabaseCommand } from "../../DatabaseCommand";
@@ -8,8 +7,8 @@ import { DatabaseCommand } from "../../DatabaseCommand";
  * load command, which loads an array instead of a single element
  * @param T the type of the elements in the array
  */
-export abstract class LoadListCommand<T> extends LoadCommand<T[]> {   
-   
+export abstract class LoadListCommand<T> extends LoadCommand<T[]> {
+
     /**
      * called when the query is finished
      * calls getSingleResult for every returned row

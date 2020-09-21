@@ -1,11 +1,13 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLList, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLNonNull, GraphQLInt } from "graphql";
+import { Project } from "../../../../common/nodes/Project";
+import { ResolverContext } from "../../../ResolverContext";
+import { Page } from "../../utils/Page";
 import GraphQLProjectEdge from "../edges/GraphQLProjectEdge";
 import GraphQLProject from "../nodes/GraphQLProject";
 import GraphQLPage from "./GraphQLPage";
 import GraphQLPageInfo from "./GraphQLPageInfo";
-import { ResolverContext } from "../../../ResolverContext";
 
-let projectPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const projectPageConfig: GraphQLObjectTypeConfig<Page<Project>, ResolverContext> = {
     name: "ProjectPage",
     description: "A page of projects",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +30,5 @@ let projectPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLProjectPage = new GraphQLObjectType(projectPageConfig);
+const GraphQLProjectPage = new GraphQLObjectType(projectPageConfig);
 export default GraphQLProjectPage;

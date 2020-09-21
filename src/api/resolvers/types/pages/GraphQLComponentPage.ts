@@ -5,7 +5,7 @@ import GraphQLComponent from "../nodes/GraphQLComponent";
 import GraphQLComponentEdge from "../edges/GraphQLComponentEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-let componentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const componentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ComponentPage",
     description: "A page of multiple components",
     interfaces: () => ([GraphQLPage]),
@@ -28,5 +28,5 @@ let componentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLComponentPage = new GraphQLObjectType(componentPageConfig);
+const GraphQLComponentPage = new GraphQLObjectType(componentPageConfig);
 export default GraphQLComponentPage;

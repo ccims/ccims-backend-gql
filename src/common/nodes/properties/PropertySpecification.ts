@@ -10,5 +10,5 @@ export interface PropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
     /**
      * array of functions which return nodes to notify on changes
      */
-    readonly notifiers: ((element: T, node: V) => Property<V>)[];
+    readonly notifiers: ((element: T, node: V) => Property<V, T>)[];
 }

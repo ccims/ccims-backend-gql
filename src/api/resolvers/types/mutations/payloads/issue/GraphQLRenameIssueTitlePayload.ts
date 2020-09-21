@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLRenamedTitleEvent from "../../../nodes/timelineItems/GraphQLRenamedTitleEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let renameIssueTitlePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const renameIssueTitlePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "RenameIssueTitlePayload",
     description: "The Payload/Response for the renameIssueTitle mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let renameIssueTitlePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext>
         }
     })
 };
-let GraphQLRenameIssueTitlePayload = new GraphQLObjectType(renameIssueTitlePayloadConfig);
+const GraphQLRenameIssueTitlePayload = new GraphQLObjectType(renameIssueTitlePayloadConfig);
 export default GraphQLRenameIssueTitlePayload;

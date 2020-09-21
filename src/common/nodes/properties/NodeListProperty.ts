@@ -1,18 +1,17 @@
 import { CCIMSNode } from "../CCIMSNode";
-import { Saveable } from "../Saveable";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodeListPropertySpecification } from "./NodeListPropertySpecification";
 import { LoadNodeListCommand } from "../../database/commands/load/nodes/LoadNodeListCommand";
 import { Property } from "./Property";
 import { DatabaseCommand } from "../../database/DatabaseCommand";
-import { NodePropertyBase } from "./NodePropertyBase";
+import { ListProperty } from "./ListProperty";
 
 /**
  * property which represents the many side of a relation
  * @param T the type of the other node(s)
  * @param V the type of the node on which this property is
  */
-export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> implements Saveable, Property<T> {
+export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends Property<T, V> implements ListProperty<T> {
     /**
      * the specification of the property
      */
@@ -46,16 +45,25 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param node the node proviced to all generators as last parameter
      */
     public constructor(databaseManager: DatabaseManager, specification: NodeListPropertySpecification<T, V>, node: V) {
-        super(databaseManager, specification, node);
+        super(databaseManager, node, specification);
         this._specification = specification;
     }
-    
+
     /**
      * get the ids of all elements
      */
     public async getIds(): Promise<string[]> {
         await this.ensureLoadLevel(LoadLevel.Ids);
         return Array.from(this._ids);
+    }
+
+    /**
+     * returnes true if this property contains the specified id
+     * @param id the id to check for
+     */
+    public async hasId(id: string): Promise<boolean> {
+        await this.ensureLoadLevel(LoadLevel.Ids);
+        return this._ids.has(id);
     }
 
     /**
@@ -71,7 +79,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param filter the filter to filter other nodes
      * @returns the array of filtered elements
      */
-    public async getFilteredElements(filter: LoadNodeListCommand<T>): Promise<T[]> {
+    public async getFilteredElements<S extends T>(filter: LoadNodeListCommand<S>): Promise<S[]> {
         await this.ensureAddDeleteLoadLevel();
         filter.ids = Array.from((this._ids));
         this._databaseManager.addCommand(filter);
@@ -110,10 +118,10 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * adds an element to this property
-     * does 
+     * does
      * @param element the element to add
      */
-    public async add(element: T) : Promise<void> {
+    public async add(element: T): Promise<void> {
         await this.ensureAddDeleteLoadLevel();
         if (!this._ids.has(element.id)) {
             this._ids.add(element.id);
@@ -123,16 +131,20 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             }
             await this.notifyAdded(element, false);
             if (this._specification.save) {
-                this._node.markChanged();
+                this.markChanged();
             }
         }
     }
 
+    public async addAll(elements: T[]): Promise<void> {
+        await Promise.all(elements.map(element => this.add(element)));
+    }
+
     /**
      * removes an element from this property if possible
-     * @param element 
+     * @param element
      */
-    public async remove(element: T) : Promise<void> {
+    public async remove(element: T): Promise<void> {
         await this.ensureAddDeleteLoadLevel();
         if (this._ids.has(element.id)) {
             this._ids.delete(element.id);
@@ -140,15 +152,24 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             await this.notifyRemoved(element, false);
             this._removedIds.add(element.id);
             if (this._specification.save) {
-                this._node.markChanged();
+                this.markChanged();
             }
         }
     }
 
     /**
+     * removes all elements
+     */
+    public async clear(): Promise<void> {
+        const elements = await this.getElements();
+        await Promise.all(elements.map(element => this.remove(element)));
+    }
+
+    /**
      * saves all changes on this property if necessary
      */
-    public save(): void{
+    public save(): void {
+        super.save();
         if (this._specification.save) {
             const addRel = this._specification.addRel as (((id: string, node: V) => DatabaseCommand<void>));
             const removeRel = this._specification.removeRel as (((id: string, node: V) => DatabaseCommand<void>));
@@ -161,7 +182,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._addedIds.clear();
             this._removedIds.clear();
         }
-        
+
     }
 
     /**
@@ -183,38 +204,47 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param level the level to reach
      */
     private async ensureLoadLevel(level: LoadLevel): Promise<void> {
+        if (this.currentCommand) {
+            await this.currentCommand;
+        }
         if (this._loadLevel < level) {
-            if (level === LoadLevel.Ids && this._specification.loadDynamic) {
-                if (!this._specification.loadIds) {
-                    throw new Error("necessary generator not present");
-                }
-                const getIdsCommand = this._specification.loadIds(this._node);
-                this._databaseManager.addCommand(getIdsCommand);
+            this.currentCommand = this.ensureLoadLevelInternal(level);
+            await this.currentCommand;
+            this.currentCommand = undefined;
+        }
+    }
+
+    private async ensureLoadLevelInternal(level: LoadLevel): Promise<void> {
+        if (level === LoadLevel.Ids && this._specification.loadDynamic) {
+            if (!this._specification.loadIds) {
+                throw new Error("necessary generator not present");
+            }
+            const getIdsCommand = this._specification.loadIds(this._node);
+            this._databaseManager.addCommand(getIdsCommand);
+            await this._databaseManager.executePendingCommands();
+            await this.setIds(getIdsCommand.getResult());
+        } else if (level > LoadLevel.None) {
+            if (this._loadLevel >= LoadLevel.Ids) {
+                const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
+                const loadOtherCommand = this._specification.loadFromIds(notLoadedIds, this._node);
+                this._databaseManager.addCommand(loadOtherCommand);
                 await this._databaseManager.executePendingCommands();
-                this.setIds(getIdsCommand.getResult());
-            } else if (level > LoadLevel.None) {
-                if (this._loadLevel >= LoadLevel.Ids) {
-                    const notLoadedIds = Array.from(this._ids).filter(id => !this._elements.has(id));
-                    const loadOtherCommand = this._specification.loadFromIds(notLoadedIds, this._node);
-                    this._databaseManager.addCommand(loadOtherCommand);
-                    await this._databaseManager.executePendingCommands();
-                    loadOtherCommand.getResult().forEach(element => {
-                        this._elements.set(element.id, element);
-                        //a notify is not necessary because this was already done when the ids were loaded
-                    });
-                    notLoadedIds.forEach(id => {
-                        if (!this._elements.has(id)) {
-                            this._ids.delete(id);
-                            // a notify is not possible
-                        }
-                    });
-                    this._loadLevel = LoadLevel.Complete;
-                } else {
-                    const loadAllCommand = this._specification.loadElements(this._node);
-                    this._databaseManager.addCommand(loadAllCommand);
-                    await this._databaseManager.executePendingCommands();
-                    this.setElements(loadAllCommand.getResult());
-                }
+                loadOtherCommand.getResult().forEach(element => {
+                    this._elements.set(element.id, element);
+                    // a notify is not necessary because this was already done when the ids were loaded
+                });
+                notLoadedIds.forEach(id => {
+                    if (!this._elements.has(id)) {
+                        this._ids.delete(id);
+                        // a notify is not possible
+                    }
+                });
+                this._loadLevel = LoadLevel.Complete;
+            } else {
+                const loadAllCommand = this._specification.loadElements(this._node);
+                this._databaseManager.addCommand(loadAllCommand);
+                await this._databaseManager.executePendingCommands();
+                await this.setElements(loadAllCommand.getResult());
             }
         }
     }
@@ -253,7 +283,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             const allKnownIds = [...ids, ...this._addedIds];
             this._ids = new Set(allKnownIds);
             const newElements: Map<string, T> = new Map<string, T>();
-            
+
             const idsToLoad: string[] = [];
             await Promise.all(allKnownIds.map(async id => {
                 const availableElement = this._elements.get(id);
@@ -263,7 +293,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                     idsToLoad.push(id);
                 }
             }));
-            if (this._loadLevel == LoadLevel.Complete) {
+            if (this._loadLevel === LoadLevel.Complete) {
                 const loadCommand = this._specification.loadFromIds(idsToLoad, this._node);
                 this._databaseManager.addCommand(loadCommand);
                 await this._databaseManager.executePendingCommands();
@@ -284,13 +314,13 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * set the nodes list
-     * this is treated as the most current version, 
+     * this is treated as the most current version,
      * @param elements the list of elements
      */
-    setElements(elements: T[]): void {
-        this.setIds(elements.map(element => element.id));
+    async setElements(elements: T[]): Promise<void> {
+        await this.setIds(elements.map(element => element.id));
         const newElements = Array.from(this._addedIds).map(id => this._elements.get(id));
-        this._elements = elements.reduce((map, element, index, elements) => map.set(element.id, element), new Map<string, T>());
+        this._elements = elements.reduce((map, element, index, items) => map.set(element.id, element), new Map<string, T>());
         newElements.forEach(element => {
             if (element) {
                 this._elements.set(element.id, element);
@@ -316,7 +346,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
-                this._node.markChanged();
+                this.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._addedIds.add(element.id);
@@ -324,7 +354,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 this._ids.add(element.id);
                 if (this._loadLevel >= LoadLevel.Partial) {
                     this._elements.set(element.id, element);
-                } 
+                }
             }
         }
     }
@@ -344,7 +374,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         } else {
             if (this._specification.save) {
                 await this.ensureAddDeleteLoadLevel();
-                this._node.markChanged();
+                this.markChanged();
             }
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._removedIds.add(element.id);

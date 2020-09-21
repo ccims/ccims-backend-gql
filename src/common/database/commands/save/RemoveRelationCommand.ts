@@ -1,6 +1,5 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
-import { NodeCache } from "../../NodeCache";
 import { CCIMSNode } from "../../../nodes/CCIMSNode";
 import { DatabaseManager } from "../../DatabaseManager";
 import { verifyIsAllowedSqlIdent } from "../SqlHelperFunctions";
@@ -51,7 +50,7 @@ export class RemoveRelationCommand extends DatabaseCommand<void> {
         return [];
     }
 
-   /**
+    /**
      * creates a generator for a RemoveRelationCommand for properties on the primary node
      * @param primary the primary id column name
      * @param secundary the secundary id column name

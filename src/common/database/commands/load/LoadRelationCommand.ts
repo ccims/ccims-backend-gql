@@ -50,7 +50,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
     /**
      * called when the query is finished
      * sets the result
-     * 
+     *
      * @param databaseManager the databaseManager to use
      * @param result the result from the query
      * @returns follow up commands
@@ -76,6 +76,63 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
      */
     public static fromSecundary(primary: string, secundary: string): ((node: CCIMSNode) => DatabaseCommand<string[]>) {
         return (node) => new LoadRelationCommand(`relation_${primary}_${secundary}`, primary + "_id", secundary + "_id", false, node.id);
+    }
+
+    /**
+     * creates a generator for a command which loads a many to one relation property on the many side
+     * @param tableName the name of the table on the one side
+     * @param rowName the name of the row on the one side
+     */
+    public static fromManySide(tableName: string, rowName: string): ((node: CCIMSNode) => DatabaseCommand<string[]>) {
+        return node => new LoadIdsManyOneCommand(tableName, rowName, node);
+    }
+
+    /**
+     * creates a command which loads the one side
+     * @param tableName the name of the table on the one side
+     * @param rowName the name of the row on the one side
+     */
+    public static fromManySideBase(tableName: string, rowName: string, node: CCIMSNode):  DatabaseCommand<string[]> {
+        return new LoadIdsManyOneCommand(tableName, rowName, node);
+    }
+}
+
+/**
+ * command to load a many to one relation from the many side
+ */
+class LoadIdsManyOneCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadIdsManyOneCommand
+     * @param tableName the name of the table on the one side
+     * @param rowName the name of the row on tableName
+     * @param node the node on the many side
+     */
+    public constructor (private readonly tableName: string, private readonly rowName: string, private readonly node: CCIMSNode) {
+        super();
+        verifyIsAllowedSqlIdent(tableName);
+        verifyIsAllowedSqlIdent(rowName);
+    }
+
+    /**
+     * generates the query
+     */
+    public getQueryConfig(): QueryConfig<any[]> {
+        return {
+            text: `SELECT id from ${this.tableName} WHERE ${this.rowName} = $1`,
+            values: [this.node.id]
+        };
+    }
+
+    /**
+     * parses the result from the query
+     * @param databaseManager the databaseManager
+     * @param result the result of the query
+     * @param follow up commands
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.id);
+        return [];
     }
 
 }

@@ -1,3 +1,6 @@
+/**
+ * enum with types for nodes
+ */
 export enum NodeType {
     User = "User",
     Project = "Project",
@@ -33,5 +36,7 @@ export enum NodeType {
     MarkedAsDuplicateEvent = "MarkedAsDuplicateEvent",
     UnmarkedAsDuplicateEvent = "UnmarkedAsDuplicateEvent",
     ReactionGroup = "ReactionGroup",
-    Label = "Label"
+    Label = "Label",
+    ImsSystem = "ImsSystem",
+    Body = "Body"
 }

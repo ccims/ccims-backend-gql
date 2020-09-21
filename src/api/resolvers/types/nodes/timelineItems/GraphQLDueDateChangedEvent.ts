@@ -7,7 +7,7 @@ import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 
-let dueDateChangedEventConfig: GraphQLObjectTypeConfig<DueDateChangedEvent, ResolverContext> = {
+const dueDateChangedEventConfig: GraphQLObjectTypeConfig<DueDateChangedEvent, ResolverContext> = {
     name: "DueDateChangedEvent",
     description: "An DueDateChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -39,5 +39,5 @@ let dueDateChangedEventConfig: GraphQLObjectTypeConfig<DueDateChangedEvent, Reso
         }
     })
 };
-let GraphQLDueDateChangedEvent = new GraphQLObjectType(dueDateChangedEventConfig);
+const GraphQLDueDateChangedEvent = new GraphQLObjectType(dueDateChangedEventConfig);
 export default GraphQLDueDateChangedEvent;

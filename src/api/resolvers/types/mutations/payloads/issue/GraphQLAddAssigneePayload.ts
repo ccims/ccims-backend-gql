@@ -5,7 +5,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLAssignedEvent from "../../../nodes/timelineItems/GraphQLAssignedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let addAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddAssigneePayload",
     description: "The Payload/Response for the addAssignee mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let addAssigneePayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLAddAssigneePayload = new GraphQLObjectType(addAssigneePayloadConfig);
+const GraphQLAddAssigneePayload = new GraphQLObjectType(addAssigneePayloadConfig);
 export default GraphQLAddAssigneePayload;

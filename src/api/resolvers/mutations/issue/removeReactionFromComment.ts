@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLRemoveReactionFromCommentPayload from "../../types/mutations/payloads/issue/GraphQLRemoveReactionFromCommentPayload";
 import GraphQLRemoveReactionFromCommentInput from "../../types/mutations/inputs/issue/GraphQLRemoveReactionFromCommentInput";
 
-let removeReactionFromComment: GraphQLFieldConfig<any, ResolverContext> | undefined = undefined;
+let removeReactionFromComment: GraphQLFieldConfig<any, ResolverContext> | undefined;
 export default () => {
     if (removeReactionFromComment === undefined) {
         removeReactionFromComment = {

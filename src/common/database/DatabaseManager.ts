@@ -1,20 +1,29 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
-import { NodeCache } from "./NodeCache";
 import { DatabaseCommand } from "./DatabaseCommand";
 import { Client } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
+import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
+import { setTypeParser } from "pg-types"
+import { IssueCategory, IssuePriority } from "../nodes/Issue";
+import { ImsType } from "../nodes/ImsSystem";
+import { Saveable } from "../nodes/Saveable";
 
 /**
  * Adds database support, also has an IdGenerator
  * All nodes must be registered on this object
  */
-export class DatabaseManager implements NodeCache {
+export class DatabaseManager {
 
     /**
      * a map with all nodes
      */
     nodes: Map<string, CCIMSNode> = new Map<string, CCIMSNode>();
+
+    /**
+     * set with Saveables to save
+     */
+    toSave: Set<Saveable> = new Set();
 
     /**
      * the idGenerator
@@ -60,6 +69,23 @@ export class DatabaseManager implements NodeCache {
     }
 
     /**
+     * gets the node if it is already cached, otherwise it loads it
+     * @param id the id for the node to get
+     */
+    public async getNode(id: string): Promise<CCIMSNode | undefined> {
+        const cachedNode = this.getCachedNode(id);
+        if (cachedNode) {
+            return cachedNode;
+        } else {
+            const loadCommand = new LoadMultipleNodeListsCommand("node");
+            loadCommand.ids = [id];
+            this.addCommand(loadCommand);
+            await this.executePendingCommands();
+            return loadCommand.getResult()[0];
+        }
+    }
+
+    /**
      * add a DatabaseCommand to the pending command collection
      * this does not execute command, to do this @see executePendingCommands
      * @param command the command to add
@@ -74,14 +100,19 @@ export class DatabaseManager implements NodeCache {
      * after this, it is possible to get the result of each command
      */
     public async executePendingCommands(): Promise<void> {
-        try {
-            this.pgClient.query("BEGIN;");
-            await Promise.all(this.pendingCommands.map(cmd => this.executeCommand(cmd)));
-            this.pgClient.query("COMMIT;");
-        } catch {
-            log(2, "database command failed");
+        if (this.pendingCommands.length > 0) {
+            const pending = this.pendingCommands;
+            this.pendingCommands = [];
+            try {
+                await this.pgClient.query("BEGIN;");
+                await Promise.all(pending.map(cmd => this.executeCommand(cmd)));
+                await this.pgClient.query("COMMIT;");
+            } catch (e) {
+                await this.pgClient.query("ROLLBACK;");
+                log(2, "database command failed");
+                log(8, e);
+            }
         }
-        this.pendingCommands = [];
     }
 
     /**
@@ -90,8 +121,12 @@ export class DatabaseManager implements NodeCache {
      */
     private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
         const commandConfig = command.getQueryConfig();
-        const result = await this.pgClient.query(commandConfig);
+        console.log(8, commandConfig);
+        let result;
+        result = await this.pgClient.query(commandConfig);
         const followUpCommands = command.setDatabaseResult(this, result);
+        await Promise.all(followUpCommands.map(cmd => this.executeCommand(cmd)));
+        command.notifyFollowUpCommandsResult(this, followUpCommands);
     }
 
     /**
@@ -99,15 +134,39 @@ export class DatabaseManager implements NodeCache {
      * WARNING: it is forbidden to use already existing nodes any longer!
      * this will result in serious errors and may affect database consitency!
      */
-    public async saveAndClearCache() {
-        await this.executePendingCommands();
-        this.nodes.forEach(node => {
-            if (node.isChanged) {
-                node.save();
-            }
-        });
-        await this.executePendingCommands();
+    public async saveAndClearCache(): Promise<void> {
+        await this.save();
         this.nodes.clear();
     }
 
+    /**
+     * saves all nodes
+     */
+    public async save(): Promise<void> {
+        await this.executePendingCommands();
+        this.toSave.forEach(saveable => {
+            if (saveable.isChanged) {
+                saveable.save();
+            }
+        });
+        await this.executePendingCommands();
+        this.toSave.clear();
+    }
+
+    /**
+     * adds a savable to save
+     * @param saveable the saveable which will be saved with the next save
+     */
+    public addChanged(saveable: Saveable): void {
+        this.toSave.add(saveable);
+    }
+}
+
+export async function initTypeParsers(client: Client): Promise<void> {
+    const issueCategoryOid = (await client.query("SELECT 'issue_category'::regtype::oid;")).rows[0].oid;
+    const priorityOid = (await client.query("SELECT 'priority'::regtype::oid;")).rows[0].oid;
+    const imsTypeOid = (await client.query("SELECT 'ims_type'::regtype::oid;")).rows[0].oid;
+    setTypeParser(issueCategoryOid, value => IssueCategory[value as keyof typeof IssueCategory]);
+    setTypeParser(priorityOid, value => IssuePriority[value as keyof typeof IssuePriority]);
+    setTypeParser(imsTypeOid, value => ImsType[value as keyof typeof ImsType]);
 }

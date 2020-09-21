@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 
-let linkIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const linkIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "LinkIssueInput",
     description: "The inputs for the linkIssue",
     fields: () => ({
@@ -18,5 +18,5 @@ let linkIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLLinkIssueInput = new GraphQLInputObjectType(linkIssueInputConfig);
+const GraphQLLinkIssueInput = new GraphQLInputObjectType(linkIssueInputConfig);
 export default GraphQLLinkIssueInput;

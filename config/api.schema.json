@@ -32,6 +32,14 @@
             "type": "string",
             "title": "GraphQL schema location",
             "description": "The file location relative to the execution directory where the GraphQL Schema is located"
+        },
+        "numReactionUsers": {
+            "type": [
+                "number",
+                "null"
+            ],
+            "title": "Number of reaction users",
+            "description": "The number of users to return for a reaction group before slicing"
         }
     },
     "additionalProperties": false,

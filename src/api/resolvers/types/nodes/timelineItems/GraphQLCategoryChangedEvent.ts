@@ -8,7 +8,7 @@ import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
 import GraphQLIssueCategory from "../../../enums/GraphQLIssueCategory";
 
-let categoryChangedEventConfig: GraphQLObjectTypeConfig<CategoryChangedEvent, ResolverContext> = {
+const categoryChangedEventConfig: GraphQLObjectTypeConfig<CategoryChangedEvent, ResolverContext> = {
     name: "CategoryChangedEvent",
     description: "An CategoryChangedEvent in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
@@ -40,5 +40,5 @@ let categoryChangedEventConfig: GraphQLObjectTypeConfig<CategoryChangedEvent, Re
         }
     })
 };
-let GraphQLCategoryChangedEvent = new GraphQLObjectType(categoryChangedEventConfig);
+const GraphQLCategoryChangedEvent = new GraphQLObjectType(categoryChangedEventConfig);
 export default GraphQLCategoryChangedEvent;

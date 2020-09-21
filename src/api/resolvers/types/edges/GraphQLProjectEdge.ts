@@ -1,9 +1,8 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import GraphQLProject from "../nodes/GraphQLProject";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
+import GraphQLProject from "../nodes/GraphQLProject";
 
-let projectEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const projectEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ProjectEdge",
     description: "An edge for a ProjectPage to link a cursor to an element",
     fields: () => ({
@@ -17,5 +16,5 @@ let projectEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLProjectEdge = new GraphQLObjectType(projectEdgeConfig);
+const GraphQLProjectEdge = new GraphQLObjectType(projectEdgeConfig);
 export default GraphQLProjectEdge;

@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let markIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
+const markIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
     name: "MarkIssueAsDuplicateInput",
     description: "The inputs for the markIssueAsDuplicate",
     fields: () => ({
@@ -18,5 +18,5 @@ let markIssueAsDuplicateInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLMarkIssueAsDuplicateInput = new GraphQLInputObjectType(markIssueAsDuplicateInputConfig);
+const GraphQLMarkIssueAsDuplicateInput = new GraphQLInputObjectType(markIssueAsDuplicateInputConfig);
 export default GraphQLMarkIssueAsDuplicateInput;

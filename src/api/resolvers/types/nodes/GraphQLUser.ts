@@ -1,13 +1,15 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLNode from "../GraphQLNode";
-import projects from "../../listQueries/projects";
-import assignedToIssues from "../../listQueries/user/assignedToIssues";
-import participantOfIssues from "../../listQueries/user/participantOfIssues";
-import issueComments from "../../listQueries/user/issueComments";
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { Issue } from "../../../../common/nodes/Issue";
+import { Project } from "../../../../common/nodes/Project";
+import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
+import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
+import issuesListQuery from "../../listQueries/issuesListQuery";
+import projectsListQuery from "../../listQueries/projectsListQuery";
+import GraphQLNode from "../GraphQLNode";
 
-let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
+const userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
     name: "User",
     description: "A user of th ccims. Can be assigned to projects, components and can have multiple ims accounts",
     interfaces: () => ([GraphQLNode]),
@@ -25,14 +27,14 @@ let userConfig: GraphQLObjectTypeConfig<User, ResolverContext> = {
             description: "The name of the user to display in the GUI"
         },
         email: {
-            type: GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: "The mail address of the user"
         },
-        projects: projects(),
-        assignedToIssues: assignedToIssues(),
-        participantOfIssues: participantOfIssues(),
-        issueComments: issueComments()
+        projects: projectsListQuery<User, Project>("All the projects this user is a participant of matching `filterBy`", user => user.projectsProperty),
+        assignedToIssues: issuesListQuery<User, Issue>("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
+        participantOfIssues: issuesListQuery<User, Issue>("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
+        issueComments: issueCommentsListQuery<User, IssueComment>("All issue comments (not including issues) written by this user", user => user.commentsProperty)
     })
 };
-let GraphQLUser = new GraphQLObjectType(userConfig);
+const GraphQLUser = new GraphQLObjectType(userConfig);
 export default GraphQLUser;

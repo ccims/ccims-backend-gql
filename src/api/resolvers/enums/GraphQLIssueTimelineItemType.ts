@@ -1,6 +1,6 @@
 import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 
-let issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
+const issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
     name: "IssueTimelineItemType",
     description: "The type of a timeline item/event so it can be filtered for <sup>(because GraphQL doesn't allow to filter for a type)</sup>",
     values: {
@@ -108,7 +108,15 @@ let issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
             value: "UNMARKED_AS_DUPLICATE_EVENT",
             description: "An event if the issue is no longer a duplicate of another issue"
         },
+        ADDED_TO_COMPONENT_EVENT: {
+            value: "ADDED_TO_COMPONENT_EVENT",
+            description: "An event if the issue has been added to a new component and copied to the components ims (not a issue location)"
+        },
+        REMOVED_FROM_COMPONENT_EVENT: {
+            value: "REMOVED_FROM_COMPONENT_EVENT",
+            description: "An event if the issue has been removed from a component and deleted in the components ims (not a issue location)"
+        }
     }
 };
-let GraphQLIssueTimelineItemType = new GraphQLEnumType(issueTimelineItemTypeConfig);
+const GraphQLIssueTimelineItemType = new GraphQLEnumType(issueTimelineItemTypeConfig);
 export default GraphQLIssueTimelineItemType;

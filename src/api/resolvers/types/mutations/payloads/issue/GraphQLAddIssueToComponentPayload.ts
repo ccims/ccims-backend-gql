@@ -5,7 +5,7 @@ import GraphQLAddedToComponentEvent from "../../../nodes/timelineItems/GraphQLAd
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
 
-let addIssueToComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const addIssueToComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddIssueToComponentPayload",
     description: "The Payload/Response for the addIssueToComponent mutation",
     fields: () => ({
@@ -31,5 +31,5 @@ let addIssueToComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverConte
         }
     })
 };
-let GraphQLAddIssueToComponentPayload = new GraphQLObjectType(addIssueToComponentPayloadConfig);
+const GraphQLAddIssueToComponentPayload = new GraphQLObjectType(addIssueToComponentPayloadConfig);
 export default GraphQLAddIssueToComponentPayload;

@@ -1,7 +1,7 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../ResolverContext";
 
-let testMutationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const testMutationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "TestMutationPayload",
     description: "The Payload/Response for the addIssueToLocation mutation",
     fields: () => ({
@@ -11,5 +11,5 @@ let testMutationPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         }
     })
 };
-let GraphQLTestMutationPayload = new GraphQLObjectType(testMutationPayloadConfig);
+const GraphQLTestMutationPayload = new GraphQLObjectType(testMutationPayloadConfig);
 export default GraphQLTestMutationPayload;

@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let renameIssueTitleInputConfig: GraphQLInputObjectTypeConfig = {
+const renameIssueTitleInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RenameIssueTitleInput",
     description: "The inputs for the renameIssueTitle",
     fields: () => ({
@@ -18,5 +18,5 @@ let renameIssueTitleInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLRenameIssueTitleInput = new GraphQLInputObjectType(renameIssueTitleInputConfig);
+const GraphQLRenameIssueTitleInput = new GraphQLInputObjectType(renameIssueTitleInputConfig);
 export default GraphQLRenameIssueTitleInput;

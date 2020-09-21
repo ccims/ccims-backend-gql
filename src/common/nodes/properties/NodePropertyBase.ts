@@ -1,27 +1,21 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { PropertySpecification } from "./PropertySpecification";
+import { Saveable } from "../Saveable";
+import { Property } from "./Property";
 
 /**
  * property which represents the one side on a many to one relation
  * @param T the type of the other node
  * @param V the type of the node on which this property is
  */
-export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode> {
+export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode> extends Property<T, V> {
 
     /**
-     * the databaseManager
+     * the other node if already loaded
      */
-    protected readonly _databaseManager: DatabaseManager;
-    /**
-     * the specification of the property
-     */
-    private readonly specification : PropertySpecification<T, V>;
-    /**
-     * the node on which this property is
-     */
-    protected readonly _node: V;
-    
+    protected _element?: T;
+
 
     /**
      * base functionality for node properties
@@ -30,32 +24,27 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * @param node the node proviced to all generators as last parameter
      */
     protected constructor(databaseManager: DatabaseManager, specification: PropertySpecification<T, V>, node: V) {
-        this._databaseManager = databaseManager;
-        this.specification = specification;
-        this._node = node;
+        super(databaseManager, node, specification);
     }
 
     /**
-     * notifies the element that this node was added
-     * @param element the element to notify
-     * @param byDatabase true if caused by database
+     * ensures that this property is loaded
      */
-    protected async notifyAdded(element: T, byDatabase: boolean): Promise<void> {
-        await Promise.all(this.specification.notifiers.map(notifier => {
-            const toNotify = notifier(element, this._node);
-            return toNotify.wasAddedBy(this._node, byDatabase);
-        }));
+    protected async ensureLoaded(): Promise<void> {
+        if (this.currentCommand) {
+            await this.currentCommand;
+        }
+        this.currentCommand = this.ensureLoadedInternal();
+        await this.currentCommand;
+        this.currentCommand = undefined;
     }
 
-    /**
-     * notifies the element that this node was removed
-     * @param element the element to notify
-     * @param byDatabase true if caused by database
-     */
-    protected async notifyRemoved(element: T, byDatabase: boolean): Promise<void> {
-        await Promise.all(this.specification.notifiers.map(notifier => {
-            const toNotify = notifier(element, this._node);
-            return toNotify.wasRemovedBy(this._node, byDatabase);
-        }));
+    protected abstract async ensureLoadedInternal(): Promise<void>;
+
+    public async markDeleted(): Promise<void> {
+        await this.ensureLoaded();
+        if (this._element) {
+            await this.notifyRemoved(this._element, false);
+        }
     }
 }

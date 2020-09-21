@@ -4,7 +4,7 @@ import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLCategoryChangedEvent from "../../../nodes/timelineItems/GraphQLCategoryChangedEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 
-let changeIssueCategoryPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
+const changeIssueCategoryPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "ChangeIssueCategoryPayload",
     description: "The Payload/Response for the changeIssueCategory mutation",
     fields: () => ({
@@ -26,5 +26,5 @@ let changeIssueCategoryPayloadConfig: GraphQLObjectTypeConfig<any, ResolverConte
         }
     })
 };
-let GraphQLChangeIssueCategoryPayload = new GraphQLObjectType(changeIssueCategoryPayloadConfig);
+const GraphQLChangeIssueCategoryPayload = new GraphQLObjectType(changeIssueCategoryPayloadConfig);
 export default GraphQLChangeIssueCategoryPayload;

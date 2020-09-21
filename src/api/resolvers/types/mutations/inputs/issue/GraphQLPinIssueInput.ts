@@ -1,6 +1,6 @@
 import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
-let pinIssueInputConfig: GraphQLInputObjectTypeConfig = {
+const pinIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "PinIssueInput",
     description: "The inputs for the pinIssue",
     fields: () => ({
@@ -18,5 +18,5 @@ let pinIssueInputConfig: GraphQLInputObjectTypeConfig = {
         }
     })
 };
-let GraphQLPinIssueInput = new GraphQLInputObjectType(pinIssueInputConfig);
+const GraphQLPinIssueInput = new GraphQLInputObjectType(pinIssueInputConfig);
 export default GraphQLPinIssueInput;

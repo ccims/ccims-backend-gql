@@ -28,7 +28,7 @@ import removeReactionFromComment from "./mutations/issue/removeReactionFromComme
 import { GraphQLFieldConfigMap } from "graphql";
 import { ResolverContext } from "../ResolverContext";
 
-let issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
+const issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     createIssue: createIssue(),
     addIssueComment: addIssueComment(),
     deleteIssueComment: deleteIssueComment(),

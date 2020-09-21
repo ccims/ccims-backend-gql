@@ -3,10 +3,10 @@ import GraphQLIssue from "./GraphQLIssue";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLNode from "../GraphQLNode";
-import { IssueTimelineItem } from "../../../../common/nodes/IssueTimelineItem";
+import { IssueTimelineItem } from "../../../../common/nodes/timelineItems/IssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";
 
-let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, ResolverContext> = {
+const issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, ResolverContext> = {
     name: "IssueTimelineItem",
     description: "An event in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLNode]),
@@ -30,5 +30,5 @@ let issueTimelineItemConfig: GraphQLInterfaceTypeConfig<IssueTimelineItem, Resol
         }
     })
 };
-let GraphQLIssueTimelineItem = new GraphQLInterfaceType(issueTimelineItemConfig);
+const GraphQLIssueTimelineItem = new GraphQLInterfaceType(issueTimelineItemConfig);
 export default GraphQLIssueTimelineItem;
