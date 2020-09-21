@@ -25,7 +25,7 @@ export class PostgresConfig {
             this.database = "ccims";
         }
         if (typeof file.host === "string") {
-            this.host = file.server;
+            this.host = file.host;
         } else {
             this.host = "localhost";
         }

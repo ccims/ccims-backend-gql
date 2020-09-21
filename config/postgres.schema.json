@@ -42,7 +42,7 @@
         "username",
         "password",
         "database",
-        "server",
+        "host",
         "port",
         "$schema"
     ]
