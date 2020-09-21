@@ -123,12 +123,7 @@ export class DatabaseManager {
         const commandConfig = command.getQueryConfig();
         console.log(8, commandConfig);
         let result;
-        try {
-            result = await this.pgClient.query(commandConfig);
-        } catch (e) {
-            console.log("blub")
-            throw e;
-        }
+        result = await this.pgClient.query(commandConfig);
         const followUpCommands = command.setDatabaseResult(this, result);
         await Promise.all(followUpCommands.map(cmd => this.executeCommand(cmd)));
         command.notifyFollowUpCommandsResult(this, followUpCommands);
