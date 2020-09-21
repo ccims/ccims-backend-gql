@@ -25,7 +25,7 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): WasUnlinkedEvent {
         return new WasUnlinkedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.unlinked_by,
+            resultRow.unlinked_by, resultRow.deleted,
             this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 

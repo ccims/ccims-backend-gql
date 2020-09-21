@@ -25,7 +25,7 @@ export class LoadRemovedFromComponentEventsCommand extends LoadIssueTimelineItem
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): RemovedFromComponentEvent {
         return new RemovedFromComponentEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.component,
+            resultRow.component, resultRow.deleted,
             this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 

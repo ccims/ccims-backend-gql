@@ -25,7 +25,7 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): PinnedEvent {
         return new PinnedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.component,
+            resultRow.component, resultRow.deleted,
             this.loadWithMetadata ? resultRow.metadata : undefined);
     }
 
