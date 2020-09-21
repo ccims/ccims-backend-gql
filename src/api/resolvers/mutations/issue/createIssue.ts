@@ -88,8 +88,7 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             await Promise.all(components.map(component => issue.addToComponent(component, now, me)));
             await issue.changeCategory(category, now, me);
             if (labels && labels.length > 0) {
-                // TODO: Uncomment once label support is added
-                // await Promise.all(labels.map(label => issue.addLabel(label, now, me)));
+                await Promise.all(labels.map(label => issue.addLabel(label, now, me)));
             }
             if (assignees && assignees.length > 0) {
                 await Promise.all(assignees.map(assignee => issue.assignUser(assignee, now, me)));
