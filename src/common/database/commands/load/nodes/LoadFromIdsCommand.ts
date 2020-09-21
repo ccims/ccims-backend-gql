@@ -21,12 +21,13 @@ import { LoadUnlinkEventsCommand } from "./timeline/LoadUnlinkEventsCommand";
 import { LoadUnpinnedEventsCommand } from "./timeline/LoadUnpinnedEventsCommand";
 import { LoadWasLinkedEventsCommand } from "./timeline/LoadWasLinkedEventsCommand";
 import { LoadWasUnlinkedEventsCommand } from "./timeline/LoadWasUnlinkedEventsCommand";
-import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { LoadLabelsCommand } from "./LoadLabelsCommand";
 import { LoadLabelledEventCommand } from "./timeline/LoadLabelledEventCommand";
 import { LoadUnlabelledEventCommand } from "./timeline/LoadUnlabelledEventCommand";
 import { LoadStartDateChangedEventsCommand } from "./timeline/LoadStartDateChangedEventsCommand";
 import { LoadDueDateChangedEventsCommand } from "./timeline/LoadDueDateChangedEventsCommand";
+import { LoadMarkedAsDuplicateEventsCommand } from "./timeline/LoadMarkedAsDuplicateEventsCommand";
+import { LoadUnmarkedAsDuplicateEventsCommand } from "./timeline/LoadUnmarkedAsDuplicateEventsCommand";
 
 /**
  * map with method to create command for each table name
@@ -57,7 +58,9 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_labelledEvent", () => new LoadLabelledEventCommand()],
     ["issue_timeline_unlabelledEvent", () => new LoadUnlabelledEventCommand()],
     ["issue_timeline_startDateChangedEvent", () => new LoadStartDateChangedEventsCommand()],
-    ["issue_timneline_dueDateChangedEvent", () => new LoadDueDateChangedEventsCommand()]
+    ["issue_timneline_dueDateChangedEvent", () => new LoadDueDateChangedEventsCommand()],
+    ["issue_timeline_markedAsDuplicateEvent", () => new LoadMarkedAsDuplicateEventsCommand()],
+    ["issue_timeline_unmarkedAsDuplicateEvent", () => new LoadUnmarkedAsDuplicateEventsCommand()]
 ]);
 
 /**

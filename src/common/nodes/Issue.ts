@@ -46,6 +46,8 @@ import { LabelledEvent } from "./timelineItems/LabelledEvent";
 import { UnlabelledEvent } from "./timelineItems/UnlabelledEvent";
 import { StartDateChangedEvent } from "./timelineItems/StartDateChangedEvent";
 import { DueDateChangedEvent } from "./timelineItems/DueDateChangedEvent";
+import { MarkedAsDuplicateEvent } from "./timelineItems/MarkedAsDuplicateEvent";
+import { UnmarkedAsDuplicateEvent } from "./timelineItems/UnmarkedAsDuplicateEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -797,6 +799,40 @@ export class Issue extends SyncNode<Issue> {
             return event;
         } else {
             throw new Error("The unser to unassigned in not assigned to the issue");
+        }
+    }
+
+    /**
+     * marks this issue as duplicate, if not already a duplicate
+     * @param atDate 
+     * @param asUser
+     * @returns the event if marked, otherwise undefined 
+     */
+    public async markAsDuplicate(atDate: Date, asUser?: User): Promise<MarkedAsDuplicateEvent | undefined> {
+        if (!this.isDuplicate) {
+            this._isDuplicate = true;
+            const event = await MarkedAsDuplicateEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * unmarks this issue as duplicate, if it is a duplicate
+     * @param atDate 
+     * @param asUser
+     * @returns the event if unmarked, otherwise undefined 
+     */
+    public async unmarkAsDuplicate(atDate: Date, asUser?: User): Promise<UnmarkedAsDuplicateEvent | undefined> {
+        if (this.isDuplicate) {
+            this._isDuplicate = true;
+            const event = await UnmarkedAsDuplicateEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
         }
     }
 
