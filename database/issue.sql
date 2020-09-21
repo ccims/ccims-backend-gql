@@ -102,12 +102,12 @@ CREATE TABLE issue_timeline_deletedComment (
     deleted_at timestamp NOT NULL
 ) INHERITS (issue_timelineItem);
 
-CREATE TABLE issue_timeline_labledEvent (
+CREATE TABLE issue_timeline_labelledEvent (
     LIKE issue_timelineItem,
     label id NOT NULL
 ) INHERITS (issue_timelineItem);
 
-CREATE TABLE issue_timeline_unlabledEvent (
+CREATE TABLE issue_timeline_unlabelledEvent (
     LIKE issue_timelineItem,
     label id NOT NULL
 ) INHERITS (issue_timelineItem);
