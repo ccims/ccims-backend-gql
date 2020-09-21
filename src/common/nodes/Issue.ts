@@ -44,6 +44,8 @@ import MarkdownIt from "markdown-it";
 import { config } from "../../config/Config";
 import { LabelledEvent } from "./timelineItems/LabelledEvent";
 import { UnlabelledEvent } from "./timelineItems/UnlabelledEvent";
+import { StartDateChangedEvent } from "./timelineItems/StartDateChangedEvent";
+import { DueDateChangedEvent } from "./timelineItems/DueDateChangedEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -407,8 +409,44 @@ export class Issue extends SyncNode<Issue> {
         return this._startDate;
     }
 
+    /**
+     * sets the new startDate
+     * @param newStartDate the new start date or undefined if the startDate should be removed
+     * @param atDate 
+     * @param asUser 
+     * @returns the event if the start date was changed, otherwise undefined
+     */
+    public async changeStartDate(newStartDate: Date | undefined, atDate: Date, asUser?: User): Promise<StartDateChangedEvent | undefined> {
+        if (newStartDate !== this._startDate) {
+            const event = await StartDateChangedEvent.create(this._databaseManager, asUser, atDate, this, this._startDate, newStartDate);
+            this._startDate = newStartDate;
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
     public get dueDate(): Date | undefined {
         return this._dueDate;
+    }
+
+    /**
+     * sets the new dueDate
+     * @param newDueDate the new due date or undefined if the dueDate should be removed
+     * @param atDate 
+     * @param asUser 
+     * @returns the event if the due date was changed, otherwise undefined
+     */
+    public async changeDueDate(newDueDate: Date | undefined, atDate: Date, asUser?: User): Promise<DueDateChangedEvent | undefined> {
+        if (newDueDate !== this._dueDate) {
+            const event = await DueDateChangedEvent.create(this._databaseManager, asUser, atDate, this, this._dueDate, newDueDate);
+            this._dueDate = newDueDate;
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
     }
 
     public get estimatedTime(): number | undefined {
