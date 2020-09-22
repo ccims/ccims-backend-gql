@@ -10,8 +10,8 @@ const issueFilterConfig: GraphQLInputObjectTypeConfig = {
         "Not specific issues in issue management systems but the issue in the ccims",
     fields: () => ({
         title: {
-            type: GraphQLList(GraphQLNonNull(GraphQLString)),
-            description: "The title of the issue must match any of the given strings"
+            type: GraphQLString,
+            description: "The title of the issue must match the given regex"
         },
         components: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
@@ -83,7 +83,7 @@ const issueFilterConfig: GraphQLInputObjectTypeConfig = {
         },
         labels: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The issue must have all the labels of at least that are matched by at least one of the given label filters"
+            description: "The issue must have at least one label with one of the given ids"
         },
         participants: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
