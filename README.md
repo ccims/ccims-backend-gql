@@ -12,6 +12,15 @@ Printing schema to stdout: `npm run --silent schema`
 
 # Usage / Installation
 
+## No Login
+If you want to test without login,
+```json
+{
+    "debugNoLogin": true
+}
+```
+should be set in `./config/api.json`
+
 ## Without docker
 Make sure that you have installed postgres
 ```
@@ -28,7 +37,7 @@ npm i
 npm run database-file
 docker-compose up
 ```
-`./src/config/postgres.json` should look like this:
+`./config/postgres.json` should look like this:
 ```json
 {
     "$schema": "./postgres.schema.json",
