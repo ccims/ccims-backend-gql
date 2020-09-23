@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { log } from "../log";
 
 export class APIConfig {
     public readonly hostIface: string;
@@ -14,8 +13,7 @@ export class APIConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            log(3, `${filePath} file for the API config not found. Using defaults`);
-            log(8, e);
+            console.log(3, `${filePath} file for the API config not found. Using defaults`);
         }
         if (typeof file?.hostIface === "string") {
             this.hostIface = file.hostIface;

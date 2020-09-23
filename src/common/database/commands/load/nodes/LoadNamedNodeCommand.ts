@@ -25,7 +25,7 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.name) {
+        if (this.name !== undefined) {
             conditions.conditions.push({
                 text: `main.name ~ $${conditions.i}`,
                 values: [this.name],
@@ -34,7 +34,7 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
             conditions.i++;
         }
 
-        if (this.description) {
+        if (this.description !== undefined) {
             conditions.conditions.push({
                 text: `main.description ~ $${conditions.i}`,
                 values: [this.description],

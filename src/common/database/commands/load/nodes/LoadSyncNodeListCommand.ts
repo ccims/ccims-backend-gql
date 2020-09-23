@@ -52,7 +52,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             });
         }
 
-        if (this.createdBy) {
+        if (this.createdBy !== undefined) {
             if (this.createdBy.length === 1) {
                 conditions.conditions.push({
                     text: `main.created_by=$${conditions.i}`,
@@ -69,7 +69,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.i++;
         }
 
-        if (this.createdAfter) {
+        if (this.createdAfter !== undefined) {
             conditions.conditions.push({
                 text: `main.created_after >= $${conditions.i}`,
                 values: [this.createdAfter],
@@ -78,7 +78,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.i++;
         }
 
-        if (this.createdBefore) {
+        if (this.createdBefore !== undefined) {
             conditions.conditions.push({
                 text: `main.created_before <= $${conditions.i}`,
                 values: [this.createdBefore],

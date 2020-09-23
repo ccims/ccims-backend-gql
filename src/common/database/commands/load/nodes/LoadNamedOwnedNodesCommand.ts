@@ -21,7 +21,7 @@ export abstract class LoadNamedOwnedNodesCommand<T extends NamedOwnedNode> exten
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.ownedBy) {
+        if (this.ownedBy !== undefined) {
             conditions.conditions.push(createStringListFilter("owner_user_id", this.ownedBy, conditions.i, 3));
             conditions.i++;
         }

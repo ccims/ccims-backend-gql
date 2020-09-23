@@ -66,16 +66,16 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.components) {
+        if (this.components !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.components, conditions.i));
             conditions.i++;
         }
-        if (this.users) {
+        if (this.users !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.users, conditions.i));
             conditions.i++;
         }
 
-        if (this.issuesOnComponent) {
+        if (this.issuesOnComponent !== undefined) {
             if (this.issuesOnComponent.length == 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=$${conditions}))`,
@@ -92,7 +92,7 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
             conditions.i++;
         }
 
-        if (this.labels) {
+        if (this.labels !== undefined) {
             if (this.labels.length == 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$${conditions}))`,

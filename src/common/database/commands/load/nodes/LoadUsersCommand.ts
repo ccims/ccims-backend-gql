@@ -82,7 +82,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.username) {
+        if (this.username !== undefined) {
             conditions.conditions.push({
                 text: `main.username ~ $${conditions.i}`,
                 values: [this.username],
@@ -91,7 +91,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
             conditions.i++;
         }
 
-        if (this.displayName) {
+        if (this.displayName !== undefined) {
             conditions.conditions.push({
                 text: `main.displayname ~ $${conditions.i}`,
                 values: [this.displayName],
@@ -100,7 +100,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
             conditions.i++;
         }
 
-        if (this.email) {
+        if (this.email !== undefined) {
             conditions.conditions.push({
                 text: `main.email ~ $${conditions.i}`,
                 values: [this.email],
@@ -109,22 +109,22 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
             conditions.i++;
         }
 
-        if (this.onProjects) {
+        if (this.onProjects !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("user", "project", this.onProjects, conditions.i));
             conditions.i++;
         }
 
-        if (this.assignedToIssues) {
+        if (this.assignedToIssues !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issue", "assignee", this.assignedToIssues, conditions.i));
             conditions.i++;
         }
 
-        if (this.participantOfIssue) {
+        if (this.participantOfIssue !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssue, conditions.i));
             conditions.i++;
         }
 
-        if (this.editedComments) {
+        if (this.editedComments !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("comment", "editedBy", this.editedComments, conditions.i));
             conditions.i++;
         }

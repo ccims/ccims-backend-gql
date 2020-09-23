@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { log } from "../log";
 
 export class PostgresConfig {
     public readonly user: string;
@@ -13,8 +12,7 @@ export class PostgresConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            log(3, `${filePath} file for the PostgreSQL config not found. Using defaults`);
-            log(8, e);
+            console.log(`${filePath} file for the PostgreSQL config not found. Using defaults`);
         }
         if (typeof file?.user === "string") {
             this.user = file.user;

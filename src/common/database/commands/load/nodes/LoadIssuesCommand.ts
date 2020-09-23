@@ -190,27 +190,27 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.userParticipated) {
+        if (this.userParticipated !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "participant", this.userParticipated, conditions.i));
             conditions.i++;
         }
-        if (this.userAssigned) {
+        if (this.userAssigned !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "assignee", this.userAssigned, conditions.i));
             conditions.i++;
         }
-        if (this.ofCategory) {
+        if (this.ofCategory !== undefined) {
             conditions.conditions.push(createStringListFilter("category", this.ofCategory, conditions.i, 5));
             conditions.i++;
         }
-        if (this.onComponents) {
+        if (this.onComponents !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "issue", this.onComponents, conditions.i));
             conditions.i++;
         }
-        if (this.onLocations) {
+        if (this.onLocations !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issueLocation", "issue", this.onLocations, conditions.i));
             conditions.i++;
         }
-        if (this.onProjects) {
+        if (this.onProjects !== undefined) {
             if (this.onProjects.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
@@ -226,7 +226,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             }
             conditions.i++;
         }
-        if (this.editedBy) {
+        if (this.editedBy !== undefined) {
             if (this.editedBy.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
@@ -242,7 +242,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             }
             conditions.i++;
         }
-        if (this.lastEditedBefore) {
+        if (this.lastEditedBefore !== undefined) {
             conditions.conditions.push({
                 priority: 2,
                 text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at <= $${conditions.i})`,
@@ -250,7 +250,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.lastEditedAfter) {
+        if (this.lastEditedAfter !== undefined) {
             conditions.conditions.push({
                 priority: 2,
                 text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at >= $${conditions.i})`,
@@ -258,7 +258,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.title) {
+        if (this.title !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.title ~ $${conditions.i}`,
@@ -266,7 +266,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.body) {
+        if (this.body !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND body ~ $${conditions.i})`,
@@ -274,7 +274,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.updatedAfter) {
+        if (this.updatedAfter !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.updated_at>=$${conditions.i}`,
@@ -282,7 +282,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.updatedBefore) {
+        if (this.updatedBefore !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.updated_at<=$${conditions.i}`,
@@ -290,7 +290,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.isOpen) {
+        if (this.isOpen !== undefined) {
             conditions.conditions.push({
                 priority: 4,
                 text: `main.is_open = $${conditions.i}`,
@@ -298,7 +298,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.isDuplicate) {
+        if (this.isDuplicate !== undefined) {
             conditions.conditions.push({
                 priority: 4,
                 text: `main.isDuplicate = $${conditions.i}`,
@@ -306,15 +306,15 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.linkedByIssues) {
+        if (this.linkedByIssues !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issue", "linkedIssue", this.linkedByIssues, conditions.i));
             conditions.i++;
         }
-        if (this.linksToIssues) {
+        if (this.linksToIssues !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "linkedIssue", this.linksToIssues, conditions.i));
             conditions.i++;
         }
-        if (typeof this.linksToAnyIssues !== "undefined") {
+        if (this.linksToAnyIssues !== undefined) {
             if (this.linksToAnyIssues) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
@@ -329,11 +329,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
                 });
             }
         }
-        if (this.labels) {
+        if (this.labels !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "label", this.labels, conditions.i));
             conditions.i++;
         }
-        if (this.startDateAfter) {
+        if (this.startDateAfter !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.start_date>=$${conditions.i}`,
@@ -341,7 +341,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.startDateBefore) {
+        if (this.startDateBefore !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.start_date<=$${conditions.i}`,
@@ -349,7 +349,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.dueDateAfter) {
+        if (this.dueDateAfter !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.due_date>=$${conditions.i}`,
@@ -357,7 +357,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.dueDateBefore) {
+        if (this.dueDateBefore !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.due_date<=$${conditions.i}`,
@@ -366,7 +366,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             conditions.i++;
         }
 
-        if (this.estimatedTimeGreaterThan) {
+        if (this.estimatedTimeGreaterThan !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.estimated_time>=$${conditions.i}`,
@@ -374,7 +374,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.estimatedTimeLowerThan) {
+        if (this.estimatedTimeLowerThan !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.estimated_time<=$${conditions.i}`,
@@ -382,7 +382,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.spentTimeGreaterThan) {
+        if (this.spentTimeGreaterThan !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.spent_time>=$${conditions.i}`,
@@ -390,7 +390,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             });
             conditions.i++;
         }
-        if (this.spentTimeLowerThan) {
+        if (this.spentTimeLowerThan !== undefined) {
             conditions.conditions.push({
                 priority: 5,
                 text: `main.spent_time<=$${conditions.i}`,

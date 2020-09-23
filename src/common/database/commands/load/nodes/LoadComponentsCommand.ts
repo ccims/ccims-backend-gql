@@ -78,23 +78,23 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onProjects) {
+        if (this.onProjects !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("project", "component", this.onProjects, i));
             conditions.i++;
         }
-        if (this.consumesInterface) {
+        if (this.consumesInterface !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "consumedComponentInterface", this.consumesInterface, conditions.i));
             conditions.i++;
         }
-        if (this.hasIssueOnLocation) {
+        if (this.hasIssueOnLocation !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }
-        if (this.hasIssue) {
+        if (this.hasIssue !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "issue", this.hasIssue, conditions.i));
             conditions.i++;
         }
-        if (this.imsTypes) {
+        if (this.imsTypes !== undefined) {
             if (this.imsTypes.length === 1) {
                 conditions.conditions.push({
                     text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=$${conditions.i})`,
@@ -111,7 +111,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
             conditions.i++;
         }
 
-        if (this.labels) {
+        if (this.labels !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "label", this.labels, conditions.i));
             conditions.i++;
         }

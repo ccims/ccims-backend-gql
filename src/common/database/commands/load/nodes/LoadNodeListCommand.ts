@@ -103,7 +103,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions: ConditionSpecification[] = [];
-        if (this.afterId) {
+        if (this.afterId !== undefined) {
             conditions.push({
                 priority: 2,
                 text: `main.id > $${i}`,
@@ -111,7 +111,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
             });
             i++;
         }
-        if (this.beforeId) {
+        if (this.beforeId !== undefined) {
             conditions.push({
                 priority: 2,
                 text: `main.id < $${i}`,
