@@ -2,20 +2,24 @@ import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddIssueCommentPayload from "../../types/mutations/payloads/issue/GraphQLAddIssueCommentPayload";
 import GraphQLAddIssueCommentInput from "../../types/mutations/inputs/issue/GraphQLAddIssueCommentInput";
+import timelineMutation from "./timelineMutation";
+import PreconditionCheck from "../../utils/PreconditionCheck";
 
-let addIssueComment: GraphQLFieldConfig<any, ResolverContext> | undefined;
-export default () => {
-    if (addIssueComment === undefined) {
-        addIssueComment = {
-            type: GraphQLAddIssueCommentPayload,
-            description: "Creates a new comment on an existing issue",
-            args: {
-                input: {
-                    type: GraphQLAddIssueCommentInput,
-                    description: "The data for the mutation"
-                }
+function addIssueComment(): GraphQLFieldConfig<any, ResolverContext> {
+    const base = timelineMutation(GraphQLAddIssueCommentPayload, GraphQLAddIssueCommentInput, "Creates a new comment on an existing issue");
+    return {
+        ...base,
+        resolve: async (src, args, context, info) => {
+            const { input, cmd } = base.initTimelineMutation(args, context);
+            const bodyText = PreconditionCheck.checkString(input, "body", 65536);
+            if (bodyText.length <= 0) {
+                throw new Error("The body text can't be empty");
             }
-        };
+            const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
+            const body = await issue.addIssueComment(bodyText, new Date(), context.user);
+            await context.dbManager.save();
+            return base.createResult(args, issue, body, { body })
+        }
     }
-    return addIssueComment;
-};
+}
+export default addIssueComment;
