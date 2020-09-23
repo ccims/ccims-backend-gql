@@ -2,18 +2,21 @@ CREATE TABLE project
 (
     name character varying(256) NOT NULL,
     owner_user_id id NOT NULL,
-    description character varying(65536) NOT NULL
+    description character varying(65536) NOT NULL,
+    PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE issue_location (
     name character varying(256) NOT NULL,
-    description character varying(65536) NOT NULL
+    description character varying(65536) NOT NULL,
+    PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE component
 (
     owner_user_id id NOT NULL,
-    imsSystem_id id NOT NULL
+    imsSystem_id id NOT NULL,
+    PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
 CREATE TABLE relation_project_component

@@ -121,7 +121,7 @@ export class DatabaseManager {
      */
     private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
         const commandConfig = command.getQueryConfig();
-        console.log(8, commandConfig);
+        log(8, commandConfig);
         let result;
         result = await this.pgClient.query(commandConfig);
         const followUpCommands = command.setDatabaseResult(this, result);

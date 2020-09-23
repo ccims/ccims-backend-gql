@@ -1,11 +1,10 @@
-import { QueryConfig, QueryResult, QueryResultRow } from "pg";
+import { QueryResult, QueryResultRow } from "pg";
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { DatabaseCommand } from "../../../DatabaseCommand";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { verifyIsAllowedSqlIdent } from "../../SqlHelperFunctions";
 import { QueryPart } from "../QueryPart";
-import { getLoadCommand } from "./LoadFromIdsCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
 /**
@@ -55,11 +54,11 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
             return commandsList;
         } else {
             return super.setDatabaseResult(databaseManager, result);
-        }  
+        }
     }
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
-        return getLoadCommand(tableName, []) as LoadNodeListCommand<T>;
+        return require("./LoadFromIdsCommand").getLoadCommand(tableName, []) as LoadNodeListCommand<T>;
     }
 
     /**
