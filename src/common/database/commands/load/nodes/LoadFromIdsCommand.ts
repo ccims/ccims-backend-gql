@@ -30,6 +30,7 @@ import { LoadMarkedAsDuplicateEventsCommand } from "./timeline/LoadMarkedAsDupli
 import { LoadUnmarkedAsDuplicateEventsCommand } from "./timeline/LoadUnmarkedAsDuplicateEventsCommand";
 import { LoadClosedEventsCommand } from "./timeline/LoadClosedEventsCommand";
 import { LoadReopenedEventsCommand } from "./timeline/LoadReopenedEventsCommand";
+import { LoadPriorityChangedEventsCommand } from "./timeline/LoadPriorityChangedEventsCommand";
 
 /**
  * map with method to create command for each table name
@@ -64,7 +65,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_markedAsDuplicateEvent", () => new LoadMarkedAsDuplicateEventsCommand()],
     ["issue_timeline_unmarkedAsDuplicateEvent", () => new LoadUnmarkedAsDuplicateEventsCommand()],
     ["issue_timeline_closedEvent", () => new LoadClosedEventsCommand()],
-    ["issue_timeline_reopenedEvent", () => new LoadReopenedEventsCommand()]
+    ["issue_timeline_reopenedEvent", () => new LoadReopenedEventsCommand()],
+    ["issue_timeline_priorityChangedEvent", () => new LoadPriorityChangedEventsCommand()]
 ]);
 
 /**

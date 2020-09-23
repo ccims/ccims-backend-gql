@@ -9,7 +9,8 @@ CREATE TABLE issue_issue (
     due_date timestamp,
     estimated_time int,
     spent_time int,
-    body_id id NOT NULL
+    body_id id NOT NULL,
+    priority priority NOT NULL
 ) INHERITS (node);
 
 -- relattions for issue --
