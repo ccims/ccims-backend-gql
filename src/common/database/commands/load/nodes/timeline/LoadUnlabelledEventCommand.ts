@@ -1,10 +1,8 @@
-import { QueryResultRow, QueryResult } from "pg";
-import { AssignedEvent, AssignedEventTableSpecification } from "../../../../../nodes/timelineItems/AssignedEvent";
+import { QueryResult, QueryResultRow } from "pg";
+import { UnlabelledEvent, UnlabelledEventTableSpecification } from "../../../../../nodes/timelineItems/UnlabelledEvent";
 import { DatabaseManager } from "../../../../DatabaseManager";
 import { QueryPart } from "../../QueryPart";
 import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsCommandBase";
-import { LabelledEvent, LabelledEventTableSpecification } from "../../../../../nodes/timelineItems/LabelledEvent";
-import { UnlabelledEvent, UnlabelledEventTableSpecification } from "../../../../../nodes/timelineItems/UnlabelledEvent";
 
 /**
  * command to load UnlabelledEvent

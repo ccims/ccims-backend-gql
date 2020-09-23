@@ -52,7 +52,7 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_assignedEvent", () => new LoadAssignedEventsCommand()],
     ["issue_timeline_unassignedEvent", () => new LoadUnassignedEventsCommand()],
     ["issue_timeline_labelledEvent", () => new LoadLabelledEventCommand()],
-    ["issue_timeline_unlabelledEvent", () => new LoadUnlabelledEventCommand()],
+    ["issue_timeline_unlabelledEvent", () => new (require("./timeline/LoadUnlabelledEventCommand").LoadUnlabelledEventCommand)()],
 ]);
 
 /**
