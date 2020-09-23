@@ -20,6 +20,8 @@ export class Color {
                     const gVal = parseInt(noWhitespace.substr(3, 2), 16);
                     const bVal = parseInt(noWhitespace.substr(5, 2), 16);
                     this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
+                } else {
+                    throw new Error("The color string given is invalid. Use the html #rrggbb or rgb(rrr,ggg,bbb) format");
                 }
             } else if (noWhitespace.startsWith("rgb")) {
                 const colorParts = noWhitespace.substring(noWhitespace.indexOf("(") + 1, noWhitespace.indexOf(")")).split(",");
@@ -33,6 +35,8 @@ export class Color {
                 const gVal = parseInt(colorParts[1], 10);
                 const bVal = parseInt(colorParts[2], 10);
                 this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
+            } else {
+                throw new Error("The color string given is invalid. Use the html #rrggbb or rgb(rrr,ggg,bbb) format");
             }
         } else if (typeof strOrROrRGBA === "number" && g === undefined && b === undefined && a === undefined) {
             const intNum = Math.max(0, Math.min(0xffffffff, Math.floor(strOrROrRGBA)));
