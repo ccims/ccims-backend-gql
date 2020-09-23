@@ -48,6 +48,8 @@ import { StartDateChangedEvent } from "./timelineItems/StartDateChangedEvent";
 import { DueDateChangedEvent } from "./timelineItems/DueDateChangedEvent";
 import { MarkedAsDuplicateEvent } from "./timelineItems/MarkedAsDuplicateEvent";
 import { UnmarkedAsDuplicateEvent } from "./timelineItems/UnmarkedAsDuplicateEvent";
+import { ClosedEvent } from "./timelineItems/ClosedEvent";
+import { ReopenedEvent } from "./timelineItems/ReopenedEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -827,8 +829,42 @@ export class Issue extends SyncNode<Issue> {
      */
     public async unmarkAsDuplicate(atDate: Date, asUser?: User): Promise<UnmarkedAsDuplicateEvent | undefined> {
         if (this.isDuplicate) {
-            this._isDuplicate = true;
+            this._isDuplicate = false;
             const event = await UnmarkedAsDuplicateEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * closed the issue, if not alredy closed
+     * @param atDate 
+     * @param asUser
+     * @returns the event if marked, otherwise undefined 
+     */
+    public async close(atDate: Date, asUser?: User): Promise<ClosedEvent | undefined> {
+        if (this.isOpen) {
+            this._isOpen = false;
+            const event = await ClosedEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * reopens this issue if closed
+     * @param atDate 
+     * @param asUser
+     * @returns the event if reopened, otherwise undefined 
+     */
+    public async reopen(atDate: Date, asUser?: User): Promise<ReopenedEvent | undefined> {
+        if (!this.isOpen) {
+            this._isOpen = true;
+            const event = await ReopenedEvent.create(this._databaseManager, asUser, atDate, this);
             await this.participatedAt(asUser, atDate);
             return event;
         } else {
