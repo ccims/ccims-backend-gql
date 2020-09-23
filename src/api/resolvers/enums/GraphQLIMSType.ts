@@ -10,19 +10,19 @@ const imsTypeConfig: GraphQLEnumTypeConfig = {
             description: "The type of the Issue management system. Currently only GitHub and ccims internal are available"
         },
         GITHUB: {
-            value: ImsType.GitHub,
+            value: ImsType.GITHUB,
             description: "GitHub (or GitHub enterprise server) is the IMS for the component"
         },
         GITLAB: {
-            value: ImsType.GitLab,
+            value: ImsType.GITLAB,
             description: "Any instance of GitLab is used as issue management system"
         },
         JIRA: {
-            value: ImsType.Jira,
+            value: ImsType.JIRA,
             description: "Any instance of Jira is used as issue management system"
         },
         REDMINE: {
-            value: ImsType.Redmine,
+            value: ImsType.REDMINE,
             description: "Any instance of Redmine is used as issue management system",
         },
     }

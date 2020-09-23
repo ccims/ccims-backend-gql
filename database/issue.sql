@@ -10,6 +10,7 @@ CREATE TABLE issue_issue (
     estimated_time int,
     spent_time int,
     body_id id NOT NULL,
+    priority priority NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 

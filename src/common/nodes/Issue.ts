@@ -44,6 +44,13 @@ import MarkdownIt from "markdown-it";
 import { config } from "../../config/Config";
 import { LabelledEvent } from "./timelineItems/LabelledEvent";
 import { UnlabelledEvent } from "./timelineItems/UnlabelledEvent";
+import { StartDateChangedEvent } from "./timelineItems/StartDateChangedEvent";
+import { DueDateChangedEvent } from "./timelineItems/DueDateChangedEvent";
+import { MarkedAsDuplicateEvent } from "./timelineItems/MarkedAsDuplicateEvent";
+import { UnmarkedAsDuplicateEvent } from "./timelineItems/UnmarkedAsDuplicateEvent";
+import { ClosedEvent } from "./timelineItems/ClosedEvent";
+import { ReopenedEvent } from "./timelineItems/ReopenedEvent";
+import { PriorityChangedEvent } from "./timelineItems/PriorityChangedEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -62,6 +69,7 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
         RowSpecification.fromProperty("estimated_time", "estimatedTime"),
         RowSpecification.fromProperty("spent_time", "spentTime"),
         RowSpecification.fromProperty("updated_at", "updatedAt"),
+        RowSpecification.fromProperty("priority", "priority"),
         new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
 
 
@@ -77,6 +85,8 @@ export class Issue extends SyncNode<Issue> {
     private _isDuplicate: boolean;
 
     private _category: IssueCategory;
+
+    private _priority: IssuePriority;
 
     private _startDate?: Date;
 
@@ -319,7 +329,7 @@ export class Issue extends SyncNode<Issue> {
      */
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
-        startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string,
+        startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string, priority: IssuePriority,
         isDeleted: boolean, metadata?: SyncMetadataMap) {
         super(NodeType.Issue, databaseManager, IssueTableSpecification, id, createdById, createdAt, isDeleted, metadata);
 
@@ -332,6 +342,7 @@ export class Issue extends SyncNode<Issue> {
         this._estimatedTime = estimatedTime;
         this._spentTime = spentTime;
         this._updatedAt = updateAt;
+        this._priority = priority;
         this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
         this.timelineProperty = new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this);
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
@@ -349,8 +360,8 @@ export class Issue extends SyncNode<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
-        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.Unclassified, undefined, undefined,
-            undefined, undefined, createdAt, bodyId, false);
+        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
+            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false);
         issue.markNew();
         databaseManager.addCachedNode(issue);
 
@@ -371,12 +382,20 @@ export class Issue extends SyncNode<Issue> {
     }
 
     /**
-     * do NOT use this to change the title
+     * changes the title and creates a RenamedTitleEvent
+     * @param newTitle
+     * @param atDate
+     * @param asUser
      */
-    public set title(value: string) {
-        if (this._title !== value) {
-            this._title = value;
+    public async changeTitle(newTitle: string, atDate: Date, asUser?: User): Promise<RenamedTitleEvent | undefined> {
+        if (this._title !== newTitle) {
+            this._title = newTitle;
             this.markChanged();
+            const event = await RenamedTitleEvent.create(this._databaseManager, asUser, atDate, this, this.title, newTitle);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
         }
     }
 
@@ -396,6 +415,23 @@ export class Issue extends SyncNode<Issue> {
         if (newCategory !== this._category) {
             const event = await CategoryChangedEvent.create(this._databaseManager, asUser, atDate, this, this._category, newCategory);
             this._category = newCategory;
+            this.markChanged();
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    public get priority(): IssuePriority {
+        return this._priority;
+    }
+
+    public async changePriority(newPriority: IssuePriority, atDate: Date, asUser?: User): Promise<PriorityChangedEvent | undefined> {
+        if (newPriority !== this._priority) {
+            const event = await PriorityChangedEvent.create(this._databaseManager, asUser, atDate, this, this._priority, newPriority);
+            this._priority = newPriority;
+            this.markChanged();
             await this.participatedAt(asUser, atDate);
             return event;
         } else {
@@ -407,8 +443,46 @@ export class Issue extends SyncNode<Issue> {
         return this._startDate;
     }
 
+    /**
+     * sets the new startDate
+     * @param newStartDate the new start date or undefined if the startDate should be removed
+     * @param atDate 
+     * @param asUser 
+     * @returns the event if the start date was changed, otherwise undefined
+     */
+    public async changeStartDate(newStartDate: Date | undefined, atDate: Date, asUser?: User): Promise<StartDateChangedEvent | undefined> {
+        if (newStartDate !== this._startDate) {
+            const event = await StartDateChangedEvent.create(this._databaseManager, asUser, atDate, this, this._startDate, newStartDate);
+            this._startDate = newStartDate;
+            this.markChanged();
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
     public get dueDate(): Date | undefined {
         return this._dueDate;
+    }
+
+    /**
+     * sets the new dueDate
+     * @param newDueDate the new due date or undefined if the dueDate should be removed
+     * @param atDate 
+     * @param asUser 
+     * @returns the event if the due date was changed, otherwise undefined
+     */
+    public async changeDueDate(newDueDate: Date | undefined, atDate: Date, asUser?: User): Promise<DueDateChangedEvent | undefined> {
+        if (newDueDate !== this._dueDate) {
+            const event = await DueDateChangedEvent.create(this._databaseManager, asUser, atDate, this, this._dueDate, newDueDate);
+            this._dueDate = newDueDate;
+            await this.participatedAt(asUser, atDate);
+            this.markChanged();
+            return event;
+        } else {
+            return undefined;
+        }
     }
 
     public get estimatedTime(): number | undefined {
@@ -658,19 +732,6 @@ export class Issue extends SyncNode<Issue> {
     }
 
     /**
-     * changes the title and creates a RenamedTitleEvent
-     * @param newTitle
-     * @param atDate
-     * @param asUser
-     */
-    public async changeTitle(newTitle: string, atDate: Date, asUser?: User): Promise<RenamedTitleEvent> {
-        this.title = newTitle;
-        const event = await RenamedTitleEvent.create(this._databaseManager, asUser, atDate, this, this.title, newTitle);
-        await this.participatedAt(asUser, atDate);
-        return event;
-    }
-
-    /**
      * delets an issueComment
      * @param issueComment
      * @param atDate
@@ -762,6 +823,78 @@ export class Issue extends SyncNode<Issue> {
         }
     }
 
+    /**
+     * marks this issue as duplicate, if not already a duplicate
+     * @param atDate 
+     * @param asUser
+     * @returns the event if marked, otherwise undefined 
+     */
+    public async markAsDuplicate(atDate: Date, asUser?: User): Promise<MarkedAsDuplicateEvent | undefined> {
+        if (!this.isDuplicate) {
+            this._isDuplicate = true;
+            const event = await MarkedAsDuplicateEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            this.markChanged();
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * unmarks this issue as duplicate, if it is a duplicate
+     * @param atDate 
+     * @param asUser
+     * @returns the event if unmarked, otherwise undefined 
+     */
+    public async unmarkAsDuplicate(atDate: Date, asUser?: User): Promise<UnmarkedAsDuplicateEvent | undefined> {
+        if (this.isDuplicate) {
+            this._isDuplicate = false;
+            const event = await UnmarkedAsDuplicateEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            this.markChanged();
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * closed the issue, if not alredy closed
+     * @param atDate 
+     * @param asUser
+     * @returns the event if marked, otherwise undefined 
+     */
+    public async close(atDate: Date, asUser?: User): Promise<ClosedEvent | undefined> {
+        if (this.isOpen) {
+            this._isOpen = false;
+            const event = await ClosedEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            this.markChanged();
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * reopens this issue if closed
+     * @param atDate 
+     * @param asUser
+     * @returns the event if reopened, otherwise undefined 
+     */
+    public async reopen(atDate: Date, asUser?: User): Promise<ReopenedEvent | undefined> {
+        if (!this.isOpen) {
+            this._isOpen = true;
+            const event = await ReopenedEvent.create(this._databaseManager, asUser, atDate, this);
+            await this.participatedAt(asUser, atDate);
+            this.markChanged();
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
 
     public get updatedAt(): Date {
         return this._updatedAt;
@@ -808,9 +941,9 @@ export class Issue extends SyncNode<Issue> {
 }
 
 export enum IssueCategory {
-    Bug = "BUG",
-    FeatureRequest = "FEATURE_REQUEST",
-    Unclassified = "UNCLASSIFIED"
+    BUG = "BUG",
+    FEATURE_REQUEST = "FEATURE_REQUEST",
+    UNCLASSIFIED = "UNCLASSIFIED"
 }
 
 export enum IssuePriority {
