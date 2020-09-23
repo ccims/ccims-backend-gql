@@ -1,14 +1,15 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue, IssueCategory } from "../Issue";
-import { NodeTableSpecification } from "../NodeTableSpecification";
+import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const CategoryChangedEventTableSpecification: NodeTableSpecification<CategoryChangedEvent>
-    = new NodeTableSpecification("issue_timeline_categoryChangedEvent", IssueTimelineItemTableSpecification,
-    )
+    = new NodeTableSpecification<CategoryChangedEvent>("issue_timeline_categoryChangedEvent", IssueTimelineItemTableSpecification,
+    RowSpecification.fromProperty("old_category", "oldCategory"),
+    RowSpecification.fromProperty("new_category", "newCategory"));
 
 export class CategoryChangedEvent extends IssueTimelineItem {
 
