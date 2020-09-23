@@ -9,11 +9,11 @@ export class Color {
         if (typeof strOrROrRGBA === "string" && g === undefined && b === undefined && a === undefined) {
             const noWhitespace = strOrROrRGBA.trim().replace(/\s*/g, "").toLowerCase();
             if (noWhitespace.startsWith("#")) {
-                if (noWhitespace.length >= 6) {
+                if (noWhitespace.length >= 7) {
                     let aVal = 255;
-                    if (noWhitespace.length === 8) {
+                    if (noWhitespace.length === 9) {
                         aVal = parseInt(noWhitespace.substr(7, 2), 16);
-                    } else if (noWhitespace.length !== 6) {
+                    } else if (noWhitespace.length !== 7) {
                         throw new Error("Illegal html color string");
                     }
                     const rVal = parseInt(noWhitespace.substr(1, 2), 16);
@@ -43,8 +43,9 @@ export class Color {
             this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
         } else if (typeof strOrROrRGBA === "number" && typeof g === "number" && typeof b === "number" && (typeof a === "number" || a === undefined)) {
             this.color = { r: Color.checkAndRound(strOrROrRGBA), g: Color.checkAndRound(g), b: Color.checkAndRound(b), a: Color.checkAndRound(a || 255) };
+        } else {
+            throw new Error("Invalid color");
         }
-        throw new Error("Invalid color");
     }
 
     private static checkAndRound(value: number): number {
