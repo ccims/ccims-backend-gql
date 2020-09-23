@@ -814,7 +814,7 @@ export enum IssueCategory {
 }
 
 export enum IssuePriority {
-    Low = "LOW",
-    Medium = "MEDIUM",
-    High = "HIGH"
+    LOW = "LOW",
+    DEFAULT = "DEFAULT",
+    HIGH = "HIGH"
 }
