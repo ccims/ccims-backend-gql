@@ -1,8 +1,8 @@
 import * as core from "express-serve-static-core";
 import { graphqlHTTP, GraphQLParams } from "express-graphql";
-import ccimsSchema from "./resolvers/CCIMSSchema";
 import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
 import { log } from "../log";
+import { GraphQLSchema } from "graphql";
 
 /**
  * Express middleware/handler for parsing and processing a graphql request and responding to it
@@ -12,10 +12,12 @@ import { log } from "../log";
  *
  * All requests must conform to the GraphQL-Schema based from `./resolvers/CCIMSSchema.ts`
  *
+ * @param schema This GraphQLSchema will be used to resolve quries.
+ * @param noUserNeeded If `true` is given, the ckeck for the user in the ResolverContext will be ommited
  * @returns An express middleware handler performing the actual CCIMS API work
  */
-export function graphqlHandler(): core.RequestHandler {
-    const handler = new GraphQLHandler();
+export function graphqlHandler(schema: GraphQLSchema, noUserNeeded?: boolean): core.RequestHandler {
+    const handler = new GraphQLHandler(schema, noUserNeeded);
     return async (req: ResolverContextOptional, res: core.Response, next: core.NextFunction): Promise<any> => {
         return handler.handle.call(handler, req, res, next);
     }
@@ -36,9 +38,9 @@ class GraphQLHandler {
      *
      * For debugging graphiql is also provided.
      */
-    public constructor() {
+    public constructor(schema: GraphQLSchema, private readonly noUserNeeded?: boolean) {
         this.middleware = graphqlHTTP({
-            schema: ccimsSchema,
+            schema,
             graphiql: {
                 headerEditorEnabled: true
             }
@@ -52,14 +54,19 @@ class GraphQLHandler {
      * @param next The next function to the next middleware. Won't be called as this handler will always resolve the request
      */
     public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction): Promise<any> {
-        if (!req.user || !req.dbManager) {
-            log(2, "Database manager or logged in user empty");
+        if (!req.dbManager) {
+            log(2, "Database manager empty");
             res.status(500).end("Error while processing request");
         } else {
-            const resolverRequest: ResolverContext = req as ResolverContext;
-            const result = await this.middleware(resolverRequest, res);
-            await req.dbManager.saveAndClearCache();
-            return result;
+            if (!this.noUserNeeded && !req.user) {
+                log(2, "Logged in user was empty");
+                res.status(500).end("Error while processing request");
+            } else {
+                const resolverRequest: ResolverContext = req as ResolverContext;
+                const result = await this.middleware(resolverRequest, res);
+                await req.dbManager.saveAndClearCache();
+                return result;
+            }
         }
     }
 }

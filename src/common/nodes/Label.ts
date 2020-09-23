@@ -15,6 +15,7 @@ import { QueryConfig, QueryResult } from "pg";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { Issue } from "./Issue";
+import { User } from "./User";
 
 /**
  * specification of a table which can contain labels
@@ -68,7 +69,7 @@ export class Label extends NamedSyncNode {
      * @param description The labels description
      * @param components A list of component ID to which the label is added immediately after creation
      */
-    public async create(databaseManager: DatabaseManager, name: string, color: Color, createdById: string | undefined, createdAt: Date, description?: string, components?: string[]) {
+    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User, createdAt: Date, description?: string, components?: Component[]) {
         if (name.length > 256) {
             throw new Error("The given name is too long");
         }
@@ -79,18 +80,13 @@ export class Label extends NamedSyncNode {
             throw new Error("The color can't be undefined or null");
         }
 
-        const user = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdById, createdAt, false, undefined);
-        user.markNew();
-        databaseManager.addCachedNode(user);
+        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy.id, createdAt, false, undefined);
+        label.markNew();
+        databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {
-            const loadComponentCmd = new LoadComponentsCommand();
-            loadComponentCmd.ids = components;
-            databaseManager.addCommand(loadComponentCmd);
-            await databaseManager.executePendingCommands();
-            const result = loadComponentCmd.getResult();
-            await Promise.all(result.map(component => user.componentsProperty.add(component)));
+            await Promise.all(components.map(component => label.componentsProperty.add(component)));
         }
-        return user;
+        return label;
     }
 
     /**
