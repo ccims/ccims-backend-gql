@@ -6,7 +6,7 @@ import GraphQLAddIssueToComponentPayload from "../../types/mutations/payloads/is
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import timelineMutation from "./timelineMutation";
 
-function addIssueToComponent(): GraphQLFieldConfig<any, ResolverContext> | undefined {
+function addIssueToComponent(): GraphQLFieldConfig<any, ResolverContext> {
     const base = timelineMutation(GraphQLAddIssueToComponentPayload, GraphQLAddIssueToComponentInput, "Adds an issue to a component (including creating the issue on the ims of the component)");
     return {
         ...base,
