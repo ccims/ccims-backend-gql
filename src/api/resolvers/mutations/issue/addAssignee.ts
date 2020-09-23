@@ -1,11 +1,9 @@
 import { GraphQLFieldConfig } from "graphql";
-import { ResolverContext } from "../../../ResolverContext";
-import baseMutation from "../baseMutation";
-import GraphQLAddAssigneePayload from "../../types/mutations/payloads/issue/GraphQLAddAssigneePayload";
-import GraphQLAddAssigneeInput from "../../types/mutations/inputs/issue/GraphQLAddAssigneeInput";
-import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
-import { LoadIssuesCommand } from "../../../../common/database/commands/load/nodes/LoadIssuesCommand";
+import { ResolverContext } from "../../../ResolverContext";
+import GraphQLAddAssigneeInput from "../../types/mutations/inputs/issue/GraphQLAddAssigneeInput";
+import GraphQLAddAssigneePayload from "../../types/mutations/payloads/issue/GraphQLAddAssigneePayload";
+import PreconditionCheck from "../../utils/PreconditionCheck";
 import timelineMutation from "./timelineMutation";
 
 function addAssignee(): GraphQLFieldConfig<any, ResolverContext> {
@@ -14,7 +12,7 @@ function addAssignee(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const { cmd, input } = base.initTimelineMutation(args, context);
-            const userId = PreconditionCheck.checkString(input, "userToAssign", 32);
+            const userId = PreconditionCheck.checkString(input, "user", 32);
 
             const userCmd = new LoadUsersCommand();
             userCmd.ids = [userId];
