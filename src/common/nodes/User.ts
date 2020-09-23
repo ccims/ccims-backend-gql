@@ -147,7 +147,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public static readonly ownedNodesPropertySpecification: NodeListPropertySpecification<NamedOwnedNode, User>
         = NodeListPropertySpecification.loadDynamic<NamedOwnedNode, User>(
             user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
-                LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
+            LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
             (ids, user) => {
                 const command1 = new LoadComponentsCommand();
                 command1.ids = ids;
@@ -192,15 +192,24 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this.ownedNodesProperty = new NodeListProperty<NamedOwnedNode, User>(databaseManager, User.ownedNodesPropertySpecification, this);
     }
 
-    public static create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): User {
+    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): Promise<User> {
+        if (username.length === 0) {
+            throw new Error("The username can't be empty");
+        }
         if (username.length > 100) {
             throw new Error("The given username is too long");
+        }
+        if (username.trim().toLowerCase() === "root") {
+            throw new Error("The username can't be 'root'");
         }
         if (displayName.length > 200) {
             throw new Error("the given display name is too long");
         }
         if (email && email.length > 320) {
             throw new Error("The given email is too long");
+        }
+        if (!(await User.usernameAvailable(databaseManager, username))) {
+            throw new Error("The username is already taken");
         }
 
         const passwordHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
@@ -209,6 +218,27 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         user.markNew();
         databaseManager.addCachedNode(user);
         return user;
+    }
+
+    /**
+     * Checks wether the given userame is still available (not used by another user)
+     *
+     * @param databaseManager The database manager to use for checking
+     * @param username The username to be checked
+     */
+    public static async usernameAvailable(databaseManager: DatabaseManager, username: string) {
+        if (username.length === 0) {
+            throw new Error("The username can't be empty")
+        }
+        if (username.trim().toLowerCase() === "root" || username.trim().toLowerCase() === "deleted_user") {
+            return true;
+        }
+        const checkCmd = new LoadUsersCommand();
+        checkCmd.username = "^" + username + "$";
+        checkCmd.countMode = true;
+        databaseManager.addCommand(checkCmd);
+        await databaseManager.executePendingCommands();
+        return checkCmd.count === 0;
     }
 
     /**

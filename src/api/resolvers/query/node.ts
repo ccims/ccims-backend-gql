@@ -1,9 +1,7 @@
-import { GraphQLFieldConfig, GraphQLScalarType, GraphQLID, GraphQLResolveInfo, GraphQLNonNull } from "graphql";
-import GraphQLNode from "../types/GraphQLNode";
-import { ResolverContext } from "../../ResolverContext";
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { getLoadCommand } from "../../../common/database/commands/load/nodes/LoadFromIdsCommand";
+import { GraphQLFieldConfig, GraphQLID, GraphQLNonNull } from "graphql";
 import { LoadMultipleNodeListsCommand } from "../../../common/database/commands/load/nodes/LoadMultipleNodeListsCommand";
+import { ResolverContext } from "../../ResolverContext";
+import GraphQLNode from "../types/GraphQLNode";
 
 const node: GraphQLFieldConfig<any, ResolverContext> = {
     type: GraphQLNode,

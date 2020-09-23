@@ -1,7 +1,6 @@
 import { IssueTimelineItem, IssueTimelineItemType } from "../../../../../nodes/timelineItems/IssueTimelineItem";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { QueryPart } from "../../QueryPart";
-import { getLoadCommand } from "../LoadFromIdsCommand";
 import { LoadMultipleNodeListsCommand } from "../LoadMultipleNodeListsCommand";
 import { LoadNodeListCommand } from "../LoadNodeListCommand";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
@@ -37,7 +36,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     public createdBefore?: Date;
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
-        const command =  getLoadCommand(tableName, []) as LoadSyncNodeListCommand<T>;
+        const command = super.getLoadCommand(tableName) as LoadSyncNodeListCommand<T>;
         command.loadWithMetadata = true;
         return command;
     }
@@ -114,7 +113,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
             });
             i++;
         }
-        return {conditions, i};
+        return { conditions, i };
     }
 
     /**

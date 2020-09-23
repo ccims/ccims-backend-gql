@@ -9,6 +9,9 @@ import { graphqlHandler } from "./GraphQLHandler";
 import { Client } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { dbManagerInjector } from "./DBManagerInjector";
+import { log } from "../log";
+import ccimsSchema from "./resolvers/CCIMSSchema";
+import publicScimsSchema from "./publicResolvers/PublicCCIMSSchema";
 
 
 
@@ -43,10 +46,10 @@ export class CCIMSApi {
      * If 0.0.0.0 server will be bound to all availale interfaces.
      */
     public constructor(pgClient: Client, idGen: SnowflakeGenerator, port?: number, hostIface?: string) {
-        console.log("Initializing api");
+        log(5, "Initializing api");
         this.port = port || config.api.port;
         this.hostIface = hostIface || config.api.hostIface || "0.0.0.0";
-        if (this.hostIface.length == 0) {
+        if (this.hostIface.length === 0) {
             this.hostIface = "0.0.0.0";
         }
         this.server = express();
@@ -69,7 +72,8 @@ export class CCIMSApi {
     private setupRoutes(pgClient: Client, idGen: SnowflakeGenerator) {
         this.server.use(cors());
         this.server.post("/login", dbManagerInjector(pgClient, idGen), bodyParser.json(), loginHandler());
-        this.server.use("/api", dbManagerInjector(pgClient, idGen), jwtVerifier(), graphqlHandler());
+        this.server.use("/api/public", dbManagerInjector(pgClient, idGen), graphqlHandler(publicScimsSchema, true));
+        this.server.use("/api", dbManagerInjector(pgClient, idGen), jwtVerifier(), graphqlHandler(ccimsSchema));
     }
 
     /**
@@ -82,9 +86,9 @@ export class CCIMSApi {
      * - POST to `/api` with a valid JWT in the `Authorization` header field
      */
     public start(): void {
-        console.log("Starting api server");
+        log(5, "Starting api server");
         this.server.listen(this.port, this.hostIface, () => {
-            console.log("API server started.");
+            log(4, "API server started.");
         });
     }
 }

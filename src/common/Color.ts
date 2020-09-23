@@ -36,7 +36,7 @@ export class Color {
                 const bVal = parseInt(colorParts[2], 10);
                 this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
             } else {
-                throw new Error("Illegal color string. User #rrbggbb or rgb(rrr,ggg,bbb) format");
+                throw new Error("The color string given is invalid. Use the html #rrggbb or rgb(rrr,ggg,bbb) format");
             }
         } else if (typeof strOrROrRGBA === "number" && g === undefined && b === undefined && a === undefined) {
             const intNum = Math.max(0, Math.min(0xffffffff, Math.floor(strOrROrRGBA)));
