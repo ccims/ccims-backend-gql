@@ -21,7 +21,6 @@ import { LoadUnlinkEventsCommand } from "./timeline/LoadUnlinkEventsCommand";
 import { LoadUnpinnedEventsCommand } from "./timeline/LoadUnpinnedEventsCommand";
 import { LoadWasLinkedEventsCommand } from "./timeline/LoadWasLinkedEventsCommand";
 import { LoadWasUnlinkedEventsCommand } from "./timeline/LoadWasUnlinkedEventsCommand";
-import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { LoadLabelsCommand } from "./LoadLabelsCommand";
 import { LoadLabelledEventCommand } from "./timeline/LoadLabelledEventCommand";
 import { LoadUnlabelledEventCommand } from "./timeline/LoadUnlabelledEventCommand";
