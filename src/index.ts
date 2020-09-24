@@ -1,5 +1,5 @@
 import { printSchema } from "graphql";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { CCIMSApi } from "./api/CCIMSApi";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
 import { initTypeParsers } from "./common/database/DatabaseManager";
@@ -16,10 +16,11 @@ export function functionToTest(a: number, b: number): number {
     // const syncService = new SyncService();
     if (true) {
         const idGen = new SnowflakeGenerator();
-        const pgClient: Client = new Client(config.postgres);
-        const backendApi = new CCIMSApi(pgClient, idGen);
-        await pgClient.connect()
-        await initTypeParsers(pgClient)
+        const pool: Pool = new Pool(config.postgres);
+        const backendApi = new CCIMSApi(pool, idGen);
+        const client = await pool.connect();
+        await initTypeParsers(client);
+        client.release();
         backendApi.start();
     } else {
         console.log(printSchema(ccimsSchema));
