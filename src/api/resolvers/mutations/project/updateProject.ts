@@ -16,6 +16,8 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);
             const projectId = PreconditionCheck.checkString(input, "projectId", 32);
 
+            base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).projectAdmin);
+
             const projectCommand = new LoadProjectsCommand();
             projectCommand.ids = [projectId];
             context.dbManager.addCommand(projectCommand);
@@ -24,7 +26,6 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id was no valid project id");
             }
             const project = projectCommand.getResult()[0];
-            base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).projectAdmin);
             
             if (name !== undefined) {
                 project.name = name;

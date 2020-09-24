@@ -16,6 +16,8 @@ function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> 
             const projectId = PreconditionCheck.checkString(input, "projectId", 32);
             const componentId = PreconditionCheck.checkString(input, "componentId", 32);
 
+            base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).addRemoveComponents);
+
             const projectCommand = new LoadProjectsCommand();
             projectCommand.ids = [projectId];
             context.dbManager.addCommand(projectCommand);
@@ -33,8 +35,6 @@ function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> 
                 throw new Error ("The given id was no valid component id");
             }
             const component = componentCommand.getResult()[0];
-
-            base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).addRemoveComponents);
             
             if (await project.componentsProperty.hasId(componentId)) {
                 await project.componentsProperty.remove(component);
