@@ -22,9 +22,7 @@ function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id was no valid project id");
             }
             const project = projectCommand.getResult()[0];
-            if (!context.user.permissions.globalPermissions.addRemoveProjects && !(context.user.id !== project.ownerProperty.getId())) {
-                throw new Error("You are not permitted to delete the given project");
-            }
+            base.userAllowed(context, permissions => permissions.globalPermissions.addRemoveProjects || context.user.id !== project.ownerProperty.getId());
             
             await project.markDeleted()
             await context.dbManager.save();
