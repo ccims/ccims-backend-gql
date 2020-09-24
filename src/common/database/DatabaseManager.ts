@@ -101,9 +101,9 @@ export class DatabaseManager {
      */
     public async executePendingCommands(): Promise<void> {
         if (this.pendingCommands.length > 0) {
-            const client = await this.pool.connect();
             const pending = this.pendingCommands;
             this.pendingCommands = [];
+            const client = await this.pool.connect();
             try {
                 await client.query("BEGIN;");
                 await Promise.all(pending.map(cmd => this.executeCommand(cmd, client)));
