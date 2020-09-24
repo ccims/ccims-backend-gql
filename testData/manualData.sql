@@ -19,16 +19,16 @@ INSERT INTO public.ims_system(
 	VALUES ('3', '2', 'CCIMS', '', '{}');
 	
 INSERT INTO public.issue_issue(
-	id, metadata, deleted, created_at, created_by, title, updated_at, is_open, is_duplicate, category, start_date, due_date, estimated_time, spent_time, body_id)
-	VALUES ('4', '{}', false, 'today', '0', 'Husten we ve got an issue', 'today', true, false, 'UNCLASSIFIED', 'today', 'today', 123,456, '5');
+	id, metadata, deleted, created_at, created_by, title, updated_at, is_open, is_duplicate, category, start_date, due_date, estimated_time, spent_time, body_id, priority)
+	VALUES ('4', '{}', false, 'today', '0', 'Husten we ve got an issue', 'today', true, false, 'UNCLASSIFIED', 'today', 'today', 123,456, '5', 'DEFAULT');
 	
 INSERT INTO public.issue_timeline_body(
 	id, metadata, deleted, created_at, created_by, issue, last_edited_at, last_edited_by, body, initial_title)
 	VALUES ('5', '{}', false, 'today', '0', '4', 'today', '0', 'One small query for postgres but giant leap for ccims', 'Husten we ve got an issue');
 	
 INSERT INTO public.issue_issue(
-	id, metadata, deleted, created_at, created_by, title, updated_at, is_open, is_duplicate, category, start_date, due_date, estimated_time, spent_time, body_id)
-	VALUES ('6', '{}', false, 'today', '0', 'Ground control to major tom', 'today', false, false, 'BUG', 'today', 'today', 111,222, '7');
+	id, metadata, deleted, created_at, created_by, title, updated_at, is_open, is_duplicate, category, start_date, due_date, estimated_time, spent_time, body_id, priority)
+	VALUES ('6', '{}', false, 'today', '0', 'Ground control to major tom', 'today', false, false, 'BUG', 'today', 'today', 111,222, '7', 'DEFAULT');
 	
 INSERT INTO public.issue_timeline_body(
 	id, metadata, deleted, created_at, created_by, issue, last_edited_at, last_edited_by, body, initial_title)
