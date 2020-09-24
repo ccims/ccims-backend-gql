@@ -19,7 +19,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveProjects);
             const name = PreconditionCheck.checkString(input, "name", 256);
-            const description = PreconditionCheck.checkString(input, "description", 65536);
+            const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
             const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
             const userIds = new Set(PreconditionCheck.checkNullableStringList(input, "users", 32));
