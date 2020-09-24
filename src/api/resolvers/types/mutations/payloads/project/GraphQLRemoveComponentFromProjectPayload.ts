@@ -13,7 +13,7 @@ const removeComponentFromProjectPayloadConfig: GraphQLObjectTypeConfig<any, Reso
         },
         project: {
             type: GraphQLNonNull(GraphQLProject),
-            description: "The project where the component was removed"
+            description: "The project from which the component was removed"
         },
         component: {
             type: GraphQLNonNull(GraphQLComponent),

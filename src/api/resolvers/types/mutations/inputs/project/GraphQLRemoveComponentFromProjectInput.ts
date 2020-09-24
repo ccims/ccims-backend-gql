@@ -10,7 +10,7 @@ const removeComponentFromProjectInputConfig: GraphQLInputObjectTypeConfig = {
         },
         projectId: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The id of the project where to remove the component"
+            description: "The id of the project from which to remove the component"
         },
         componentId: {
             type: GraphQLNonNull(GraphQLID),

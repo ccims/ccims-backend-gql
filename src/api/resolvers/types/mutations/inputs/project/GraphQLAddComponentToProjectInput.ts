@@ -10,11 +10,11 @@ const addComponentToProjectInputConfig: GraphQLInputObjectTypeConfig = {
         },
         projectId: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The id of the project where to add the component"
+            description: "The id of the project to which to add the component"
         },
         componentId: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The id of the component to remove from the project"
+            description: "The id of the component to add to the project"
         }
     })
 };
