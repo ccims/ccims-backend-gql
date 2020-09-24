@@ -23,9 +23,9 @@ function createLabel(): GraphQLFieldConfig<any, ResolverContext> {
             const componentIDs = new Set(PreconditionCheck.checkStringList(input, "components", 32, 1));
 
             if (!context.user.permissions.globalPermissions.globalAdmin &&
-                Array.from(componentIDs).some(id => {
+                !Array.from(componentIDs).some(id => {
                     const compPerm = context.user.permissions.getComponentPermissions(id)
-                    return !compPerm.editIssues && !compPerm.moderate && !compPerm.componentAdmin
+                    return compPerm.editIssues || !compPerm.moderate || compPerm.componentAdmin
                 })) {
                 throw new Error(`You are not permitted to create a label on at least one of the components you selected`);
             }

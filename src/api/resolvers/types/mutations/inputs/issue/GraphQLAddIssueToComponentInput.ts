@@ -12,7 +12,7 @@ const addIssueToComponentInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLNonNull(GraphQLID),
             description: "The ID of the issue to be added to the specified component"
         },
-        location: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The ID of the component the issue should be added to"
         }

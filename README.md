@@ -2,6 +2,7 @@
 The Backend for the ccims system using nodejs and providing a graphql library
 
 ## Schema generation
+### Schema for the `/api` access-restricted endpoint
 For generating the schema file at `schema/schema.graphql` execute:
 ```
 npm run schema schema/schema.graphq
@@ -9,6 +10,15 @@ npm run schema schema/schema.graphq
 This will generate a commented graphql schema from the most recent code version.
 
 Printing schema to stdout: `npm run --silent schema`
+
+### Schema for the `/api/public` public user registration endpoint
+For generating the schema file at `schema/public.graphql` execute:
+```
+npm run schema -- schema/public.graphq -p
+```
+This will generate a commented graphql schema from the most recent code version.
+
+Printing schema to stdout: `npm run --silent schema -- -p`
 
 # Usage / Installation
 

@@ -1,15 +1,16 @@
-import { GraphQLFieldConfig, GraphQLNonNull } from "graphql";
-import { ResolverContext } from "../../../ResolverContext";
-import GraphQLCreateProjectPayload from "../../types/mutations/payloads/project/GraphQLCreateProjectPayload";
-import GraphQLCreateProjectInput from "../../types/mutations/inputs/project/GraphQLCreateProjectInput";
-import { Project } from "../../../../common/nodes/Project";
-import baseMutation from "../baseMutation";
-import PreconditionCheck from "../../utils/PreconditionCheck";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
+import { GraphQLFieldConfig } from "graphql";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
+import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
 import { Component } from "../../../../common/nodes/Component";
+import { Project } from "../../../../common/nodes/Project";
 import { User } from "../../../../common/nodes/User";
 import { ProjectPermission } from "../../../../utils/UserPermissions";
+import { ResolverContext } from "../../../ResolverContext";
+import GraphQLCreateProjectInput from "../../types/mutations/inputs/project/GraphQLCreateProjectInput";
+import GraphQLCreateProjectPayload from "../../types/mutations/payloads/project/GraphQLCreateProjectPayload";
+import PreconditionCheck from "../../utils/PreconditionCheck";
+import baseMutation from "../baseMutation";
+
 
 function createProject(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateProjectPayload, GraphQLCreateProjectInput, "Creates a new project");
@@ -58,7 +59,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             if (components && components.length > 1) {
                 await project.componentsProperty.addAll(components);
             }
-            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true, true));
+            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
             await context.dbManager.save();
             return base.createResult(args, { project })
         }
