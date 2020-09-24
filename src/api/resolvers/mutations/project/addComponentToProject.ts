@@ -4,7 +4,7 @@ import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
-import GraphQLAddComponentToProjectPayload from "../../types/mutations/payloads/project/GraphQLAddComponentToProjectInput";
+import GraphQLAddComponentToProjectPayload from "../../types/mutations/payloads/project/GraphQLAddComponentToProjectPayload";
 import GraphQLAddComponentToProjectInput from "../../types/mutations/inputs/project/GraphQLAddComponentToProjectInput";
 import { log } from "../../../../log";
 

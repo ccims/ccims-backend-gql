@@ -4,7 +4,7 @@ import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
-import GraphQLRemoveComponentFromProjectPayload from "../../types/mutations/payloads/project/GraphQLRemoveComponentFromProjectInput";
+import GraphQLRemoveComponentFromProjectPayload from "../../types/mutations/payloads/project/GraphQLRemoveComponentFromProjectPayload";
 import GraphQLRemoveComponentFromProjectInput from "../../types/mutations/inputs/project/GraphQLRemoveComponentFromProjectInput";
 
 function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> {
