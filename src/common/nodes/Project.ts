@@ -72,7 +72,7 @@ export class Project extends NamedOwnedNode<Project> {
                 return command;
             })
             .notifyChanged((component, project) => component.projectsProperty)
-            .saveOnPrimary("project", "component");
+            .noSave();
 
     /**
      * property with all issues
