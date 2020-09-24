@@ -18,10 +18,6 @@ const addComponentToProjectPayloadConfig: GraphQLObjectTypeConfig<any, ResolverC
         component: {
             type: GraphQLComponent,
             description: "The component which was added to the project"
-        },
-        componentCursor: {
-            type: GraphQLString,
-            description: "The component's cursor in project's components page"
         }
     })
 };
