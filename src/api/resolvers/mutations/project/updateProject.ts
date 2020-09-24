@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig } from "graphql";
-import { ResolverContext } from "../../ResolverContext";
-import GraphQLUpdateProjectPayload from "../types/mutations/payloads/GraphQLUpdateProjectPayload";
-import GraphQLUpdateProjectInput from "../types/mutations/inputs/GraphQLUpdateProjectInput";
-import baseMutation from "./baseMutation";
-import PreconditionCheck from "../utils/PreconditionCheck";
-import { LoadProjectsCommand } from "../../../common/database/commands/load/nodes/LoadProjectsCommand";
+import { ResolverContext } from "../../../ResolverContext";
+import GraphQLUpdateProjectPayload from "../../types/mutations/payloads/project/GraphQLUpdateProjectPayload";
+import GraphQLUpdateProjectInput from "../../types/mutations/inputs/project/GraphQLUpdateProjectInput";
+import baseMutation from "../baseMutation";
+import PreconditionCheck from "../../utils/PreconditionCheck";
+import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 
 function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLUpdateProjectPayload, GraphQLUpdateProjectInput, "Updates the specified project");

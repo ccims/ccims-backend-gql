@@ -1,5 +1,5 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
-import { ResolverContext } from "../../../../ResolverContext";
+import { ResolverContext } from "../../../../../ResolverContext";
 
 const deleteProjectPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "DeleteProjectPayload",

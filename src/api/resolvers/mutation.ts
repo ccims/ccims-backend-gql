@@ -2,12 +2,12 @@ import { GraphQLObjectType, GraphQLString, GraphQLObjectTypeConfig, createSource
 import testMutation from "./mutations/testMutation";
 import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
-import createProject from "./mutations/createProject";
+import createProject from "./mutations/project/createProject";
 import createComponent from "./mutations/createComponent";
 import createUser from "./mutations/createUser";
 import createLabel from "./mutations/createLabel";
-import deleteProject from "./mutations/deleteProject"
-import updateProject from "./mutations/updateProject";
+import deleteProject from "./mutations/project/deleteProject"
+import updateProject from "./mutations/project/updateProject";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",

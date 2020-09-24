@@ -1,6 +1,6 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
-import { ResolverContext } from "../../../../ResolverContext";
-import GraphQLProject from "../../nodes/GraphQLProject";
+import { ResolverContext } from "../../../../../ResolverContext";
+import GraphQLProject from "../../../nodes/GraphQLProject";
 
 const updateProjectPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UpdateProjectPayload",

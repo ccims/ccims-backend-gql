@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig } from "graphql";
-import { ResolverContext } from "../../ResolverContext";
-import baseMutation from "./baseMutation";
-import PreconditionCheck from "../utils/PreconditionCheck";
-import GraphQLDeleteProjectPayload from "../types/mutations/payloads/GraphQLDeleteProjectPayload";
-import GraphQLDeleteProjectInput from "../types/mutations/inputs/GraphQLDeleteProjectInput";
-import { LoadProjectsCommand } from "../../../common/database/commands/load/nodes/LoadProjectsCommand";
+import { ResolverContext } from "../../../ResolverContext";
+import baseMutation from "../baseMutation";
+import PreconditionCheck from "../../utils/PreconditionCheck";
+import GraphQLDeleteProjectPayload from "../../types/mutations/payloads/project/GraphQLDeleteProjectPayload";
+import GraphQLDeleteProjectInput from "../../types/mutations/inputs/project/GraphQLDeleteProjectInput";
+import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 
 function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLDeleteProjectPayload, GraphQLDeleteProjectInput, "Delets the specified project");
