@@ -8,6 +8,8 @@ import createUser from "./mutations/createUser";
 import createLabel from "./mutations/createLabel";
 import deleteProject from "./mutations/project/deleteProject"
 import updateProject from "./mutations/project/updateProject";
+import addComponentToProject from "./mutations/project/addComponentToProject";
+import removeComponentFromProject from "./mutations/project/removeComponentFromProject";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -18,6 +20,8 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         createProject: createProject(),
         deleteProject: deleteProject(),
         updateProject: updateProject(),
+        addComponentToProject: addComponentToProject(),
+        removeComponentFromProject: removeComponentFromProject(),
         createComponent: createComponent(),
         createUser: createUser(),
         createLabel: createLabel()

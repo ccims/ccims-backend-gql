@@ -9,7 +9,7 @@ const deleteProjectInputConfig: GraphQLInputObjectTypeConfig = {
             description: "An arbitraty string to return together with the mutation result"
         },
         projectId: {
-            type: GraphQLID,
+            type: GraphQLNonNull(GraphQLID),
             description: "The id of the project to delete"
         }
     })
