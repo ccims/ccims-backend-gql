@@ -88,7 +88,7 @@ class JWTVerifier {
         }
         if (!req.dbManager) {
             log(2, "Database manager undefined during JWT verification");
-            res.status(500).end("Error during token verification");
+            res.status(500).end(JSON.stringify({ "error": "Error during token verification" }));
             return;
         }
         log(5, "JWT verifying");
@@ -97,34 +97,34 @@ class JWTVerifier {
             jwt.verify(token, this.secret, async (err, payload) => {
                 if (err || !payload) {
                     log(3, "Token verification failed");
-                    res.status(401).end("Token invalid. Request new one");
+                    res.status(401).end(JSON.stringify({ "error": "Token invalid. Request new one" }));
                 } else {
                     const checkedPayload: JWTPayload = payload as JWTPayload;
                     if (JWTPayload.checkJWTPayload(checkedPayload)) {
                         log(7, checkedPayload);
-                        const userId = checkedPayload.iss;
+                        const userId = checkedPayload.sub;
                         const cmd = new LoadUsersCommand();
                         cmd.ids = [userId];
                         req.dbManager?.addCommand(cmd);
                         await req.dbManager?.executePendingCommands();
                         const result = cmd.getResult();
-                        if (result.length == 1 && result[0].id == userId && result[0].username == checkedPayload.name) {
+                        if (result.length === 1 && result[0].id === userId && result[0].username === checkedPayload.name) {
                             log(5, "User verified");
                             req.user = result[0];
                             next();
                         } else {
                             log(3, "Illegal token payload for user " + checkedPayload.name);
-                            res.status(401).end("Illegal token");
+                            res.status(401).end(JSON.stringify({ "error": "Illegal token" }));
                         }
                     } else {
                         log(3, "Token has no correct payload");
-                        res.status(401).end("Illegal token");
+                        res.status(401).end(JSON.stringify({ "error": "Illegal token" }));
                     }
                 }
             });
         } else {
             log(3, "Auth header invalid");
-            res.status(401).end("No valid Authorization header present");
+            res.status(401).end(JSON.stringify({ "error": "No valid Authorization header present" }));
         }
     }
 }
