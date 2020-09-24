@@ -31,7 +31,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
      * ensures that this property is loaded
      */
     protected async ensureLoaded(): Promise<void> {
-        if (this.currentCommand) {
+        while (this.currentCommand !== undefined) {
             await this.currentCommand;
         }
         this.currentCommand = this.ensureLoadedInternal();
