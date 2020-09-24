@@ -746,9 +746,6 @@ type Query {
   ): ProjectPage
 }
 type Mutation {
-  createIssue(
-    input: CreateIssueInput
-  ): CreateIssuePayload
   addIssueComment(
     input: AddIssueCommentInput
   ): AddIssueCommentPayload

@@ -27,7 +27,7 @@ const createComponentInputConfig: GraphQLInputObjectTypeConfig = {
             description: "The type/system the IMS of this component is an instance of"
         },
         endpoint: {
-            type: GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: `The endpoint where to reach the IMS of this component instance.
 
 In the most cases this will be a URL in the form of
@@ -41,7 +41,7 @@ See the documentation for the IMS extions for information which keys are expecte
 In rare cases depending on the IMS type this might be empty or not a URL`
         },
         connectionData: {
-            type: GraphQLNonNull(GraphQLJSON),
+            type: GraphQLJSON,
             description: `Data needed for the connection to the IMS API.
 
 See the documentation for the IMS extions for information which keys are expected.

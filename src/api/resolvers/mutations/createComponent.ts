@@ -19,8 +19,8 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
             const imsType = PreconditionCheck.checkEnum<ImsType>(input, "imsType", ImsType);
-            const endpoint = PreconditionCheck.checkString(input, "endpoint");
-            const connectionData = PreconditionCheck.checkNonNull(input, "connectionData"); // TODO: Check that Connection data
+            const endpoint = PreconditionCheck.checkNullableString(input, "endpoint") ?? "";
+            const connectionData = input.connectionData ?? {}; // TODO: Check that Connection data
 
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";

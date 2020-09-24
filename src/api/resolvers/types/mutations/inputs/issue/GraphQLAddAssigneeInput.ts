@@ -12,7 +12,7 @@ const addAssigneeInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLNonNull(GraphQLID),
             description: "The ID of the issue to which the new assignee should be added"
         },
-        userToAssign: {
+        user: {
             type: GraphQLNonNull(GraphQLID),
             description: "The ID of the user to be added as assignee to the specified issue"
         }

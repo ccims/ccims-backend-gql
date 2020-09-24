@@ -58,7 +58,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             if (components && components.length > 1) {
                 await project.componentsProperty.addAll(components);
             }
-            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true, true));
+            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
             await context.dbManager.save();
             return base.createResult(args, { project })
         }

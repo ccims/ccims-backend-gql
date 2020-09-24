@@ -21,7 +21,7 @@ export class Color {
                     const bVal = parseInt(noWhitespace.substr(5, 2), 16);
                     this.color = { r: rVal, g: gVal, b: bVal, a: aVal };
                 } else {
-                    throw new Error("The color string given is invalid. Use the html #rrggbb or rgb(rrr,ggg,bbb) format");
+                    throw new Error("Illegal html color string");
                 }
             } else if (noWhitespace.startsWith("rgb")) {
                 const colorParts = noWhitespace.substring(noWhitespace.indexOf("(") + 1, noWhitespace.indexOf(")")).split(",");

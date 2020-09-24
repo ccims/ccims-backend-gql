@@ -234,11 +234,6 @@ export class ProjectPermission {
         public readonly addRemoveComponents: boolean = false,
 
         /**
-         * `true` iff a user can link issues within this project
-         */
-        public readonly linkIssues: boolean = false,
-
-        /**
          * `true` iff the user is administrator on this project:
          * Add participant users, manage project permissions, delete project, change project data
          */
@@ -275,7 +270,12 @@ export class ComponentPermission {
         /**
          * `true` iff the user is allowed to manage the IMS of this compounent (set api token, url, etc.)
          */
-        public readonly changeIMS: boolean = false
+        public readonly changeIMS: boolean = false,
+
+        /**
+         * `true` iff a user can link issues within this project
+         */
+        public readonly linkIssues: boolean = false
     ) {
 
     }
