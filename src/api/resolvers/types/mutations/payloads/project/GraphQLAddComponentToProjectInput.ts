@@ -13,7 +13,7 @@ const addComponentToProjectPayloadConfig: GraphQLObjectTypeConfig<any, ResolverC
         },
         project: {
             type: GraphQLProject,
-            description: "The project where the component was added"
+            description: "The project to which the component was added"
         },
         component: {
             type: GraphQLComponent,
