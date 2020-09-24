@@ -28,9 +28,9 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const estimatedTime = PreconditionCheck.checkNullableTimespan(input, "estimatedTime");
 
             if (!context.user.permissions.globalPermissions.globalAdmin &&
-                Array.from(componentIDs).some(id => {
+                !Array.from(componentIDs).some(id => {
                     const compPerm = context.user.permissions.getComponentPermissions(id)
-                    return !compPerm.editIssues && !compPerm.moderate && !compPerm.componentAdmin && (locationIds.size > 0 && !compPerm.editIssueLocation)
+                    return compPerm.editIssues || compPerm.moderate || compPerm.componentAdmin || (locationIds.size <= 0 || compPerm.editIssueLocation)
                 })) {
                 throw new Error(`You are not permitted to create an issue on at least one of the components you selected or add it to the locations`);
             }

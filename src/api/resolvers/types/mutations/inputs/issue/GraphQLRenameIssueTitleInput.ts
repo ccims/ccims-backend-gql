@@ -14,7 +14,7 @@ const renameIssueTitleInputConfig: GraphQLInputObjectTypeConfig = {
         },
         newTitle: {
             type: GraphQLNonNull(GraphQLString),
-            description: "The new title to set for the issue"
+            description: "The new title to set for the issue.\n\nMax. 256 characters"
         }
     })
 };
