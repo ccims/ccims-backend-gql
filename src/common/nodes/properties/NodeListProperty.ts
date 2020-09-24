@@ -204,7 +204,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * @param level the level to reach
      */
     private async ensureLoadLevel(level: LoadLevel): Promise<void> {
-        if (this.currentCommand) {
+        while (this.currentCommand !== undefined) {
             await this.currentCommand;
         }
         if (this._loadLevel < level) {

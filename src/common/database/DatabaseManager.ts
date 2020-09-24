@@ -1,6 +1,6 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
 import { DatabaseCommand } from "./DatabaseCommand";
-import { Client } from "pg";
+import { Client, ClientBase, Pool } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
 import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
@@ -36,18 +36,18 @@ export class DatabaseManager {
     private pendingCommands: DatabaseCommand<any>[] = [];
 
     /**
-     * the postgres client
+     * the postgres pool
      */
-    private readonly pgClient: Client;
+    private readonly pool: Pool;
 
     /**
      * creates a new DatabaseManager with the specified id generator
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
      */
-    public constructor(idGenerator: SnowflakeGenerator, client: Client) {
+    public constructor(idGenerator: SnowflakeGenerator, pool: Pool) {
         this.idGenerator = idGenerator;
-        this.pgClient = client
+        this.pool = pool
     }
 
     /**
@@ -103,15 +103,17 @@ export class DatabaseManager {
         if (this.pendingCommands.length > 0) {
             const pending = this.pendingCommands;
             this.pendingCommands = [];
+            const client = await this.pool.connect();
             try {
-                await this.pgClient.query("BEGIN;");
-                await Promise.all(pending.map(cmd => this.executeCommand(cmd)));
-                await this.pgClient.query("COMMIT;");
+                await client.query("BEGIN;");
+                await Promise.all(pending.map(cmd => this.executeCommand(cmd, client)));
+                await client.query("COMMIT;");
             } catch (e) {
-                await this.pgClient.query("ROLLBACK;");
+                await client.query("ROLLBACK;");
                 log(2, "database command failed");
                 log(8, e);
             }
+            client.release();
         }
     }
 
@@ -119,13 +121,13 @@ export class DatabaseManager {
      * executes a single command
      * @param command the command to execute
      */
-    private async executeCommand(command: DatabaseCommand<any>): Promise<void> {
+    private async executeCommand(command: DatabaseCommand<any>, client: ClientBase): Promise<void> {
         const commandConfig = command.getQueryConfig();
         log(8, commandConfig);
         let result;
-        result = await this.pgClient.query(commandConfig);
+        result = await client.query(commandConfig);
         const followUpCommands = command.setDatabaseResult(this, result);
-        await Promise.all(followUpCommands.map(cmd => this.executeCommand(cmd)));
+        await Promise.all(followUpCommands.map(cmd => this.executeCommand(cmd, client)));
         command.notifyFollowUpCommandsResult(this, followUpCommands);
     }
 
@@ -162,7 +164,7 @@ export class DatabaseManager {
     }
 }
 
-export async function initTypeParsers(client: Client): Promise<void> {
+export async function initTypeParsers(client: ClientBase): Promise<void> {
     const issueCategoryOid = (await client.query("SELECT 'issue_category'::regtype::oid;")).rows[0].oid;
     const priorityOid = (await client.query("SELECT 'priority'::regtype::oid;")).rows[0].oid;
     const imsTypeOid = (await client.query("SELECT 'ims_type'::regtype::oid;")).rows[0].oid;

@@ -1,5 +1,5 @@
 import * as core from "express-serve-static-core";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import { SnowflakeGenerator } from "../utils/Snowflake";
@@ -11,14 +11,14 @@ import { SnowflakeGenerator } from "../utils/Snowflake";
  * The only thing done to the request is creating a new instance of `DatabaseManager` and setting it as the `dbManager` field of the Request object.
  * This is only done, if the `dbManager` field is still `undefined`
  *
- * @param pgClient The postgres database client connected to the database to use for the creation of the database manager.
- * This can't be `null` or `undefined` and must be a valid postgres client.
+ * @param pool The postgres database pool to use for the creation of the database manager.
+ * This can't be `null` or `undefined` and must be a valid postgres pool.
  * @param idGenerator The Snowflake generator to pass to the new database manager for id generation.
  * This can't be `null` or `undefined` and must be a valid `SnowflakeGenerator`
  * @returns An express middleware for injecting new database managers
  */
-export function dbManagerInjector(pgClient: Client, idGenerator: SnowflakeGenerator): core.RequestHandler {
-    const injector = new DBManagerInjector(pgClient, idGenerator);
+export function dbManagerInjector(pool: Pool, idGenerator: SnowflakeGenerator): core.RequestHandler {
+    const injector = new DBManagerInjector(pool, idGenerator);
     return (req: core.Request, res: core.Response, next: core.NextFunction) => {
         injector.handle.call(injector, req, res, next);
     }
@@ -31,12 +31,9 @@ export function dbManagerInjector(pgClient: Client, idGenerator: SnowflakeGenera
  */
 class DBManagerInjector {
     /**
-     * The postegres database client object representing the connection to the postgres database.
-     *
-     * For the handler to function correctly this must be an open postgres connection.
-     * However ist may also be opened later but BEFORE using the injected database managers for the first time
+     * The postegres database pool object used to create connections to the database
      */
-    private pgClient: Client;
+    private pool: Pool;
 
     /**
      * The snowflake generator used for generating ids by the database manager
@@ -48,16 +45,16 @@ class DBManagerInjector {
     /**
      * Initializes a new DBManagerInjector. To inject a new Database manager into a request, call `handle(res, req, next)`
      *
-     * @param pgClient The postgres database client connected to the database to use for the creation of the database manager.
-     * This can't be `null` or `undefined` and must be a valid postgres client.
+     * @param pool The postgres database pool to use for the creation of the database manager.
+     * This can't be `null` or `undefined` and must be a valid postgres pool.
      * @param idGenerator The Snowflake generator to pass to the new database manager for id generation.
      * This can't be `null` or `undefined` and must be a valid `SnowflakeGenerator`
      */
-    public constructor(pgClient: Client, idGenerator: SnowflakeGenerator) {
-        if (!pgClient || !idGenerator) {
-            throw new Error("A valid postgres client and id generator must be given");
+    public constructor(pool: Pool, idGenerator: SnowflakeGenerator) {
+        if (!pool || !idGenerator) {
+            throw new Error("A valid postgres pool and id generator must be given");
         }
-        this.pgClient = pgClient;
+        this.pool = pool;
         this.idGenerator = idGenerator;
     }
 
@@ -77,7 +74,7 @@ class DBManagerInjector {
      */
     public handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction) {
         if (typeof req === "object" && req && !req.dbManager) {
-            req.dbManager = new DatabaseManager(this.idGenerator, this.pgClient);
+            req.dbManager = new DatabaseManager(this.idGenerator, this.pool);
         }
         next();
     }

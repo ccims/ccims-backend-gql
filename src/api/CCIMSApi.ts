@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { jwtVerifier } from "./auth/JWTVerifier";
 import { graphqlHandler } from "./GraphQLHandler";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { dbManagerInjector } from "./DBManagerInjector";
 import { log } from "../log";
@@ -45,7 +45,7 @@ export class CCIMSApi {
      *  If empty, or `undefined`, the value in the config will be used.\
      * If 0.0.0.0 server will be bound to all availale interfaces.
      */
-    public constructor(pgClient: Client, idGen: SnowflakeGenerator, port?: number, hostIface?: string) {
+    public constructor(pool: Pool, idGen: SnowflakeGenerator, port?: number, hostIface?: string) {
         log(5, "Initializing api");
         this.port = port || config.api.port;
         this.hostIface = hostIface || config.api.hostIface || "0.0.0.0";
@@ -53,7 +53,7 @@ export class CCIMSApi {
             this.hostIface = "0.0.0.0";
         }
         this.server = express();
-        this.setupRoutes(pgClient, idGen);
+        this.setupRoutes(pool, idGen);
     }
 
     /**
@@ -69,11 +69,11 @@ export class CCIMSApi {
      *    - The main graphGL API
      *    - Requires valid JWT in the `Authorization`header
      */
-    private setupRoutes(pgClient: Client, idGen: SnowflakeGenerator) {
+    private setupRoutes(pool: Pool, idGen: SnowflakeGenerator) {
         this.server.use(cors());
-        this.server.post("/login", dbManagerInjector(pgClient, idGen), bodyParser.json(), loginHandler());
-        this.server.use("/api/public", dbManagerInjector(pgClient, idGen), graphqlHandler(publicScimsSchema, true));
-        this.server.use("/api", dbManagerInjector(pgClient, idGen), jwtVerifier(), graphqlHandler(ccimsSchema));
+        this.server.post("/login", dbManagerInjector(pool, idGen), bodyParser.json(), loginHandler());
+        this.server.use("/api/public", dbManagerInjector(pool, idGen), graphqlHandler(publicScimsSchema, true));
+        this.server.use("/api", dbManagerInjector(pool, idGen), jwtVerifier(), graphqlHandler(ccimsSchema));
     }
 
     /**
