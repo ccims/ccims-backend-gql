@@ -23,7 +23,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
             const userIds = new Set(PreconditionCheck.checkNullableStringList(input, "users", 32));
-            if ((componentIds.size > 0 || userIds.size > 0) && (ownerUserId !== context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
+            if ((componentIds.size > 0 || userIds.size > 0) && !(ownerUserId === context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
                 throw new Error("You are not the owner of the new project, you can't add users or components")
             }
             userIds.add(ownerUserId)
@@ -56,7 +56,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             if (users.length > 1) {
                 await project.usersProperty.addAll(users);
             }
-            if (components && components.length > 1) {
+            if (components && components.length >= 1) {
                 await project.componentsProperty.addAll(components);
             }
             owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
