@@ -1,0 +1,14 @@
+query CheckUsername {
+  checkUsername(username: "user")
+}
+
+mutation CreateUser {
+  registerUser(input: {
+    username: "user"
+    displayName: "New user"
+    password: "1234"
+    email: "test@example.com"
+  }) {
+    userId
+  }
+}
