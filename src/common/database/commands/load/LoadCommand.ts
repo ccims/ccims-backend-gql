@@ -23,8 +23,8 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         const values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
-        for (let i = 0; i < conditionSpecifications.length; i++) {
-            values.push(...conditionSpecifications[i].values);
+        for (let conditionSpecification of conditionSpecifications) {
+            values.push(...conditionSpecification.values);
         }
         conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
         const conditionsText = conditionSpecifications.map(spec => `(${spec.text})`).join(" AND ");

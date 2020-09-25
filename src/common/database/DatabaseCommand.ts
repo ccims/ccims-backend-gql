@@ -8,7 +8,7 @@ import { DatabaseManager } from "./DatabaseManager";
 export abstract class DatabaseCommand<T> {
 
     /**
-     *subCommands which are executed with this DatabaseCommand
+     * subCommands which are executed with this DatabaseCommand
      */
     public subCommands: DatabaseCommand<any>[] = [];
 
