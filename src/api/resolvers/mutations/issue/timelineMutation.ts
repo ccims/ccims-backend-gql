@@ -22,9 +22,9 @@ type timelineMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     argsCheck: (args: any) => any;
     /**
      * Check weather the current user is allowed to perform this mutation based on his permissions
-     * 
+     *
      * __CAUTION__ This will always suceed if the current user is a global admin
-     * 
+     *
      * @param context The context object provided by the resolve function containing the user
      * @param neededPermissions A predicate function returning `true`/`false`depending on the permissions passed to it
      */

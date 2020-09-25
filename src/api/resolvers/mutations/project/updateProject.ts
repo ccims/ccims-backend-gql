@@ -26,14 +26,14 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id was no valid project id");
             }
             const project = projectCommand.getResult()[0];
-            
+
             if (name !== undefined) {
                 project.name = name;
             }
             if (description !== undefined) {
                 project.description = description;
             }
-            
+
             await context.dbManager.save();
             return base.createResult(args, { project })
         }
