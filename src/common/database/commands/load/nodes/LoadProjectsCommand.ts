@@ -76,7 +76,7 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
         }
 
         if (this.issuesOnComponent !== undefined) {
-            if (this.issuesOnComponent.length == 1) {
+            if (this.issuesOnComponent.length === 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_issue WHERE issue_id=$${conditions}))`,
                     values: [this.issuesOnComponent[0]],
@@ -93,7 +93,7 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
         }
 
         if (this.labels !== undefined) {
-            if (this.labels.length == 1) {
+            if (this.labels.length === 1) {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$${conditions}))`,
                     values: [this.labels[0]],

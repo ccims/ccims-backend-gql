@@ -34,7 +34,7 @@ export class LoadIssueCommentsCommand extends LoadCommentsCommandBase<IssueComme
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_issueComment main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_comment main `,
             values: []
         };
     }

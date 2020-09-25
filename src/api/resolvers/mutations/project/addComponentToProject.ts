@@ -36,7 +36,7 @@ function addComponentToProject(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error ("The given id was no valid component id");
             }
             const component = componentCommand.getResult()[0];
-            
+
             if (!(await project.componentsProperty.hasId(componentId))) {
                 await project.componentsProperty.add(component);
                 await context.dbManager.save();
@@ -45,7 +45,7 @@ function addComponentToProject(): GraphQLFieldConfig<any, ResolverContext> {
                 log(5, `tried to add component ${componentId} which was already on project ${projectId}`);
                 return base.createResult(args, { });
             }
-            
+
         }
     };
 }

@@ -446,8 +446,8 @@ export class Issue extends SyncNode<Issue> {
     /**
      * sets the new startDate
      * @param newStartDate the new start date or undefined if the startDate should be removed
-     * @param atDate 
-     * @param asUser 
+     * @param atDate
+     * @param asUser
      * @returns the event if the start date was changed, otherwise undefined
      */
     public async changeStartDate(newStartDate: Date | undefined, atDate: Date, asUser?: User): Promise<StartDateChangedEvent | undefined> {
@@ -469,8 +469,8 @@ export class Issue extends SyncNode<Issue> {
     /**
      * sets the new dueDate
      * @param newDueDate the new due date or undefined if the dueDate should be removed
-     * @param atDate 
-     * @param asUser 
+     * @param atDate
+     * @param asUser
      * @returns the event if the due date was changed, otherwise undefined
      */
     public async changeDueDate(newDueDate: Date | undefined, atDate: Date, asUser?: User): Promise<DueDateChangedEvent | undefined> {
@@ -751,7 +751,7 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * Add/Assign a label to this issue
-     * 
+     *
      * @param label The label node to be added to the issue
      * @param atDate The date at which the label was added
      * @param asUser The user who added the label
@@ -769,7 +769,7 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * Remove/Unassign a label from this issue
-     * 
+     *
      * @param label The label node to be added to the issue
      * @param atDate The date at which the label was added
      * @param asUser The user who added the label
@@ -825,9 +825,9 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * marks this issue as duplicate, if not already a duplicate
-     * @param atDate 
+     * @param atDate
      * @param asUser
-     * @returns the event if marked, otherwise undefined 
+     * @returns the event if marked, otherwise undefined
      */
     public async markAsDuplicate(atDate: Date, asUser?: User): Promise<MarkedAsDuplicateEvent | undefined> {
         if (!this.isDuplicate) {
@@ -843,9 +843,9 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * unmarks this issue as duplicate, if it is a duplicate
-     * @param atDate 
+     * @param atDate
      * @param asUser
-     * @returns the event if unmarked, otherwise undefined 
+     * @returns the event if unmarked, otherwise undefined
      */
     public async unmarkAsDuplicate(atDate: Date, asUser?: User): Promise<UnmarkedAsDuplicateEvent | undefined> {
         if (this.isDuplicate) {
@@ -861,9 +861,9 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * closed the issue, if not alredy closed
-     * @param atDate 
+     * @param atDate
      * @param asUser
-     * @returns the event if marked, otherwise undefined 
+     * @returns the event if marked, otherwise undefined
      */
     public async close(atDate: Date, asUser?: User): Promise<ClosedEvent | undefined> {
         if (this.isOpen) {
@@ -879,9 +879,9 @@ export class Issue extends SyncNode<Issue> {
 
     /**
      * reopens this issue if closed
-     * @param atDate 
+     * @param atDate
      * @param asUser
-     * @returns the event if reopened, otherwise undefined 
+     * @returns the event if reopened, otherwise undefined
      */
     public async reopen(atDate: Date, asUser?: User): Promise<ReopenedEvent | undefined> {
         if (!this.isOpen) {

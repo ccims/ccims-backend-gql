@@ -11,7 +11,7 @@ import { Comment, CommentTableSpecification } from "./Comment";
  * does not specifiy the metadata, because this is up to the save method
  */
 export const IssueCommentTableSpecification: NodeTableSpecification<IssueComment>
-   = new NodeTableSpecification<IssueComment>("issue_timeline_issueComment", CommentTableSpecification);
+   = new NodeTableSpecification<IssueComment>("issue_timeline_comment", CommentTableSpecification);
 
 export class IssueComment extends Comment<IssueComment> {
 

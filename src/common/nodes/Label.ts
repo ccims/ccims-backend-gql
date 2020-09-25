@@ -160,9 +160,9 @@ export class Label extends NamedSyncNode {
             .noSave();
 
     /**
- * A property of issues to which this label is assigned
- * do NOT assign a label to an issue via this property
- */
+     * A property of issues to which this label is assigned
+     * do NOT assign a label to an issue via this property
+     */
     public readonly issuesProperty: NodeListProperty<Issue, Label>;
 
     /**

@@ -21,8 +21,8 @@ export class LoadCommentsCommand extends LoadIssueTimelineItemsCommand<Comment> 
 
         conditions.conditions.push({
             priority: 2,
-            text: `pg_class.relname = ANY($1)`,
-            values: [["issue_timeline_body", "issue_timeline_issueComment"]]
+            text: `pg_class.relname = ANY($${conditions.i})`,
+            values: [["issue_timeline_body", "issue_timeline_comment"]]
         });
         conditions.i++;
 
