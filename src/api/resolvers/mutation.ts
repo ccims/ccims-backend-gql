@@ -10,6 +10,7 @@ import deleteProject from "./mutations/project/deleteProject"
 import updateProject from "./mutations/project/updateProject";
 import addComponentToProject from "./mutations/project/addComponentToProject";
 import removeComponentFromProject from "./mutations/project/removeComponentFromProject";
+import registerUser from "../publicResolvers/mutations/registerUser";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -24,6 +25,7 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         removeComponentFromProject: removeComponentFromProject(),
         createComponent: createComponent(),
         createUser: createUser(),
+        registerUser: registerUser(),
         createLabel: createLabel()
     })
 };
