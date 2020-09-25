@@ -24,17 +24,24 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         const values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
-        conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
 
-        for (let i = 0; i < conditionSpecifications.length - 1; i++) {
-            conditionPart += `(${conditionSpecifications[i].text}) AND `;
+        for (let i = 0; i < conditionSpecifications.length; i++) {
             values.push(...conditionSpecifications[i].values);
         }
+
+        conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
+
+        const conditionsText = conditionSpecifications.map(spec => `(${spec.text})`).join(" AND ");
+
+        /*
+        for (let i = 0; i < conditionSpecifications.length - 1; i++) {
+            conditionPart += `(${conditionSpecifications[i].text}) AND `;
+        }
+        */
         if (conditionSpecifications.length > 0) {
-            const i = conditionSpecifications.length - 1;
-            conditionPart += `(${conditionSpecifications[i].text})`;
-            values.push(...conditionSpecifications[i].values);
-            text += " WHERE " + conditionPart;
+            //const i = conditionSpecifications.length - 1;
+            //conditionPart += `(${conditionSpecifications[i].text})`;
+            text += " WHERE " + conditionsText;
         }
 
         const queryEnd: QueryPart = this.generateQueryEnd(values.length + 1);

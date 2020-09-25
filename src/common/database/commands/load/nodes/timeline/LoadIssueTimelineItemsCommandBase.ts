@@ -20,7 +20,7 @@ export abstract class LoadIssueTimelineItemsCommandBase<T extends IssueTimelineI
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onIssues) {
+        if (this.onIssues !== undefined) {
             conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
             conditions.i++;
         }

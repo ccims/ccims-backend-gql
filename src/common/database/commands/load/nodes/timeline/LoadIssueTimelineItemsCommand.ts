@@ -49,29 +49,29 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
 
-        if (this.onIssues) {
+        if (this.onIssues !== undefined) {
             conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
             conditions.i++;
         }
-        if (this.noBody) {
+        if (this.noBody !== undefined) {
             conditions.conditions.push({
                 priority: 10,
-                text: "pg_class.relname != $1",
+                text: `pg_class.relname != $${conditions.i}`,
                 values: ["issue_timeline_body"]
             });
             conditions.i++;
         }
-        if (this.types) {
+        if (this.types !== undefined) {
             if (this.types.length === 1) {
                 conditions.conditions.push({
                     priority: 10,
-                    text: "pg_class.relname = $1",
+                    text: `pg_class.relname = $${conditions.i}`,
                     values: [this.types[0].tableName]
                 });
             } else {
                 conditions.conditions.push({
                     priority: 10,
-                    text: "pg_class.relname = ANY($1)",
+                    text: `pg_class.relname = ANY($${conditions.i})`,
                     values: [this.types.map(type => type.tableName)]
                 });
             }
@@ -97,18 +97,18 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      */
     protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions: ConditionSpecification[] = [];
-        if (this.afterId) {
+        if (this.afterId !== undefined) {
             conditions.push({
                 priority: 2,
-                text: `(main.created_at > (SELECT created_at FROM ${this.tableName} WHERE id=$1)) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$1)) AND (main.id > $1))`,
+                text: `(main.created_at > (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id > $${i}))`,
                 values: [this.afterId]
             });
             i++;
         }
-        if (this.beforeId) {
+        if (this.beforeId !== undefined) {
             conditions.push({
                 priority: 2,
-                text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$1)) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$1)) AND (main.id < $1))`,
+                text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$1)) AND (main.id < $${i}))`,
                 values: [this.beforeId]
             });
             i++;
