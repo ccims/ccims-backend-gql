@@ -9,6 +9,15 @@ enum IMSType {
 
   """GitHub (or GitHub enterprise server) is the IMS for the component"""
   GITHUB
+
+  """Any instance of GitLab is used as issue management system"""
+  GITLAB
+
+  """Any instance of Jira is used as issue management system"""
+  JIRA
+
+  """Any instance of Redmine is used as issue management system"""
+  REDMINE
 }
 
 """
@@ -146,6 +155,16 @@ enum IssueTimelineItemType {
 
   """An event if the issue is no longer a duplicate of another issue"""
   UNMARKED_AS_DUPLICATE_EVENT
+
+  """
+  An event if the issue has been added to a new component and copied to the components ims (not a issue location)
+  """
+  ADDED_TO_COMPONENT_EVENT
+
+  """
+  An event if the issue has been removed from a component and deleted in the components ims (not a issue location)
+  """
+  REMOVED_FROM_COMPONENT_EVENT
 }
 
 """The Priority which an issue has - how urgent it needs to be resolved"""
@@ -154,7 +173,7 @@ enum Priority {
   LOW
 
   """The issue has a priority higher than low bot is not absolutely urgent"""
-  MEDIUM
+  DEFAULT
 
   """
   Issues with this priority are __very__ urgent and need to be resolved quickly
@@ -180,7 +199,7 @@ Example: `2011-10 - 10T14: 48: 00``
 scalar Date
 
 """
-The `JSON`scalar is a string in the a JSON format
+The `JSON` scalar is a string in the a JSON format
 
 Example: `{"numbers": [1,2,3,4]}`
 """
@@ -313,14 +332,13 @@ input ComponentInterfaceFilter {
   """The name the component has to have"""
   name: String
 
-  """Filter for interfacs owned by the user with this id"""
-  owner: ID
-
   """A Regex which the description of the interface needs to match"""
   description: String
 
-  """Filter for The ID of the component the inerface is offered by"""
-  component: ID
+  """
+  If given, only interfaces, that are __offered by__ one of the components with the IDs given can match the given filter
+  """
+  component: [ID!]
 
   """
   If given, only interfaces which are consumed by at least one of the components with the given ids can match the filter
@@ -377,8 +395,8 @@ Filters for Issues. All parameters given in this filter will be connected via _A
 Not specific issues in issue management systems but the issue in the ccims
 """
 input IssueFilter {
-  """The title of the issue must match any of the given strings"""
-  title: [String!]
+  """The title of the issue must match the given regex"""
+  title: String
 
   """The issue must be on at least one of the components with the given ids"""
   components: [ID!]
@@ -431,10 +449,12 @@ input IssueFilter {
   """The issue must have any of the given categories to match the filter"""
   category: [IssueCategory!]
 
-  """If given, filters for issues which do/don't link other issues"""
+  """If given, filters for issues which do/don't link __to__ other issues"""
   linksIssues: Boolean
 
-  """The issue must link at least one of the issues with the given ids"""
+  """
+  The issue must link __to__ at least one of the issues with the given ids
+  """
   linkedIssues: [ID!]
 
   """
@@ -447,10 +467,8 @@ input IssueFilter {
   """
   assignees: [ID!]
 
-  """
-  The issue must have all the labels of at least that are matched by at least one of the given label filters
-  """
-  labels: [LabelFilter!]
+  """The issue must have at least one label with one of the given ids"""
+  labels: [ID!]
 
   """
   Any of the users with the given ids must be a participant to the issue for it to match this filter
@@ -536,6 +554,9 @@ input IssueTimelineItemFilter {
   The timeline event must have occurred before the given date (inclusive) to match the filter
   """
   createdBefore: Date
+
+  """The type of the timeline item must match one of the given ones"""
+  type: [IssueTimelineItemType!]
 }
 
 """
@@ -549,6 +570,21 @@ input LabelFilter {
   description: String
 
   """
+  Filters for the creator user of the label. The id of the user must match any of the given ids
+  """
+  createdBy: [ID!]
+
+  """
+  The label must have been created after the given date (inclusive) to match the filter
+  """
+  createdAfter: Date
+
+  """
+  The label must have been created before the given date (inclusive) to match the filter
+  """
+  createdBefore: Date
+
+  """
   A list of label colours. Any one or more of the given colours need to match the labels colour.
   """
   color: [Color!]
@@ -558,8 +594,8 @@ input LabelFilter {
 Filter for a Project. All parameters given in this filter will be connected via _AND_
 """
 input ProjectFilter {
-  """The name of the project must match any of the given strings"""
-  name: [String!]
+  """The name of the project must match the given RegEx"""
+  name: String
 
   """The project must have any of the components with the given ids"""
   components: [ID!]
@@ -585,8 +621,8 @@ input ProjectFilter {
 A filter for reaction groups (a reaction together with the users who reacted). All parameters given in this filter will be connected via _AND_
 """
 input ReactionGroupFilter {
-  """The reactions name must match any one or more of the given strings"""
-  reaction: [String!]
+  """The reactions name must match this regex"""
+  reaction: String
 
   """
   A list of Users who reacted. Any reaction group which contains at least one of the given users will match the filter
@@ -598,14 +634,14 @@ input ReactionGroupFilter {
 Filter for a user of the system. All parameters given in this filter will be connected via _AND_
 """
 input UserFilter {
-  """Any of the strings must match the users username"""
-  username: [String!]
+  """The users username must match this given RegEx"""
+  username: String
 
-  """The users username must match this given __RegEx__"""
+  """The users display name must match this given RegEx"""
   displayName: String
 
-  """The mail address of the user must match any of the ones given"""
-  email: [String!]
+  """The users email must match this given RegEx"""
+  email: String
 
   """
   The user must be member of at least one of the projects with the given ids
@@ -623,9 +659,9 @@ input UserFilter {
   participantOfIssues: [ID!]
 
   """
-  The user must have written at least one of the comments with the given ids
+  The user must have written or edited at least one of the comments (issue or comment) with the given ids
   """
-  issueComments: [ID!]
+  comments: [ID!]
 }
 
 """A page of multiple component interfaces"""
@@ -895,28 +931,23 @@ interface Comment {
   """
   currentUserCanEdit: Boolean!
 
-  """
-  All reactions on this node, matching the given filter.
-  If no filter is given, all reactions will be returned
-  """
+  """All reactions that have been added to this comment"""
   reactions(
-    """
-    Return only reactions AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only reactions AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only reactions BEFORE the one with the specified cursor (exclusive)
+    Returns only reactions BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only reactions matching this filter"""
+    """Only reactions matching this filter will be returned"""
     filterBy: ReactionGroupFilter
 
-    """Return at most the first n reactions"""
+    """Only return the first _n_ reactions matching the filter"""
     first: Int
 
-    """Return at most the last n reactions"""
+    """Only return the last _n_ reactions matching the filter"""
     last: Int
   ): ReactionGroupPage
 }
@@ -951,107 +982,128 @@ type Component implements Node & IssueLocation {
   ims: IMS
 
   """
-  All issues on this node, matching the given filter.
-  These are all issues regardless on which components/interfaces they are located.
-  If no filter is given, all issues will be returned
+  All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`
   """
   issues(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
   """
-  Only returnes issues which are assigned to this __location__ matching the filter
-  
-  (for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).
-  If no filter is given, all issues will be returned
+  All issues that are assigned to this components issue location matching (if given) `filterBy`
   """
   issuesOnLocation(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
-  """Requests projects within the given limits"""
+  """
+  All projects that this component is assigned to matching the `filterBy`
+  """
   projects(
-    """Returns projects after the given edge"""
+    """Returns only projects AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Returns projects before the given edge"""
+    """Returns only projects BEFORE the one with the given cursor (exclusive)"""
     before: String
 
     """Only projects matching this filter will be returned"""
     filterBy: ProjectFilter
 
-    """Only return the first _n_ projects in the system"""
+    """Only return the first _n_ projects matching the filter"""
     first: Int
 
-    """Only return the last _n_ projects in the system"""
+    """Only return the last _n_ projects matching the filter"""
     last: Int
   ): ProjectPage
 
   """Requests component interfaces which this component offers"""
   interfaces(
-    """Returns interfaces after the given edge"""
+    """
+    Returns only component interfaces AFTER one with the given cursor (exclusive)
+    """
     after: String
 
-    """Returns interfaces before the given edge"""
+    """
+    Returns only component interfaces BEFORE the one with the given cursor (exclusive)
+    """
     before: String
 
-    """Only interfaces matching this filter will be returned"""
+    """Only component interfaces matching this filter will be returned"""
     filterBy: ComponentInterfaceFilter
 
-    """Only return the first _n_ interfaces in the system"""
+    """Only return the first _n_ component interfaces matching the filter"""
     first: Int
 
-    """Only return the last _n_ interfaces in the system"""
+    """Only return the last _n_ component interfaces matching the filter"""
     last: Int
   ): ComponentInterfacePage
 
   """Requests component interfaces that are used/consumed by this component"""
   consumedInterfaces(
-    """Returns interfaces after the given edge"""
+    """
+    Returns only component interfaces AFTER one with the given cursor (exclusive)
+    """
     after: String
 
-    """Returns interfaces before the given edge"""
+    """
+    Returns only component interfaces BEFORE the one with the given cursor (exclusive)
+    """
     before: String
 
-    """Only interfaces matching this filter will be returned"""
+    """Only component interfaces matching this filter will be returned"""
     filterBy: ComponentInterfaceFilter
 
-    """Only return the first _n_ interfaces in the system"""
+    """Only return the first _n_ component interfaces matching the filter"""
     first: Int
 
-    """Only return the last _n_ interfaces in the system"""
+    """Only return the last _n_ component interfaces matching the filter"""
     last: Int
   ): ComponentInterfacePage
+
+  """
+  All labels which are available on this component, matching (if given) `filterBy`
+  """
+  labels(
+    """Returns only labels AFTER one with the given cursor (exclusive)"""
+    after: String
+
+    """Returns only labels BEFORE the one with the given cursor (exclusive)"""
+    before: String
+
+    """Only labels matching this filter will be returned"""
+    filterBy: LabelFilter
+
+    """Only return the first _n_ labels matching the filter"""
+    first: Int
+
+    """Only return the last _n_ labels matching the filter"""
+    last: Int
+  ): LabelPage
 }
 
 """
@@ -1095,27 +1147,22 @@ type ComponentInterface implements Node & IssueLocation {
   component: Component!
 
   """
-  Only returnes issues which are assigned to this __location__ matching the filter
-  
-  (for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).
-  If no filter is given, all issues will be returned
+  All issues that are assigned to this component interface matching (if given) `filterBy`
   """
   issuesOnLocation(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
@@ -1125,23 +1172,21 @@ type ComponentInterface implements Node & IssueLocation {
   If no filter is given, all components will be returned
   """
   consumedBy(
-    """
-    Return only components AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only components AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only components BEFORE the one with the specified cursor (exclusive)
+    Returns only components BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only components matching this filter"""
+    """Only components matching this filter will be returned"""
     filterBy: ComponentFilter
 
-    """Return at most the first n components"""
+    """Only return the first _n_ components matching the filter"""
     first: Int
 
-    """Return at most the last n components"""
+    """Only return the last _n_ components matching the filter"""
     last: Int
   ): ComponentPage
 }
@@ -1247,76 +1292,87 @@ type Issue implements Comment & Node {
   """
   spentTime: TimeSpan
 
-  """
-  All comments for this issue, matching the given filter.
-  If no filter is given, all comments will be returned
-  """
+  """All issue comments on this issue"""
   issueComments(
     """
-    Return only comments AFTER the one with the specified cursor (exclusive)
+    Returns only issue comments AFTER one with the given cursor (exclusive)
     """
     after: String
 
     """
-    Return only comments BEFORE the one with the specified cursor (exclusive)
+    Returns only issue comments BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only comments matching this filter"""
+    """Only issue comments matching this filter will be returned"""
     filterBy: IssueCommentFilter
 
-    """Return at most the first n comments"""
+    """Only return the first _n_ issue comments matching the filter"""
     first: Int
 
-    """Return at most the last n comments"""
+    """Only return the last _n_ issue comments matching the filter"""
     last: Int
   ): IssueCommentPage
 
   """
-  All issues linked to or linking this issue, matching the given filter.
+  All issues linked to from issue (this issue is __origin__ of relation, matching the given filter.
   If no filter is given, all issues will be returned
   """
-  linkedIssues(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+  linksToIssues(
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
   """
-  All reactions on this node, matching the given filter.
-  If no filter is given, all reactions will be returned
+  All issues linking to this issue (this issue is __destination__ of relation), matching the given filter.
+  If no filter is given, all issues will be returned
   """
+  linkedByIssues(
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
+    after: String
+
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
+    before: String
+
+    """Only issues matching this filter will be returned"""
+    filterBy: IssueFilter
+
+    """Only return the first _n_ issues matching the filter"""
+    first: Int
+
+    """Only return the last _n_ issues matching the filter"""
+    last: Int
+  ): IssuePage
+
+  """All reactions that have been added to the body of this issue"""
   reactions(
-    """
-    Return only reactions AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only reactions AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only reactions BEFORE the one with the specified cursor (exclusive)
+    Returns only reactions BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only reactions matching this filter"""
+    """Only reactions matching this filter will be returned"""
     filterBy: ReactionGroupFilter
 
-    """Return at most the first n reactions"""
+    """Only return the first _n_ reactions matching the filter"""
     first: Int
 
-    """Return at most the last n reactions"""
+    """Only return the last _n_ reactions matching the filter"""
     last: Int
   ): ReactionGroupPage
 
@@ -1325,42 +1381,37 @@ type Issue implements Comment & Node {
   If no filter is given, all issues will be returned
   """
   assignees(
-    """Return only users AFTER the one with the specified cursor (exclusive)"""
+    """Returns only users AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Return only users BEFORE the one with the specified cursor (exclusive)"""
+    """Returns only users BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only users matching this filter"""
+    """Only users matching this filter will be returned"""
     filterBy: UserFilter
 
-    """Return at most the first n users"""
+    """Only return the first _n_ users matching the filter"""
     first: Int
 
-    """Return at most the last n users"""
+    """Only return the last _n_ users matching the filter"""
     last: Int
   ): UserPage
 
-  """
-  All labels on this issue, matching the given filter.
-  If no filter is given, all labels will be returned
-  """
+  """All labels that are currently assigned to this issue"""
   labels(
-    """Return only labels AFTER the one with the specified cursor (exclusive)"""
+    """Returns only labels AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only labels BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only labels BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only labels matching this filter"""
+    """Only labels matching this filter will be returned"""
     filterBy: LabelFilter
 
-    """Return at most the first n labels"""
+    """Only return the first _n_ labels matching the filter"""
     first: Int
 
-    """Return at most the last n labels"""
+    """Only return the last _n_ labels matching the filter"""
     last: Int
   ): LabelPage
 
@@ -1369,19 +1420,19 @@ type Issue implements Comment & Node {
   If no filter is given, all users will be returned
   """
   participants(
-    """Return only users AFTER the one with the specified cursor (exclusive)"""
+    """Returns only users AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Return only users BEFORE the one with the specified cursor (exclusive)"""
+    """Returns only users BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only users matching this filter"""
+    """Only users matching this filter will be returned"""
     filterBy: UserFilter
 
-    """Return at most the first n users"""
+    """Only return the first _n_ users matching the filter"""
     first: Int
 
-    """Return at most the last n users"""
+    """Only return the last _n_ users matching the filter"""
     last: Int
   ): UserPage
 
@@ -1390,73 +1441,69 @@ type Issue implements Comment & Node {
   If no filter is given, all components will be returned
   """
   pinnedOn(
-    """
-    Return only components AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only components AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only components BEFORE the one with the specified cursor (exclusive)
+    Returns only components BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only components matching this filter"""
+    """Only components matching this filter will be returned"""
     filterBy: ComponentFilter
 
-    """Return at most the first n components"""
+    """Only return the first _n_ components matching the filter"""
     first: Int
 
-    """Return at most the last n components"""
+    """Only return the last _n_ components matching the filter"""
     last: Int
   ): ComponentPage
 
   """
-  All timeline events for this issue in chonological order from oldest to newest, matching the given filter.
-  If no filter is given, all events will be returned
+  All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`
   """
   timeline(
     """
-    Return only timeline events AFTER the one with the specified cursor (exclusive)
+    Returns only timeline items AFTER one with the given cursor (exclusive)
     """
     after: String
 
     """
-    Return only timeline events BEFORE the one with the specified cursor (exclusive)
+    Returns only timeline items BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only timeline events matching this filter"""
+    """Only timeline items matching this filter will be returned"""
     filterBy: IssueTimelineItemFilter
 
-    """Return at most the first n timeline events"""
+    """Only return the first _n_ timeline items matching the filter"""
     first: Int
 
-    """Return at most the last n timeline events"""
+    """Only return the last _n_ timeline items matching the filter"""
     last: Int
   ): IssueTimelineItemPage
 
   """
-  All locations this issue is assigned to, matching the given filter.
-  If no filter is given, all locations will be returned
+  All issue locations this issue is assigned to, matching (if given) `filterBy`
   """
   locations(
     """
-    Return only locations AFTER the one with the specified cursor (exclusive)
+    Returns only issue locations AFTER one with the given cursor (exclusive)
     """
     after: String
 
     """
-    Return only locations BEFORE the one with the specified cursor (exclusive)
+    Returns only issue locations BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only locations matching this filter"""
+    """Only issue locations matching this filter will be returned"""
     filterBy: IssueLocationFilter
 
-    """Return at most the first n locations"""
+    """Only return the first _n_ issue locations matching the filter"""
     first: Int
 
-    """Return at most the last n locations"""
+    """Only return the last _n_ issue locations matching the filter"""
     last: Int
   ): IssueLocationPage
 }
@@ -1485,27 +1532,22 @@ interface IssueLocation implements Node {
   description: String
 
   """
-  Only returnes issues which are assigned to this __location__ matching the filter
-  
-  (for a component this won't return all issues of a component - Issues that are only on iterfaces won't be returned).
-  If no filter is given, all issues will be returned
+  All issues that are assinged to on this issue location matching (if given) `filterBy`
   """
   issuesOnLocation(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 }
@@ -1555,21 +1597,41 @@ type Label implements Node {
   """The color of the label in the GUI"""
   color: Color
 
-  """Requests projects within the given limits"""
-  projects(
-    """Returns projects after the given edge"""
+  """The components this label is available on"""
+  components(
+    """Returns only components AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Returns projects before the given edge"""
+    """
+    Returns only components BEFORE the one with the given cursor (exclusive)
+    """
+    before: String
+
+    """Only components matching this filter will be returned"""
+    filterBy: ComponentFilter
+
+    """Only return the first _n_ components matching the filter"""
+    first: Int
+
+    """Only return the last _n_ components matching the filter"""
+    last: Int
+  ): ComponentPage
+
+  """All projetcs that this label is used on"""
+  projects(
+    """Returns only projects AFTER one with the given cursor (exclusive)"""
+    after: String
+
+    """Returns only projects BEFORE the one with the given cursor (exclusive)"""
     before: String
 
     """Only projects matching this filter will be returned"""
     filterBy: ProjectFilter
 
-    """Only return the first _n_ projects in the system"""
+    """Only return the first _n_ projects matching the filter"""
     first: Int
 
-    """Only return the last _n_ projects in the system"""
+    """Only return the last _n_ projects matching the filter"""
     last: Int
   ): ProjectPage
 }
@@ -1615,77 +1677,65 @@ type Project implements Node {
   name: String!
 
   """
-  Components which are part of this project and match the filter.
-  
-  If no filter is given, all components will be returned
+  All compomponents which are a part of this project and match (if given) `filterBy`
   """
   components(
-    """
-    Return only components AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only components AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only components BEFORE the one with the specified cursor (exclusive)
+    Returns only components BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only components matching this filter"""
+    """Only components matching this filter will be returned"""
     filterBy: ComponentFilter
 
-    """Return at most the first n components"""
+    """Only return the first _n_ components matching the filter"""
     first: Int
 
-    """Return at most the last n components"""
+    """Only return the last _n_ components matching the filter"""
     last: Int
   ): ComponentPage
 
   """
-  Users which are part of this project and match the given filter.
-  
-  If no filter is given, all users will be returned
+  All users that participate in this project and (if given)match `filterBy`
   """
   users(
-    """Return only users AFTER the one with the specified cursor (exclusive)"""
+    """Returns only users AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Return only users BEFORE the one with the specified cursor (exclusive)"""
+    """Returns only users BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only users matching this filter"""
+    """Only users matching this filter will be returned"""
     filterBy: UserFilter
 
-    """Return at most the first n users"""
+    """Only return the first _n_ users matching the filter"""
     first: Int
 
-    """Return at most the last n users"""
+    """Only return the last _n_ users matching the filter"""
     last: Int
   ): UserPage
 
   """The user who administrates "owns" the project"""
   owner: User!
 
-  """
-  All issues on this node, matching the given filter.
-  These are all issues regardless on which components/interfaces they are located.
-  If no filter is given, all issues will be returned
-  """
+  """All issues on components that are assigned to this project"""
   issues(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
@@ -1694,21 +1744,19 @@ type Project implements Node {
   If no filter is given, all labels will be returned
   """
   labels(
-    """Return only labels AFTER the one with the specified cursor (exclusive)"""
+    """Returns only labels AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only labels BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only labels BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only labels matching this filter"""
+    """Only labels matching this filter will be returned"""
     filterBy: LabelFilter
 
-    """Return at most the first n labels"""
+    """Only return the first _n_ labels matching the filter"""
     first: Int
 
-    """Return at most the last n labels"""
+    """Only return the last _n_ labels matching the filter"""
     last: Int
   ): LabelPage
 
@@ -1734,90 +1782,85 @@ type User implements Node {
   displayName: String
 
   """The mail address of the user"""
-  email: String!
+  email: String
 
-  """Requests projects within the given limits"""
+  """All the projects this user is a participant of matching `filterBy`"""
   projects(
-    """Returns projects after the given edge"""
+    """Returns only projects AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Returns projects before the given edge"""
+    """Returns only projects BEFORE the one with the given cursor (exclusive)"""
     before: String
 
     """Only projects matching this filter will be returned"""
     filterBy: ProjectFilter
 
-    """Only return the first _n_ projects in the system"""
+    """Only return the first _n_ projects matching the filter"""
     first: Int
 
-    """Only return the last _n_ projects in the system"""
+    """Only return the last _n_ projects matching the filter"""
     last: Int
   ): ProjectPage
 
-  """Returns all issues this user is explicitly assigned to"""
+  """
+  All issues that this the user is assigned to matching (if given) `filterBy`
+  """
   assignedToIssues(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
   """
-  Returns all issues this user is a participant of (e.g. through contibuting, being assigned etc.)
+  All issues that this the user is a participant of matching (if given) `filterBy`
   """
   participantOfIssues(
-    """Return only issues AFTER the one with the specified cursor (exclusive)"""
+    """Returns only issues AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """
-    Return only issues BEFORE the one with the specified cursor (exclusive)
-    """
+    """Returns only issues BEFORE the one with the given cursor (exclusive)"""
     before: String
 
-    """Return only issues matching this filter"""
+    """Only issues matching this filter will be returned"""
     filterBy: IssueFilter
 
-    """Return at most the first n issues"""
+    """Only return the first _n_ issues matching the filter"""
     first: Int
 
-    """Return at most the last n issues"""
+    """Only return the last _n_ issues matching the filter"""
     last: Int
   ): IssuePage
 
-  """
-  All comments written by this user, matching the given filter.
-  If no filter is given, all comments will be returned
-  """
+  """All issue comments (not including issues) written by this user"""
   issueComments(
     """
-    Return only comments AFTER the one with the specified cursor (exclusive)
+    Returns only issue comments AFTER one with the given cursor (exclusive)
     """
     after: String
 
     """
-    Return only comments BEFORE the one with the specified cursor (exclusive)
+    Returns only issue comments BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only comments matching this filter"""
+    """Only issue comments matching this filter will be returned"""
     filterBy: IssueCommentFilter
 
-    """Return at most the first n comments"""
+    """Only return the first _n_ issue comments matching the filter"""
     first: Int
 
-    """Return at most the last n comments"""
+    """Only return the last _n_ issue comments matching the filter"""
     last: Int
   ): IssueCommentPage
 }
@@ -2113,28 +2156,23 @@ type IssueComment implements IssueTimelineItem & Comment & Node {
   """
   currentUserCanEdit: Boolean!
 
-  """
-  All reactions on this node, matching the given filter.
-  If no filter is given, all reactions will be returned
-  """
+  """All reactions on this issue comment"""
   reactions(
-    """
-    Return only reactions AFTER the one with the specified cursor (exclusive)
-    """
+    """Returns only reactions AFTER one with the given cursor (exclusive)"""
     after: String
 
     """
-    Return only reactions BEFORE the one with the specified cursor (exclusive)
+    Returns only reactions BEFORE the one with the given cursor (exclusive)
     """
     before: String
 
-    """Return only reactions matching this filter"""
+    """Only reactions matching this filter will be returned"""
     filterBy: ReactionGroupFilter
 
-    """Return at most the first n reactions"""
+    """Only return the first _n_ reactions matching the filter"""
     first: Int
 
-    """Return at most the last n reactions"""
+    """Only return the last _n_ reactions matching the filter"""
     last: Int
   ): ReactionGroupPage
 }
@@ -2661,23 +2699,39 @@ type Query {
     input: String
   ): String
 
-  """Requests projects within the given limits"""
+  """
+  Requests all projects within the current ccims instance mathcing the `filterBy`
+  """
   projects(
-    """Returns projects after the given edge"""
+    """Returns only projects AFTER one with the given cursor (exclusive)"""
     after: String
 
-    """Returns projects before the given edge"""
+    """Returns only projects BEFORE the one with the given cursor (exclusive)"""
     before: String
 
     """Only projects matching this filter will be returned"""
     filterBy: ProjectFilter
 
-    """Only return the first _n_ projects in the system"""
+    """Only return the first _n_ projects matching the filter"""
     first: Int
 
-    """Only return the last _n_ projects in the system"""
+    """Only return the last _n_ projects matching the filter"""
     last: Int
   ): ProjectPage
+
+  """Returns the user from which the PAI is currently being accessed"""
+  currentUser: User
+
+  """
+  Checks wether the given username is still available or already taken.
+  
+  `true` is returned if the username is available and __NOT__ take
+  `false, if it __IS__ already taken and can't be used for a new user
+  """
+  checkUsername(
+    """The username to be checked for availability"""
+    username: String!
+  ): Boolean
 }
 
 """Mutations to change the data within the ccims"""
@@ -2688,16 +2742,16 @@ type Mutation {
     input: TestMutationInput
   ): TestMutationPayload
 
-  """Creates a new Issue"""
+  """Creates a new issue"""
   createIssue(
     """The data for the mutation"""
-    input: CreateIssueInput
+    input: CreateIssueInput!
   ): CreateIssuePayload
 
   """Creates a new comment on an existing issue"""
   addIssueComment(
     """The data for the mutation"""
-    input: AddIssueCommentInput
+    input: AddIssueCommentInput!
   ): AddIssueCommentPayload
 
   """
@@ -2715,7 +2769,7 @@ type Mutation {
   """Links an issue to another one, creating a relation"""
   linkIssue(
     """The data for the mutation"""
-    input: LinkIssueInput
+    input: LinkIssueInput!
   ): LinkIssuePayload
 
   """Unlink an issue from another and remove their relation"""
@@ -2727,7 +2781,7 @@ type Mutation {
   """Adds a label to an issue"""
   addLabelToIssue(
     """The data for the mutation"""
-    input: AddLabelToIssueInput
+    input: AddLabelToIssueInput!
   ): AddLabelToIssuePayload
 
   """Remove a label that is currently on the issue"""
@@ -2751,31 +2805,31 @@ type Mutation {
   """Change the title (rename) an issue"""
   renameIssueTitle(
     """The data for the mutation"""
-    input: RenameIssueTitleInput
+    input: RenameIssueTitleInput!
   ): RenameIssueTitlePayload
 
   """Changes the category of an issue"""
   changeIssueCategory(
     """The data for the mutation"""
-    input: ChangeIssueCategoryInput
+    input: ChangeIssueCategoryInput!
   ): ChangeIssueCategoryPayload
 
-  """Assignes a user to an issue"""
+  """Adds a user as assignee to the issue"""
   addAssignee(
     """The data for the mutation"""
-    input: AddAssigneeInput
+    input: AddAssigneeInput!
   ): AddAssigneePayload
 
-  """Uassignes a user that is currently an assinee on an issue"""
+  """Unassignes a user that is currently an assinee on an issue"""
   removeAssignee(
     """The data for the mutation"""
-    input: RemoveAssigneeInput
+    input: RemoveAssigneeInput!
   ): RemoveAssigneePayload
 
   """Closes an open issue"""
   closeIssue(
     """The data for the mutation"""
-    input: CloseIssueInput
+    input: CloseIssueInput!
   ): CloseIssuePayload
 
   """Reopen an issue after it has been closed"""
@@ -2799,7 +2853,7 @@ type Mutation {
   """Changes the set due date on an issue"""
   changeIssueDueDate(
     """The data for the mutation"""
-    input: ChangeIssueDueDateInput
+    input: ChangeIssueDueDateInput!
   ): ChangeIssueDueDatePayload
 
   """Changes the set estimated time on an issue"""
@@ -2808,10 +2862,10 @@ type Mutation {
     input: ChangeIssueEstimatedTimeInput
   ): ChangeIssueEstimatedTimePayload
 
-  """Adds an issue to a location (component or interface)"""
+  """Adds an issue to a location (location or interface)"""
   addIssueToLocation(
     """The data for the mutation"""
-    input: AddIssueToLocationInput
+    input: AddIssueToLocationInput!
   ): AddIssueToLocationPayload
 
   """Removes an issue from an issue location it was assigned to"""
@@ -2825,7 +2879,7 @@ type Mutation {
   """
   addIssueToComponent(
     """The data for the mutation"""
-    input: AddIssueToComponentInput
+    input: AddIssueToComponentInput!
   ): AddIssueToComponentPayload
 
   """
@@ -2867,26 +2921,54 @@ type Mutation {
   """Creates a new project"""
   createProject(
     """The data for the mutation"""
-    input: CreateProjectInput
+    input: CreateProjectInput!
   ): CreateProjectPayload
 
-  """Creates a new component"""
+  """Delets the specified project"""
+  deleteProject(
+    """The data for the mutation"""
+    input: DeleteProjectInput!
+  ): DeleteProjectPayload
+
+  """Updates the specified project"""
+  updateProject(
+    """The data for the mutation"""
+    input: UpdateProjectInput!
+  ): UpdateProjectPayload
+
+  """
+  Adds the specified component to the project if it is not already on the project
+  """
+  addComponentToProject(
+    """The data for the mutation"""
+    input: AddComponentToProjectInput!
+  ): AddComponentToProjectPayload
+
+  """
+  Removes the specified component from the project if it is on the project
+  """
+  removeComponentFromProject(
+    """The data for the mutation"""
+    input: RemoveComponentFromProjectInput!
+  ): RemoveComponentFromProjectPayload
+
+  """Creates a new component in the ccims and adds it to the given users"""
   createComponent(
     """The data for the mutation"""
-    input: CreateComponentInput
+    input: CreateComponentInput!
   ): CreateComponentPayload
 
-  """Creates a new IMS"""
-  createIMS(
-    """The data for the mutation"""
-    input: CreateIMSInput
-  ): CreateIMSPayload
-
-  """Creates a new User"""
+  """Creates a new user in the system"""
   createUser(
     """The data for the mutation"""
-    input: CreateUserInput
+    input: CreateUserInput!
   ): CreateUserPayload
+
+  """Create a new label in the system"""
+  createLabel(
+    """The data for the mutation"""
+    input: CreateLabelInput!
+  ): CreateLabelPayload
 }
 
 """The Payload/Response for the addIssueToLocation mutation"""
@@ -3280,7 +3362,11 @@ input RenameIssueTitleInput {
   """The ID of the issue to rename (Change the title of)"""
   issue: ID!
 
-  """The new title to set for the issue"""
+  """
+  The new title to set for the issue.
+  
+  Max. 256 characters
+  """
   newTitle: String!
 }
 
@@ -3342,7 +3428,7 @@ input AddAssigneeInput {
   issue: ID!
 
   """The ID of the user to be added as assignee to the specified issue"""
-  userToAssign: ID!
+  user: ID!
 }
 
 """The Payload/Response for the removeAssignee mutation"""
@@ -3642,7 +3728,7 @@ input AddIssueToComponentInput {
   issue: ID!
 
   """The ID of the component the issue should be added to"""
-  location: ID!
+  component: ID!
 }
 
 """The Payload/Response for the removeIssueFromComponent mutation"""
@@ -3844,6 +3930,103 @@ input CreateProjectInput {
   owner: ID!
 }
 
+"""The Payload/Response for the deleteProject mutation"""
+type DeleteProjectPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+}
+
+"""The inputs for the deleteProject mutation"""
+input DeleteProjectInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """The id of the project to delete"""
+  projectId: ID!
+}
+
+"""The Payload/Response for the updateProject mutation"""
+type UpdateProjectPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The project updated by this mutation"""
+  project: Project
+}
+
+"""
+The inputs for the updateProject mutation, updates only the provided fields
+"""
+input UpdateProjectInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """The id of the project to update"""
+  projectId: ID!
+
+  """
+  The name of the project
+  
+  Max. 256 characters
+  """
+  name: String
+
+  """
+  The description of the project
+  
+  Max. 65536 characters
+  """
+  description: String
+}
+
+"""The Payload/Response for the addComponentToProject mutation"""
+type AddComponentToProjectPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The project to which the component was added"""
+  project: Project
+
+  """The component which was added to the project"""
+  component: Component
+}
+
+"""The inputs for the addComponentToProject mutation"""
+input AddComponentToProjectInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """The id of the project to which to add the component"""
+  projectId: ID!
+
+  """The id of the component to add to the project"""
+  componentId: ID!
+}
+
+"""The Payload/Response for the removeComponentFromProject mutation"""
+type RemoveComponentFromProjectPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The project from which the component was removed"""
+  project: Project!
+
+  """The component which was removed from the project"""
+  component: Component!
+}
+
+"""The inputs for the removeComponentFromProject mutation"""
+input RemoveComponentFromProjectInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
+  """The id of the project from which to remove the component"""
+  projectId: ID!
+
+  """The id of the component to remove from the project"""
+  componentId: ID!
+}
+
 """The Payload/Response for the createComponent mutation"""
 type CreateComponentPayload {
   """The string provided by the client on sending the mutation"""
@@ -3851,6 +4034,9 @@ type CreateComponentPayload {
 
   """The component created by this mutation"""
   component: Component
+
+  """The IMS of the component created by this mutation"""
+  ims: IMS
 }
 
 """The inputs for the createComponent mutation"""
@@ -3875,12 +4061,31 @@ input CreateComponentInput {
   """
   description: String
 
+  """The type/system the IMS of this component is an instance of"""
+  imsType: IMSType!
+
   """
-  The IMS used by this component. This must be created before the component
+  The endpoint where to reach the IMS of this component instance.
   
-  Can be `null`
+  In the most cases this will be a URL in the form of
+  ```
+  https://example.com/api/[API_KEY]
+  ```
+  where strings in [] can be replaced by the IMS extension with values needed
+  (either dynamid, like the API key of a user or static, like values from the config).
+  See the documentation for the IMS extions for information which keys are expected.
+  
+  In rare cases depending on the IMS type this might be empty or not a URL
   """
-  ims: ID!
+  endpoint: String!
+
+  """
+  Data needed for the connection to the IMS API.
+  
+  See the documentation for the IMS extions for information which keys are expected.
+  This must be a valid JSON-string
+  """
+  connectionData: JSON!
 
   """
   If given, the component will be added to the projects with those IDs.
@@ -3897,47 +4102,6 @@ input CreateComponentInput {
   consumedInterfaces: [ID!]
 }
 
-"""The Payload/Response for the createIMS mutation"""
-type CreateIMSPayload {
-  """The string provided by the client on sending the mutation"""
-  clientMutationID: String
-
-  """The IMS created by this mutation"""
-  ims: IMS
-}
-
-"""The inputs for the createIMS mutation"""
-input CreateIMSInput {
-  """An arbitraty string to return together with the mutation result"""
-  clientMutationID: String
-
-  """The type/system this IMS is an instance of"""
-  imsType: IMSType
-
-  """
-  The endpoint where to reach the IMS instance.
-              
-  In the most cases this will be a URL in the form of
-  ```
-  https://example.com/api/[API_KEY]
-  ```
-  where strings in [] can be replaced by the IMS extension with values needed 
-  (either dynamid, like the API key of a user or static, like values from the config). 
-  See the documentation for the IMS extions for information which keys are expected.
-  
-  In rare cases depending on the IMS type this might be empty or not a URL
-  """
-  endpoint: String
-
-  """
-  Data needed for the connection to the IMS API.
-              
-  See the documentation for the IMS extions for information which keys are expected.
-  This must be a valid JSON-string
-  """
-  connectionData: JSON
-}
-
 """The Payload/Response for the createUser mutation"""
 type CreateUserPayload {
   """The string provided by the client on sending the mutation"""
@@ -3949,6 +4113,9 @@ type CreateUserPayload {
 
 """The inputs for the createUser mutation"""
 input CreateUserInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
+
   """
   The unique username used for login.
   
@@ -3972,9 +4139,47 @@ input CreateUserInput {
   Max. 320 characters. Must be a valid email address
   """
   email: String
+}
+
+"""The Payload/Response for the createLabel mutation"""
+type CreateLabelPayload {
+  """The string provided by the client on sending the mutation"""
+  clientMutationID: String
+
+  """The label created by this mutation"""
+  label: Label
+}
+
+"""The inputs for the createLabel mutation"""
+input CreateLabelInput {
+  """An arbitraty string to return together with the mutation result"""
+  clientMutationID: String
 
   """
-  If given, the user will be added to the projects with those IDs immediately after creation
+  The name of the label which to show in the GUI.
+  
+  Max. 256 characters.
   """
-  projects: [ID!]
+  name: String!
+
+  """
+  The description text for the label.
+  
+  Max. 65536 characters.
+  """
+  description: String
+
+  """
+  The color of the label
+  
+  Must be a valid Color string
+  """
+  color: Color!
+
+  """
+  A list of components to which to add the label. At least one component is required
+  
+  This must be a valid component ids
+  """
+  components: [ID!]!
 }

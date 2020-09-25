@@ -1,0 +1,50 @@
+"""The Payload/Response for the public registerUser mutation"""
+type RegisterUserPayload {
+  """The ID of the user created by this mutation"""
+  userId: ID
+}
+
+"""The inputs for the registerUser mutation"""
+input RegisterUserInput {
+  """
+  The unique username used for login.
+  
+  Max. 100 characters.
+  """
+  username: String!
+
+  """
+  The name of the user to display in the GUI.
+  
+  Max. 200 characters.
+  """
+  displayName: String!
+
+  """The password for the new user in plain text"""
+  password: String!
+
+  """
+  The mail address of the user.
+  
+  Max. 320 characters. Must be a valid email address
+  """
+  email: String
+}
+
+"""Queries which are public and don't require authentication"""
+type Query {
+  """Registers/creates a new user in the ccims system"""
+  registerUser(
+    """The data for the mutation"""
+    input: RegisterUserInput!
+  ): RegisterUserPayload
+}
+
+"""Mutations which are public and don't require authentication"""
+type Mutation {
+  """Registers/creates a new user in the ccims system"""
+  registerUser(
+    """The data for the mutation"""
+    input: RegisterUserInput!
+  ): RegisterUserPayload
+}
