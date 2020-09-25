@@ -108,7 +108,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
         if (this.beforeId !== undefined) {
             conditions.push({
                 priority: 2,
-                text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$1)) AND (main.id < $${i}))`,
+                text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id < $${i}))`,
                 values: [this.beforeId]
             });
             i++;
