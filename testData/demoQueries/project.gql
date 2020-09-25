@@ -1,0 +1,60 @@
+mutation CreateProject {
+  createProject(input: {
+    name: "TheProject"
+    owner: "USER_ID"
+    components: ["COMPONENT_ID"]
+  }) {
+    project {
+      id
+    }
+  }
+}
+
+mutation UpdateProject {
+  updateProject(input:{
+    projectId:"PROJECT_ID"
+    name: "new name"
+    description: "new description"
+  }) {
+    project {
+      id
+    }
+  }
+}
+
+mutation DeleteProject {
+  deleteProject(input: {
+    projectId:"PROJECT_ID"
+  }) {
+    clientMutationID
+  }
+}
+
+mutation AddComponentToProject {
+  addComponentToProject(input: {
+    componentId:"COMPONENT_ID"
+    projectId:"PROJECT_ID"
+  }) {
+    __typename
+    component {
+      id
+    }
+    project {
+      id
+    }
+  }
+}
+
+mutation RemoveComponentFromProject {
+  removeComponentFromProject(input: {
+    componentId:"COMPONENT_ID"
+    projectId:"PROJECT_ID"
+  }) {
+    component {
+      id
+    }
+    project {
+      id
+    }
+  }
+}
