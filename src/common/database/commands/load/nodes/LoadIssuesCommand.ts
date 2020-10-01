@@ -93,6 +93,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public linksToAnyIssues?: boolean;
 
     /**
+     * Select only issues, that are linked by at least one other issue
+     */
+    public linkedByAnyIssues?: boolean;
+
+    /**
      * Select only issues that have all of the reactions in one of the given list entries on their body
      * TODO
      */
@@ -324,6 +329,21 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             } else {
                 conditions.conditions.push({
                     text: `main.id!=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
+                    values: [],
+                    priority: 4
+                });
+            }
+        }
+        if (this.linkedByAnyIssues !== undefined) {
+            if (this.linksToAnyIssues) {
+                conditions.conditions.push({
+                    text: `main.id=ANY(SELECT linkedIssue_id FROM relation_issue_linkedIssue)`,
+                    values: [],
+                    priority: 4
+                });
+            } else {
+                conditions.conditions.push({
+                    text: `main.id!=ANY(SELECT linkedIssue_id FROM relation_issue_linkedIssue)`,
                     values: [],
                     priority: 4
                 });
