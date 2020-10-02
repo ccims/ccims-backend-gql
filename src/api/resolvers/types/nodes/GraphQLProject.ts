@@ -1,5 +1,6 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
+import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { Issue } from "../../../../common/nodes/Issue";
 import { Label } from "../../../../common/nodes/Label";
 import { Project } from "../../../../common/nodes/Project";
