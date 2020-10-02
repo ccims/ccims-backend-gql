@@ -84,7 +84,12 @@ export class Label extends NamedSyncNode {
         label.markNew();
         databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {
-            await Promise.all(components.map(component => label.componentsProperty.add(component)));
+            await Promise.all(components.map(async component => {
+                await label.componentsProperty.add(component);
+                await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+                    await project.labelsProperty.add(label);
+                }));
+            }));
         }
         return label;
     }
