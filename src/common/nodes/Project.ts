@@ -15,6 +15,8 @@ import { NodeListPropertySpecification } from "./properties/NodeListPropertySpec
 import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
+import { ComponentInterface } from "./ComponentInterface";
+import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 
 /**
  * the specification of the table which contains projects
@@ -100,6 +102,31 @@ export class Project extends NamedOwnedNode<Project> {
             .noSave();
 
     /**
+     * property with all interfaces
+     * do NOT add an interfaces via this property
+     * do NOT remove an interface via this property
+     */
+    public readonly interfacesProperty: NodeListProperty<ComponentInterface, Project>;
+
+    /**
+     * specification of the interfacesProperty
+     */
+    private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Project>
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Project>(
+            project => new LoadComponentInterfacesIdsCommand(project.id),
+            (ids, project) => {
+                const command = new LoadComponentInterfacesCommand();
+                command.ids = ids;
+                return command;
+            },
+            project => {
+                const command = new LoadComponentInterfacesCommand();
+                command.onProjects = [project.id];
+                return command;
+            })
+            .noSave();
+
+    /**
      * Property of all labels that are available on this project (all labels on all components on this project)
      * IT IS __NOT__ POSSIBLE TO ADD A LABEL TO A PROJECT VIA THIS PROPERTY
      */
@@ -138,6 +165,7 @@ export class Project extends NamedOwnedNode<Project> {
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
+        this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
         this.usersProperty = new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
@@ -243,6 +271,41 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         this.result = result.rows.map(row => row.label_id);
+        return [];
+    }
+
+}
+
+/**
+ * command to laod all ids of interfaces on a project
+ */
+class LoadComponentInterfacesIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadComponentInterfacesIdsCommand
+     * @param projectId the id of the project
+     */
+    public constructor(private readonly projectId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(): QueryConfig<any[]> {
+        return {
+            text: "SELECT id FROM component_interface WHERE host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            values: [this.projectId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.id);
         return [];
     }
 

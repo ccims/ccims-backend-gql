@@ -6,6 +6,7 @@ import { Project } from "../../../../common/nodes/Project";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
+import interfacesListQuery from "../../listQueries/interfacesListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
@@ -26,6 +27,7 @@ const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
             description: "The human readable name of this project\n\nMax. 256 characters"
         },
         components: componentsListQuery<Project, Component>("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
+        interfaces: interfacesListQuery<Project, ComponentInterface>("Requests component interfaces which are offered by any of this project's components", project => project.interfacesProperty),
         users: usersListQuery<Project, User>("All users that participate in this project and (if given)match `filterBy`", project => project.usersProperty),
         owner: {
             type: GraphQLNonNull(GraphQLUser),
