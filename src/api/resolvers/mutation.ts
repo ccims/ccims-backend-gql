@@ -3,7 +3,7 @@ import testMutation from "./mutations/testMutation";
 import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/project/createProject";
-import createComponent from "./mutations/createComponent";
+import createComponent from "./mutations/component/createComponent";
 import createUser from "./mutations/createUser";
 import createLabel from "./mutations/createLabel";
 import deleteProject from "./mutations/project/deleteProject"
