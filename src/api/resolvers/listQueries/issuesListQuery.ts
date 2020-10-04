@@ -38,7 +38,9 @@ function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Is
             cmd.isDuplicate = args.filterBy?.isDuplicate;
             cmd.ofCategory = args.filterBy?.category;
             cmd.linksToAnyIssues = args.filterBy?.linksIssues;
+            cmd.linkedByAnyIssues = args.filterBy?.isLinkedByIssues;
             cmd.linksToIssues = args.filterBy?.linkedIssues;
+            cmd.linkedByIssues = args.filterBy?.linkedByIssues;
             cmd.reactions = args.filterBy?.reactions;
             cmd.userAssigned = args.filterBy?.assignees;
             cmd.labels = args.filterBy?.labels;
