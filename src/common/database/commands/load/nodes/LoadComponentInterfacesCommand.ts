@@ -27,6 +27,12 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      */
     public hasIssueOnLocation?: string[];
 
+    
+    /**
+     * Select only component interfaces which are on any component on one of these projects
+     */
+    public onProjects?: string[];
+
     /**
      * creates a new LoadComponentInterfacesCommand
      */
@@ -73,6 +79,22 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
         }
         if (this.hasIssueOnLocation !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("component", "issue", this.hasIssueOnLocation, conditions.i));
+            conditions.i++;
+        }
+        if (this.onProjects !== undefined) {
+            if (this.onProjects.length === 1) {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
+                    values: [this.onProjects[0]]
+                });
+            } else {
+                conditions.conditions.push({
+                    priority: 2,
+                    text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
+                    values: [this.onProjects[0]]
+                });
+            }
             conditions.i++;
         }
 

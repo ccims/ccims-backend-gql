@@ -105,6 +105,9 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);
         await component.interfacesProperty.add(componentInterface);
+        await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+            await project.interfacesProperty.add(componentInterface);
+        }));
         return componentInterface;
     }
 

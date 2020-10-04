@@ -519,6 +519,9 @@ export class Issue extends SyncNode<Issue> {
         await this.componentsProperty.add(component);
         const event = await AddedToComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
         await this.participatedAt(asUser, atDate);
+        await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+            await project.issuesProperty.add(this);
+        }));
         return event;
     }
 
