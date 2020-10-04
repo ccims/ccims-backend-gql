@@ -23,7 +23,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         const values: any[] = queryStart.values;
 
         const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
-        for (let conditionSpecification of conditionSpecifications) {
+        for (const conditionSpecification of conditionSpecifications) {
             values.push(...conditionSpecification.values);
         }
         conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
