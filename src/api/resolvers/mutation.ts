@@ -16,6 +16,8 @@ import deleteComponentInterface from "./mutations/componentInterface/deleteCompo
 import updateComponentInterface from "./mutations/componentInterface/updateComponentInterface";
 import addConsumedInterface from "./mutations/component/addConsumedInterface";
 import removeConsumedInterface from "./mutations/component/removeConsumedInterface";
+import deleteComponent from "./mutations/component/deleteComponent";
+import updateComponent from "./mutations/component/updateComponent";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -32,6 +34,8 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         deleteComponentInterface: deleteComponentInterface(),
         updateComponentInterface: updateComponentInterface(),
         createComponent: createComponent(),
+        deleteComponent: deleteComponent(),
+        updateComponent: updateComponent(),
         addConsumedInterface: addConsumedInterface(),
         removeConsumedInterface: removeConsumedInterface(),
         createUser: createUser(),
