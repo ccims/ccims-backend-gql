@@ -34,7 +34,7 @@ export class LoadMarkedAsDuplicateEventsCommand extends LoadIssueTimelineItemsCo
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_markedAsDuplicateEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_marked_as_duplicate_event main `,
             values: []
         };
     }

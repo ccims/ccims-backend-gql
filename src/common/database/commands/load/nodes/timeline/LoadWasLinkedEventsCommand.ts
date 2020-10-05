@@ -34,7 +34,7 @@ export class LoadWasLinkedEventsCommand extends LoadIssueTimelineItemsCommandBas
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_wasLinkedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_was_linked_event main `,
             values: []
         };
     }

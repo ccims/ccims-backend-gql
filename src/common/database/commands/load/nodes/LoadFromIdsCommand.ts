@@ -46,31 +46,31 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["issue_timeline_body", () => new LoadBodiesCommand()],
     ["issue_issue", () => new LoadIssuesCommand()],
     ["issue_label", () => new LoadLabelsCommand()],
-    ["issue_timeline_categorychangedevent", () => new LoadCategoryChangedEventsCommand()],
-    ["issue_timeline_addedtocomponentevent", () => new LoadAddedToComponentEventsCommand()],
-    ["issue_timeline_removedfromcomponentevent", () => new LoadRemovedFromComponentEventsCommand()],
+    ["issue_timeline_category_changed_event", () => new LoadCategoryChangedEventsCommand()],
+    ["issue_timeline_added_to_component_event", () => new LoadAddedToComponentEventsCommand()],
+    ["issue_timeline_removed_from_component_event", () => new LoadRemovedFromComponentEventsCommand()],
     ["issue_timeline_comment", () => new LoadIssueCommentsCommand()],
-    ["issue_timeline_linkevent", () => new LoadLinkEventsCommand()],
-    ["issue_timeline_unlinkevent", () => new LoadUnlinkEventsCommand()],
-    ["issue_timeline_waslinkedevent", () => new LoadWasLinkedEventsCommand()],
-    ["issue_timeline_wasunlinkedevent", () => new LoadWasUnlinkedEventsCommand()],
-    ["issue_timeline_pinnedevent", () => new LoadPinnedEventsCommand()],
-    ["issue_timeline_unpinnedevent", () => new LoadUnpinnedEventsCommand()],
-    ["issue_timeline_renamedtitleevent", () => new LoadRenamedTitleEventsCommand()],
-    ["issue_timeline_deletedissuecomment", () => new LoadDeletedIssueCommentsCommand()],
-    ["issue_timeline_assignedevent", () => new LoadAssignedEventsCommand()],
-    ["issue_timeline_unassignedevent", () => new LoadUnassignedEventsCommand()],
-    ["issue_timeline_labelledevent", () => new LoadLabelledEventCommand()],
-    ["issue_timeline_unlabelledevent", () => new LoadUnlabelledEventCommand()],
-    ["issue_timeline_startdatechangedevent", () => new LoadStartDateChangedEventsCommand()],
-    ["issue_timneline_duedatechangedevent", () => new LoadDueDateChangedEventsCommand()],
-    ["issue_timeline_markedasduplicateevent", () => new LoadMarkedAsDuplicateEventsCommand()],
-    ["issue_timeline_unmarkedasduplicateevent", () => new LoadUnmarkedAsDuplicateEventsCommand()],
-    ["issue_timeline_closedevent", () => new LoadClosedEventsCommand()],
-    ["issue_timeline_reopenedevent", () => new LoadReopenedEventsCommand()],
-    ["issue_timeline_prioritychangedevent", () => new LoadPriorityChangedEventsCommand()],
-    ["issue_timeline_addedtolocationevent", () => new LoadAddedToLocationEventsCommand()],
-    ["issue_timeline_removedfromlocationevent", () => new LoadRemovedFromLocationEventsCommand()]
+    ["issue_timeline_link_event", () => new LoadLinkEventsCommand()],
+    ["issue_timeline_unlink_event", () => new LoadUnlinkEventsCommand()],
+    ["issue_timeline_was_linked_event", () => new LoadWasLinkedEventsCommand()],
+    ["issue_timeline_was_unlinked_event", () => new LoadWasUnlinkedEventsCommand()],
+    ["issue_timeline_pinned_event", () => new LoadPinnedEventsCommand()],
+    ["issue_timeline_unpinned_event", () => new LoadUnpinnedEventsCommand()],
+    ["issue_timeline_renamed_title_event", () => new LoadRenamedTitleEventsCommand()],
+    ["issue_timeline_deleted_issue_comment", () => new LoadDeletedIssueCommentsCommand()],
+    ["issue_timeline_assigned_event", () => new LoadAssignedEventsCommand()],
+    ["issue_timeline_unassigned_event", () => new LoadUnassignedEventsCommand()],
+    ["issue_timeline_labelled_event", () => new LoadLabelledEventCommand()],
+    ["issue_timeline_unlabelled_event", () => new LoadUnlabelledEventCommand()],
+    ["issue_timeline_start_date_changed_event", () => new LoadStartDateChangedEventsCommand()],
+    ["issue_timneline_due_date_changed_event", () => new LoadDueDateChangedEventsCommand()],
+    ["issue_timeline_marked_as_duplicate_event", () => new LoadMarkedAsDuplicateEventsCommand()],
+    ["issue_timeline_unmarked_as_duplicate_event", () => new LoadUnmarkedAsDuplicateEventsCommand()],
+    ["issue_timeline_closed_event", () => new LoadClosedEventsCommand()],
+    ["issue_timeline_reopened_event", () => new LoadReopenedEventsCommand()],
+    ["issue_timeline_priority_changed_event", () => new LoadPriorityChangedEventsCommand()],
+    ["issue_timeline_added_to_location_event", () => new LoadAddedToLocationEventsCommand()],
+    ["issue_timeline_removed_from_location_event", () => new LoadRemovedFromLocationEventsCommand()]
 ]);
 
 /**
@@ -79,7 +79,7 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
  * @param ids the ids of the nodes to load
  */
 export function getLoadCommand(table: string, ids?: string[]): LoadNodeListCommand<CCIMSNode> {
-    const commandFactory = commandFactories.get(table.toLowerCase());
+    const commandFactory = commandFactories.get(table);
     if (!commandFactory) {
         throw new Error(`no command factory registered for specified node type: ${table}`)
     }

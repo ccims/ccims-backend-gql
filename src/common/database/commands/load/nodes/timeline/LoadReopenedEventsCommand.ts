@@ -34,7 +34,7 @@ export class LoadReopenedEventsCommand extends LoadIssueTimelineItemsCommandBase
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_reopenedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_reopened_event main `,
             values: []
         };
     }

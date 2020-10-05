@@ -34,7 +34,7 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_dueDateChangedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_due_date_changed_event main `,
             values: []
         };
     }

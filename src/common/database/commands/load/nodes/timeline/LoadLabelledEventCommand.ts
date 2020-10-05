@@ -34,7 +34,7 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_labelledEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_labelled_event main `,
             values: []
         };
     }

@@ -27,7 +27,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * creates a new
      */
     public constructor() {
-        super("issue_timelineItem");
+        super("issue_timeline_item");
     }
     public loadWithMetadata: boolean = false;
     public loadDeleted: boolean = false;

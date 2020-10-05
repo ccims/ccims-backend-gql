@@ -56,7 +56,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
      * @returns the parsed component
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Component {
-        return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id, resultRow.imsSystem_id);
+        return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id, resultRow.ims_system_id);
     }
 
     /**
@@ -83,7 +83,7 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
             conditions.i++;
         }
         if (this.consumesInterface !== undefined) {
-            conditions.conditions.push(createRelationFilterBySecundary("component", "consumedComponentInterface", this.consumesInterface, conditions.i));
+            conditions.conditions.push(createRelationFilterBySecundary("component", "consumed_component_interface", this.consumesInterface, conditions.i));
             conditions.i++;
         }
         if (this.hasIssueOnLocation !== undefined) {

@@ -87,7 +87,7 @@ export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIss
         }
 
         if (this.editedBy) {
-            conditions.conditions.push(createRelationFilterBySecundary("comment", "editedBy", this.editedBy, conditions.i));
+            conditions.conditions.push(createRelationFilterBySecundary("comment", "edited_by", this.editedBy, conditions.i));
             conditions.i++;
         }
 

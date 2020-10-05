@@ -7,7 +7,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const PriorityChangedEventTableSpecification: NodeTableSpecification<PriorityChangedEvent>
-    = new NodeTableSpecification<PriorityChangedEvent>("issue_timeline_priorityChangedEvent", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<PriorityChangedEvent>("issue_timeline_priority_changed_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_priority", "oldPriority"),
     RowSpecification.fromProperty("new_priority", "newPriority"));
 

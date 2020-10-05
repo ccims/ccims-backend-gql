@@ -7,7 +7,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const DueDateChangedEventTableSpecification: NodeTableSpecification<DueDateChangedEvent>
-    = new NodeTableSpecification<DueDateChangedEvent>("issue_timeline_dueDateChangedEvent", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<DueDateChangedEvent>("issue_timeline_due_date_changed_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_due_date", "oldDueDate"),
     RowSpecification.fromProperty("new_due_date", "newDueDate"));
 

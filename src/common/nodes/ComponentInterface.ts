@@ -64,7 +64,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
      * specification for consumedByProperty
      */
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<Component, ComponentInterface>
-        = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumedComponentInterface"),
+        = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumed_component_interface"),
             (ids, componentInterface) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;

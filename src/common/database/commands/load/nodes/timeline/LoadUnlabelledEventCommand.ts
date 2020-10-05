@@ -33,7 +33,7 @@ export class LoadUnlabelledEventCommand extends LoadIssueTimelineItemsCommandBas
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unlabelledEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_unlabelled_event main `,
             values: []
         };
     }

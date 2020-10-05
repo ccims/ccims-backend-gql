@@ -34,7 +34,7 @@ export class LoadCategoryChangedEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_categoryChangedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_category_changede_vent main `,
             values: []
         };
     }

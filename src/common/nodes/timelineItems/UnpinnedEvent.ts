@@ -8,7 +8,7 @@ import { User } from "../User";
 import { ComponentEvent, ComponentEventTableSpecification } from "./ComponentEvent";
 
 export const UnpinnedEventTableSpecification: NodeTableSpecification<UnpinnedEvent>
-    = new NodeTableSpecification("issue_timeline_unpinnedEvent", ComponentEventTableSpecification);
+    = new NodeTableSpecification("issue_timeline_unpinned_event", ComponentEventTableSpecification);
 
 export class UnpinnedEvent extends ComponentEvent {
 

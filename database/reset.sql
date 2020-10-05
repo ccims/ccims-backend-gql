@@ -2,16 +2,16 @@
 DROP TABLE IF EXISTS user_ims_credential;
 DROP TABLE IF EXISTS ims_system;
 
--- Project/Component tables
-DROP TABLE IF EXISTS relation_component_consumedComponentInterface;
+-- Project/_component tables
+DROP TABLE IF EXISTS relation_component_consumed_component_interface;
 DROP TABLE IF EXISTS relation_component_label;
 DROP TABLE IF EXISTS relation_component_issue;
 DROP TABLE IF EXISTS project;
 DROP TABLE IF EXISTS component;
 DROP TABLE IF EXISTS relation_project_component;
-DROP TABLE IF EXISTS relation_component_pinnedIssue;
+DROP TABLE IF EXISTS relation_component_pinned_issue;
 DROP TABLE IF EXISTS component_interface;
-DROP TABLE IF EXISTS relation_issueLocation_issue;
+DROP TABLE IF EXISTS relation_issue_location_issue;
 DROP TABLE IF EXISTS issue_location;
 
 -- User Tables
@@ -20,46 +20,46 @@ DROP TABLE IF EXISTS relation_user_project;
 
 -- Issue Tables
 DROP TABLE IF EXISTS issue_label;
-DROP TABLE IF EXISTS issue_reactionGroup;
-DROP TABLE IF EXISTS issue_timeline_reopenedEvent;
-DROP TABLE IF EXISTS issue_timeline_closedEvent;
-DROP TABLE IF EXISTS issue_timeline_categoryChangedEvent;
-DROP TABLE IF EXISTS issue_timeline_unmarkedAsDuplicateEvent;
-DROP TABLE IF EXISTS issue_timeline_markedAsDuplicateEvent;
-DROP TABLE IF EXISTS issue_timeline_unassignedEvent;
-DROP TABLE IF EXISTS issue_timeline_assignedEvent;
-DROP TABLE IF EXISTS issue_timeline_unpinnedEvent;
-DROP TABLE IF EXISTS issue_timeline_pinnedEvent;
-DROP TABLE IF EXISTS issue_timeline_removedFromComponentEvent;
-DROP TABLE IF EXISTS issue_timeline_addedToComponentEvent;
-DROP TABLE IF EXISTS issue_timeline_removedFromLocationEvent;
-DROP TABLE IF EXISTS issue_timeline_addedToLocationEvent;
-DROP TABLE IF EXISTS issue_timeline_estimatedTimeChangedEvent;
-DROP TABLE IF EXISTS issue_timeline_dueDateChangedEvent;
-DROP TABLE IF EXISTS issue_timeline_startDateChangedEvent;
-DROP TABLE IF EXISTS issue_timeline_priorityChangedEvent;
-DROP TABLE IF EXISTS issue_timeline_renamedTitleEvent;
-DROP TABLE IF EXISTS issue_timeline_unlabelledEvent;
-DROP TABLE IF EXISTS issue_timeline_labelledEvent;
-DROP TABLE IF EXISTS issue_timeline_deletedComment;
+DROP TABLE IF EXISTS issue_reaction_group;
+DROP TABLE IF EXISTS issue_timeline_reopened_event;
+DROP TABLE IF EXISTS issue_timeline_closed_event;
+DROP TABLE IF EXISTS issue_timeline_category_changed_event;
+DROP TABLE IF EXISTS issue_timeline_unmarked_as_duplicate_event;
+DROP TABLE IF EXISTS issue_timeline_marked_as_duplicate_event;
+DROP TABLE IF EXISTS issue_timeline_unassigned_event;
+DROP TABLE IF EXISTS issue_timeline_assigned_event;
+DROP TABLE IF EXISTS issue_timeline_unpinned_event;
+DROP TABLE IF EXISTS issue_timeline_pinned_event;
+DROP TABLE IF EXISTS issue_timeline_removed_from_component_event;
+DROP TABLE IF EXISTS issue_timeline_added_to_component_event;
+DROP TABLE IF EXISTS issue_timeline_removed_from_location_event;
+DROP TABLE IF EXISTS issue_timeline_added_to_location_event;
+DROP TABLE IF EXISTS issue_timeline_estimated_time_changed_event;
+DROP TABLE IF EXISTS issue_timeline_due_date_changed_event;
+DROP TABLE IF EXISTS issue_timeline_start_date_changed_event;
+DROP TABLE IF EXISTS issue_timeline_priority_changed_event;
+DROP TABLE IF EXISTS issue_timeline_renamed_title_event;
+DROP TABLE IF EXISTS issue_timeline_unlabelled_event;
+DROP TABLE IF EXISTS issue_timeline_labelled_event;
+DROP TABLE IF EXISTS issue_timeline_deleted_comment;
 DROP TABLE IF EXISTS issue_timeline_body;
 DROP TABLE IF EXISTS issue_timeline_comment;
-DROP TABLE IF EXISTS issue_timeline_unlinkEvent;
-DROP TABLE IF EXISTS issue_timeline_linkEvent;
-DROP TABLE IF EXISTS issue_timeline_wasUnlinkedEvent;
-DROP TABLE IF EXISTS issue_timeline_wasLinkedEvent;
-DROP TABLE IF EXISTS issue_timeline_referencedByIssueEvent;
-DROP TABLE IF EXISTS issue_timeline_referencedByOtherEvent;
-DROP TABLE IF EXISTS issue_timelineItem;
+DROP TABLE IF EXISTS issue_timeline_unlink_event;
+DROP TABLE IF EXISTS issue_timeline_link_event;
+DROP TABLE IF EXISTS issue_timeline_was_unlinked_event;
+DROP TABLE IF EXISTS issue_timeline_was_linked_event;
+DROP TABLE IF EXISTS issue_timeline_referenced_by_issue_event;
+DROP TABLE IF EXISTS issue_timeline_referenced_by_other_event;
+DROP TABLE IF EXISTS issue_timeline_item;
 DROP TABLE IF EXISTS relation_issue_label;
 DROP TABLE IF EXISTS relation_issue_participant;
 DROP TABLE IF EXISTS relation_issue_assignee;
-DROP TABLE IF EXISTS relation_issue_linkedIssue;
-DROP TABLE IF EXISTS relation_comment_editedBy;
+DROP TABLE IF EXISTS relation_issue_linked_issue;
+DROP TABLE IF EXISTS relation_comment_edited_by;
 DROP TABLE IF EXISTS issue_issue;
 
 -- Common
-DROP TABLE IF EXISTS syncNode;
+DROP TABLE IF EXISTS sync_node;
 DROP TABLE IF EXISTS node;
 DROP TYPE IF EXISTS issue_category;
 DROP TYPE IF EXISTS priority;

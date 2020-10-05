@@ -34,7 +34,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
         verifyIsAllowedSqlIdent(secundary);
 
         this.config = {
-            text: `SELECT ${primary.toLowerCase()}, ${secundary.toLowerCase()} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=$1;`,
+            text: `SELECT ${primary}, ${secundary} FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}=$1;`,
             values: [id]
         };
         this.resultColumn = filterByPrimary ? secundary : primary;
@@ -56,7 +56,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
      * @returns follow up commands
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.result = result.rows.map(row => row[this.resultColumn.toLowerCase()]);
+        this.result = result.rows.map(row => row[this.resultColumn]);
         return [];
     }
 

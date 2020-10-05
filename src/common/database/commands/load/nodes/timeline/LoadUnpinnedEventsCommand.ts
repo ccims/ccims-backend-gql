@@ -34,7 +34,7 @@ export class LoadUnpinnedEventsCommand extends LoadIssueTimelineItemsCommandBase
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unpinnedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_unpinned_event main `,
             values: []
         };
     }

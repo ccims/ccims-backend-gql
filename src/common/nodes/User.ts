@@ -128,7 +128,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public readonly commentsProperty: NodeListProperty<Comment, User>;
 
     public static readonly commentsPropertySpecification: NodeListPropertySpecification<Comment, User>
-        = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "editedBy"),
+        = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "edited_by"),
             (ids, user) => {
                 const command = new LoadCommentsCommand();
                 command.ids = ids;

@@ -34,7 +34,7 @@ export class LoadStartDateChangedEventsCommand extends LoadIssueTimelineItemsCom
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_startDateChangedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_start_date_changed_event main `,
             values: []
         };
     }

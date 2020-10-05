@@ -37,8 +37,10 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             let imsSystem = await component.ims();
-            if (component.imsSystemProperty.getId() === undefined && (imsType !== undefined || endpoint !== undefined || connectionData !== undefined)) {
-                await component.imsSystemProperty.set(ImsSystem.create(context.dbManager, imsType ?? ImsType.CCIMS, endpoint ?? "", connectionData ?? {}));
+            if (imsType !== undefined || endpoint !== undefined || connectionData !== undefined) {
+                if (component.imsSystemProperty.getId() === undefined) {
+                    await component.imsSystemProperty.set(ImsSystem.create(context.dbManager, imsType ?? ImsType.CCIMS, endpoint ?? "", connectionData ?? {}));
+                }
                 imsSystem = await component.ims();
                 if (imsSystem === undefined) {
                     log(2, "imsSystem was still undefined");

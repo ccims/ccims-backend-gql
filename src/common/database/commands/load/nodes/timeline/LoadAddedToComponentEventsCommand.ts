@@ -34,7 +34,7 @@ export class LoadAddedToComponentEventsCommand extends LoadIssueTimelineItemsCom
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_addedToComponentEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_added_to_component_event main `,
             values: []
         };
     }

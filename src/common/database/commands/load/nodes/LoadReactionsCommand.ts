@@ -47,7 +47,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows} FROM (SELECT ${this.rows}, generate_subscripts(users,1) as i FROM issue_reactiongroup) as main `,
+            text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows} FROM (SELECT ${this.rows}, generate_subscripts(users,1) as i FROM issue_reaction_group) as main `,
             values: []
         }
     }

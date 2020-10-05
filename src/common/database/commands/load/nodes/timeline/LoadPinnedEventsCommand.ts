@@ -34,7 +34,7 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_pinnedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_pinned_event main `,
             values: []
         };
     }

@@ -34,7 +34,7 @@ export class LoadClosedEventsCommand extends LoadIssueTimelineItemsCommandBase<C
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_closedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_closed_event main `,
             values: []
         };
     }

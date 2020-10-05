@@ -34,7 +34,7 @@ export class LoadUnlinkEventsCommand extends LoadIssueTimelineItemsCommandBase<U
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unlinkEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_unlink_event main `,
             values: []
         };
     }

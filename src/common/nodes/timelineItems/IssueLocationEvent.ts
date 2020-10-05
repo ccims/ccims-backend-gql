@@ -13,7 +13,7 @@ import { SyncMetadataMap } from "../SyncNode";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const IssueLocationEventTableSpecification: NodeTableSpecification<IssueLocationEvent>
-    = new NodeTableSpecification<IssueLocationEvent>("issue_timelineItem", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<IssueLocationEvent>("issue_timeline_item", IssueTimelineItemTableSpecification,
     new RowSpecification("location", issueLocationEvent => issueLocationEvent.issueLocationProperty.getId()));
 
 export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> extends IssueTimelineItem<T> {

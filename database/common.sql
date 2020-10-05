@@ -9,7 +9,7 @@ CREATE TABLE node (
     id id PRIMARY KEY
 );
 
-CREATE TABLE syncNode (
+CREATE TABLE sync_node (
     metadata JSON,
     deleted bool NOT NULL DEFAULT false,
     created_at timestamp NOT NULL,
