@@ -34,7 +34,7 @@ export class LoadRemovedFromComponentEventsCommand extends LoadIssueTimelineItem
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_removedFromComponentEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_removed_from_component_event main `,
             values: []
         };
     }

@@ -14,7 +14,7 @@ import { LoadLabelsCommand } from "../../database/commands/load/nodes/LoadLabels
 import { Label } from "../Label";
 
 export const UnlabelledEventTableSpecification: NodeTableSpecification<UnlabelledEvent>
-    = new NodeTableSpecification<UnlabelledEvent>("issue_timeline_unlabelledEvent", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<UnlabelledEvent>("issue_timeline_unlabelled_event", IssueTimelineItemTableSpecification,
         new RowSpecification("label", labelledEvent => labelledEvent.labelProperty.getId()));
 
 export class UnlabelledEvent extends IssueTimelineItem {

@@ -34,7 +34,7 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_wasUnlinkedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_was_unlinked_event main `,
             values: []
         };
     }

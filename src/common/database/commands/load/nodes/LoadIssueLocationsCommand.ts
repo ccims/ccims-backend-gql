@@ -40,7 +40,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
         const conditions = super.generateConditions(i);
 
         if (this.hasIssueOnLocation !== undefined) {
-            conditions.conditions.push(createRelationFilterBySecundary("issueLocation", "issue", this.hasIssueOnLocation, conditions.i));
+            conditions.conditions.push(createRelationFilterBySecundary("issue_location", "issue", this.hasIssueOnLocation, conditions.i));
             conditions.i++;
         }
 

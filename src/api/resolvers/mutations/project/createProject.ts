@@ -61,7 +61,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             }
             owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
             await context.dbManager.save();
-            return base.createResult(args, { project })
+            return base.createResult(args, { project });
         }
     }
 }

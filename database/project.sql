@@ -15,7 +15,7 @@ CREATE TABLE issue_location (
 CREATE TABLE component
 (
     owner_user_id id NOT NULL,
-    imsSystem_id id NOT NULL,
+    ims_system_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
@@ -33,11 +33,11 @@ CREATE TABLE relation_component_issue
     PRIMARY KEY (component_id, issue_id)
 );
 
-CREATE TABLE relation_component_pinnedIssue
+CREATE TABLE relation_component_pinned_issue
 (
     component_id id NOT NULL,
-    pinnedIssue_id id NOT NULL,
-    PRIMARY KEY (component_id, pinnedIssue_id)
+    pinned_issue_id id NOT NULL,
+    PRIMARY KEY (component_id, pinned_issue_id)
 );
 
 CREATE TABLE relation_component_label 
@@ -52,16 +52,16 @@ CREATE TABLE component_interface
     host_component_id id NOT NULL
 ) INHERITS (issue_location);
 
-CREATE TABLE relation_issueLocation_issue
+CREATE TABLE relation_issue_location_issue
 (
-    issueLocation_id id NOT NULL,
+    issue_location_id id NOT NULL,
     issue_id id NOT NULL,
-    PRIMARY KEY (issueLocation_id, issue_id)
+    PRIMARY KEY (issue_location_id, issue_id)
 );
 
-CREATE TABLE relation_component_consumedComponentInterface
+CREATE TABLE relation_component_consumed_component_interface
 (
     component_id id NOT NULL,
-    consumedComponentInterface_id id NOT NULL,
-    PRIMARY KEY (component_id, consumedComponentInterface_id)
+    consumed_component_interface_id id NOT NULL,
+    PRIMARY KEY (component_id, consumed_component_interface_id)
 );

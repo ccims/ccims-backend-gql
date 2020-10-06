@@ -132,7 +132,7 @@ export class Issue extends SyncNode<Issue> {
     public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
 
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
-        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timelineItem", "issue"),
+        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
             (ids, issue) => {
                 const command = new LoadIssueTimelineItemsCommand();
                 command.ids = ids;
@@ -186,7 +186,7 @@ export class Issue extends SyncNode<Issue> {
     public readonly locationsProperty: NodeListProperty<IssueLocation, Issue>;
 
     private static readonly locationsPropertySpecification: NodeListPropertySpecification<IssueLocation, Issue>
-        = NodeListPropertySpecification.loadDynamic<IssueLocation, Issue>(LoadRelationCommand.fromSecundary("issueLocation", "issue"),
+        = NodeListPropertySpecification.loadDynamic<IssueLocation, Issue>(LoadRelationCommand.fromSecundary("issue_location", "issue"),
             (ids, issue) => {
                 const command = new LoadIssueLocationsCommand();
                 command.ids = ids;
@@ -227,7 +227,7 @@ export class Issue extends SyncNode<Issue> {
      * Static specification for the property of all components this issue is pinned on
      */
     private static readonly pinnedOnPropertySpecification: NodeListPropertySpecification<Component, Issue>
-        = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "pinnedIssue"),
+        = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "pinned_issue"),
             (ids, issue) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
@@ -251,7 +251,7 @@ export class Issue extends SyncNode<Issue> {
      * Specification for the linkedTo property
      */
     private static readonly linksToIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
-        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linkedIssue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linked_issue"),
             (ids, issue) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
@@ -263,7 +263,7 @@ export class Issue extends SyncNode<Issue> {
                 return command;
             })
             .notifyChanged((linksToIssue, issue) => linksToIssue.linkedByIssuesProperty)
-            .saveOnPrimary("issue", "linkedIssue");
+            .saveOnPrimary("issue", "linked_issue");
 
     /**
      * Property conaining all issues that are linked to by this issue (where this issue is the __destination__)
@@ -275,7 +275,7 @@ export class Issue extends SyncNode<Issue> {
      * Specification for the linkedTo property
      */
     private static readonly linkedByIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
-        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linkedIssue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linked_issue"),
             (ids, issue) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;

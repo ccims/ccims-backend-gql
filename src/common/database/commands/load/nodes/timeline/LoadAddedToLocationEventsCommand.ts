@@ -34,7 +34,7 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_addedToLocationEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_added_to_location_event main `,
             values: []
         };
     }

@@ -34,7 +34,7 @@ export class LoadUnassignedEventsCommand extends LoadIssueTimelineItemsCommandBa
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unassignedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_unassigned_event main `,
             values: []
         };
     }

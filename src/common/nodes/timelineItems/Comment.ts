@@ -19,7 +19,7 @@ import { DeletedNodes } from "../DeletedNodes";
  * does not specifiy the metadata, because this is up to the save method
  */
 export const CommentTableSpecification: NodeTableSpecification<Comment>
-    = new NodeTableSpecification<Comment>("issue_timelineItem", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<Comment>("issue_timeline_item", IssueTimelineItemTableSpecification,
         RowSpecification.fromProperty("body", "body"),
         RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
         new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
@@ -31,7 +31,7 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
     public readonly editedByProperty: NodeListProperty<User, Comment>;
 
     private static readonly editedByPropertySpecification: NodeListPropertySpecification<User, Comment>
-        = NodeListPropertySpecification.loadDynamic<User, Comment>(LoadRelationCommand.fromPrimary("comment", "editedBy"),
+        = NodeListPropertySpecification.loadDynamic<User, Comment>(LoadRelationCommand.fromPrimary("comment", "edited_by"),
             (ids, comment) => {
                 const command = new LoadUsersCommand();
                 command.ids = ids;
@@ -43,7 +43,7 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
                 return command;
             })
             .notifyChanged((user, comment) => user.commentsProperty)
-            .saveOnPrimary("comment", "editedBy");
+            .saveOnPrimary("comment", "edited_by");
 
     public readonly lastEditedByProperty: NullableNodeProperty<User, Comment>;
 

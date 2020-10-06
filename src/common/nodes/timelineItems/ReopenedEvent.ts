@@ -8,7 +8,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const ReopenedEventTableSpecification: NodeTableSpecification<ReopenedEvent>
-    = new NodeTableSpecification<ReopenedEvent>("issue_timeline_reopenedEvent", IssueTimelineItemTableSpecification);
+    = new NodeTableSpecification<ReopenedEvent>("issue_timeline_reopened_event", IssueTimelineItemTableSpecification);
 
 export class ReopenedEvent extends IssueTimelineItem<ReopenedEvent> {
 

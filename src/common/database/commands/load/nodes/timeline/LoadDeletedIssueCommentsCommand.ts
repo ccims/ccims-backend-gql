@@ -34,7 +34,7 @@ export class LoadDeletedIssueCommentsCommand extends LoadIssueTimelineItemsComma
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_deletedIssueComment main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_deleted_issue_comment main `,
             values: []
         };
     }

@@ -27,7 +27,7 @@ import { log } from "../../log";
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
     = new NodeTableSpecification<Component>("component", NamedOwnedNodeTableSpecification,
-        new RowSpecification("imsSystem_id", component => component.imsSystemProperty.getId()));
+        new RowSpecification("ims_system_id", component => component.imsSystemProperty.getId()));
 
 /**
  * A component known to ccims.
@@ -79,7 +79,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 return command;
             },
             component => {
-                return new GetWithReloadCommand(component, "imsSystem_id", new LoadImsSystemsCommand());
+                return new GetWithReloadCommand(component, "ims_system_id", new LoadImsSystemsCommand());
             },
             undefined,
             (imsSystem, component) => imsSystem.componentProperty
@@ -127,7 +127,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * specification of the pinnedIssuesProperty
      */
     private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
-        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinnedIssue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinned_issue"),
             (ids, component) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
@@ -139,7 +139,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
-            .saveOnPrimary("component", "pinnedIssue");
+            .saveOnPrimary("component", "pinned_issue");
 
     /**
      * property with all componentInterfaces of this component
@@ -170,7 +170,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * specification of consumedInterfacesProperty
      */
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
-        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumedComponentInterface"),
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumed_component_interface"),
             (ids, component) => {
                 const command = new LoadComponentInterfacesCommand();
                 command.ids = ids;
@@ -182,7 +182,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 return command;
             })
             .notifyChanged((componentInterface, component) => componentInterface.consumedByProperty)
-            .saveOnPrimary("component", "consumedComponentInterface");
+            .saveOnPrimary("component", "consumed_component_interface");
 
     /**
      * Property of all labels on thic component

@@ -212,7 +212,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             conditions.i++;
         }
         if (this.onLocations !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("issueLocation", "issue", this.onLocations, conditions.i));
+            conditions.conditions.push(createRelationFilterByPrimary("issue_location", "issue", this.onLocations, conditions.i));
             conditions.i++;
         }
         if (this.onProjects !== undefined) {
@@ -235,13 +235,13 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             if (this.editedBy.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
-                    text: `EXISTS(SELECT 1 FROM relation_comment_editedBy WHERE comment_id=main.body_id AND editedBy_id=$${conditions.i})`,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.body_id AND edited_by_id=$${conditions.i})`,
                     values: [this.editedBy[0]]
                 });
             } else {
                 conditions.conditions.push({
                     priority: 2,
-                    text: `EXISTS(SELECT 1 FROM relation_comment_editedBy WHERE comment_id=main.body_id AND editedBy_id=ANY($${conditions.i}))`,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.body_id AND edited_by_id=ANY($${conditions.i}))`,
                     values: [this.editedBy]
                 });
             }
@@ -312,23 +312,23 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             conditions.i++;
         }
         if (this.linkedByIssues !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("issue", "linkedIssue", this.linkedByIssues, conditions.i));
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "linked_issue", this.linkedByIssues, conditions.i));
             conditions.i++;
         }
         if (this.linksToIssues !== undefined) {
-            conditions.conditions.push(createRelationFilterBySecundary("issue", "linkedIssue", this.linksToIssues, conditions.i));
+            conditions.conditions.push(createRelationFilterBySecundary("issue", "linked_issue", this.linksToIssues, conditions.i));
             conditions.i++;
         }
         if (this.linksToAnyIssues !== undefined) {
             if (this.linksToAnyIssues) {
                 conditions.conditions.push({
-                    text: `main.id=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
+                    text: `main.id=ANY(SELECT issue_id FROM relation_issue_linked_issue)`,
                     values: [],
                     priority: 4
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.id!=ANY(SELECT issue_id FROM relation_issue_linkedIssue)`,
+                    text: `main.id!=ANY(SELECT issue_id FROM relation_issue_linked_issue)`,
                     values: [],
                     priority: 4
                 });
@@ -337,13 +337,13 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.linkedByAnyIssues !== undefined) {
             if (this.linksToAnyIssues) {
                 conditions.conditions.push({
-                    text: `main.id=ANY(SELECT linkedIssue_id FROM relation_issue_linkedIssue)`,
+                    text: `main.id=ANY(SELECT linked_issue_id FROM relation_issue_linked_issue)`,
                     values: [],
                     priority: 4
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.id!=ANY(SELECT linkedIssue_id FROM relation_issue_linkedIssue)`,
+                    text: `main.id!=ANY(SELECT linked_issue_id FROM relation_issue_linked_issue)`,
                     values: [],
                     priority: 4
                 });

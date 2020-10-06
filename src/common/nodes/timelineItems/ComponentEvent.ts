@@ -11,7 +11,7 @@ import { SyncMetadataMap } from "../SyncNode";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const ComponentEventTableSpecification: NodeTableSpecification<ComponentEvent>
-    = new NodeTableSpecification<ComponentEvent>("issue_timelineItem", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<ComponentEvent>("issue_timeline_item", IssueTimelineItemTableSpecification,
     new RowSpecification("component", componentEvent => componentEvent.componentProperty.getId()));
 
 export abstract class ComponentEvent<T extends ComponentEvent = any> extends IssueTimelineItem<T> {

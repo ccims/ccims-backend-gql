@@ -8,7 +8,7 @@ import { User } from "../User";
 import { ComponentEvent, ComponentEventTableSpecification } from "./ComponentEvent";
 
 export const AddedToComponentEventTableSpecification: NodeTableSpecification<AddedToComponentEvent>
-    = new NodeTableSpecification("issue_timeline_addedToComponentEvent", ComponentEventTableSpecification);
+    = new NodeTableSpecification("issue_timeline_added_to_component_event", ComponentEventTableSpecification);
 
 export class AddedToComponentEvent extends ComponentEvent {
 

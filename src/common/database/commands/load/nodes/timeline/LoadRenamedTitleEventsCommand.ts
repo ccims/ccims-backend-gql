@@ -34,7 +34,7 @@ export class LoadRenamedTitleEventsCommand extends LoadIssueTimelineItemsCommand
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_renamedTitleEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_renamed_title_event main `,
             values: []
         };
     }

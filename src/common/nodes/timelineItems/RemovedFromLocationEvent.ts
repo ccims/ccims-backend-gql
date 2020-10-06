@@ -8,7 +8,7 @@ import { User } from "../User";
 import { IssueLocationEvent, IssueLocationEventTableSpecification } from "./IssueLocationEvent";
 
 export const RemovedFromLocationEventTableSpecification: NodeTableSpecification<RemovedFromLocationEvent>
-    = new NodeTableSpecification("issue_timeline_removedFromLocationEvent", IssueLocationEventTableSpecification);
+    = new NodeTableSpecification("issue_timeline_removed_from_location_event", IssueLocationEventTableSpecification);
 
 export class RemovedFromLocationEvent extends IssueLocationEvent {
 

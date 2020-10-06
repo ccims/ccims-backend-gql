@@ -34,7 +34,7 @@ export class LoadLinkEventsCommand extends LoadIssueTimelineItemsCommandBase<Lin
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_linkEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_link_event main `,
             values: []
         };
     }

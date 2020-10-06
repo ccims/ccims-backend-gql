@@ -74,7 +74,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
             conditions.i++;
         }
         if (this.consumedByComponent !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("component", "consumedComponentInterface", this.consumedByComponent, conditions.i));
+            conditions.conditions.push(createRelationFilterByPrimary("component", "consumed_component_interface", this.consumedByComponent, conditions.i));
             conditions.i++;
         }
         if (this.hasIssueOnLocation !== undefined) {

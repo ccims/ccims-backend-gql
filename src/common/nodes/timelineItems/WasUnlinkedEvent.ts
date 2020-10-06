@@ -12,7 +12,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const WasUnlinkedEventTableSpecification: NodeTableSpecification<WasUnlinkedEvent>
-    = new NodeTableSpecification<WasUnlinkedEvent>("issue_timeline_wasUnlinkedEvent", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<WasUnlinkedEvent>("issue_timeline_was_unlinked_event", IssueTimelineItemTableSpecification,
     new RowSpecification("unlinked_by", wasLinkedEvent => wasLinkedEvent.unlinkedByIssueProperty.getId()));
 
 export class WasUnlinkedEvent extends IssueTimelineItem {

@@ -7,7 +7,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const CategoryChangedEventTableSpecification: NodeTableSpecification<CategoryChangedEvent>
-    = new NodeTableSpecification<CategoryChangedEvent>("issue_timeline_categoryChangedEvent", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<CategoryChangedEvent>("issue_timeline_category_changed_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_category", "oldCategory"),
     RowSpecification.fromProperty("new_category", "newCategory"));
 

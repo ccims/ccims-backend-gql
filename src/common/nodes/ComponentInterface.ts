@@ -64,7 +64,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
      * specification for consumedByProperty
      */
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<Component, ComponentInterface>
-        = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumedComponentInterface"),
+        = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumed_component_interface"),
             (ids, componentInterface) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
@@ -109,6 +109,18 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
             await project.interfacesProperty.add(componentInterface);
         }));
         return componentInterface;
+    }
+
+    /**
+     * marks this node as deleted
+     * this also marks this node as changed
+     */
+    public async markDeleted(): Promise<void> {
+        if(!this.isDeleted) {
+            await super.markDeleted();
+            await this.consumedByProperty.clear();
+            await (await this.component()).interfacesProperty.remove(this);
+        }
     }
 
 }

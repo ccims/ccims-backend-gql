@@ -12,8 +12,8 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const UnassignedEventTableSpecification: NodeTableSpecification<UnassignedEvent>
-    = new NodeTableSpecification<UnassignedEvent>("issue_timeline_unassignedEvent", IssueTimelineItemTableSpecification,
-    new RowSpecification("removedAssignee", unassignedEvent => unassignedEvent.removedassigneeProperty.getId()));
+    = new NodeTableSpecification<UnassignedEvent>("issue_timeline_unassigned_event", IssueTimelineItemTableSpecification,
+    new RowSpecification("removed_assignee", unassignedEvent => unassignedEvent.removedassigneeProperty.getId()));
 
 export class UnassignedEvent extends IssueTimelineItem {
 

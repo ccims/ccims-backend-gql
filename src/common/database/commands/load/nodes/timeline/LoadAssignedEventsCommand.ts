@@ -34,7 +34,7 @@ export class LoadAssignedEventsCommand extends LoadIssueTimelineItemsCommandBase
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_assignedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_assigned_event main `,
             values: []
         };
     }

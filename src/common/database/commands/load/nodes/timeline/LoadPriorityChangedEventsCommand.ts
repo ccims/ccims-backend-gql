@@ -34,7 +34,7 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected generateQueryStart(): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM issue_timeline_priorityChangedEvent main `,
+            text: `SELECT ${this.rows} FROM issue_timeline_priority_changed_event main `,
             values: []
         };
     }
