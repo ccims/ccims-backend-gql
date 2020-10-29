@@ -20,7 +20,7 @@ function createLabel(): GraphQLFieldConfig<any, ResolverContext> {
             if (!color || !(color instanceof Color)) {
                 color = new Color("#ffffff");
             }
-            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "components", 32, 1));
+            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "components", 32));
 
             if (!context.user.permissions.globalPermissions.globalAdmin &&
                 !Array.from(componentIDs).some(id => {
