@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { printSchema } = require("graphql");
 const ccimsSchema = require("../out/api/resolvers/CCIMSSchema");
-const ccimsPublicSchema = require("../out/api/publicResolvers/ccimsPublicSchema");
+const ccimsPublicSchema = require("../out/api/publicResolvers/PublicCCIMSSchema");
 
 const printPublicSchema = process.argv.some(param => !!param.match(/^-(-)?p(ublic)?$/i));
 let gqlSchema = "";
