@@ -27,7 +27,7 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
 
         if (this.name !== undefined) {
             conditions.conditions.push({
-                text: `main.name ~ $${conditions.i}`,
+                text: `main.name ~* $${conditions.i}`,
                 values: [this.name],
                 priority: 4
             });
@@ -36,7 +36,7 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
 
         if (this.description !== undefined) {
             conditions.conditions.push({
-                text: `main.description ~ $${conditions.i}`,
+                text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
                 priority: 7
             });

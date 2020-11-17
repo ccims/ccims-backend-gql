@@ -266,7 +266,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.title !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `main.title ~ $${conditions.i}`,
+                text: `main.title ~* $${conditions.i}`,
                 values: [this.title],
             });
             conditions.i++;
@@ -274,7 +274,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.body !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND body ~ $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND body ~* $${conditions.i})`,
                 values: [this.body],
             });
             conditions.i++;

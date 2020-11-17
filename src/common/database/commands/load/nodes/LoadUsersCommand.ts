@@ -84,7 +84,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
 
         if (this.username !== undefined) {
             conditions.conditions.push({
-                text: `main.username ~ $${conditions.i}`,
+                text: `main.username ~* $${conditions.i}`,
                 values: [this.username],
                 priority: 5
             });
@@ -93,7 +93,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
 
         if (this.displayName !== undefined) {
             conditions.conditions.push({
-                text: `main.displayname ~ $${conditions.i}`,
+                text: `main.displayname ~* $${conditions.i}`,
                 values: [this.displayName],
                 priority: 5
             });
@@ -102,7 +102,7 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
 
         if (this.email !== undefined) {
             conditions.conditions.push({
-                text: `main.email ~ $${conditions.i}`,
+                text: `main.email ~* $${conditions.i}`,
                 values: [this.email],
                 priority: 5
             });

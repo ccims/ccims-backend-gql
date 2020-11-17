@@ -63,7 +63,7 @@ export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIss
         if (this.body) {
             conditions.conditions.push({
                 priority: 5,
-                text: `main.body ~ $${conditions.i}`,
+                text: `main.body ~* $${conditions.i}`,
                 values: [this.body],
             });
             conditions.i++;

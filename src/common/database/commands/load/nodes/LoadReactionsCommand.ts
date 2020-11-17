@@ -63,7 +63,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
 
         if (this.reaction !== undefined) {
             conditions.conditions.push({
-                text: `main.reaction ~ $${conditions.i}`,
+                text: `main.reaction ~* $${conditions.i}`,
                 values: [this.reaction],
                 priority: 4
             });

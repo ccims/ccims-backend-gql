@@ -46,7 +46,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
 
         if (this.name !== undefined) {
             conditions.conditions.push({
-                text: `main.name ~ $${conditions.i}`,
+                text: `main.name ~* $${conditions.i}`,
                 values: [this.name],
                 priority: 4
             });
@@ -55,7 +55,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
 
         if (this.description !== undefined) {
             conditions.conditions.push({
-                text: `main.description ~ $${conditions.i}`,
+                text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
                 priority: 5
             });
