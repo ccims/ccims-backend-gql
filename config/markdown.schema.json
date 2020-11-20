@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "html": {
+            "type": "boolean",
+            "title": "Allow HTML source",
+            "description": "Wether to allow usage of html in the markdown source"
+        },
+        "linkify": {
+            "type": "boolean",
+            "title": "Linkify url-like strings",
+            "description": "Wether to convert a URL string into a link"
+        },
+        "typographer": {
+            "type": "boolean",
+            "title": "Enable typography functions",
+            "description": "Wether to enable language replacements and quoute beautification"
+        },
+        "quotes": {
+            "type": "string",
+            "title": "Quote replacement chars",
+            "description": "UTF-8 Chars to replace quotes with (e.g. German: \"„“‚‘\", English: \"“”‘’\""
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "$schema"
+    ]
+}

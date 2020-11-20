@@ -1,5 +1,15 @@
+# Special Test data
+testData/nonGit
+
 # Compiled JS Files
 out
+
+# Generated files
+init-db.sql
+
+# Config directory
+config/*
+!config/[A-Za-z]*.schema.json
 
 # Logs
 logs

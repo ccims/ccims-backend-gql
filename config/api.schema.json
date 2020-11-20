@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "hostIface": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "title": "Host interface",
+            "description": "The IP of the network interface the API server should listen on. If none specified it will listen on all available ones."
+        },
+        "port": {
+            "type": "number",
+            "title": "API Host Port",
+            "description": "The port the API will be available on. This is mandatory."
+        },
+        "jwtSecret": {
+            "type": "string",
+            "title": "JWT secret",
+            "description": "The secret used for signing the JWTs used for authentication of clients"
+        },
+        "debugNoLogin": {
+            "type": "boolean",
+            "title": "Disables jwt verification",
+            "description": "If set to `true` the JWT verification for API calls will be disabled and anyone can make requests"
+        },
+        "schemaLocation": {
+            "type": "string",
+            "title": "GraphQL schema location",
+            "description": "The file location relative to the execution directory where the GraphQL Schema is located"
+        },
+        "numReactionUsers": {
+            "type": [
+                "number",
+                "null"
+            ],
+            "title": "Number of reaction users",
+            "description": "The number of users to return for a reaction group before slicing"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "hostIface",
+        "port",
+        "jwtSecret",
+        "debugNoLogin",
+        "schemaLocation",
+        "$schema"
+    ]
+}
