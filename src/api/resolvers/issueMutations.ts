@@ -27,10 +27,12 @@ import addReactionToComment from "./mutations/issue/addReactionToComment";
 import removeReactionFromComment from "./mutations/issue/removeReactionFromComment";
 import { GraphQLFieldConfigMap } from "graphql";
 import { ResolverContext } from "../ResolverContext";
+import updateComment from "./mutations/issue/updateComment";
 
 const issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     createIssue: createIssue(),
     addIssueComment: addIssueComment(),
+    updateComment: updateComment(),
     deleteIssueComment: deleteIssueComment(),
     linkIssue: linkIssue(),
     unlinkIssue: unlinkIssue(),
