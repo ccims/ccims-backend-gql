@@ -2,6 +2,7 @@ import { QueryResultRow, QueryResult } from "pg";
 import { Issue, IssueCategory, IssueTableSpecification } from "../../../../nodes/Issue";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
+import { OrConditionSpecification } from "../OrConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { createRelationFilterByPrimary, createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
@@ -12,6 +13,12 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      * Select only issues of which the title matches this regex
      */
     public title?: string;
+
+    /**
+     * Selects issues of which the title or body matches the given text regex or which 
+     * have at least on of the specified labels
+     */
+    public fullSearch?: FullSearch;
 
     /**
      * Select only issues which are on one of these components
@@ -235,13 +242,13 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             if (this.editedBy.length === 1) {
                 conditions.conditions.push({
                     priority: 2,
-                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.body_id AND edited_by_id=$${conditions.i})`,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.id AND edited_by_id=$${conditions.i})`,
                     values: [this.editedBy[0]]
                 });
             } else {
                 conditions.conditions.push({
                     priority: 2,
-                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.body_id AND edited_by_id=ANY($${conditions.i}))`,
+                    text: `EXISTS(SELECT 1 FROM relation_comment_edited_by WHERE comment_id=main.id AND edited_by_id=ANY($${conditions.i}))`,
                     values: [this.editedBy]
                 });
             }
@@ -250,7 +257,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.lastEditedBefore !== undefined) {
             conditions.conditions.push({
                 priority: 2,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at <= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND last_edited_at <= $${conditions.i})`,
                 values: [this.lastEditedBefore]
             });
             conditions.i++;
@@ -258,7 +265,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.lastEditedAfter !== undefined) {
             conditions.conditions.push({
                 priority: 2,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND last_edited_at >= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND last_edited_at >= $${conditions.i})`,
                 values: [this.lastEditedAfter]
             });
             conditions.i++;
@@ -274,10 +281,31 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.body !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.body_id AND body ~* $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND body ~* $${conditions.i})`,
                 values: [this.body],
             });
             conditions.i++;
+        }
+        if (this.fullSearch !== undefined) {
+            let orConditions: ConditionSpecification[] = [];
+            if (this.fullSearch.text !== undefined) {
+                orConditions.push({
+                    priority: 5,
+                    text: `main.title ~* $${conditions.i}`,
+                    values: [this.fullSearch.text],
+                });
+                orConditions.push({
+                    priority: 5,
+                    text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND body ~* $${conditions.i + 1})`,
+                    values: [this.fullSearch.text],
+                });
+                conditions.i += 2;
+            }
+            if (this.fullSearch.labels !== undefined) {
+                orConditions.push(createRelationFilterBySecundary("issue", "label", this.fullSearch.labels, conditions.i));
+                conditions.i++;
+            }
+            conditions.conditions.push(new OrConditionSpecification(5, ...orConditions));
         }
         if (this.updatedAfter !== undefined) {
             conditions.conditions.push({
@@ -422,4 +450,9 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         return conditions;
     }
 
+}
+
+export interface FullSearch {
+    labels?: string[],
+    text?: string
 }

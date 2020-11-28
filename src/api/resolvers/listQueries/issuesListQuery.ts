@@ -29,6 +29,7 @@ function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Is
             cmd.title = args.filterBy?.title;
             cmd.onComponents = args.filterBy?.component;
             cmd.body = args.filterBy?.body;
+            cmd.fullSearch = args.filterBy?.fullSearch;
             cmd.editedBy = args.filterBy?.editedBy;
             cmd.lastEditedAfter = args.filterBy?.editedAfter;
             cmd.lastEditedBefore = args.filterBy?.editedBefore;
