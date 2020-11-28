@@ -3,6 +3,7 @@ import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLIssueCategory from "../../enums/GraphQLIssueCategory";
 import GraphQLLabelFilter from "./GraphQLLabelFilter";
+import GraphQLFullSearchInput from "./GraphQLFullSearchInput";
 
 const issueFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "IssueFilter",
@@ -20,6 +21,10 @@ const issueFilterConfig: GraphQLInputObjectTypeConfig = {
         body: {
             type: GraphQLString,
             description: "The body text of this issue must match this given __RegEx__"
+        },
+        fullSearch: {
+            type: GraphQLFullSearchInput,
+            description: "The issue must match the full search"
         },
         createdBy: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
