@@ -6,8 +6,8 @@ const componentFilterConfig: GraphQLInputObjectTypeConfig = {
     description: "Filters for component matching the given properties",
     fields: () => ({
         name: {
-            type: GraphQLList(GraphQLNonNull(GraphQLString)),
-            description: "The name of the component must match any of the given strings"
+            type: GraphQLString,
+            description: "The name of the component must match the given RegEx"
         },
         owner: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
