@@ -114,7 +114,8 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         pinnedOn: componentsListQuery<Issue, Component>("All components where this issue has been pinned, matching the given filter.\n" +
             "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
         timeline: timelineItemsListQuery<Issue, IssueTimelineItem>("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
-        locations: locationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty)
+        locations: locationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty),
+        components: componentsListQuery<Issue, Component>("All components this issue is on", issue => issue.componentsProperty)
     })
 };
 const GraphQLIssue = new GraphQLObjectType(issueConfig);
