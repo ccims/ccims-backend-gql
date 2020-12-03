@@ -7,8 +7,8 @@ const labelFilterConfig: GraphQLInputObjectTypeConfig = {
     description: "A Filter data input for labels.  All parameters given in this filter will be connected via _AND_",
     fields: () => ({
         name: {
-            type: GraphQLList(GraphQLNonNull(GraphQLString)),
-            description: "A lists of names. The label needs to match any one or more of these."
+            type: GraphQLString,
+            description: "The name of the label must match the given RegEx"
         },
         description: {
             type: GraphQLString,
