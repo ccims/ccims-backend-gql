@@ -275,7 +275,7 @@ export class Issue extends SyncNode<Issue> {
      * Specification for the linkedTo property
      */
     private static readonly linkedByIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
-        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linked_issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromSecundary("issue", "linked_issue"),
             (ids, issue) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
@@ -640,7 +640,7 @@ export class Issue extends SyncNode<Issue> {
      */
     public async addLinkedIssue(linkedIssue: Issue, atDate: Date, asUser?: User): Promise<LinkEvent | undefined> {
         if (!(await this.linksToIssuesProperty.hasId(linkedIssue.id))) {
-            await this.linkedByIssuesProperty.add(linkedIssue);
+            await this.linksToIssuesProperty.add(linkedIssue);
             await WasLinkedEvent.create(this._databaseManager, asUser, atDate, linkedIssue, this);
             const event = await LinkEvent.create(this._databaseManager, asUser, atDate, this, linkedIssue);
             await this.participatedAt(asUser, atDate);
@@ -659,7 +659,7 @@ export class Issue extends SyncNode<Issue> {
      */
     public async removeLinkedIssue(unlinkedIssue: Issue, atDate: Date, asUser?: User): Promise<UnlinkEvent> {
         if ((await this.linksToIssuesProperty.hasId(unlinkedIssue.id))) {
-            await this.linkedByIssuesProperty.remove(unlinkedIssue);
+            await this.linksToIssuesProperty.remove(unlinkedIssue);
             await WasLinkedEvent.create(this._databaseManager, asUser, atDate, unlinkedIssue, this);
             const event = await UnlinkEvent.create(this._databaseManager, asUser, atDate, this, unlinkedIssue);
             await this.participatedAt(asUser, atDate);
