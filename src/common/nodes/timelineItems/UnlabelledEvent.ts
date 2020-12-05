@@ -58,7 +58,7 @@ export class UnlabelledEvent extends IssueTimelineItem {
         return event;
     }
 
-    public async assignee(): Promise<Label> {
+    public async removedLabel(): Promise<Label> {
         return this.labelProperty.get();
     }
 }
