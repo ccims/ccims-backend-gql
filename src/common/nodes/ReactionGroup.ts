@@ -114,7 +114,7 @@ export class ReactionGroup extends SyncNode {
         }
         let commentObj: Comment;
         if (comment instanceof Issue) {
-            commentObj = await comment.bodyProperty.get();
+            commentObj = await comment.bodyProperty.getPublic();
         } else if (comment instanceof IssueComment) {
             commentObj = comment;
         } else {

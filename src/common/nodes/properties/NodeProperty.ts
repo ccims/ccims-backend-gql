@@ -51,6 +51,19 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
     }
 
     /**
+     * get the current element if existing
+     */
+    public async getPublic(): Promise<T> {
+        await this.ensureLoaded();
+        if (this._element?.isDeleted) {
+            log(3, "element deleted");
+            throw new Error("element deleted");
+        } else {
+            return this._element as T;
+        }
+    }
+
+    /**
      * sets  the element of this property
      * @param value the element to set, this might be undefined
      */

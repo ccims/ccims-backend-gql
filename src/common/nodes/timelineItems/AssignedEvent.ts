@@ -56,6 +56,6 @@ export class AssignedEvent extends IssueTimelineItem {
     }
 
     public async assignee(): Promise<User | undefined> {
-        return this.assigneeProperty.get();
+        return this.assigneeProperty.getPublic();
     }
 }

@@ -75,6 +75,14 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     }
 
     /**
+     * get all elements that are not deleted
+     */
+    public async getPublicElements(): Promise<T[]> {
+        await this.ensureLoadLevel(LoadLevel.Complete);
+        return Array.from(this._elements, ([key, value]) => value).filter(element => !element.isDeleted);
+    }
+
+    /**
      * gets all elements which are in this relation and returned from filter
      * @param filter the filter to filter other nodes
      * @returns the array of filtered elements

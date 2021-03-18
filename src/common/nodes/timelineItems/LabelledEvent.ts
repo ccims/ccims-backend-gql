@@ -58,6 +58,6 @@ export class LabelledEvent extends IssueTimelineItem {
     }
 
     public async label(): Promise<Label | undefined> {
-        return this.labelProperty.get();
+        return this.labelProperty.getPublic();
     }
 }

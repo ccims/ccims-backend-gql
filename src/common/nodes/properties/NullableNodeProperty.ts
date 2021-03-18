@@ -49,6 +49,18 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     }
 
     /**
+     * get the current element if it is not deleted, otherwise undefined
+     */
+    public async getPublic(): Promise<T | undefined> {
+        await this.ensureLoaded();
+        if (this._element?.isDeleted) {
+            return undefined;
+        } else {
+            return this._element;
+        }
+    }
+
+    /**
      * sets (or removes) the element of this property
      * @param value the element to set, this might be undefined
      */

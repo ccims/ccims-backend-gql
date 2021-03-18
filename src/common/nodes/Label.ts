@@ -86,7 +86,7 @@ export class Label extends NamedSyncNode {
         if (components && components.length >= 1) {
             await Promise.all(components.map(async component => {
                 await label.componentsProperty.add(component);
-                await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+                await Promise.all((await component.projectsProperty.getPublicElements()).map(async project => {
                     await project.labelsProperty.add(label);
                 }));
             }));
@@ -179,11 +179,13 @@ export class Label extends NamedSyncNode {
             (ids, label) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             (label) => {
                 const command = new LoadIssuesCommand();
                 command.labels = [label.id];
+                command.loadDeleted = true;
                 return command;
             }
         )

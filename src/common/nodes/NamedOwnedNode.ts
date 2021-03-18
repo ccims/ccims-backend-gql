@@ -44,7 +44,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      * @returns A promise of the user owning this node
      */
     public async owner(): Promise<User | undefined> {
-        return this.ownerProperty.get();
+        return this.ownerProperty.getPublic();
     }
 
     /**

@@ -37,6 +37,6 @@ export class AddedToLocationEvent extends IssueLocationEvent {
     }
 
     public async location(): Promise<IssueLocation | undefined> {
-        return this.issueLocationProperty.get();
+        return this.issueLocationProperty.getPublic();
     }
 }

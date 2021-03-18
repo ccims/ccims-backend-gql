@@ -51,7 +51,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
      * @returns A promise of the component that offers this component interface
      */
     public async component(): Promise<Component> {
-        return this.componentProperty.get();
+        return this.componentProperty.getPublic();
     }
 
     /**
@@ -104,7 +104,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);
         await component.interfacesProperty.add(componentInterface);
-        await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+        await Promise.all((await component.projectsProperty.getPublicElements()).map(async project => {
             await project.interfacesProperty.add(componentInterface);
         }));
         return componentInterface;

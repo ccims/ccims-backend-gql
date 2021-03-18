@@ -58,6 +58,6 @@ export class UnlabelledEvent extends IssueTimelineItem {
     }
 
     public async removedLabel(): Promise<Label | undefined> {
-        return this.labelProperty.get();
+        return this.labelProperty.getPublic();
     }
 }

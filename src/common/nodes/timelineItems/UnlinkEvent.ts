@@ -56,7 +56,7 @@ export class UnlinkEvent extends IssueTimelineItem {
     }
 
     public async removedLinkedIssue(): Promise<Issue | undefined> {
-        return this.unlinkedIssueProperty.get();
+        return this.unlinkedIssueProperty.getPublic();
     }
 
 }

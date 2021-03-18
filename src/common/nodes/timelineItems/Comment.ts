@@ -96,7 +96,7 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
             this._body = value;
             this._lastEditedAt = atDate;
             this.markChanged();
-            await (await this.issueProperty.get()).participatedAt(asUser, atDate);
+            await (await this.issueProperty.getPublic()).participatedAt(asUser, atDate);
         }
     }
 

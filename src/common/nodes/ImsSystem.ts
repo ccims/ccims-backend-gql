@@ -83,7 +83,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
      * @returns A promise of the component which is using this ims or `undefined` if none
      */
     public async component(): Promise<Component | undefined> {
-        return this.componentProperty.get();
+        return this.componentProperty.getPublic();
     }
 
     /**

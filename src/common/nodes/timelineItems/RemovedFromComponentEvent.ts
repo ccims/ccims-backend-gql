@@ -37,6 +37,6 @@ export class RemovedFromComponentEvent extends ComponentEvent {
     }
 
     public async removedComponent(): Promise<Component | undefined> {
-        return this.componentProperty.get();
+        return this.componentProperty.getPublic();
     }
 }

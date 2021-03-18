@@ -55,7 +55,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @returns A promise of a user or `undefined` who created this sync node
      */
     public async createdBy(): Promise<User | undefined> {
-        return this.createdByProperty.get()
+        return this.createdByProperty.getPublic()
     }
 
     private readonly _createdAt: Date;

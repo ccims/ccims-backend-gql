@@ -56,7 +56,7 @@ export class WasUnlinkedEvent extends IssueTimelineItem {
     }
 
     public async unlinkedBy(): Promise<Issue | undefined> {
-        return this.unlinkedByIssueProperty.get();
+        return this.unlinkedByIssueProperty.getPublic();
     }
 
 }

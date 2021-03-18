@@ -92,11 +92,13 @@ export class Project extends NamedOwnedNode<Project> {
             (ids, project) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             project => {
                 const command = new LoadIssuesCommand();
                 command.onProjects = [project.id];
+                command.loadDeleted = true;
                 return command;
             })
             .noSave();
@@ -141,11 +143,13 @@ export class Project extends NamedOwnedNode<Project> {
             (ids, project) => {
                 const command = new LoadLabelsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command
             },
             (project) => {
                 const command = new LoadLabelsCommand();
                 command.onProjects = [project.id];
+                command.loadDeleted = true;
                 return command;
             }
         )

@@ -116,7 +116,7 @@ export class Issue extends SyncNode<Issue> {
      * @returns A promise of the body __text__ of this issue
      */
     public async body(): Promise<string> {
-        return (await this.bodyProperty.get()).body
+        return (await this.bodyProperty.getPublic()).body
     }
 
     /**
@@ -135,11 +135,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadIssueTimelineItemsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadIssueTimelineItemsCommand();
                 command.onIssues = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
@@ -254,11 +256,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadIssuesCommand();
                 command.linkedByIssues = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((linksToIssue, issue) => linksToIssue.linkedByIssuesProperty)
@@ -278,11 +282,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadIssuesCommand();
                 command.linkedByIssues = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((linkedByIssue, issue) => linkedByIssue.linksToIssuesProperty)
@@ -302,11 +308,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadLabelsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadLabelsCommand();
                 command.assignedToIssues = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((label, issue) => label.issuesProperty)
@@ -518,7 +526,7 @@ export class Issue extends SyncNode<Issue> {
         await this.componentsProperty.add(component);
         const event = await AddedToComponentEvent.create(this._databaseManager, asUser, atDate, this, component);
         await this.participatedAt(asUser, atDate);
-        await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+        await Promise.all((await component.projectsProperty.getPublicElements()).map(async project => {
             await project.issuesProperty.add(this);
         }));
         return event;
@@ -578,7 +586,7 @@ export class Issue extends SyncNode<Issue> {
                 }
             } else if (location instanceof ComponentInterface) {
                 if (!(await this.componentsProperty.hasId((location as ComponentInterface).componentProperty.getId()))) {
-                    await this.addToComponentInternal(await (location as ComponentInterface).componentProperty.get(), atDate, asUser);
+                    await this.addToComponentInternal(await (location as ComponentInterface).componentProperty.getPublic(), atDate, asUser);
                 }
             } else {
                 log(1, "unknown location type: not a Component, not a ComponentInterface");

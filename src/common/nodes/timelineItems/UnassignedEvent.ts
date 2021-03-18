@@ -56,6 +56,6 @@ export class UnassignedEvent extends IssueTimelineItem {
     }
 
     public async removedassignee(): Promise<User | undefined> {
-        return this.removedassigneeProperty.get();
+        return this.removedassigneeProperty.getPublic();
     }
 }

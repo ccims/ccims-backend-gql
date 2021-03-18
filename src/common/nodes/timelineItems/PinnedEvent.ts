@@ -37,6 +37,6 @@ export class PinnedEvent extends ComponentEvent {
     }
 
     public async component(): Promise<Component | undefined> {
-        return this.componentProperty.get();
+        return this.componentProperty.getPublic();
     }
 }

@@ -89,7 +89,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @returns A promise of a ims that belongs to this component or `undefined`
      */
     public async ims(): Promise<ImsSystem | undefined> {
-        return this.imsSystemProperty.get();
+        return this.imsSystemProperty.getPublic();
     }
 
     /**
@@ -106,11 +106,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             (ids, component) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             component => {
                 const command = new LoadIssuesCommand();
                 command.onComponents = [component.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -130,11 +132,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             (ids, component) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             component => {
                 const command = new LoadIssuesCommand();
                 command.onComponents = [component.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -196,11 +200,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             (ids, component) => {
                 const command = new LoadLabelsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             (component) => {
                 const command = new LoadLabelsCommand();
                 command.onComponents = [component.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((label, component) => label.componentsProperty)
@@ -272,7 +278,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
                 await imsSystem.markDeleted();
             }
             await this.issuesOnLocationProperty.clear();
-            const issues = await this.issuesProperty.getElements();
+            const issues = await this.issuesProperty.getPublicElements();
             await Promise.all(issues.map(async issue => {
                 if ((await issue.componentsProperty.getIds()).length === 1) {
                     await issue.markDeleted();

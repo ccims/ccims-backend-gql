@@ -43,7 +43,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
      * @returns A promise of the issue this timeline item belongs to
      */
     public async issue(): Promise<Issue> {
-        return this.issueProperty.get();
+        return this.issueProperty.getPublic();
     }
 
 

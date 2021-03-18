@@ -56,7 +56,7 @@ export class WasLinkedEvent extends IssueTimelineItem {
     }
 
     public async linkedBy(): Promise<Issue | undefined> {
-        return this.linkedByIssueProperty.get();
+        return this.linkedByIssueProperty.getPublic();
     }
 
 }

@@ -98,11 +98,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             (ids, user) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             user => {
                 const command = new LoadIssuesCommand();
                 command.userAssigned = [user.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, user) => issue.assigneesProperty)
@@ -115,11 +117,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             (ids, user) => {
                 const command = new LoadIssuesCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             user => {
                 const command = new LoadIssuesCommand();
                 command.userParticipated = [user.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, user) => issue.participantsProperty)
@@ -132,11 +136,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             (ids, user) => {
                 const command = new LoadCommentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             user => {
                 const command = new LoadCommentsCommand();
                 command.editedBy = [user.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((comment, user) => comment.editedByProperty)
