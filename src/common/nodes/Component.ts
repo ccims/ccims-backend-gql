@@ -81,7 +81,6 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             component => {
                 return new GetWithReloadCommand(component, "ims_system_id", new LoadImsSystemsCommand());
             },
-            undefined,
             (imsSystem, component) => imsSystem.componentProperty
         );
 

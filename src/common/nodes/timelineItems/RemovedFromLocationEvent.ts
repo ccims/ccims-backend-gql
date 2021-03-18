@@ -36,7 +36,7 @@ export class RemovedFromLocationEvent extends IssueLocationEvent {
         return event;
     }
 
-    public async removedLocation(): Promise<IssueLocation> {
+    public async removedLocation(): Promise<IssueLocation | undefined> {
         return this.issueLocationProperty.get();
     }
 }

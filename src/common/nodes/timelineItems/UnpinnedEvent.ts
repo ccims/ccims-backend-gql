@@ -36,7 +36,7 @@ export class UnpinnedEvent extends ComponentEvent {
         return event;
     }
 
-    public async component(): Promise<Component> {
+    public async component(): Promise<Component | undefined> {
         return this.componentProperty.get();
     }
 }

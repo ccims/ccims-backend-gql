@@ -86,20 +86,8 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
                     this._id = reloadResult.id;
                     this._element = reloadResult;
                     await this.notifyAdded(this._element, false);
-                } else if (this._specification.deletedId) {
-                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
-                    this._databaseManager.addCommand(loadDeletedCommand);
-                    await this._databaseManager.executePendingCommands();
-                    if (loadDeletedCommand.getResult().length === 0) {
-                        log(2, "error: deleted command does not exist");
-                        throw new Error("Internal server error");
-                    }
-                    this._id = this._specification.deletedId;
-                    this._element = loadDeletedCommand.getResult()[0];
-                    await this.notifyAdded(this._element, false);
                 } else {
-                    log(3, `self destruct ${this._node.id}`);
-                    await this._node.markDeleted();
+                    log(3, `referenced node deleted ${this._node.id}`);
                     throw new Error("Internal server error");
                 }
             }

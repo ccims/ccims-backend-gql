@@ -108,7 +108,6 @@ export class Issue extends SyncNode<Issue> {
                 return command;
             },
             timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand()),
-            undefined
             // no notifier because this is never allowed to change
         );
 

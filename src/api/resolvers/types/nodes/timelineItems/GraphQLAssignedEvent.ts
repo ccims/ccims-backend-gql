@@ -30,8 +30,8 @@ const assignedEventConfig: GraphQLObjectTypeConfig<AssignedEvent, ResolverContex
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         assignee: {
-            type: GraphQLNonNull(GraphQLUser),
-            description: "The user which was newly assigned to this issue"
+            type: GraphQLUser,
+            description: "The user which was newly assigned to this issue, null if deleted"
         }
     })
 };

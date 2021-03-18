@@ -31,8 +31,8 @@ const addedToComponentEventConfig: GraphQLObjectTypeConfig<AddedToComponentEvent
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         component: {
-            type: GraphQLNonNull(GraphQLComponent),
-            description: "The component the issue was added to"
+            type: GraphQLComponent,
+            description: "The component the issue was added to, null if deleted"
         }
     })
 };

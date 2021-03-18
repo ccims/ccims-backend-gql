@@ -75,7 +75,6 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
             imsSystem => {
                 return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand());
             },
-            undefined,
             (component, imsSystem) => component.imsSystemProperty
         );
 

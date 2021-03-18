@@ -1,12 +1,12 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadIssuesCommand } from "../../database/commands/load/nodes/LoadIssuesCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
@@ -17,7 +17,7 @@ export const UnlinkEventTableSpecification: NodeTableSpecification<UnlinkEvent>
 
 export class UnlinkEvent extends IssueTimelineItem {
 
-    public readonly unlinkedIssueProperty: NodeProperty<Issue, UnlinkEvent>;
+    public readonly unlinkedIssueProperty: NullableNodeProperty<Issue, UnlinkEvent>;
 
     private static readonly unlinkedIssuePropertySpecification: NodePropertySpecification<Issue, UnlinkEvent>
         = new NodePropertySpecification<Issue, UnlinkEvent>(
@@ -27,7 +27,6 @@ export class UnlinkEvent extends IssueTimelineItem {
                 return command;
             },
             unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand()),
-            DeletedNodes.Issue
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,
@@ -36,7 +35,7 @@ export class UnlinkEvent extends IssueTimelineItem {
         super(NodeType.UnlinkEvent, databaseManager, UnlinkEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.unlinkedIssueProperty = new NodeProperty<Issue, UnlinkEvent>(databaseManager, UnlinkEvent.unlinkedIssuePropertySpecification, this, linkedIssueId);
+        this.unlinkedIssueProperty = new NullableNodeProperty<Issue, UnlinkEvent>(databaseManager, UnlinkEvent.unlinkedIssuePropertySpecification, this, linkedIssueId);
     }
 
     /**
@@ -56,7 +55,7 @@ export class UnlinkEvent extends IssueTimelineItem {
         return event;
     }
 
-    public async removedLinkedIssue(): Promise<Issue> {
+    public async removedLinkedIssue(): Promise<Issue | undefined> {
         return this.unlinkedIssueProperty.get();
     }
 

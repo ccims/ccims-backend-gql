@@ -1,7 +1,6 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
@@ -12,6 +11,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 import { LoadLabelsCommand } from "../../database/commands/load/nodes/LoadLabelsCommand";
 import { Label } from "../Label";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 
 export const UnlabelledEventTableSpecification: NodeTableSpecification<UnlabelledEvent>
     = new NodeTableSpecification<UnlabelledEvent>("issue_timeline_unlabelled_event", IssueTimelineItemTableSpecification,
@@ -19,7 +19,7 @@ export const UnlabelledEventTableSpecification: NodeTableSpecification<Unlabelle
 
 export class UnlabelledEvent extends IssueTimelineItem {
 
-    public readonly labelProperty: NodeProperty<Label, UnlabelledEvent>;
+    public readonly labelProperty: NullableNodeProperty<Label, UnlabelledEvent>;
 
     private static readonly labelPropertySpecification: NodePropertySpecification<Label, UnlabelledEvent>
         = new NodePropertySpecification<Label, UnlabelledEvent>(
@@ -29,7 +29,6 @@ export class UnlabelledEvent extends IssueTimelineItem {
                 return command;
             },
             labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand()),
-            DeletedNodes.Label
         );
 
     public constructor(databaseManager: DatabaseManager, id: string,
@@ -38,7 +37,7 @@ export class UnlabelledEvent extends IssueTimelineItem {
         super(NodeType.AssignedEvent, databaseManager, UnlabelledEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.labelProperty = new NodeProperty<Label, UnlabelledEvent>(databaseManager, UnlabelledEvent.labelPropertySpecification, this, labelId);
+        this.labelProperty = new NullableNodeProperty<Label, UnlabelledEvent>(databaseManager, UnlabelledEvent.labelPropertySpecification, this, labelId);
     }
 
     /**
@@ -58,7 +57,7 @@ export class UnlabelledEvent extends IssueTimelineItem {
         return event;
     }
 
-    public async removedLabel(): Promise<Label> {
+    public async removedLabel(): Promise<Label | undefined> {
         return this.labelProperty.get();
     }
 }

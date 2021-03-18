@@ -31,8 +31,8 @@ const addedToLocationEventConfig: GraphQLObjectTypeConfig<AddedToLocationEvent, 
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         location: {
-            type: GraphQLNonNull(GraphQLIssueLocation),
-            description: "The location the issue was added to"
+            type: GraphQLIssueLocation,
+            description: "The location the issue was added to, null if deleted"
         }
     })
 };

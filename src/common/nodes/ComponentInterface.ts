@@ -43,7 +43,6 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
                 return command;
             },
             componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand()),
-            undefined,
             (component, componentInterface) => component.interfacesProperty
         );
 

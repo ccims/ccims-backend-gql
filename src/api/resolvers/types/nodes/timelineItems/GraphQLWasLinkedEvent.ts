@@ -31,7 +31,7 @@ const wasLinkedEventConfig: GraphQLObjectTypeConfig<WasLinkedEvent, ResolverCont
         },
         linkedBy: {
             type: GraphQLIssue,
-            description: "The issue which this issue is linked to after this event"
+            description: "The issue which this issue is linked to after this event, null if deleted"
         }
     })
 };

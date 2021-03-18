@@ -31,7 +31,7 @@ const markedAsDuplicateEventConfig: GraphQLObjectTypeConfig<MarkedAsDuplicateEve
         },
         originalIssue: {
             type: GraphQLIssue,
-            description: "The issue of which __this__ issue is a duplicate"
+            description: "The issue of which __this__ issue is a duplicate, null if deleted"
         }
     })
 };

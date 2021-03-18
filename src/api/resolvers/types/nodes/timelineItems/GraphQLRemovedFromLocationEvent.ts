@@ -31,8 +31,8 @@ const removedFromLocationEventConfig: GraphQLObjectTypeConfig<RemovedFromLocatio
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         removedLocation: {
-            type: GraphQLNonNull(GraphQLIssueLocation),
-            description: "The location the issue was removed from"
+            type: GraphQLIssueLocation,
+            description: "The location the issue was removed from, null if deleted"
         }
     })
 };

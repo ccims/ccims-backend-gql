@@ -31,7 +31,7 @@ const linkEventConfig: GraphQLObjectTypeConfig<LinkEvent, ResolverContext> = {
         },
         linkedIssue: {
             type: GraphQLIssue,
-            description: "The issue that was linked __to__ (__from__ this issue)"
+            description: "The issue that was linked __to__ (__from__ this issue), nul if deleted"
         }
     })
 };

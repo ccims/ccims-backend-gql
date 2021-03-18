@@ -31,8 +31,8 @@ const removedFromComponentEventConfig: GraphQLObjectTypeConfig<RemovedFromCompon
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         removedComponent: {
-            type: GraphQLNonNull(GraphQLComponent),
-            description: "The component the issue was removed from"
+            type: GraphQLComponent,
+            description: "The component the issue was removed from, null if deleted"
         }
     })
 };

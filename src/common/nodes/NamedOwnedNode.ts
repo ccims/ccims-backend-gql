@@ -1,12 +1,12 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
-import { DeletedNodes } from "./DeletedNodes";
 import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 
 /**
@@ -23,7 +23,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
     /**
      * the owner property which contains the owner of this node
      */
-    public readonly ownerProperty: NodeProperty<User, NamedOwnedNode>;
+    public readonly ownerProperty: NullableNodeProperty<User, NamedOwnedNode>;
 
     /**
      * specification of the ownerProperty
@@ -36,7 +36,6 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
                 return command;
             },
             node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
-            DeletedNodes.User,
             (user, node) => user.ownedNodesProperty
         );
 
@@ -44,7 +43,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      * Async getter funtion for the ownerProperty
      * @returns A promise of the user owning this node
      */
-    public async owner(): Promise<User> {
+    public async owner(): Promise<User | undefined> {
         return this.ownerProperty.get();
     }
 
@@ -60,7 +59,7 @@ export class NamedOwnedNode<T extends NamedOwnedNode = any> extends NamedNode<T>
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, ownerId: string) {
         super(type, databaseManager, tableSpecification, id, name, description);
-        this.ownerProperty = new NodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId);
+        this.ownerProperty = new NullableNodeProperty<User, NamedOwnedNode>(databaseManager, NamedOwnedNode.ownerPropertySpecification, this, ownerId);
     }
 
     /**

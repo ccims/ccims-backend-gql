@@ -25,7 +25,6 @@ export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
     public constructor(
         public readonly loadFromId: (id: string, node: V) => LoadNodeListCommand<T>,
         public readonly reload: (node: V) => DatabaseCommand<T | undefined>,
-        public readonly deletedId: string | undefined,
         ...notifiers: ((element: T, node: V) => Property<V, T>)[]
     ) {
         this.notifiers = notifiers;

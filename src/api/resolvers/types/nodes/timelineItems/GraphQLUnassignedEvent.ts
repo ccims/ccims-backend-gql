@@ -30,8 +30,8 @@ const unassignedEventConfig: GraphQLObjectTypeConfig<UnassignedEvent, ResolverCo
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         removedAssignee: {
-            type: GraphQLNonNull(GraphQLUser),
-            description: "The user which was unassigned from this issue"
+            type: GraphQLUser,
+            description: "The user which was unassigned from this issue, null if deleted"
         }
     })
 };

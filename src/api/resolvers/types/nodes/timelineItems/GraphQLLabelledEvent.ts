@@ -31,8 +31,8 @@ const labelledEventConfig: GraphQLObjectTypeConfig<LabelledEvent, ResolverContex
             description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
         },
         label: {
-            type: GraphQLNonNull(GraphQLLabel),
-            description: "The label which was added to the issue"
+            type: GraphQLLabel,
+            description: "The label which was added to the issue, null if deleted"
         }
     })
 };

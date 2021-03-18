@@ -12,7 +12,6 @@ import { NodePropertySpecification } from "./properties/NodePropertySpecificatio
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { Issue } from "./Issue";
-import { DeletedNodes } from "./DeletedNodes";
 
 /**
  * a table specification for a sync node
@@ -49,7 +48,6 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 return command;
             },
             syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand()),
-            DeletedNodes.User
         );
 
     /**

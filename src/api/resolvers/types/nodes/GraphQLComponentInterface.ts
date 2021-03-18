@@ -27,8 +27,8 @@ const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Reso
             description: "A textual description (of the fuction) of this component interface .\n\nMax. 65536 characters"
         },
         component: {
-            type: GraphQLNonNull(GraphQLComponent),
-            description: "The parent component of this interface which offers it"
+            type: GraphQLComponent,
+            description: "The parent component of this interface which offers it, null if deleted"
         },
         issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this component interface matching (if given) `filterBy`", iface => iface.issuesOnLocationProperty),
         consumedBy: componentsListQuery<ComponentInterface, Component>("Components which consume the interface and match the filter.\n\nIf no filter is given, all components will be returned",

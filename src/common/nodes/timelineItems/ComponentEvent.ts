@@ -2,11 +2,11 @@ import { GetWithReloadCommand } from "../../database/commands/GetWithReloadComma
 import { LoadComponentsCommand } from "../../database/commands/load/nodes/LoadComponentsCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
-import { DeletedNodes } from "../DeletedNodes";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
@@ -15,7 +15,7 @@ export const ComponentEventTableSpecification: NodeTableSpecification<ComponentE
     new RowSpecification("component", componentEvent => componentEvent.componentProperty.getId()));
 
 export abstract class ComponentEvent<T extends ComponentEvent = any> extends IssueTimelineItem<T> {
-    public readonly componentProperty: NodeProperty<Component, ComponentEvent>;
+    public readonly componentProperty: NullableNodeProperty<Component, ComponentEvent>;
 
     private static readonly componentPropertySpecification: NodePropertySpecification<Component, ComponentEvent>
         = new NodePropertySpecification<Component, ComponentEvent>(
@@ -25,7 +25,6 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
                 return command;
             },
             componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand()),
-            DeletedNodes.Component
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
@@ -34,6 +33,6 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
         super(type, databaseManager, tableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.componentProperty = new NodeProperty<Component, ComponentEvent>(databaseManager, ComponentEvent.componentPropertySpecification, this, componentId);
+        this.componentProperty = new NullableNodeProperty<Component, ComponentEvent>(databaseManager, ComponentEvent.componentPropertySpecification, this, componentId);
     }
 }

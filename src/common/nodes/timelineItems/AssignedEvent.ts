@@ -1,12 +1,12 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
@@ -17,7 +17,7 @@ export const AssignedEventTableSpecification: NodeTableSpecification<AssignedEve
 
 export class AssignedEvent extends IssueTimelineItem {
 
-    public readonly assigneeProperty: NodeProperty<User, AssignedEvent>;
+    public readonly assigneeProperty: NullableNodeProperty<User, AssignedEvent>;
 
     private static readonly assigneePropertySpecification: NodePropertySpecification<User, AssignedEvent>
         = new NodePropertySpecification<User, AssignedEvent>(
@@ -27,7 +27,6 @@ export class AssignedEvent extends IssueTimelineItem {
                 return command;
             },
             assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee", new LoadUsersCommand()),
-            DeletedNodes.User
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,
@@ -36,7 +35,7 @@ export class AssignedEvent extends IssueTimelineItem {
         super(NodeType.AssignedEvent, databaseManager, AssignedEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.assigneeProperty = new NodeProperty<User, AssignedEvent>(databaseManager, AssignedEvent.assigneePropertySpecification, this, assigneeId);
+        this.assigneeProperty = new NullableNodeProperty<User, AssignedEvent>(databaseManager, AssignedEvent.assigneePropertySpecification, this, assigneeId);
     }
 
     /**
@@ -56,7 +55,7 @@ export class AssignedEvent extends IssueTimelineItem {
         return event;
     }
 
-    public async assignee(): Promise<User> {
+    public async assignee(): Promise<User | undefined> {
         return this.assigneeProperty.get();
     }
 }

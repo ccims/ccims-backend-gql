@@ -3,12 +3,12 @@ import { LoadIssueLocationsCommand } from "../../database/commands/load/nodes/Lo
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
 import { ComponentInterface } from "../ComponentInterface";
-import { DeletedNodes } from "../DeletedNodes";
 import { IssueLocation } from "../IssueLocation";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
@@ -17,7 +17,7 @@ export const IssueLocationEventTableSpecification: NodeTableSpecification<IssueL
     new RowSpecification("location", issueLocationEvent => issueLocationEvent.issueLocationProperty.getId()));
 
 export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> extends IssueTimelineItem<T> {
-    public readonly issueLocationProperty: NodeProperty<IssueLocation, IssueLocationEvent>;
+    public readonly issueLocationProperty: NullableNodeProperty<IssueLocation, IssueLocationEvent>;
 
     private static readonly issueLocationPropertySpecification: NodePropertySpecification<IssueLocation, IssueLocationEvent>
         = new NodePropertySpecification<IssueLocation, IssueLocationEvent>(
@@ -27,7 +27,6 @@ export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> ext
                 return command;
             },
             issueLocationEvent => new GetWithReloadCommand(issueLocationEvent, "location", new LoadIssueLocationsCommand()),
-            DeletedNodes.ComponentInterface
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
@@ -36,6 +35,6 @@ export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> ext
         super(type, databaseManager, tableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.issueLocationProperty = new NodeProperty<IssueLocation, IssueLocationEvent>(databaseManager, IssueLocationEvent.issueLocationPropertySpecification, this, issueLocationId);
+        this.issueLocationProperty = new NullableNodeProperty<IssueLocation, IssueLocationEvent>(databaseManager, IssueLocationEvent.issueLocationPropertySpecification, this, issueLocationId);
     }
 }

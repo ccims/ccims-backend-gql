@@ -12,7 +12,6 @@ import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { ReactionGroup } from "../ReactionGroup";
-import { DeletedNodes } from "../DeletedNodes";
 
 /**
  * a table specification for a Comment
@@ -55,7 +54,6 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
                 return command;
             },
             comment => new GetWithReloadCommand(comment, "last_edited_by", new LoadUsersCommand()),
-            DeletedNodes.User
         );
 
     private _lastEditedAt: Date;

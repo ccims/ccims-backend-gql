@@ -1,12 +1,12 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
@@ -17,7 +17,7 @@ export const UnassignedEventTableSpecification: NodeTableSpecification<Unassigne
 
 export class UnassignedEvent extends IssueTimelineItem {
 
-    public readonly removedassigneeProperty: NodeProperty<User, UnassignedEvent>;
+    public readonly removedassigneeProperty: NullableNodeProperty<User, UnassignedEvent>;
 
     private static readonly removedassigneePropertySpecification: NodePropertySpecification<User, UnassignedEvent>
         = new NodePropertySpecification<User, UnassignedEvent>(
@@ -27,7 +27,6 @@ export class UnassignedEvent extends IssueTimelineItem {
                 return command;
             },
             unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removedAssignee", new LoadUsersCommand()),
-            DeletedNodes.User
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,
@@ -36,7 +35,7 @@ export class UnassignedEvent extends IssueTimelineItem {
         super(NodeType.UnassignedEvent, databaseManager, UnassignedEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, metadata);
 
-        this.removedassigneeProperty = new NodeProperty<User, UnassignedEvent>(databaseManager, UnassignedEvent.removedassigneePropertySpecification, this, removedassigneeId);
+        this.removedassigneeProperty = new NullableNodeProperty<User, UnassignedEvent>(databaseManager, UnassignedEvent.removedassigneePropertySpecification, this, removedassigneeId);
     }
 
     /**
@@ -56,7 +55,7 @@ export class UnassignedEvent extends IssueTimelineItem {
         return event;
     }
 
-    public async removedassignee(): Promise<User> {
+    public async removedassignee(): Promise<User | undefined> {
         return this.removedassigneeProperty.get();
     }
 }
