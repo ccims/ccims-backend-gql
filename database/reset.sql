@@ -1,3 +1,17 @@
+-- Triggers and functions
+DROP FUNCTION IF EXISTS update_last_modified_at_function;
+DO $$
+DECLARE
+    t_name text;
+BEGIN
+    FOR t_name IN
+        SELECT table_name FROM information_schema.columns WHERE column_name = 'last_modified_at'
+    LOOP
+        EXECUTE format('DROP TRIGGER IF EXISTS update_last_modified_at_trigger ON %I', t_name);
+    END LOOP;
+END;
+$$ language 'plpgsql';
+
 -- IMS Tables
 DROP TABLE IF EXISTS user_ims_credential;
 DROP TABLE IF EXISTS ims_system;

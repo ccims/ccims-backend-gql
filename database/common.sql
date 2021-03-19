@@ -13,5 +13,6 @@ CREATE TABLE sync_node (
     metadata JSON,
     deleted bool NOT NULL DEFAULT false,
     created_at timestamp NOT NULL,
-    created_by id NOT NULL
+    created_by id NOT NULL,
+    last_modified_at timestamp NOT NULL DEFAULT now()
 );
