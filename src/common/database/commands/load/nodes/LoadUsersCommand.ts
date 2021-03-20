@@ -67,11 +67,8 @@ export class LoadUsersCommand extends LoadNodeListCommand<User> {
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM users main`,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("users", databaseManager);
     }
 
     /**

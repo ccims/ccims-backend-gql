@@ -37,7 +37,6 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
         const command = super.getLoadCommand(tableName) as LoadSyncNodeListCommand<T>;
-        command.loadWithMetadata = true;
         return command;
     }
 

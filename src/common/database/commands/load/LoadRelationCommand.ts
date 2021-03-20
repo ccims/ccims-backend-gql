@@ -43,7 +43,7 @@ export class LoadRelationCommand extends DatabaseCommand<string[]> {
     /**
      * returnes the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return this.config;
     }
 
@@ -117,7 +117,7 @@ class LoadIdsManyOneCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: `SELECT id from ${this.tableName} WHERE ${this.rowName} = $1`,
             values: [this.node.id]

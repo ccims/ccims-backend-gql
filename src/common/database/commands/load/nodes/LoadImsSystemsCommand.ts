@@ -29,11 +29,8 @@ export class LoadImsSystemsCommand extends LoadNodeListCommand<ImsSystem> {
     /**
      * generates the query start
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM ims_system main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("ims_system", databaseManager);
     }
 
 }

@@ -27,7 +27,7 @@ export class GetWithReloadCommand<T extends CCIMSNode> extends DatabaseCommand<T
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: `SELECT ${this.rowName} FROM ${this.node._tableSpecification.tableName} WHERE id=$1`,
             values: [this.node.id]

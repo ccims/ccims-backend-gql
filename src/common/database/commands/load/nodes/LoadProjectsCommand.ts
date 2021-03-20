@@ -51,11 +51,8 @@ export class LoadProjectsCommand extends LoadNamedOwnedNodesCommand<Project> {
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM project main`,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("project", databaseManager);
     }
 
     /**

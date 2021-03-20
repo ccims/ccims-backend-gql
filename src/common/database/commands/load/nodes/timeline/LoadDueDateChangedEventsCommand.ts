@@ -25,18 +25,14 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): DueDateChangedEvent {
         return new DueDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the due of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_due_date_changed_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_due_date_changed_event", databaseManager);
     }
 
 }

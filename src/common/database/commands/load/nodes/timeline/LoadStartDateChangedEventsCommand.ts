@@ -25,18 +25,14 @@ export class LoadStartDateChangedEventsCommand extends LoadIssueTimelineItemsCom
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): StartDateChangedEvent {
         return new StartDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_start_date, resultRow.new_start_date, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+           resultRow.old_start_date, resultRow.new_start_date, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_start_date_changed_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_start_date_changed_event", databaseManager);
     }
 
 }

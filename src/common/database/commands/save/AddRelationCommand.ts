@@ -37,7 +37,7 @@ export class AddRelationCommand extends DatabaseCommand<void> {
     /**
      * generates the command
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return this.config;
     }
 

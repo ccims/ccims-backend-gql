@@ -25,18 +25,14 @@ export class LoadDeletedIssueCommentsCommand extends LoadIssueTimelineItemsComma
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): DeletedIssueComment {
         return new DeletedIssueComment(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.deleted_by, resultRow.deleted_at, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+           resultRow.deleted_by, resultRow.deleted_at, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_deleted_issue_comment main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_deleted_issue_comment", databaseManager);
     }
 
 }

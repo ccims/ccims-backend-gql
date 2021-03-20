@@ -25,18 +25,14 @@ export class LoadIssueCommentsCommand extends LoadCommentsCommandBase<IssueComme
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): IssueComment {
         return new IssueComment(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.body, resultRow.last_edited_by, resultRow.last_edited_at, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+            resultRow.body, resultRow.last_edited_by, resultRow.last_edited_at, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_comment main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_comment", databaseManager);
     }
 
 }

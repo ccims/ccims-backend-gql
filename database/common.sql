@@ -10,9 +10,15 @@ CREATE TABLE node (
 );
 
 CREATE TABLE sync_node (
-    metadata JSON,
     deleted bool NOT NULL DEFAULT false,
     created_at timestamp NOT NULL,
     created_by id NOT NULL,
     last_modified_at timestamp NOT NULL DEFAULT now()
+);
+
+CREATE TABLE metadata (
+    id id NOT NULL,
+    node_id id NOT NULL,
+    metadata JSON,
+    PRIMARY KEY (id, node_id)
 );

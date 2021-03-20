@@ -17,8 +17,8 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * generateQueryEnd
      * the conditions are connected via AND, the whole command consists of begin + conditions + end;
      */
-    public getQueryConfig(): QueryConfig<any[]> {
-        const queryStart: QueryPart = this.generateQueryStart();
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        const queryStart: QueryPart = this.generateQueryStart(databaseManager);
         let text: string = queryStart.text;
         const values: any[] = queryStart.values;
 
@@ -46,7 +46,7 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * generate the start of the sql query
      * MUST select a table with the alias 'main'
      */
-    protected abstract generateQueryStart(): QueryPart
+    protected abstract generateQueryStart(databaseManager: DatabaseManager): QueryPart
 
     /**
      * generate the end of the sql query

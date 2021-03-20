@@ -1,5 +1,7 @@
 import { SyncNode } from "../../../../nodes/SyncNode";
+import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
+import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
 /**
@@ -7,11 +9,10 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
  * @param T the type of SyncNode to load
  */
 export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNodeListCommand<T> {
+    
     /**
-     * if true, metadata is loaded
+     * If true also loads nodes which are marked as deleted
      */
-    public loadWithMetadata: boolean = false;
-
     public loadDeleted: boolean = false;
 
     /**
@@ -33,8 +34,8 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
     /**
      * gets a string with all rows that should be selected
      */
-    protected get rows(): string {
-        return this.loadWithMetadata ? super.rows + ", metadata" : super.rows;
+    protected rows(databaseManager: DatabaseManager): string {
+        return databaseManager.metadataId !== undefined ? super.rows(databaseManager) + ", metadata.metadata" : super.rows(databaseManager);
     }
 
     /**
@@ -87,5 +88,29 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.i++;
         }
         return conditions;
+    }
+
+    /**
+     * Generates a default query start QueryPart from a tablename and the databaseManager
+     * Can be overwritten to implement node specific behaviour
+     * Uses main as default alias for the table that is queried
+     * If a metadataId is set, metadata is queried, metadata is the table name
+     * WARNING: only use constants for tableName!
+     * @param tableName the name of the table to query from
+     * @param databaseManager the database manager
+     */
+    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
+        const metadataId = databaseManager.metadataId;
+        if (metadataId === undefined) {
+            return {
+                text: `SELECT ${this.rows} FROM ${tableName} main `,
+                values: []
+            }
+        } else {
+            return {
+                text: `SELECT ${this.rows} FROM ${tableName} main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1) `,
+                values: [metadataId]
+            }
+        }
     }
 }

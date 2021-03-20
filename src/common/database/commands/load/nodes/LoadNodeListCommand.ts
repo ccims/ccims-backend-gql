@@ -74,7 +74,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * @return a string with all rows that should be selected separated by ,
      */
-    protected get rows(): string {
+    protected rows(databaseManager: DatabaseManager): string {
         return this.countMode ? "Count(*)" : this._rows;
     }
 
@@ -200,6 +200,21 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
                 text: ";",
                 values: []
             }
+        }
+    }
+
+    /**
+     * Generates a default query start QueryPart from a tablename and the databaseManager
+     * Can be overwritten to implement node specific behaviour
+     * Uses main as default alias for the table that is queried
+     * WARNING: only use constants for tableName!
+     * @param tableName the name of the table to query from
+     * @param databaseManager the database manager
+     */
+    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
+        return {
+            text: `SELECT ${this.rows} FROM ${tableName} main `,
+            values: []
         }
     }
 

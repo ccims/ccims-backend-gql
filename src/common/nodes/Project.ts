@@ -226,7 +226,7 @@ class LoadIssueIdsCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: "SELECT DISTINCT ON(issue_id) issue_id FROM relation_component_issue WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
             values: [this.projectId]
@@ -261,7 +261,7 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: "SELECT DISTINCT ON(label_id) label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
             values: [this.projectId]
@@ -296,7 +296,7 @@ class LoadComponentInterfacesIdsCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: "SELECT id FROM component_interface WHERE host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
             values: [this.projectId]

@@ -25,18 +25,14 @@ export class LoadUnlinkEventsCommand extends LoadIssueTimelineItemsCommandBase<U
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnlinkEvent {
         return new UnlinkEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.linked_issue_to_remove, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+            resultRow.linked_issue_to_remove, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unlink_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_unlink_event", databaseManager);
     }
 
 }

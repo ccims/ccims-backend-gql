@@ -21,7 +21,7 @@ export class DeleteNodeCommand extends DatabaseCommand<void> {
     /**
      * generates the query
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: `DELETE FROM ${this.tableName} WHERE id=$1`,
             values: [this.id]

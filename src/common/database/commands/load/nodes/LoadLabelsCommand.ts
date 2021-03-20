@@ -52,11 +52,8 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_label main `,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_label", databaseManager);
     }
 
     /**

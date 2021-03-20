@@ -53,11 +53,8 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
     /**
      * generates the queryStart
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM component_interface main `,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("component_interface", databaseManager);
     }
 
     /**

@@ -25,18 +25,14 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): PriorityChangedEvent {
         return new PriorityChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_priority, resultRow.new_priority, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+           resultRow.old_priority, resultRow.new_priority, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_priority_changed_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_priority_changed_event", databaseManager);
     }
 
 }

@@ -40,14 +40,26 @@ export class DatabaseManager {
      */
     private readonly pool: Pool;
 
+    private readonly _metadataId?: string;
+
     /**
      * creates a new DatabaseManager with the specified id generator
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
+     * @param pool the pool used for sql queries
+     * @param metadataId if provided, the id that should be used to get metadata by any NodeQuery that supports loading metadata
      */
-    public constructor(idGenerator: SnowflakeGenerator, pool: Pool) {
+    public constructor(idGenerator: SnowflakeGenerator, pool: Pool, metadataId?: string) {
         this.idGenerator = idGenerator;
-        this.pool = pool
+        this.pool = pool;
+        this._metadataId = metadataId;
+    }
+
+    /**
+     * Gets the current metadata id used to get metadata
+     */
+    public get metadataId(): string | undefined {
+        return this._metadataId;
     }
 
     /**
@@ -122,7 +134,7 @@ export class DatabaseManager {
      * @param command the command to execute
      */
     private async executeCommand(command: DatabaseCommand<any>, client: ClientBase): Promise<void> {
-        const commandConfig = command.getQueryConfig();
+        const commandConfig = command.getQueryConfig(this);
         log(8, commandConfig);
         let result;
         result = await client.query(commandConfig);

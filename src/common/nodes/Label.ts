@@ -210,7 +210,7 @@ class LoadProjectIdsCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: "SELECT DISTINCT ON(project_id) project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$1);",
             values: [this.labelId]

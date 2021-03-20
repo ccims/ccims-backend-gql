@@ -90,15 +90,15 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
         }
     }
 
-    protected generateQueryStart(): QueryPart {
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
         if (this.countMode) {
             return {
-                text: `SELECT ${this.rows} FROM ${this.tableName} main INNER JOIN pg_class ON (main.tableoid = pg_class.oid) `,
+                text: `SELECT ${this.rows(databaseManager)} FROM ${this.tableName} main INNER JOIN pg_class ON (main.tableoid = pg_class.oid) `,
                 values: []
             }
         } else {
             return {
-                text: `SELECT ${this.rows}, pg_class.relname FROM ${this.tableName} main INNER JOIN pg_class ON (main.tableoid = pg_class.oid) `,
+                text: `SELECT ${this.rows(databaseManager)}, pg_class.relname FROM ${this.tableName} main INNER JOIN pg_class ON (main.tableoid = pg_class.oid) `,
                 values: []
             }
         }

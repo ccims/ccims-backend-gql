@@ -62,11 +62,8 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM component main `,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("component", databaseManager);
     }
 
     /**

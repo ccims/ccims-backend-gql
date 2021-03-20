@@ -10,8 +10,8 @@ export class CombineCommand<T> extends DatabaseCommand<T[]> {
         super();
     }
 
-    public getQueryConfig(): QueryConfig<any[]> {
-        return this.commands[0].getQueryConfig();
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return this.commands[0].getQueryConfig(databaseManager);
     }
 
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {

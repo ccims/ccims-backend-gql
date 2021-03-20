@@ -25,18 +25,14 @@ export class LoadRemovedFromLocationEventsCommand extends LoadIssueTimelineItems
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): RemovedFromLocationEvent {
         return new RemovedFromLocationEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.location, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+            resultRow.location, resultRow.deleted, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_removed_from_location_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("issue_timeline_removed_from_location_event", databaseManager);
     }
 
 }
