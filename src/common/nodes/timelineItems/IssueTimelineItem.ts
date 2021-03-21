@@ -7,7 +7,8 @@ import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecificat
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
+import { SyncNode, SyncNodeTableSpecification } from "../SyncNode";
 
 /**
  * a table specification for a IssueTimelineItem
@@ -58,7 +59,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
         this.issueProperty = new NodeProperty<Issue, IssueTimelineItem>(databaseManager, IssueTimelineItem.issuePropertySpecification, this, issueId);
     }

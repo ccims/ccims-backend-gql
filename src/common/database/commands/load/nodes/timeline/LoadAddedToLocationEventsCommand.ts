@@ -25,7 +25,7 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): AddedToLocationEvent {
         return new AddedToLocationEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.location, resultRow.deleted, resultRow.metadata);
+            resultRow.location, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

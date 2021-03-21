@@ -7,7 +7,7 @@ import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
@@ -31,9 +31,9 @@ export class AssignedEvent extends IssueTimelineItem {
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, assigneeId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.AssignedEvent, databaseManager, AssignedEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this.assigneeProperty = new NullableNodeProperty<User, AssignedEvent>(databaseManager, AssignedEvent.assigneePropertySpecification, this, assigneeId);
     }
@@ -48,7 +48,7 @@ export class AssignedEvent extends IssueTimelineItem {
      * @param component
      */
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, assignee: User): Promise<AssignedEvent> {
-        const event = new AssignedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, assignee.id, false);
+        const event = new AssignedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, assignee.id, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);

@@ -2,7 +2,7 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue, IssuePriority } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
@@ -19,16 +19,16 @@ export class PriorityChangedEvent extends IssueTimelineItem {
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldPriority: IssuePriority, newPriority: IssuePriority,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.PriorityChangedEvent, databaseManager, PriorityChangedEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this._oldPriority = oldPriority;
         this._newPriority = newPriority;
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, oldPriority: IssuePriority, newPriority: IssuePriority): Promise<PriorityChangedEvent> {
-        const event = new PriorityChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldPriority, newPriority, false);
+        const event = new PriorityChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldPriority, newPriority, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);

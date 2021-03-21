@@ -1,7 +1,8 @@
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 
 /**
  * specification of a table which can contain NamedSyncNodes
@@ -36,7 +37,7 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
      * @param description the description of the NamedNode
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
         this._name = name;
         this._description = description;

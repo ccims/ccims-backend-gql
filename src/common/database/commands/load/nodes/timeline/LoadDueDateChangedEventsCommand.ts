@@ -25,7 +25,7 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): DueDateChangedEvent {
         return new DueDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted, resultRow.metadata);
+           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

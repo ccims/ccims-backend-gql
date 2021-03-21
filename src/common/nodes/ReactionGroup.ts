@@ -6,7 +6,8 @@ import { DatabaseManager } from "../database/DatabaseManager";
 import { Issue } from "./Issue";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { Body } from "./timelineItems/Body";
 import { Comment } from "./timelineItems/Comment";
 import { IssueComment } from "./timelineItems/IssueComment";
@@ -45,7 +46,7 @@ export class ReactionGroup extends SyncNode {
      * Create a `ReactionGroup` object for an existing reaction group in the database
      */
     public constructor(databaseManager: DatabaseManager, id: string, originComment: string, reactionName: string, users: string[], createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.ReactionGroup, databaseManager, ReactionGroupTableSpecification, id, createdById, createdAt, isDeleted, metadata);
         this._originComment = originComment;
         this._reactionName = reactionName;
@@ -66,7 +67,7 @@ export class ReactionGroup extends SyncNode {
         if (!originComment || !reactionName || !users) {
             throw new Error("Illegal reaction group creation parameters");
         }
-        const group = new ReactionGroup(databaseManager, databaseManager.idGenerator.generateString(), originComment, reactionName, users, createdById, createdAt, false, undefined);
+        const group = new ReactionGroup(databaseManager, databaseManager.idGenerator.generateString(), originComment, reactionName, users, createdById, createdAt, false, new Date());
     }
 
     /**

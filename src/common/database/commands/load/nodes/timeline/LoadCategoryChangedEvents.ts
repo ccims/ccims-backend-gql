@@ -25,7 +25,7 @@ export class LoadCategoryChangedEventsCommand extends LoadIssueTimelineItemsComm
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): CategoryChangedEvent {
         return new CategoryChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_category, resultRow.new_category, resultRow.deleted, resultRow.metadata);
+           resultRow.old_category, resultRow.new_category, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

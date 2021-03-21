@@ -35,7 +35,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      * gets a string with all rows that should be selected
      */
     protected rows(databaseManager: DatabaseManager): string {
-        return databaseManager.metadataId !== undefined ? super.rows(databaseManager) + ", metadata.metadata" : super.rows(databaseManager);
+        return super.rows(databaseManager) + (databaseManager.metadataId !== undefined ? ", main.last_modified_at, metadata.metadata" : ", main.last_modified_at");
     }
 
     /**

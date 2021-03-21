@@ -25,7 +25,7 @@ export class LoadClosedEventsCommand extends LoadIssueTimelineItemsCommandBase<C
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ClosedEvent {
         return new ClosedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.deleted, resultRow.metadata);
+            resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

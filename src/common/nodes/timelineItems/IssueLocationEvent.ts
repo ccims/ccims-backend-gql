@@ -9,7 +9,7 @@ import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const IssueLocationEventTableSpecification: NodeTableSpecification<IssueLocationEvent>
@@ -31,9 +31,9 @@ export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> ext
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, issueLocationId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(type, databaseManager, tableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this.issueLocationProperty = new NullableNodeProperty<IssueLocation, IssueLocationEvent>(databaseManager, IssueLocationEvent.issueLocationPropertySpecification, this, issueLocationId);
     }

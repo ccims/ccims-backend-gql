@@ -2,7 +2,7 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
@@ -19,9 +19,9 @@ export class RenamedTitleEvent extends IssueTimelineItem {
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldTitle: string, newTitle: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.AddedToComponentEvent, databaseManager, RenamedTitleEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this._oldTitle = oldTitle;
         this._newTitle = newTitle;
@@ -36,7 +36,7 @@ export class RenamedTitleEvent extends IssueTimelineItem {
      * @param component
      */
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, oldTitle: string, newTitle: string): Promise<RenamedTitleEvent> {
-        const event = new RenamedTitleEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldTitle, newTitle, false);
+        const event = new RenamedTitleEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldTitle, newTitle, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);

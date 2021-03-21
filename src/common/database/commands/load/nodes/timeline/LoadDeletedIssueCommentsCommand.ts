@@ -25,7 +25,7 @@ export class LoadDeletedIssueCommentsCommand extends LoadIssueTimelineItemsComma
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): DeletedIssueComment {
         return new DeletedIssueComment(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.deleted_by, resultRow.deleted_at, resultRow.deleted, resultRow.metadata);
+           resultRow.deleted_by, resultRow.deleted_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

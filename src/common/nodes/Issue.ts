@@ -21,7 +21,7 @@ import { NodeListPropertySpecification } from "./properties/NodeListPropertySpec
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { ReactionGroup } from "./ReactionGroup";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
+import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
 import { AddedToLocationEvent } from "./timelineItems/AddedToLocationEvent";
 import { AssignedEvent } from "./timelineItems/AssignedEvent";
@@ -51,6 +51,7 @@ import { UnmarkedAsDuplicateEvent } from "./timelineItems/UnmarkedAsDuplicateEve
 import { ClosedEvent } from "./timelineItems/ClosedEvent";
 import { ReopenedEvent } from "./timelineItems/ReopenedEvent";
 import { PriorityChangedEvent } from "./timelineItems/PriorityChangedEvent";
+import { SyncMetadata } from "./SyncMetadata";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -337,7 +338,7 @@ export class Issue extends SyncNode<Issue> {
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
         startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string, priority: IssuePriority,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.Issue, databaseManager, IssueTableSpecification, id, createdById, createdAt, isDeleted, metadata);
 
         this._title = title;
@@ -368,11 +369,11 @@ export class Issue extends SyncNode<Issue> {
         const bodyId = databaseManager.idGenerator.generateString();
 
         const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
-            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false);
+            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false, new Date());
         issue.markNew();
         databaseManager.addCachedNode(issue);
 
-        const timelineBody = new Body(databaseManager, bodyId, createdBy?.id, createdAt, issueId, body, createdBy?.id, createdAt, title, false);
+        const timelineBody = new Body(databaseManager, bodyId, createdBy?.id, createdAt, issueId, body, createdBy?.id, createdAt, title, false, new Date());
         timelineBody.markNew();
         databaseManager.addCachedNode(timelineBody);
 

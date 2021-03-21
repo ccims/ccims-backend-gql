@@ -25,7 +25,7 @@ export class LoadUnlabelledEventCommand extends LoadIssueTimelineItemsCommandBas
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnlabelledEvent {
         return new UnlabelledEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue, resultRow.label, resultRow.deleted,
-            resultRow.metadata);
+            resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

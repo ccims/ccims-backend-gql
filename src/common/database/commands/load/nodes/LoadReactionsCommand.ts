@@ -39,7 +39,7 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
      * @returns the parsed component
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ReactionGroup {
-        return new ReactionGroup(databaseManager, resultRow.id, resultRow.origin, resultRow.reaction, resultRow.users, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.metadata);
+        return new ReactionGroup(databaseManager, resultRow.id, resultRow.origin, resultRow.reaction, resultRow.users, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

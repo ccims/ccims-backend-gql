@@ -1,7 +1,7 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { Comment, CommentTableSpecification } from "./Comment";
 
 /**
@@ -28,8 +28,8 @@ export class Body extends Comment<Body> {
      */
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, body: string, lastEditedById: string | undefined, lastEditedAt: Date, initialTitle: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.Body, databaseManager, BodyTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, metadata);
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Body, databaseManager, BodyTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, lastModifiedAt, metadata);
         this._initialTitle = initialTitle;
     }
 

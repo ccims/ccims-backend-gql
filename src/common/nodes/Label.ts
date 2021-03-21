@@ -8,7 +8,7 @@ import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { SyncMetadataMap } from "./SyncNode";
+import { SyncMetadata } from "./SyncMetadata";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
@@ -50,8 +50,8 @@ export class Label extends NamedSyncNode {
      * @param metadata The metadate of this label for syncing
      */
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, color: Color, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, createdById, createdAt, isDeleted, metadata);
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._color = color;
         this.projectsProperty = new NodeListProperty<Project, Label>(databaseManager, Label.projectsPropertySpecifiaction, this);
         this.componentsProperty = new NodeListProperty<Component, Label>(databaseManager, Label.componentsPropertySpecifiaction, this);
@@ -80,7 +80,7 @@ export class Label extends NamedSyncNode {
             throw new Error("The color can't be undefined or null");
         }
 
-        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy.id, createdAt, false, undefined);
+        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy.id, createdAt, false, new Date());
         label.markNew();
         databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {

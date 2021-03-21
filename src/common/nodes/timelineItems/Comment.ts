@@ -9,7 +9,7 @@ import { NodeListProperty } from "../properties/NodeListProperty";
 import { NodeListPropertySpecification } from "../properties/NodeListPropertySpecification";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { ReactionGroup } from "../ReactionGroup";
 
@@ -77,8 +77,8 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, body: string, lastEditedById: string | undefined, lastEditedAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(type, databaseManager, tableSpecification, id, createdById, createdAt, issueId, isDeleted, metadata);
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(type, databaseManager, tableSpecification, id, createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
         this._lastEditedAt = lastEditedAt;
         this._body = body;
         this.editedByProperty = new NodeListProperty<User, Comment>(databaseManager, Comment.editedByPropertySpecification, this);

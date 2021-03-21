@@ -25,7 +25,7 @@ export class LoadUnmarkedAsDuplicateEventsCommand extends LoadIssueTimelineItems
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnmarkedAsDuplicateEvent {
         return new UnmarkedAsDuplicateEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.deleted, resultRow.metadata);
+            resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
