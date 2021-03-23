@@ -31,12 +31,6 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
      */
     private readonly _removedItems: Map<T, SyncValue<T>[]> = new Map();
 
-    /**
-     * Contains all updates
-     * sourceItems contains ImsSystems which already have the correct value
-     */
-    private readonly updates: {sourceIms: ImsSystem[], update: SyncUpdate}[] = [];
-
 
     public constructor(specification: SyncListPropertySpecification<T, V>, node: SyncNodeContainer<V>) {
         this._node = node;
@@ -48,14 +42,12 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
      * @param item the item added to the property
      * @param asUser the user who added the item
      * @param atDate the timestamp when the item was added
-     * @param ims the IMS where the item was added
      */
-    public add(item: T, asUser: User | undefined, atDate: Date | undefined, ims: ImsSystem) {
+    public add(item: T, asUser: User | undefined, atDate: Date | undefined) {
         const value = {
             value: item,
             asUser: asUser,
-            atDate: atDate,
-            ims: ims
+            atDate: atDate
         }
 
         if (this._addedItems.has(item)) {
@@ -70,14 +62,12 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
      * @param item the item removed from the property
      * @param asUser the user who removed the item
      * @param atDate the timestamp when the item was removed
-     * @param ims the IMS where the item was removed
      */
-    public remove(item: T, asUser: User | undefined, atDate: Date | undefined, ims: ImsSystem) {
+    public remove(item: T, asUser: User | undefined, atDate: Date | undefined) {
         const value = {
             value: item,
             asUser: asUser,
-            atDate: atDate,
-            ims: ims
+            atDate: atDate
         }
 
         if (this._removedItems.has(item)) {
@@ -101,42 +91,13 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
      * Applies (if possible) all added items
      */
     private async applyAdd(): Promise<void> {
-        const node = this._node.node;
-        await Promise.all([...this._addedItems.values()].map(async (values) => {
-            const bestValue = findBestSyncValue(values);
-            const update = await this._specification.applyAdd(bestValue, node);
-            if (update != undefined) {
-                this.updates.push({
-                    sourceIms: values.map(value => value.ims),
-                    update: update
-                });
-            }
-        }));
+        //TODO
     }
 
     /**
      * Applies (if possible) all added items
      */
     private async applyRemove(): Promise<void> {
-        const node = this._node.node;
-        await Promise.all([...this._removedItems.values()].map(async (values) => {
-            const bestValue = findBestSyncValue(values);
-            const update = await this._specification.applyRemove(bestValue, node);
-            if (update != undefined) {
-                this.updates.push({
-                    sourceIms: values.map(value => value.ims),
-                    update: update
-                });
-            }
-        }));
-    }
-
-    /**
-     * Gets all updates that have to be applied to the specified ims
-     * @param ims the IMS on which the updates have to be applied
-     * @returns all updates that should be applied on the specified IMS
-     */
-    public getUpdates(ims: ImsSystem): SyncUpdate[] {
-        return this.updates.filter(update => !update.sourceIms.includes(ims));
+        //TODO
     }
 }

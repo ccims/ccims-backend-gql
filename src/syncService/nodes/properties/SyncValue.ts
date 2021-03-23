@@ -1,4 +1,4 @@
-import { ImsSystem } from "../../../common/nodes/ImsSystem";
+import { SyncMetadata } from "../../../common/nodes/SyncMetadata";
 import { User } from "../../../common/nodes/User";
 
 export interface SyncValue<T> {
@@ -15,9 +15,9 @@ export interface SyncValue<T> {
      */
     atDate?: Date,
     /**
-     * the ImsSystem on which the value was set
+     * Metadata which is applied to all new SyncNodes
      */
-    ims: ImsSystem
+    metadata?: SyncMetadata
 }
 
 /**

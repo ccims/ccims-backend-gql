@@ -29,11 +29,6 @@ export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
      */
     private update?: SyncUpdate;
 
-    /**
-     * The ims which alreay are synced correctly
-     */
-    private sourceIms: ImsSystem[] = [];
-
     public constructor(specification: SyncPropertySpecification<T, V>, node: SyncNodeContainer<V>) {
         this._node = node;
         this._specification = specification;
@@ -44,14 +39,12 @@ export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
      * @param value the new value of the property
      * @param asUser the user who added the item
      * @param atDate the timestamp when the item was added
-     * @param ims the IMS where the item was added
      */
-    public set(value: T, asUser: User | undefined, atDate: Date | undefined, ims: ImsSystem) {
+    public set(value: T, asUser: User | undefined, atDate: Date | undefined) {
         this._setValues.push({
             value: value,
             asUser: asUser,
-            atDate: atDate,
-            ims: ims
+            atDate: atDate
         });
     }
 
@@ -59,26 +52,6 @@ export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
      * Applies the changes to the underlying node
      */
     public async apply(): Promise<void> {
-        if (this._setValues.length > 0) {
-            const bestValue = findBestSyncValue(this._setValues);
-            this.update = await this._specification.applyChange(bestValue, this._node.node);
-            this.sourceIms.push(...this._setValues
-                .filter(value => value.value == bestValue.value)
-                .map(value => value.ims));
-        }
+        //TODO
     }
-
-    /**
-     * Gets all updates that have to be applied to the specified ims
-     * @param ims the IMS on which the updates have to be applied
-     * @returns all updates that should be applied on the specified IMS
-     */
-    public getUpdates(ims: ImsSystem): SyncUpdate[] {
-        if (this.update != undefined && !this.sourceIms.includes(ims)) {
-            return [this.update];
-        } else {
-            return [];
-        }
-    }
-    
 }
