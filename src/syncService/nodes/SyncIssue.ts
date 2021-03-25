@@ -136,6 +136,9 @@ export class SyncIssue extends SyncNodeContainer<Issue> {
         }
     };
 
+    /**
+     * property to change the title
+     */
     public readonly titleProperty: SyncProperty<string, Issue, SyncIssue>;
     
 

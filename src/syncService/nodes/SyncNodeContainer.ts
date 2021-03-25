@@ -2,6 +2,11 @@ import { SyncNode } from "../../common/nodes/SyncNode";
 import { SyncUpdate } from "../SyncUpdate";
 import { SyncModifiable } from "./SyncModifiable";
 
+/**
+ * Wrapper class for SyncNodes to provide sync functionality
+ * Use the provided properties to change the node, or use the underlying node to get the current state directly
+ * The apply function can be called to apply all current changes
+ */
 export class SyncNodeContainer<T extends SyncNode> implements SyncModifiable {
     private readonly _node: T;
 
