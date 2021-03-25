@@ -1,6 +1,6 @@
-import { SyncUpdate } from "../../SyncUpdate";
+import { SyncUpdate } from "../SyncUpdate";
 
-export interface SyncPropertyBase {
+export interface SyncModifiable {
     /**
      * Applies all updates to the underlying node
      * @returns updates from the apply

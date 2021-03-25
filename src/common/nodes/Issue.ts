@@ -52,6 +52,7 @@ import { ClosedEvent } from "./timelineItems/ClosedEvent";
 import { ReopenedEvent } from "./timelineItems/ReopenedEvent";
 import { PriorityChangedEvent } from "./timelineItems/PriorityChangedEvent";
 import { SyncMetadata } from "./SyncMetadata";
+import { SortedNodeListProperty } from "./properties/SortedNodeListProperty";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -129,7 +130,7 @@ export class Issue extends SyncNode<Issue> {
     }
 
 
-    public readonly timelineProperty: NodeListProperty<IssueTimelineItem, Issue>;
+    public readonly timelineProperty: SortedNodeListProperty<IssueTimelineItem, Issue>;
 
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
         = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
@@ -339,7 +340,7 @@ export class Issue extends SyncNode<Issue> {
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
         startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string, priority: IssuePriority,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.Issue, databaseManager, IssueTableSpecification, id, createdById, createdAt, isDeleted, metadata);
+        super(NodeType.Issue, databaseManager, IssueTableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
 
         this._title = title;
         this._isOpen = isOpen;
@@ -352,7 +353,8 @@ export class Issue extends SyncNode<Issue> {
         this._updatedAt = updateAt;
         this._priority = priority;
         this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
-        this.timelineProperty = new NodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this);
+        this.timelineProperty = new SortedNodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this, 
+            (a, b) => b.lastEditedAt.getTime() - a.lastEditedAt.getTime());
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
         this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
         this.locationsProperty = new NodeListProperty<IssueLocation, Issue>(databaseManager, Issue.locationsPropertySpecification, this);

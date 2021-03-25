@@ -38,7 +38,7 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, createdById: string | undefined, createdAt: Date,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
+        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._name = name;
         this._description = description;
     }

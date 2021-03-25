@@ -100,6 +100,9 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         }
     }
 
+    /**
+     * Overwrites the SyncNode propety with the actual data
+     */
     public get lastEditedAt(): Date {
         return this._lastEditedAt;
     }

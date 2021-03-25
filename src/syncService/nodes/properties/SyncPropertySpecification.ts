@@ -1,12 +1,13 @@
 import { SyncNode } from "../../../common/nodes/SyncNode";
 import { SyncUpdate } from "../../SyncUpdate";
+import { SyncNodeContainer } from "../SyncNodeContainer";
 import { SyncValue } from "./SyncValue";
 
 /**
  * Specification for a SyncProperty
  * has a function which defines how a changed value is applied to the node
  */
-export interface SyncPropertySpecification<T, V extends SyncNode> {
+export interface SyncPropertySpecification<T, V extends SyncNode, C extends SyncNodeContainer<V>> {
     /**
      * called to apply the changed value to the property of the node
      * @param value contains the new value for the property
@@ -14,7 +15,7 @@ export interface SyncPropertySpecification<T, V extends SyncNode> {
      * @returns a SyncUpdate which is used to sync the update the different IMS
      *          undefined if the update was not applied     
      */
-    apply(value: SyncValue<T>, node: V): Promise<SyncUpdate | undefined>;
+    apply(value: SyncValue<T>, node: C): Promise<SyncUpdate | undefined>;
     /**
      * called to apply the changed value to the property of the node
      * does not change the current state, however a timeline entry may be created
@@ -23,11 +24,12 @@ export interface SyncPropertySpecification<T, V extends SyncNode> {
      * @returns a SyncUpdate which is used to sync the update the different IMS
      *          undefined if the update was not applied     
      */
-     applyHistoric(value: SyncValue<T>, node: V): Promise<SyncUpdate | undefined>;
+     applyHistoric(value: SyncValue<T>, node: C): Promise<SyncUpdate | undefined>;
      /**
      * Gets the current status of the property
      * currentValue the current value of the property
      * lastUpdatedAt exists if it was ever updated (and if so, it contains the date of that update)
+     * @param node the node which provides the property to get the status from
      */
-    getCurrentStatus(): Promise<{ currentValue: T, lastUpdatedAt?: Date}>
+    getCurrentStatus(node: C): Promise<{ currentValue: T, lastUpdatedAt?: Date}>
 }

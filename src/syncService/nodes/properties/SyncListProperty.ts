@@ -3,7 +3,7 @@ import { User } from "../../../common/nodes/User";
 import { SyncUpdate } from "../../SyncUpdate";
 import { SyncNodeContainer } from "../SyncNodeContainer";
 import { SyncListPropertySpecification } from "./SyncListPropertySpecification";
-import { SyncPropertyBase } from "./SyncPropertyBase";
+import { SyncModifiable } from "../SyncModifiable";
 import { SyncValue } from "./SyncValue";
 
 /**
@@ -14,16 +14,16 @@ import { SyncValue } from "./SyncValue";
  * If there is a change with a date, all changes without a date are dropped.
  * If there are only changes without a date, the last one with a specified user is taken.
  */
-export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase {
+export class SyncListProperty<T, V extends SyncNode, C extends SyncNodeContainer<V>> implements SyncModifiable {
     /**
      * Sync container which contains the node to which updates are applied
      */
-    private readonly _node: SyncNodeContainer<V>;
+    private readonly _node: C;
 
     /**
      * The specification for the node, specifies apply functions
      */
-    private readonly _specification: SyncListPropertySpecification<T, V>;
+    private readonly _specification: SyncListPropertySpecification<T, V, C>;
 
     /**
      * contains all the changed items (not applied yet)
@@ -31,7 +31,7 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
     private readonly _changedItems: Map<T, SyncValue<boolean>[]> = new Map();
 
 
-    public constructor(specification: SyncListPropertySpecification<T, V>, node: SyncNodeContainer<V>) {
+    public constructor(specification: SyncListPropertySpecification<T, V, C>, node: C) {
         this._node = node;
         this._specification = specification;
     }
@@ -129,7 +129,7 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
      * @returns the updates from applying the changes
      */
     private async applyChangedItemInternal(item: T, values: SyncValue<boolean>[]): Promise<SyncUpdate[]> {
-        const status = await this._specification.getCurrentStatus(item);
+        const status = await this._specification.getCurrentStatus(item, this._node);
         const lastValue = values[values.length - 1];
         if (lastValue.value !== status.currentStatus 
             && (status.lastUpdatedAt === undefined || lastValue.atDate === undefined || status.lastUpdatedAt < lastValue.atDate)) {
@@ -159,7 +159,7 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
                     value: item,
                     asUser: value.asUser,
                     atDate: value.atDate,
-                }, this._node.node);
+                }, this._node);
                 if (update !== undefined) {
                     updates.push(update);
                 }
@@ -168,7 +168,7 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
                     value: item,
                     asUser: value.asUser,
                     atDate: value.atDate,
-                }, this._node.node);
+                }, this._node);
                 if (update !== undefined) {
                     updates.push(update);
                 }
@@ -189,13 +189,13 @@ export class SyncListProperty<T, V extends SyncNode> implements SyncPropertyBase
                 value: item,
                 asUser: value.asUser,
                 atDate: value.atDate,
-            }, this._node.node);
+            }, this._node);
         } else {
             return this._specification.applyRemove({
                 value: item,
                 asUser: value.asUser,
                 atDate: value.atDate,
-            }, this._node.node);
+            }, this._node);
         }
     }
 }

@@ -47,7 +47,7 @@ export class ReactionGroup extends SyncNode {
      */
     public constructor(databaseManager: DatabaseManager, id: string, originComment: string, reactionName: string, users: string[], createdById: string | undefined, createdAt: Date,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.ReactionGroup, databaseManager, ReactionGroupTableSpecification, id, createdById, createdAt, isDeleted, metadata);
+        super(NodeType.ReactionGroup, databaseManager, ReactionGroupTableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._originComment = originComment;
         this._reactionName = reactionName;
         this._users = new Set(users);

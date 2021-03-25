@@ -65,6 +65,13 @@ export abstract class CCIMSNode<T extends CCIMSNode = any> extends Saveable {
     }
 
     /**
+     * gets the DatabaseManager
+     */
+    public get databaseManager(): DatabaseManager {
+        return this._databaseManager;
+    }
+
+    /**
      * gets the type of this node
      * this is also used for the graphql resolvers
      */

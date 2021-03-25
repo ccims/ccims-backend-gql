@@ -39,6 +39,8 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
 
     private _metadataChanged: boolean = false;
 
+    private readonly _lastModifiedAt: Date;
+
     public createdByProperty: NullableNodeProperty<User, SyncNode>;
 
     /**
@@ -75,9 +77,10 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadata) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(type, databaseManager, tableSpecification, id);
         this._metadata = metadata
+        this._lastModifiedAt = lastModifiedAt;
         this._isDeleted = isDeleted;
         this._createdAt = createdAt;
         this.createdByProperty = new NullableNodeProperty<User, SyncNode>(databaseManager, SyncNode.createdByPropertySpecification, this, createdById);
@@ -93,11 +96,10 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
     /**
      * Gets the metadata based on the specified id
      * If metadata is changed, setMetadata must be called
-     * @param id the id to look for metadata
      * @returns the found SyncMetadata or undefined, if no metadata was found for the specified IMSSystem id
      * @throws error if this node was created without metadata
      */
-    public getMetadata(id: string): SyncMetadata | undefined {
+    public get metadata(): SyncMetadata | undefined {
         if (this._databaseManager.metadataId === undefined) {
             throw new Error("this SyncNode was loaded without metadata");
         }
@@ -110,13 +112,21 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @param metadata the metadata to set
      * @throws error if this node was created without metadata
      */
-    public setMetadata(metadata?: SyncMetadata): void {
+    public set metadata(metadata: SyncMetadata | undefined) {
         if (this._databaseManager.metadataId === undefined) {
             throw new Error("this SyncNode was loaded without metadata");
         }
         this.markChanged();
         this._metadataChanged = true;
         this._metadata = metadata;
+    }
+
+    /**
+     * Get when the node was last modified
+     * this value is not saved and maintained by the database
+     */
+    public get lastModifiedAt(): Date {
+        return this._lastModifiedAt;
     }
 
     /**
@@ -134,6 +144,14 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
     }
 
     public get createdAt(): Date {
+        return this._createdAt;
+    }
+
+    /**
+     * For all immutable SyncNodes, this is just the creation data
+     * all other SyncNodes have to overwrite this to implement correct functionality
+     */
+    public get lastEditedAt(): Date {
         return this._createdAt;
     }
 

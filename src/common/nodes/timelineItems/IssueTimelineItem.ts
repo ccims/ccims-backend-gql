@@ -60,7 +60,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
+        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.issueProperty = new NodeProperty<Issue, IssueTimelineItem>(databaseManager, IssueTimelineItem.issuePropertySpecification, this, issueId);
     }
 }

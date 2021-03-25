@@ -13,13 +13,13 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const UnassignedEventTableSpecification: NodeTableSpecification<UnassignedEvent>
     = new NodeTableSpecification<UnassignedEvent>("issue_timeline_unassigned_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("removed_assignee", unassignedEvent => unassignedEvent.removedassigneeProperty.getId()));
+    new RowSpecification("removed_assignee", unassignedEvent => unassignedEvent.removedAssigneeProperty.getId()));
 
 export class UnassignedEvent extends IssueTimelineItem {
 
-    public readonly removedassigneeProperty: NullableNodeProperty<User, UnassignedEvent>;
+    public readonly removedAssigneeProperty: NullableNodeProperty<User, UnassignedEvent>;
 
-    private static readonly removedassigneePropertySpecification: NodePropertySpecification<User, UnassignedEvent>
+    private static readonly removedAssigneePropertySpecification: NodePropertySpecification<User, UnassignedEvent>
         = new NodePropertySpecification<User, UnassignedEvent>(
             (id, unassignedEvent) => {
                 const command = new LoadUsersCommand();
@@ -35,7 +35,7 @@ export class UnassignedEvent extends IssueTimelineItem {
         super(NodeType.UnassignedEvent, databaseManager, UnassignedEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
-        this.removedassigneeProperty = new NullableNodeProperty<User, UnassignedEvent>(databaseManager, UnassignedEvent.removedassigneePropertySpecification, this, removedassigneeId);
+        this.removedAssigneeProperty = new NullableNodeProperty<User, UnassignedEvent>(databaseManager, UnassignedEvent.removedAssigneePropertySpecification, this, removedassigneeId);
     }
 
     /**
@@ -56,6 +56,6 @@ export class UnassignedEvent extends IssueTimelineItem {
     }
 
     public async removedassignee(): Promise<User | undefined> {
-        return this.removedassigneeProperty.getPublic();
+        return this.removedAssigneeProperty.getPublic();
     }
 }

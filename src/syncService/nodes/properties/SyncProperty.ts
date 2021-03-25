@@ -2,7 +2,7 @@ import { SyncNode } from "../../../common/nodes/SyncNode";
 import { User } from "../../../common/nodes/User";
 import { SyncUpdate } from "../../SyncUpdate";
 import { SyncNodeContainer } from "../SyncNodeContainer";
-import { SyncPropertyBase } from "./SyncPropertyBase";
+import { SyncModifiable } from "../SyncModifiable";
 import { SyncPropertySpecification } from "./SyncPropertySpecification";
 import { SyncValue } from "./SyncValue";
 
@@ -14,24 +14,24 @@ import { SyncValue } from "./SyncValue";
  * If there is a change with a date, all changes without a date are dropped.
  * If there are only changes without a date, the last one with a specified user is taken.
  */
-export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
+export class SyncProperty<T, V extends SyncNode, C extends SyncNodeContainer<V>> implements SyncModifiable {
 
     /**
      * Sync container which contains the node to which updates are applied
      */
-    private readonly _node: SyncNodeContainer<V>;
+    private readonly _node: C;
 
     /**
      * The specification for the node, specifies apply functions
      */
-    private readonly _specification: SyncPropertySpecification<T, V>;
+    private readonly _specification: SyncPropertySpecification<T, V, C>;
 
     /**
      * contains all the added items (not applied yet)
      */
     private readonly _setValues: SyncValue<T>[] = [];
 
-    public constructor(specification: SyncPropertySpecification<T, V>, node: SyncNodeContainer<V>) {
+    public constructor(specification: SyncPropertySpecification<T, V, C>, node: C) {
         this._node = node;
         this._specification = specification;
     }
@@ -84,13 +84,13 @@ export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
      * @returns the updates resulting from the applied changes
      */
     private async applyInternal(values: SyncValue<T>[]): Promise<SyncUpdate[]> {
-        const status = await this._specification.getCurrentStatus();
+        const status = await this._specification.getCurrentStatus(this._node);
         const lastValue = values[values.length - 1];
         if (lastValue.value !== status.currentValue 
             && (status.lastUpdatedAt === undefined || lastValue.atDate === undefined || status.lastUpdatedAt < lastValue.atDate)) {
             values.pop();
             const updates = await this.applyHistoric(values);
-            const update = await this._specification.apply(lastValue, this._node.node);
+            const update = await this._specification.apply(lastValue, this._node);
             if (update !== undefined) {
                 updates.push(update);
             }
@@ -108,7 +108,7 @@ export class SyncProperty<T, V extends SyncNode> implements SyncPropertyBase {
     private async applyHistoric(values: SyncValue<T>[]): Promise<SyncUpdate[]> {
         const updates: SyncUpdate[] = [];
         for (const value of values) {
-            const update = await this._specification.apply(value, this._node.node);
+            const update = await this._specification.apply(value, this._node);
             if (update !== undefined) {
                 updates.push(update);
             }

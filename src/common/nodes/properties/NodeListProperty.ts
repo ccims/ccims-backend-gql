@@ -93,7 +93,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         this._databaseManager.addCommand(filter);
         await this._databaseManager.executePendingCommands();
         filter.getResult().forEach(element => {
-            this._elements.set(element.id, element);
+            this.setElement(element);
         });
         return filter.getResult();
     }
@@ -114,7 +114,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             const resultElement = loadCommand.getResult()[0];
             if (resultElement) {
                 if (!this._elements.has(id)) {
-                    this._elements.set(id, resultElement);
+                    this.setElement(resultElement);
                     await this.notifyAdded(resultElement, true);
                 }
             }
@@ -135,7 +135,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._ids.add(element.id);
             this._addedIds.add(element.id);
             if (this._loadLevel > LoadLevel.Ids) {
-                this._elements.set(element.id, element);
+                this.setElement(element);
             }
             await this.notifyAdded(element, false);
             if (this._specification.save) {
@@ -156,7 +156,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         await this.ensureAddDeleteLoadLevel();
         if (this._ids.has(element.id)) {
             this._ids.delete(element.id);
-            this._elements.delete(element.id);
+            this.deleteElement(element.id);
             await this.notifyRemoved(element, false);
             this._removedIds.add(element.id);
             if (this._specification.save) {
@@ -211,7 +211,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
      * ensures that the load level is high enough
      * @param level the level to reach
      */
-    private async ensureLoadLevel(level: LoadLevel): Promise<void> {
+    protected async ensureLoadLevel(level: LoadLevel): Promise<void> {
         while (this.currentCommand !== undefined) {
             await this.currentCommand;
         }
@@ -238,7 +238,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 this._databaseManager.addCommand(loadOtherCommand);
                 await this._databaseManager.executePendingCommands();
                 loadOtherCommand.getResult().forEach(element => {
-                    this._elements.set(element.id, element);
+                    this.setElement(element);
                     // a notify is not necessary because this was already done when the ids were loaded
                 });
                 notLoadedIds.forEach(id => {
@@ -314,7 +314,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 })
             }
 
-            this._elements = newElements;
+            this.replaceElements(newElements);
         } else {
             this._loadLevel = LoadLevel.Ids;
         }
@@ -328,10 +328,10 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
     async setElements(elements: T[]): Promise<void> {
         await this.setIds(elements.map(element => element.id));
         const newElements = Array.from(this._addedIds).map(id => this._elements.get(id));
-        this._elements = elements.reduce((map, element, index, items) => map.set(element.id, element), new Map<string, T>());
+        this.replaceElements(elements.reduce((map, element, index, items) => map.set(element.id, element), new Map<string, T>()));
         newElements.forEach(element => {
             if (element) {
-                this._elements.set(element.id, element);
+                this.setElement(element);
             }
         });
         this._loadLevel = LoadLevel.Complete;
@@ -348,7 +348,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             if (!this._removedIds.has(element.id) && this._loadLevel >= LoadLevel.Ids) {
                 this._ids.add(element.id);
                 if (this._loadLevel >= LoadLevel.Partial) {
-                    this._elements.set(element.id, element);
+                    this.setElement(element);
                 }
             }
         } else {
@@ -361,7 +361,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
                 this._removedIds.delete(element.id);
                 this._ids.add(element.id);
                 if (this._loadLevel >= LoadLevel.Partial) {
-                    this._elements.set(element.id, element);
+                    this.setElement(element);
                 }
             }
         }
@@ -377,7 +377,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             this._removedIds.delete(element.id);
             if (!this._addedIds.has(element.id) && this._loadLevel >= LoadLevel.Ids) {
                 this._ids.delete(element.id);
-                this._elements.delete(element.id);
+                this.deleteElement(element.id);
             }
         } else {
             if (this._specification.save) {
@@ -387,9 +387,36 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
             if (this._loadLevel >= LoadLevel.Ids) {
                 this._removedIds.add(element.id);
                 this._ids.delete(element.id);
-                this._elements.delete(element.id);
+                this.deleteElement(element.id);
             }
         }
+    }
+
+    /**
+     * Sets an element
+     * Can be overwritten to implement additional behaviour
+     * @param element the element to set
+     */
+    protected setElement(element: T): void {
+        this._elements.set(element.id, element);
+    }
+
+    /**
+     * Replaces the elements
+     * Can be overwritten to implement additional behaviour
+     * @param newElements the new map of elements
+     */
+    protected replaceElements(newElements: Map<string, T>): void {
+        this._elements = newElements;
+    }
+
+    /**
+     * Deletes an element
+     * Can be overwritten to implement additional behaviour
+     * @param id the id of the element to delete
+     */
+    protected deleteElement(id: string): void {
+        this._elements.delete(id);
     }
 
 }
@@ -397,7 +424,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 /**
  * different load levels of the property
  */
-enum LoadLevel {
+export enum LoadLevel {
     /**
      * nothing is loaded
      */
