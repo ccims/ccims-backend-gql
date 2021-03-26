@@ -30,6 +30,11 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      */
     public createdBefore?: Date;
 
+    /**
+     * Selects only sync nodes which were modified after the given Date __(inclusive)__
+     */
+    public modifiedSince?: Date;
+
 
     /**
      * gets a string with all rows that should be selected
@@ -72,7 +77,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
         if (this.createdAfter !== undefined) {
             conditions.conditions.push({
-                text: `main.created_after >= $${conditions.i}`,
+                text: `main.created_at >= $${conditions.i}`,
                 values: [this.createdAfter],
                 priority: 4
             });
@@ -81,8 +86,17 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
         if (this.createdBefore !== undefined) {
             conditions.conditions.push({
-                text: `main.created_before <= $${conditions.i}`,
+                text: `main.created_at <= $${conditions.i}`,
                 values: [this.createdBefore],
+                priority: 4
+            });
+            conditions.i++;
+        }
+
+        if (this.modifiedSince !== undefined) {
+            conditions.conditions.push({
+                text: `main.last_modified_at >= $${conditions.i}`,
+                values: [this.modifiedSince],
                 priority: 4
             });
             conditions.i++;

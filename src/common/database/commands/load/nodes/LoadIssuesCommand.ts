@@ -177,6 +177,13 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      */
     public spentTimeLowerThan?: number;
 
+    /**
+     * Selects only issues which have been modified after the given date (__inclusive__)
+     * This also includes issues where the timeline has been modified
+     * 
+     */
+    public issueOrTimelineModifiedSince?: Date;
+
     public constructor() {
         super(IssueTableSpecification.rows);
     }
@@ -442,6 +449,14 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
                 values: [this.spentTimeLowerThan],
             });
             conditions.i++;
+        }
+
+        if (this.issueOrTimelineModifiedSince !== undefined) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `((main.last_modified_at >= $${conditions.i}) OR main.id=ANY(SELECT issue_id FROM issue_timeline_item WHERE last_modified_at >= $${conditions.i}))`,
+                values: [this.issueOrTimelineModifiedSince]
+            })
         }
 
         return conditions;
