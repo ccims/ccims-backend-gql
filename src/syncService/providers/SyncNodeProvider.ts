@@ -55,11 +55,15 @@ export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWra
      * @param id the id of the element
      */
     public async getElement(id: string): Promise<C | undefined> {
-        const element = await this.getElementById(id);
-        if (element !== undefined) {
-            return this.mapElements([element])[0];
+        if (this._elements.has(id)) {
+            return this._elements.get(id);
         } else {
-            return undefined;
+            const element = await this.getElementById(id);
+            if (element !== undefined) {
+                return this.mapElements([element])[0];
+            } else {
+                return undefined;
+            }
         }
     }
 
@@ -88,17 +92,21 @@ export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWra
     }
 
     /**
+     * Get a single element by id
+     * @param id the id of the element
+     * @returns the element
+     */
+    private async getElementById(id: string): Promise<V | undefined> {
+        const command = this._specification.createCommand(undefined);
+        command.ids = [id];
+        return (await this.executeCommand(command))[0];
+    }
+
+    /**
      * Executes a DatabaseCommand and returns the nodes
      * @param command the command which is executed
      * @returns the result of the command
      */
     protected abstract executeCommand(command: T): Promise<V[]>;
-
-    /**
-     * Get a single element by id
-     * @param id the id of the element
-     * @returns the element
-     */
-    protected abstract getElementById(id: string): Promise<V | undefined>;
 
 }

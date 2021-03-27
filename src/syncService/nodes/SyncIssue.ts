@@ -21,11 +21,40 @@ import { SyncListPropertySpecification } from "../properties/SyncListPropertySpe
 import { SyncProperty } from "../properties/SyncProperty";
 import { SyncPropertySpecification } from "../properties/SyncPropertySpecification";
 import { SyncNodeWrapper } from "./SyncNodeWrapper";
+import { SyncNodeProviderSpecification } from "../providers/SyncNodeProviderSpecification";
+import { IssueComment } from "../../common/nodes/timelineItems/IssueComment";
+import { SyncComment } from "./SyncComment";
+import { LoadIssueCommentsCommand } from "../../common/database/commands/load/nodes/timeline/LoadIssueCommentsCommand";
+import { SyncNodeProvider } from "../providers/SyncNodeProvider";
+import { PropertySyncNodeProvider } from "../providers/PropertySyncNodeProvider";
+import { Body } from "../../common/nodes/timelineItems/Body";
 
 /**
  * Sync wraüüer for Issue
  */
 export class SyncIssue extends SyncNodeWrapper<Issue> {
+
+    /**
+     * Specification for the commentsProvider
+     */
+    private static readonly commentsProviderSpecification: SyncNodeProviderSpecification<IssueComment, SyncComment<IssueComment>, LoadIssueCommentsCommand> = {
+        createWrapper: comment => new SyncComment(comment),
+        createCommand: modifiedSince => {
+            const command = new LoadIssueCommentsCommand();
+            command.modifiedSince = modifiedSince;
+            return command;
+        }
+    };
+
+    /**
+     * IssueComments property: provides all IssueComments, but not the Body (which is a Comment, but not an IssueComment)
+     */
+    public readonly commentsProvider: SyncNodeProvider<IssueComment, SyncComment<IssueComment>, LoadIssueCommentsCommand>;
+
+    /**
+     * The body of the issue
+     */
+    private _body?: SyncComment<Body>;
 
     /**
      * Specification for the labelsProperty
@@ -153,6 +182,8 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
     public constructor(node: Issue) {
         super(node);
 
+        this.commentsProvider = this.registerSyncModifiable(new PropertySyncNodeProvider(SyncIssue.commentsProviderSpecification, node.timelineProperty));
+
         this.labelsProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.labelsPropertySpecification, this));
         this.locationsProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.locationsPropertySpecification, this));
         this.assigneesProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.assigneesPropertySpecification, this));
@@ -173,6 +204,16 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         } else {
             return (await this.node.bodyProperty.get()).initialTitle;
         }
+    }
+
+    /**
+     * Gets a sync wrapper for the body of the 
+     */
+    public async body(): Promise<SyncComment<Body>> {
+        if (this._body === undefined) {
+            this._body = this.registerSyncModifiable(new SyncComment(await this.node.bodyProperty.get()));
+        }
+        return this._body;
     }
 
 }

@@ -57,7 +57,7 @@ export class SyncNamedNode<T extends NamedSyncNode> extends SyncNodeWrapper<T> {
      * Creates a new SyncNamedNode based on the provided T
      * @param node the underlaying node
      */
-    public constructor(node: T) {
+    protected constructor(node: T) {
         super(node);
 
         this.nameProperty = this.registerSyncModifiable(new SyncProperty(SyncNamedNode.namePropertySpecification, this));

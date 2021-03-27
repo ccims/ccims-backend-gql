@@ -35,15 +35,4 @@ import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
         await this._databaseManager.executePendingCommands();
         return command.getResult();
     }
-
-    /**
-     * Get a single element by id
-     * @param id the id of the element
-     * @returns the element
-     */
-    protected async getElementById(id: string): Promise<V | undefined> {
-        const command = this._specification.createCommand(undefined);
-        command.ids = [id];
-        return (await this.executeCommand(command))[0];
-    }
 }

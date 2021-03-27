@@ -1,7 +1,7 @@
 import { LoadIssuesCommand } from "../common/database/commands/load/nodes/LoadIssuesCommand";
 import { Component } from "../common/nodes/Component";
 import { Issue } from "../common/nodes/Issue";
-import { ComponentSyncNodeProvider } from "./providers/ComponentManagerSyncNodeProvider";
+import { ComponentSyncNodeProvider } from "./providers/ComponentSyncNodeProvider";
 import { SyncNodeProvider } from "./providers/SyncNodeProvider";
 import { SyncNodeProviderSpecification } from "./providers/SyncNodeProviderSpecification";
 import { SyncIssue } from "./nodes/SyncIssue";

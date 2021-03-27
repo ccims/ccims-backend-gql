@@ -923,8 +923,14 @@ export class Issue extends SyncNode<Issue> {
         }
     }
 
+    /**
+     * Adds a participant to the participants if provided and sets updatedAt
+     * if the provided Date is newer
+     * @param participant the participant
+     * @param atDate the date at which the participatin occurred
+     */
     public async participatedAt(participant?: User, atDate?: Date): Promise<void> {
-        if (atDate) {
+        if (atDate && this.updatedAt.getTime() < atDate.getTime()) {
             this.updatedAt = atDate;
         }
         if (participant) {

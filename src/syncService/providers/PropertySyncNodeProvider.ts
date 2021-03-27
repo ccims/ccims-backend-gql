@@ -1,4 +1,5 @@
 import { LoadNodeListCommand } from "../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { CCIMSNode } from "../../common/nodes/CCIMSNode";
 import { NodeListProperty } from "../../common/nodes/properties/NodeListProperty";
 import { SyncNode } from "../../common/nodes/SyncNode";
 import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
@@ -15,7 +16,7 @@ export class PropertySyncNodeProvider<V extends SyncNode, C extends SyncNodeWrap
      * @param specification specifies functions to create load commands and wrapper
      * @param property the property used to execute commands and get a single element by id
      */
-    public constructor(specification: SyncNodeProviderSpecification<V, C, T>, private readonly property: NodeListProperty<V, any>) {
+    public constructor(specification: SyncNodeProviderSpecification<V, C, T>, private readonly property: NodeListProperty<any, any>) {
         super(specification);
     }
 
@@ -26,14 +27,5 @@ export class PropertySyncNodeProvider<V extends SyncNode, C extends SyncNodeWrap
      */
     protected async executeCommand(command: T): Promise<V[]> {
         return this.property.getFilteredElements(command);
-    }
-
-    /**
-     * Get a single element by id
-     * @param id the id of the element
-     * @returns the element
-     */
-    protected async getElementById(id: string): Promise<V | undefined> {
-        return this.property.getElement(id);
     }
 }
