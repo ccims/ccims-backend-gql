@@ -1,15 +1,15 @@
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { SyncNode } from "../../../common/nodes/SyncNode";
-import { SyncUpdate } from "../../SyncUpdate";
+import { LoadNodeListCommand } from "../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { SyncNode } from "../../common/nodes/SyncNode";
+import { SyncUpdate } from "../SyncUpdate";
 import { SyncModifiable } from "../SyncModifiable";
-import { SyncNodeContainer } from "../SyncNodeContainer";
+import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
 
 /**
  * Provides sync functionality for SyncNodes
  * Base class for property based version and DatabaseManager based version
  */
-export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeContainer<V>, T extends LoadNodeListCommand<V>> implements SyncModifiable {
+export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends LoadNodeListCommand<V>> implements SyncModifiable {
 
     /**
      * The specification used to create wrapper classes and load commands

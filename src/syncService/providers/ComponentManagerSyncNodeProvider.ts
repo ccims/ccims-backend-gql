@@ -1,8 +1,8 @@
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { DatabaseManager } from "../../../common/database/DatabaseManager";
-import { Component } from "../../../common/nodes/Component";
-import { SyncNode } from "../../../common/nodes/SyncNode";
-import { SyncNodeContainer } from "../SyncNodeContainer";
+import { LoadNodeListCommand } from "../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { DatabaseManager } from "../../common/database/DatabaseManager";
+import { Component } from "../../common/nodes/Component";
+import { SyncNode } from "../../common/nodes/SyncNode";
+import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncNodeProvider } from "./SyncNodeProvider";
 import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
 
@@ -10,7 +10,7 @@ import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
  * SyncNodeProvider based on a Component
  * Returns all nodes which are on the specified component
  */
- export class ComponentSyncNodeProvider<V extends SyncNode, C extends SyncNodeContainer<V>, T extends (LoadNodeListCommand<V> & { onComponents: string[]})> extends SyncNodeProvider<V, C, T> {
+ export class ComponentSyncNodeProvider<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends (LoadNodeListCommand<V> & { onComponents?: string[]})> extends SyncNodeProvider<V, C, T> {
 
     private readonly _databaseManager: DatabaseManager;
 

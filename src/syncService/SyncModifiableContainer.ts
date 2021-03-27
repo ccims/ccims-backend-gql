@@ -1,27 +1,15 @@
-import { SyncNode } from "../../common/nodes/SyncNode";
-import { SyncUpdate } from "../SyncUpdate";
 import { SyncModifiable } from "./SyncModifiable";
+import { SyncUpdate } from "./SyncUpdate";
 
 /**
- * Wrapper class for SyncNodes to provide sync functionality
- * Use the provided properties to change the node, or use the underlying node to get the current state directly
- * The apply function can be called to apply all current changes
+ * Container for a list of SyncModifiables
+ * The apply function collects updates from all registered SyncModifiables and returns a flat array
  */
-export class SyncNodeContainer<T extends SyncNode> implements SyncModifiable {
-    private readonly _node: T;
-
+export class SyncModifiableContainer implements SyncModifiable {
     /**
      * Array with all SyncModifiables
      */
-    private readonly _syncModifiables: SyncModifiable[] = [];
-
-    public constructor(node: T) {
-        this._node = node;
-    }
-
-    public get node() {
-        return this._node;
-    }
+     private readonly _syncModifiables: SyncModifiable[] = [];
 
     /**
      * Registers a sync modifiable

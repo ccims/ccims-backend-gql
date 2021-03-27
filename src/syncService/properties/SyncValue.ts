@@ -1,5 +1,5 @@
-import { SyncMetadata } from "../../../common/nodes/SyncMetadata";
-import { User } from "../../../common/nodes/User";
+import { SyncMetadata } from "../../common/nodes/SyncMetadata";
+import { User } from "../../common/nodes/User";
 
 export interface SyncValue<T> {
     /**

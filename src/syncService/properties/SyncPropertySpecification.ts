@@ -1,13 +1,13 @@
-import { SyncNode } from "../../../common/nodes/SyncNode";
-import { SyncUpdate } from "../../SyncUpdate";
-import { SyncNodeContainer } from "../SyncNodeContainer";
+import { SyncNode } from "../../common/nodes/SyncNode";
+import { SyncUpdate } from "../SyncUpdate";
+import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncValue } from "./SyncValue";
 
 /**
  * Specification for a SyncProperty
  * has a function which defines how a changed value is applied to the node
  */
-export interface SyncPropertySpecification<T, V extends SyncNode, C extends SyncNodeContainer<V>> {
+export interface SyncPropertySpecification<T, V extends SyncNode, C extends SyncNodeWrapper<V>> {
     /**
      * called to apply the changed value to the property of the node
      * @param value contains the new value for the property

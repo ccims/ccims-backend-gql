@@ -16,13 +16,16 @@ import { UnlabelledEvent } from "../../common/nodes/timelineItems/UnlabelledEven
 import { UnlinkEvent } from "../../common/nodes/timelineItems/UnlinkEvent";
 import { User } from "../../common/nodes/User";
 import { fromNewNodeWithMetadata } from "../SyncUpdate";
-import { SyncListProperty } from "./properties/SyncListProperty";
-import { SyncListPropertySpecification } from "./properties/SyncListPropertySpecification";
-import { SyncProperty } from "./properties/SyncProperty";
-import { SyncPropertySpecification } from "./properties/SyncPropertySpecification";
-import { SyncNodeContainer } from "./SyncNodeContainer";
+import { SyncListProperty } from "../properties/SyncListProperty";
+import { SyncListPropertySpecification } from "../properties/SyncListPropertySpecification";
+import { SyncProperty } from "../properties/SyncProperty";
+import { SyncPropertySpecification } from "../properties/SyncPropertySpecification";
+import { SyncNodeWrapper } from "./SyncNodeWrapper";
 
-export class SyncIssue extends SyncNodeContainer<Issue> {
+/**
+ * Sync wraüüer for Issue
+ */
+export class SyncIssue extends SyncNodeWrapper<Issue> {
 
     /**
      * Specification for the labelsProperty

@@ -1,14 +1,14 @@
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
-import { SyncNode } from "../../../common/nodes/SyncNode";
-import { SyncNodeContainer } from "../SyncNodeContainer";
+import { LoadNodeListCommand } from "../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { NodeListProperty } from "../../common/nodes/properties/NodeListProperty";
+import { SyncNode } from "../../common/nodes/SyncNode";
+import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncNodeProvider } from "./SyncNodeProvider";
 import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
 
 /**
  * SyncNodeProvider based on a NodeListProperty
  */
-export class PropertySyncNodeProvider<V extends SyncNode, C extends SyncNodeContainer<V>, T extends LoadNodeListCommand<V>> extends SyncNodeProvider<V, C, T> {
+export class PropertySyncNodeProvider<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends LoadNodeListCommand<V>> extends SyncNodeProvider<V, C, T> {
 
     /**
      * Creates a new PropertySyncNodeProvider

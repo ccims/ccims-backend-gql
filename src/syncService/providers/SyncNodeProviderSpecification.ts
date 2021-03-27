@@ -1,12 +1,12 @@
-import { LoadNodeListCommand } from "../../../common/database/commands/load/nodes/LoadNodeListCommand";
-import { SyncNode } from "../../../common/nodes/SyncNode";
-import { SyncNodeContainer } from "../SyncNodeContainer";
+import { LoadNodeListCommand } from "../../common/database/commands/load/nodes/LoadNodeListCommand";
+import { SyncNode } from "../../common/nodes/SyncNode";
+import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 
 /**
  * Specification for a SyncNodeProvider
  * specifies a function to create wrapper classes, and a function to create load commands
  */
-export interface SyncNodeProviderSpecification<V extends SyncNode, C extends SyncNodeContainer<V>, T extends LoadNodeListCommand<V>> {
+export interface SyncNodeProviderSpecification<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends LoadNodeListCommand<V>> {
     /**
      * Creates a wrapper out of a node
      * @param node the node to create the wrapper from

@@ -1,4 +1,4 @@
-import { SyncUpdate } from "../SyncUpdate";
+import { SyncUpdate } from "./SyncUpdate";
 
 export interface SyncModifiable {
     /**
