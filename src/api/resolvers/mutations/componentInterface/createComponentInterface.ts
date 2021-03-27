@@ -26,7 +26,7 @@ function createComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The specified component id is not the id of a valid component");
             }
 
-            const componentInterface = await ComponentInterface.create(context.dbManager, name, description, component);
+            const componentInterface = await ComponentInterface.create(context.dbManager, name, description, component, context.user, new Date());
 
             await context.dbManager.save();
             return base.createResult(args, { componentInterface })

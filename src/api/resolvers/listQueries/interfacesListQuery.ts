@@ -7,6 +7,7 @@ import { ComponentInterface } from "../../../common/nodes/ComponentInterface";
 import { ResolverContext } from "../../ResolverContext";
 import { LoadComponentInterfacesCommand } from "../../../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
+import namedSyncNodeListQuery from "./namedSyncNodeListQuery";
 
 /**
  * Creates a interfaces query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -19,7 +20,7 @@ function interfacesListQuery<TSource extends CCIMSNode, TProperty extends Partia
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = namedNodeListQuery<TSource, ComponentInterface>(GraphQLComponentInterfacePage, GraphQLComponentInterfaceFilter, description, "component interfaces", propertyProvider);
+    const baseQuery = namedSyncNodeListQuery<TSource, ComponentInterface>(GraphQLComponentInterfacePage, GraphQLComponentInterfaceFilter, description, "component interfaces", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {

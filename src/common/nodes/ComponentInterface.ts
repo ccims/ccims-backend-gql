@@ -3,7 +3,6 @@ import { LoadRelationCommand } from "../database/commands/load/LoadRelationComma
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
-import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
@@ -12,18 +11,21 @@ import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { Issue } from "./Issue";
+import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { User } from "./User";
 
 /**
  * the specification of the table which contains components
  */
 export const ComponentInterfaceTableSpecification: NodeTableSpecification<ComponentInterface>
-    = new NodeTableSpecification<ComponentInterface>("component_interface", NamedNodeTableSpecification,
+    = new NodeTableSpecification<ComponentInterface>("component_interface", NamedSyncNodeTableSpecification,
         new RowSpecification("host_component_id", componentInterface => componentInterface.componentProperty.getId()));
 
 /**
  * a component can have interfaces, which can be locations for issues
  */
-export class ComponentInterface extends NamedNode<ComponentInterface> implements IssueLocation {
+export class ComponentInterface extends NamedSyncNode<ComponentInterface> implements IssueLocation {
 
     /**
      * property for issues which are located on this component
@@ -81,18 +83,24 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
     /**
      * abstract constructor for subclasses
      * @param databaseManager the databaseManager
-     * @param id the id of the NamedNode
-     * @param name the name of the NamedNode
-     * @param description the description of the NamedNode
+     * @param id the id of the ComponentInterface
+     * @param name the name of the ComponentInterface
+     * @param description the description of the ComponentInterface
+     * @param createdById The creator users ID
+     * @param createdAt The date the ComponentInterface was created
+     * @param isDeleted Weather this ComponentInterface is deleted (needed for sync)
+     * @param metadata The metadate of this labComponentInterfaceel for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string) {
-        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string, createdById: string | undefined, createdAt: Date,
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
         this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
     }
 
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, component: Component): Promise<ComponentInterface> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, component: Component, 
+        createdBy: User, createdAt: Date): Promise<ComponentInterface> {
         if (name.length > 256) {
             throw new Error("The specified name is too long");
         }
@@ -100,7 +108,8 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
             throw new Error("The specified description is too long");
         }
 
-        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, component.id);
+        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, component.id, 
+            createdBy.id, createdAt, false, createdAt, undefined);
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);
         await component.interfacesProperty.add(componentInterface);
