@@ -9,6 +9,9 @@ import { SyncModifiableContainer } from "./SyncModifiableContainer";
 import { Label } from "../common/nodes/Label";
 import { SyncLabel } from "./nodes/SyncLabel";
 import { LoadLabelsCommand } from "../common/database/commands/load/nodes/LoadLabelsCommand";
+import { LoadComponentInterfacesCommand } from "../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
+import { ComponentInterface } from "../common/nodes/ComponentInterface";
+import { SyncComponentInterface } from "./nodes/SyncComponentInterface";
 
 /**
  * Class which provides nodes for sync
@@ -57,6 +60,24 @@ export class SyncManager extends SyncModifiableContainer {
 
 
     /**
+     * Specification for the componentinterfacesProvider
+     */
+     private static readonly componentinterfacesProviderSpecification: SyncNodeProviderSpecification<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand> = {
+        createWrapper: componentinterface => new SyncComponentInterface(componentinterface),
+        createCommand: modifiedSince => {
+            const command = new LoadComponentInterfacesCommand();
+            command.modifiedSince = modifiedSince;
+            return command;
+        }
+    }
+
+    /**
+     * componentinterfaces property
+     */
+    public readonly componentinterfacesProvider: SyncNodeProvider<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand>;
+
+
+    /**
      * Creates a new SyncManager
      * @param component the component which is synced
      */
@@ -66,6 +87,7 @@ export class SyncManager extends SyncModifiableContainer {
 
         this.issuesProvider = this.registerSyncModifiable(new ComponentSyncNodeProvider(SyncManager.issuesProviderSpecification, component));
         this.labelsProvider = this.registerSyncModifiable(new ComponentSyncNodeProvider(SyncManager.labelsProviderSpecification, component));
+        this.componentinterfacesProvider = this.registerSyncModifiable(new ComponentSyncNodeProvider(SyncManager.componentinterfacesProviderSpecification, component));
     }
 
     /**
