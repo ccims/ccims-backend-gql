@@ -1,5 +1,5 @@
 import { CCIMSNode } from "../../common/nodes/CCIMSNode";
-import { Issue } from "../../common/nodes/Issue";
+import { Issue, IssueCategory, IssuePriority } from "../../common/nodes/Issue";
 import { IssueLocation } from "../../common/nodes/IssueLocation";
 import { Label } from "../../common/nodes/Label";
 import { NodeType } from "../../common/nodes/NodeType";
@@ -31,6 +31,10 @@ import { Body } from "../../common/nodes/timelineItems/Body";
 import { SyncValue } from "../properties/SyncValue";
 import { ClosedEvent } from "../../common/nodes/timelineItems/ClosedEvent";
 import { ReopenedEvent } from "../../common/nodes/timelineItems/ReopenedEvent";
+import { UnmarkedAsDuplicateEvent } from "../../common/nodes/timelineItems/UnmarkedAsDuplicateEvent";
+import { MarkedAsDuplicateEvent } from "../../common/nodes/timelineItems/MarkedAsDuplicateEvent";
+import { PriorityChangedEvent } from "../../common/nodes/timelineItems/PriorityChangedEvent";
+import { CategoryChangedEvent } from "../../common/nodes/timelineItems/CategoryChangedEvent";
 
 /**
  * Sync wraüüer for Issue
@@ -74,7 +78,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
             NodeType.UnlabelledEvent,
             (event, label) => (event as UnlabelledEvent).labelProperty.getId() === label.id
         )
-    }
+    };
 
     /**
      * property to add / remove labels
@@ -97,7 +101,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
             NodeType.UnlinkEvent,
             (event, issue) => (event as UnlinkEvent).issueProperty.getId() === issue.id
         )
-    }
+    };
 
     /**
      * property to link / unlink issues
@@ -119,7 +123,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
             NodeType.RemovedFromLocationEvent,
             (event, location) => (event as RemovedFromLocationEvent).issueLocationProperty.getId() === location.id
         )
-    }
+    };
 
     /**
      * property to add / remove labels
@@ -142,7 +146,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
             NodeType.UnassignedEvent,
             (event, assignee) => (event as UnassignedEvent).removedAssigneeProperty.getId() === assignee.id
         )
-    }
+    };
 
     /**
      * property to add / remove assignees
@@ -201,13 +205,98 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
                 lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isOpen ? NodeType.ReopenedEvent : NodeType.ClosedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
             };
         }
-    }
+    };
 
     /**
      * property to change the close / reopen the issue
      */
     public readonly isOpenProperty: SyncProperty<boolean, Issue, SyncIssue>;
+
+
+    /**
+     * Specification for the isDuplicateProperty
+     */
+    private static readonly isDuplicatePropertySpecification: SyncPropertySpecification<boolean, Issue, SyncIssue> = {
+        apply: async (item, node) => {
+            if (item.value) {
+                return fromNewNodeWithMetadata(await node.node.unmarkAsDuplicate(item.atDate ?? new Date(), item.asUser), item.metadata);
+            } else {
+                return fromNewNodeWithMetadata(await node.node.markAsDuplicate(item.atDate ?? new Date(), item.asUser), item.metadata);
+            }
+        },
+        applyHistoric: async (item, node) => {
+            if (item.value) {
+                return fromTimelineItemWithMetadata(node, await UnmarkedAsDuplicateEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node), item);
+            } else {
+                return fromTimelineItemWithMetadata(node, await MarkedAsDuplicateEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node), item);
+            }
+        },
+        getCurrentStatus: async node => {
+            return {
+                currentValue: node.node.isDuplicate,
+                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isDuplicate ? NodeType.MarkedAsDuplicateEvent : NodeType.UnmarkedAsDuplicateEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+            };
+        }
+    };
+
+    /**
+     * property to change the close / reopen the issue
+     */
+    public readonly isDuplicateProperty: SyncProperty<boolean, Issue, SyncIssue>;
     
+
+    /**
+     * Specification for categoryProperty
+     */
+    private static readonly categoryPropertySpecification: SyncPropertySpecification<IssueCategory, Issue, SyncIssue> = {
+        apply: async (item, node) => fromNewNodeWithMetadata(await node.node.changeCategory(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
+        applyHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await CategoryChangedEvent.create(
+                node.node.databaseManager, 
+                item.asUser, 
+                item.atDate ?? new Date(), 
+                node.node, 
+                await node.getCategoryAt(item.atDate ?? new Date()), 
+                item.value)
+            , item),
+        getCurrentStatus: async node => {
+            return {
+                currentValue: node.node.category,
+                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.CategoryChangedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+            };
+        }
+    };
+
+    /**
+     * property to change the category of the issue
+     */
+    public readonly categoryProperty: SyncProperty<IssueCategory, Issue, SyncIssue>;
+
+
+    /**
+     * Specification for the priorityProperty
+     */
+    private static readonly priorityPropertySpecification: SyncPropertySpecification<IssuePriority, Issue, SyncIssue> = {
+        apply: async (item, node) => fromNewNodeWithMetadata(await node.node.changePriority(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
+        applyHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await PriorityChangedEvent.create(
+                node.node.databaseManager, 
+                item.asUser, 
+                item.atDate ?? new Date(), 
+                node.node, 
+                await node.getPriorityAt(item.atDate ?? new Date()), 
+                item.value)
+            , item),
+        getCurrentStatus: async node => {
+            return {
+                currentValue: node.node.priority,
+                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.PriorityChangedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+            };
+        }
+    };
+
+    /**
+     * property to change the priority of the issue
+     */
+    public readonly priorityProperty: SyncProperty<IssuePriority, Issue, SyncIssue>;
 
 
     /**
@@ -226,12 +315,15 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
 
         this.titleProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.titlePropertySpecification, this));
         this.isOpenProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.isOpenPropertySpecification, this));
+        this.isDuplicateProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.isDuplicatePropertySpecification, this));
+        this.categoryProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.categoryPropertySpecification, this));
+        this.priorityProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.priorityPropertySpecification, this));
     }
 
     /**
-     * Gets the title at a specific point in time
+     * Gets the title at a specified point in time
      * @param date the timestamp for the queried state
-     * @returns the title of the issue at the speicified point in time
+     * @returns the title of the issue at the specified point in time
      */
     private async getTitleAt(date: Date): Promise<string> {
         const renamedTitleEvent = await getLatestTimelineItem(this, NodeType.RenamedTitleEvent, item => item.lastEditedAt.getTime() < date.getTime());
@@ -239,6 +331,34 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
             return (renamedTitleEvent as RenamedTitleEvent).newTitle;
         } else {
             return (await this.node.bodyProperty.get()).initialTitle;
+        }
+    }
+
+    /**
+     * Gets the category at a specified point in time
+     * @param date the timestamp for the queried state
+     * @returns the category of the issue at the specified point in time
+     */
+    private async getCategoryAt(date: Date): Promise<IssueCategory> {
+        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.CategoryChangedEvent, item => item.lastEditedAt.getTime() < date.getTime());
+        if (categoryChangedEvent !== undefined) {
+            return (categoryChangedEvent as CategoryChangedEvent).newCategory;
+        } else {
+            return IssueCategory.UNCLASSIFIED;
+        }
+    }
+
+    /**
+     * Gets the category at a specified point in time
+     * @param date the timestamp for the queried state
+     * @returns the category of the issue at the specified point in time
+     */
+    private async getPriorityAt(date: Date): Promise<IssuePriority> {
+        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.PriorityChangedEvent, item => item.lastEditedAt.getTime() < date.getTime());
+        if (categoryChangedEvent !== undefined) {
+            return (categoryChangedEvent as PriorityChangedEvent).newPriority;
+        } else {
+            return IssuePriority.DEFAULT;
         }
     }
 
