@@ -1,13 +1,13 @@
-import { SyncNode } from "../../common/nodes/SyncNode";
 import { SyncUpdate } from "../SyncUpdate";
 import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncValue } from "./SyncValue";
+import { CCIMSNode } from "../../common/nodes/CCIMSNode";
 
 /**
  * Specification for a SyncListProperty
  * has functions which define how add and remove is applied to the SyncNode
  */
-export interface SyncListPropertySpecification<T, V extends SyncNode, C extends SyncNodeWrapper<V>> {
+export interface SyncListPropertySpecification<T, V extends CCIMSNode, C extends SyncNodeWrapper<V>> {
     /**
      * Is called to apply an added item to the node
      * @param item contains the item to be added

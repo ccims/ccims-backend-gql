@@ -1,10 +1,10 @@
-import { SyncNode } from "../../common/nodes/SyncNode";
 import { User } from "../../common/nodes/User";
 import { SyncUpdate } from "../SyncUpdate";
 import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncModifiable } from "../SyncModifiable";
 import { SyncPropertySpecification } from "./SyncPropertySpecification";
 import { SyncValue } from "./SyncValue";
+import { CCIMSNode } from "../../common/nodes/CCIMSNode";
 
 /**
  * Property used to sync a property
@@ -14,7 +14,7 @@ import { SyncValue } from "./SyncValue";
  * If there is a change with a date, all changes without a date are dropped.
  * If there are only changes without a date, the last one with a specified user is taken.
  */
-export class SyncProperty<T, V extends SyncNode, C extends SyncNodeWrapper<V>> implements SyncModifiable {
+export class SyncProperty<T, V extends CCIMSNode, C extends SyncNodeWrapper<V>> implements SyncModifiable {
 
     /**
      * Sync wrapper which contains the node to which updates are applied

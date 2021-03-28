@@ -26,7 +26,6 @@ import { IssueComment } from "../../common/nodes/timelineItems/IssueComment";
 import { SyncComment } from "./SyncComment";
 import { LoadIssueCommentsCommand } from "../../common/database/commands/load/nodes/timeline/LoadIssueCommentsCommand";
 import { SyncNodeProvider } from "../providers/SyncNodeProvider";
-import { PropertySyncNodeProvider } from "../providers/PropertySyncNodeProvider";
 import { Body } from "../../common/nodes/timelineItems/Body";
 import { SyncValue } from "../properties/SyncValue";
 import { ClosedEvent } from "../../common/nodes/timelineItems/ClosedEvent";
@@ -306,7 +305,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
     public constructor(node: Issue) {
         super(node);
 
-        this.commentsProvider = this.registerSyncModifiable(new PropertySyncNodeProvider(SyncIssue.commentsProviderSpecification, node.timelineProperty));
+        this.commentsProvider = this.registerSyncModifiable(new SyncNodeProvider(SyncIssue.commentsProviderSpecification, node.timelineProperty));
 
         this.labelsProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.labelsPropertySpecification, this));
         this.locationsProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.locationsPropertySpecification, this));

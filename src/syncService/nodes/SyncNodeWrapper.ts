@@ -1,4 +1,4 @@
-import { SyncNode } from "../../common/nodes/SyncNode";
+import { CCIMSNode } from "../../common/nodes/CCIMSNode";
 import { SyncModifiableContainer } from "../SyncModifiableContainer";
 
 /**
@@ -6,7 +6,7 @@ import { SyncModifiableContainer } from "../SyncModifiableContainer";
  * Use the provided properties to change the node, or use the underlying node to get the current state directly
  * The apply function can be called to apply all current changes
  */
-export class SyncNodeWrapper<T extends SyncNode> extends SyncModifiableContainer {
+export class SyncNodeWrapper<T extends CCIMSNode> extends SyncModifiableContainer {
     private readonly _node: T;
 
     public constructor(node: T) {

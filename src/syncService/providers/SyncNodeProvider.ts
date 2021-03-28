@@ -4,17 +4,18 @@ import { SyncUpdate } from "../SyncUpdate";
 import { SyncModifiable } from "../SyncModifiable";
 import { SyncNodeWrapper } from "../nodes/SyncNodeWrapper";
 import { SyncNodeProviderSpecification } from "./SyncNodeProviderSpecification";
+import { NodeListProperty } from "../../common/nodes/properties/NodeListProperty";
 
 /**
  * Provides sync functionality for SyncNodes
  * Base class for property based version and DatabaseManager based version
  */
-export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends LoadNodeListCommand<V>> implements SyncModifiable {
+export class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWrapper<V>, T extends LoadNodeListCommand<V>> implements SyncModifiable {
 
     /**
      * The specification used to create wrapper classes and load commands
      */
-    protected readonly _specification: SyncNodeProviderSpecification<V, C, T>;
+    private readonly _specification: SyncNodeProviderSpecification<V, C, T>;
 
     /**
      * Map used to cache C wrapper classses
@@ -24,8 +25,9 @@ export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWra
     /**
      * Creates a new SyncNodeProvider
      * @param specification specifies functions to create load commands and wrapper
+     * @param property the property used to execute commands and get a single element by id
      */
-    public constructor(specification: SyncNodeProviderSpecification<V, C, T>) {
+    public constructor(specification: SyncNodeProviderSpecification<V, C, T>, private readonly property: NodeListProperty<any, any>) {
         this._specification = specification;
     }
 
@@ -107,6 +109,8 @@ export abstract class SyncNodeProvider<V extends SyncNode, C extends SyncNodeWra
      * @param command the command which is executed
      * @returns the result of the command
      */
-    protected abstract executeCommand(command: T): Promise<V[]>;
+    private async executeCommand(command: T): Promise<V[]> {
+        return this.property.getFilteredElements(command);
+    }
 
 }
