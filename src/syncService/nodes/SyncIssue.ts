@@ -15,7 +15,7 @@ import { UnassignedEvent } from "../../common/nodes/timelineItems/UnassignedEven
 import { UnlabelledEvent } from "../../common/nodes/timelineItems/UnlabelledEvent";
 import { UnlinkEvent } from "../../common/nodes/timelineItems/UnlinkEvent";
 import { User } from "../../common/nodes/User";
-import { fromNewNodeWithMetadata } from "../SyncUpdate";
+import { fromNewNodeWithMetadata, SyncUpdate } from "../SyncUpdate";
 import { SyncListProperty } from "../properties/SyncListProperty";
 import { SyncListPropertySpecification } from "../properties/SyncListPropertySpecification";
 import { SyncProperty } from "../properties/SyncProperty";
@@ -28,6 +28,9 @@ import { LoadIssueCommentsCommand } from "../../common/database/commands/load/no
 import { SyncNodeProvider } from "../providers/SyncNodeProvider";
 import { PropertySyncNodeProvider } from "../providers/PropertySyncNodeProvider";
 import { Body } from "../../common/nodes/timelineItems/Body";
+import { SyncValue } from "../properties/SyncValue";
+import { ClosedEvent } from "../../common/nodes/timelineItems/ClosedEvent";
+import { ReopenedEvent } from "../../common/nodes/timelineItems/ReopenedEvent";
 
 /**
  * Sync wraüüer for Issue
@@ -61,9 +64,9 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     private static readonly labelsPropertySpecification : SyncListPropertySpecification<Label, Issue, SyncIssue> = {
         applyAdd: async (item, node) => fromNewNodeWithMetadata(await node.node.addLabel(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyAddHistoric: async (item, node) => fromNewNodeWithMetadata(await LabelledEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyAddHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await LabelledEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         applyRemove: async (item, node) => fromNewNodeWithMetadata(await node.node.removeLabel(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyRemoveHistoric: async (item, node) => fromNewNodeWithMetadata(await UnlabelledEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyRemoveHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await UnlabelledEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         getCurrentStatus: getCurrentListPropertyStatus(
             node => node.node.labelsProperty, 
             NodeType.LabelledEvent,
@@ -84,9 +87,9 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     private static readonly linksToIssuesPropertySpecification : SyncListPropertySpecification<Issue, Issue, SyncIssue> = {
         applyAdd: async (item, node) => fromNewNodeWithMetadata(await node.node.addLinkedIssue(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyAddHistoric: async (item, node) => fromNewNodeWithMetadata(await LinkEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyAddHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await LinkEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         applyRemove: async (item, node) => fromNewNodeWithMetadata(await node.node.removeLinkedIssue(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyRemoveHistoric: async (item, node) => fromNewNodeWithMetadata(await UnlinkEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyRemoveHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await UnlinkEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         getCurrentStatus: getCurrentListPropertyStatus(
             node => node.node.linksToIssuesProperty, 
             NodeType.LinkEvent,
@@ -106,9 +109,9 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     private static readonly locationsPropertySpecification : SyncListPropertySpecification<IssueLocation, Issue, SyncIssue> = {
         applyAdd: async (item, node) => fromNewNodeWithMetadata(await node.node.addToLocation(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyAddHistoric: async (item, node) => fromNewNodeWithMetadata(await AddedToLocationEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyAddHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await AddedToLocationEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         applyRemove: async (item, node) => fromNewNodeWithMetadata(await node.node.removeFromLocation(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyRemoveHistoric: async (item, node) => fromNewNodeWithMetadata(await RemovedFromLocationEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyRemoveHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await RemovedFromLocationEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         getCurrentStatus: getCurrentListPropertyStatus(
             node => node.node.locationsProperty, 
             NodeType.AddedToLocationEvent,
@@ -129,9 +132,9 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     private static readonly assigneesPropertySpecification: SyncListPropertySpecification<User, Issue, SyncIssue> = {
         applyAdd: async (item, node) => fromNewNodeWithMetadata(await node.node.assignUser(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyAddHistoric: async (item, node) => fromNewNodeWithMetadata(await AssignedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyAddHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await AssignedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         applyRemove: async (item, node) => fromNewNodeWithMetadata(await node.node.unassignUser(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyRemoveHistoric: async (item, node) => fromNewNodeWithMetadata(await UnassignedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item.metadata),
+        applyRemoveHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await UnassignedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node, item.value), item),
         getCurrentStatus: getCurrentListPropertyStatus(
             node => node.node.assigneesProperty, 
             NodeType.AssignedEvent,
@@ -152,14 +155,14 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     private static readonly titlePropertySpecification: SyncPropertySpecification<string, Issue, SyncIssue> = {
         apply: async (item, node) => fromNewNodeWithMetadata(await node.node.changeTitle(item.value, item.atDate ?? new Date(), item.asUser), item.metadata),
-        applyHistoric: async (item, node) => fromNewNodeWithMetadata(await RenamedTitleEvent.create(
+        applyHistoric: async (item, node) => fromTimelineItemWithMetadata(node, await RenamedTitleEvent.create(
                 node.node.databaseManager, 
                 item.asUser, 
                 item.atDate ?? new Date(), 
                 node.node, 
                 await node.getTitleAt(item.atDate ?? new Date()), 
                 item.value)
-            , item.metadata),
+            , item),
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.title,
@@ -172,6 +175,38 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      * property to change the title
      */
     public readonly titleProperty: SyncProperty<string, Issue, SyncIssue>;
+
+
+    /**
+     * Specification for the isOpenProperty
+     */
+    private static readonly isOpenPropertySpecification: SyncPropertySpecification<boolean, Issue, SyncIssue> = {
+        apply: async (item, node) => {
+            if (item.value) {
+                return fromNewNodeWithMetadata(await node.node.close(item.atDate ?? new Date(), item.asUser), item.metadata);
+            } else {
+                return fromNewNodeWithMetadata(await node.node.reopen(item.atDate ?? new Date(), item.asUser), item.metadata);
+            }
+        },
+        applyHistoric: async (item, node) => {
+            if (item.value) {
+                return fromTimelineItemWithMetadata(node, await ClosedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node), item);
+            } else {
+                return fromTimelineItemWithMetadata(node, await ReopenedEvent.create(node.node.databaseManager, item.asUser, item.atDate ?? new Date(), node.node), item);
+            }
+        },
+        getCurrentStatus: async node => {
+            return {
+                currentValue: node.node.isOpen,
+                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isOpen ? NodeType.ReopenedEvent : NodeType.ClosedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+            };
+        }
+    }
+
+    /**
+     * property to change the close / reopen the issue
+     */
+    public readonly isOpenProperty: SyncProperty<boolean, Issue, SyncIssue>;
     
 
 
@@ -190,6 +225,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         this.linksToIssuesProperty = this.registerSyncModifiable(new SyncListProperty(SyncIssue.linksToIssuesPropertySpecification, this));
 
         this.titleProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.titlePropertySpecification, this));
+        this.isOpenProperty = this.registerSyncModifiable(new SyncProperty(SyncIssue.isOpenPropertySpecification, this));
     }
 
     /**
@@ -270,4 +306,16 @@ async function getLatestTimelineItem (
         }
     }
     return undefined;
+}
+
+/**
+ * Returns fromNewNodeWithMetadata, and also participates as the specified user at the specified date
+ * @param node The issue where the timelineItem is added
+ * @param timelineItem the created TimelineItem
+ * @param item the sync value which defines which user caused the participation
+ * @returns the SyncUpdate with timelineItem as new node
+ */
+async function fromTimelineItemWithMetadata(node: SyncIssue, timelineItem: IssueTimelineItem, item: SyncValue<any>): Promise<SyncUpdate> {
+    node.node.participatedAt(item.asUser, item.atDate);
+    return fromNewNodeWithMetadata(timelineItem, item.metadata);
 }
