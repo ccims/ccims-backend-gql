@@ -22,3 +22,10 @@ CREATE TABLE metadata (
     metadata JSON,
     PRIMARY KEY (id, node_id)
 );
+
+CREATE TABLE sync_lookup_table (
+    id varchar(128) NOT NULL,
+    ims_id id NOT NULL,
+    ccims_id id,
+    PRIMARY KEY (id, ims_id)
+);
