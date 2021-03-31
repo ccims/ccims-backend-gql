@@ -1,5 +1,7 @@
 -- Triggers and functions
 DROP FUNCTION IF EXISTS update_last_modified_at_function;
+DROP FUNCTION IF EXISTS insert_ccims_user_function;
+
 DO $$
 DECLARE
     t_name text;
@@ -11,6 +13,7 @@ BEGIN
     END LOOP;
 END;
 $$ language 'plpgsql';
+DROP TRIGGER IF EXISTS insert_ccims_user_trigger ON ccims_users;
 
 -- IMS Tables
 DROP TABLE IF EXISTS user_ims_credential;
@@ -30,7 +33,14 @@ DROP TABLE IF EXISTS issue_location;
 
 -- User Tables
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS ccims_users;
+DROP TABLE IF EXISTS ims_users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS global_permissions;
+DROP TABLE IF EXISTS project_permissions;
+DROP TABLE IF EXISTS component_permissions;
 DROP TABLE IF EXISTS relation_user_project;
+DROP TABLE IF EXISTS relation_user_role;
 
 -- Issue Tables
 DROP TABLE IF EXISTS issue_label;
