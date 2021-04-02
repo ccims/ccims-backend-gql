@@ -126,11 +126,13 @@ export class Label extends NamedSyncNode {
             (ids, label) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             (label) => {
                 const command = new LoadComponentsCommand();
                 command.labels = [label.id];
+                command.loadDeleted = true;
                 return command;
             }
         )

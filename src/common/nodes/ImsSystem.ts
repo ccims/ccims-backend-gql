@@ -70,6 +70,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
             (id, imsSystem) => {
                 const command = new LoadComponentsCommand();
                 command.ids = [id];
+                command.loadDeleted = true;
                 return command;
             },
             imsSystem => {

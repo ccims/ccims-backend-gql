@@ -22,6 +22,7 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
             (id, componentEvent) => {
                 const command = new LoadComponentsCommand();
                 command.ids = [id];
+                command.loadDeleted = true;
                 return command;
             },
             componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand()),

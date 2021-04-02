@@ -4,13 +4,18 @@ import { ImsType } from "../../../../nodes/ImsSystem";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNamedOwnedNodesCommand } from "./LoadNamedOwnedNodesCommand";
-import { createRelationFilterByPrimary, createRelationFilterBySecundary } from "./RelationFilter";
+import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
+import { createRelationFilterByPrimary, createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
 
 /**
  * command to load a list of components
  */
-export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component> {
+export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> {
+
+    /**
+     * Only select components which have one of the given users as owner
+     */
+    public ownedBy?: string[];
 
     /**
      * load the components which are registered on any of the projects
@@ -56,7 +61,8 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
      * @returns the parsed component
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Component {
-        return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id, resultRow.ims_system_id);
+        return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id, resultRow.ims_system_id,
+            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
@@ -74,6 +80,11 @@ export class LoadComponentsCommand extends LoadNamedOwnedNodesCommand<Component>
      */
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
+
+        if (this.ownedBy !== undefined) {
+            conditions.conditions.push(createStringListFilter("owner_user_id", this.ownedBy, conditions.i, 3));
+            conditions.i++;
+        }
 
         if (this.onProjects !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("project", "component", this.onProjects, i));

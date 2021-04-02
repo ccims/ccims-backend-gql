@@ -210,11 +210,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadComponentsCommand();
                 command.hasIssue = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issueLocation, issue) => issueLocation.issuesProperty)
@@ -234,11 +236,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadComponentsCommand();
                 command.hasIssue = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, issue) => component.pinnedIssuesProperty)

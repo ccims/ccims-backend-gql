@@ -7,7 +7,7 @@ import { NodeListProperty } from "../../../common/nodes/properties/NodeListPrope
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
 import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
-import namedOwnedNodeListQuery from "./namedOwnedNodeListQuery";
+import namedNodeListQuery from "./namedNodeListQuery";
 
 /**
  * Creates a projects query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -20,7 +20,7 @@ function projectsListQuery<TSource extends CCIMSNode, TProperty extends Partial<
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = namedOwnedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
+    const baseQuery = namedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
@@ -29,6 +29,7 @@ function projectsListQuery<TSource extends CCIMSNode, TProperty extends Partial<
             cmd.components = args.filterBy?.components;
             cmd.users = args.filterBy?.users;
             cmd.issuesOnComponent = args.filterBy?.issues;
+            cmd.ownedBy = args.filterBy?.owner;
             return baseQuery.createResult(src, context, cmd);
         }
     };

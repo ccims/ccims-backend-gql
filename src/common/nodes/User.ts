@@ -2,7 +2,6 @@ import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
 import { UserPermissions } from "../../utils/UserPermissions";
-import { CombineCommand } from "../database/commands/CombineCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
@@ -11,8 +10,8 @@ import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersComma
 import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
+import { Component } from "./Component";
 import { Issue } from "./Issue";
-import { NamedOwnedNode } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
@@ -148,27 +147,54 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             .notifyChanged((comment, user) => comment.editedByProperty)
             .noSave();
 
-    public readonly ownedNodesProperty: NodeListProperty<NamedOwnedNode, User>;
+    /**
+     * components owned by this user
+     */
+    public readonly ownedComponentsProperty: NodeListProperty<Component, User>;
 
-    public static readonly ownedNodesPropertySpecification: NodeListPropertySpecification<NamedOwnedNode, User>
-        = NodeListPropertySpecification.loadDynamic<NamedOwnedNode, User>(
-            user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
-            LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
+    /**
+     * specification for ownedComponentsProperty
+     */
+    public static readonly ownedComponentsPropertySpecification: NodeListPropertySpecification<Component, User>
+        = NodeListPropertySpecification.loadDynamic<Component, User>(
+            user => LoadRelationCommand.fromManySideBase("component", "owner_user_id", user),
             (ids, user) => {
-                const command1 = new LoadComponentsCommand();
-                command1.ids = ids;
-                const command2 = new LoadProjectsCommand();
-                command2.ids = ids;
-                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+                const command = new LoadComponentsCommand();
+                command.ids = ids;
+                command.loadDeleted = true;
+                return command;
             },
             user => {
-                const command1 = new LoadComponentsCommand();
-                command1.ownedBy = [user.id]
-                const command2 = new LoadProjectsCommand();
-                command2.ownedBy = [user.id];
-                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+                const command = new LoadComponentsCommand();
+                command.ownedBy = [user.id];
+                command.loadDeleted = true;
+                return command;
             })
-            .notifyChanged((namedOwnedNode, user) => namedOwnedNode.ownerProperty)
+            .notifyChanged((component, user) => component.ownerProperty)
+            .noSave();
+
+    /**
+     * projects owned by this user
+     */
+    public readonly ownedProjectsProperty: NodeListProperty<Project, User>;
+
+    /**
+     * specification for ownedProjectsProperty
+     */
+    public static readonly ownedProjectsPropertySpecification: NodeListPropertySpecification<Project, User>
+        = NodeListPropertySpecification.loadDynamic<Project, User>(
+            user => LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
+            (ids, user) => {
+                const command = new LoadProjectsCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadProjectsCommand();
+                command.ownedBy = [user.id]
+                return command;
+            })
+            .notifyChanged((project, user) => project.ownerProperty)
             .noSave();
 
     /**
@@ -195,7 +221,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
         this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
         this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
-        this.ownedNodesProperty = new NodeListProperty<NamedOwnedNode, User>(databaseManager, User.ownedNodesPropertySpecification, this);
+        this.ownedComponentsProperty = new NodeListProperty<Component, User>(databaseManager, User.ownedComponentsPropertySpecification, this);
+        this.ownedProjectsProperty = new NodeListProperty<Project, User>(databaseManager, User.ownedProjectsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): Promise<User> {

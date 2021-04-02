@@ -42,6 +42,7 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
             (id, componentInterface) => {
                 const command = new LoadComponentsCommand();
                 command.ids = [id];
+                command.loadDeleted = true;
                 return command;
             },
             componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand()),
@@ -69,11 +70,13 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
             (ids, componentInterface) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             componentInterface => {
                 const command = new LoadComponentsCommand();
                 command.consumesInterface = [componentInterface.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, componentInterface) => component.consumedInterfacesProperty)

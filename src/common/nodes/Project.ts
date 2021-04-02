@@ -7,8 +7,7 @@ import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
 import { Issue } from "./Issue";
-import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
-import { NodeTableSpecification } from "./NodeTableSpecification";
+import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
@@ -17,18 +16,50 @@ import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { ComponentInterface } from "./ComponentInterface";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
+import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 
 /**
  * the specification of the table which contains projects
  */
 export const ProjectTableSpecification: NodeTableSpecification<Project>
-    = new NodeTableSpecification<Project>("project", NamedOwnedNodeTableSpecification);
+    = new NodeTableSpecification<Project>("project", NamedNodeTableSpecification,
+        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
 
 
 /**
  * A project
  */
-export class Project extends NamedOwnedNode<Project> {
+export class Project extends NamedNode<Project> {
+
+    /**
+     * the owner property which contains the owner of this node
+     */
+    public readonly ownerProperty: NullableNodeProperty<User, Project>;
+
+    /**
+     * specification of the ownerProperty
+     */
+    private static readonly ownerPropertySpecification: NodePropertySpecification<User, Project>
+        = new NodePropertySpecification<User, Project>(
+            (id, node) => {
+                const command = new LoadUsersCommand();
+                command.ids = [id];
+                return command;
+            },
+            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
+            (user, node) => user.ownedProjectsProperty
+        );
+
+    /**
+     * Async getter funtion for the ownerProperty
+     * @returns A promise of the user owning this node
+     */
+    public async owner(): Promise<User | undefined> {
+        return this.ownerProperty.getPublic();
+    }
 
     /**
      * property with the components on this project
@@ -43,11 +74,13 @@ export class Project extends NamedOwnedNode<Project> {
             (ids, project) => {
                 const command = new LoadComponentsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             project => {
                 const command = new LoadComponentsCommand();
                 command.onProjects = [project.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, project) => component.projectsProperty)
@@ -167,7 +200,8 @@ export class Project extends NamedOwnedNode<Project> {
      * @param ownerId the id of the owner of the component
      */
     public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
-        super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description, ownerId);
+        super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description);
+        this.ownerProperty = new NullableNodeProperty<User, Project>(databaseManager, Project.ownerPropertySpecification, this, ownerId);
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
@@ -192,7 +226,7 @@ export class Project extends NamedOwnedNode<Project> {
         const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
         project.markNew();
         databaseManager.addCachedNode(project);
-        await owner.ownedNodesProperty.add(project);
+        await owner.ownedProjectsProperty.add(project);
         await project.usersProperty.add(owner);
         return project;
     }
@@ -204,6 +238,7 @@ export class Project extends NamedOwnedNode<Project> {
     public async markDeleted(): Promise<void> {
         if (!this.isDeleted) {
             await super.markDeleted();
+            await this.ownerProperty.markDeleted();
             await this.componentsProperty.clear();
             await this.usersProperty.clear();
         }

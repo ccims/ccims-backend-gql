@@ -10,12 +10,12 @@ import { SyncNodeProviderSpecification } from "../providers/SyncNodeProviderSpec
 import { SyncComponentInterface } from "./SyncComponentInterface";
 import { SyncIssue } from "./SyncIssue";
 import { SyncLabel } from "./SyncLabel";
-import { SyncNodeWrapper } from "./SyncNodeWrapper";
+import { SyncNamedNode } from "./SyncNamedNode";
 
 /**
  * Sync wrapper for Label
  */
- export class SyncComponent extends SyncNodeWrapper<Component> {
+ export class SyncComponent extends SyncNamedNode<Component> {
 
     /**
      * Specification for the issuesProvider
