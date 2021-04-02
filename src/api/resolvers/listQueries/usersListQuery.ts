@@ -1,5 +1,5 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
-import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";

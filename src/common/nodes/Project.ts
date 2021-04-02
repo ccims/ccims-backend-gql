@@ -2,7 +2,6 @@ import { QueryConfig, QueryResult } from "pg";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
@@ -52,29 +51,6 @@ export class Project extends NamedOwnedNode<Project> {
             })
             .notifyChanged((component, project) => component.projectsProperty)
             .saveOnPrimary("project", "component");
-
-    /**
-     * Property with the usersparticipating in this project
-     */
-    public readonly usersProperty: NodeListProperty<User, Project>;
-
-    /**
-     * the specification of compopnentsProperty
-     */
-    private static readonly usersPropertySpecification: NodeListPropertySpecification<User, Project>
-        = NodeListPropertySpecification.loadDynamic<User, Project>(LoadRelationCommand.fromSecundary("user", "project"),
-            (ids, project) => {
-                const command = new LoadUsersCommand();
-                command.ids = ids;
-                return command;
-            },
-            project => {
-                const command = new LoadUsersCommand();
-                command.onProjects = [project.id];
-                return command;
-            })
-            .notifyChanged((component, project) => component.projectsProperty)
-            .noSave();
 
     /**
      * property with all issues
@@ -171,7 +147,6 @@ export class Project extends NamedOwnedNode<Project> {
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
-        this.usersProperty = new NodeListProperty<User, Project>(databaseManager, Project.usersPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
     }
 
@@ -193,7 +168,6 @@ export class Project extends NamedOwnedNode<Project> {
         project.markNew();
         databaseManager.addCachedNode(project);
         await owner.ownedNodesProperty.add(project);
-        await project.usersProperty.add(owner);
         return project;
     }
 
@@ -205,7 +179,6 @@ export class Project extends NamedOwnedNode<Project> {
         if (!this.isDeleted) {
             await super.markDeleted();
             await this.componentsProperty.clear();
-            await this.usersProperty.clear();
         }
     }
 }

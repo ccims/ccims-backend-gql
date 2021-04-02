@@ -2,7 +2,8 @@
  * enum with types for nodes
  */
 export enum NodeType {
-    User = "User",
+    CCIMSUser = "CCIMSUser",
+    IMSUser = "IMSUser",
     Project = "Project",
     Component = "Component",
     ComponentInterface = "ComponentInterface",

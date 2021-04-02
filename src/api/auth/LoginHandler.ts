@@ -2,7 +2,7 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { ResolverContextOptional } from "../ResolverContext";
 
 /**

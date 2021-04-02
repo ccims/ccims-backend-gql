@@ -9,7 +9,7 @@ import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommandBase";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { Issue } from "./Issue";
 import { SetMetadataCommand } from "../database/commands/save/SetMetadataCommand";

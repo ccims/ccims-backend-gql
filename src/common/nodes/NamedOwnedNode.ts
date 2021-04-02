@@ -1,5 +1,5 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommandBase";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";

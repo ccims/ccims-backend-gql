@@ -1,6 +1,6 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../../database/commands/load/LoadRelationCommand";
-import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommandBase";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";

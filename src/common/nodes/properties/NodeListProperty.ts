@@ -84,6 +84,7 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
 
     /**
      * gets all elements which are in this relation and returned from filter
+     * WARNING: this may return elements which are not listed in this property
      * @param filter the filter to filter other nodes
      * @returns the array of filtered elements
      */
@@ -93,7 +94,9 @@ export class NodeListProperty<T extends CCIMSNode, V extends CCIMSNode> extends 
         this._databaseManager.addCommand(filter);
         await this._databaseManager.executePendingCommands();
         filter.getResult().forEach(element => {
-            this.setElement(element);
+            if (this._ids.has(element.id)) {
+                this.setElement(element);
+            }
         });
         return filter.getResult();
     }

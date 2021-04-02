@@ -7,7 +7,7 @@ import { Issue, IssueCategory } from "../../../../common/nodes/Issue";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadLabelsCommand } from "../../../../common/database/commands/load/nodes/LoadLabelsCommand";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { LoadIssueLocationsCommand } from "../../../../common/database/commands/load/nodes/LoadIssueLocationsCommand";
 
 function createIssue(): GraphQLFieldConfig<any, ResolverContext> {

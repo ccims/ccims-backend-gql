@@ -3,7 +3,7 @@ import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
 import { ResolverContext, ResolverContextOptional } from "../ResolverContext";
-import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommandBase";
 
 /**
  * Express middleware for verifying a JWT given by the client

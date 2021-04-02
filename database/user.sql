@@ -2,7 +2,7 @@ CREATE TABLE users (
     username character varying(100),
     displayname character varying(200),
     email character varying(320),
-    linked_user id NOT NULL,
+    linked_user_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
@@ -10,10 +10,12 @@ CREATE TABLE ccims_users (
     pw_hash character varying(200) NOT NULL,
     UNIQUE (username),
     CHECK (username IS NOT NULL),
+    CHECK (displayname IS NOT NULL),
     PRIMARY KEY (id)
 ) INHERITS (users);
 
 CREATE TABLE ims_users (
+    ims_data JSON,
     PRIMARY KEY (id)
 ) INHERITS (users);
 

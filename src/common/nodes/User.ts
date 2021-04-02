@@ -1,8 +1,5 @@
-import crypto from "crypto";
-import { config } from "../../config/Config";
-import { log } from "../../log";
-import { UserPermissions } from "../../utils/UserPermissions";
 import { CombineCommand } from "../database/commands/CombineCommand";
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
@@ -15,9 +12,10 @@ import { Issue } from "./Issue";
 import { NamedOwnedNode } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
+import { NodeProperty } from "./properties/NodeProperty";
+import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { Comment } from "./timelineItems/Comment"
 
 /**
@@ -27,9 +25,8 @@ export const UserTableSpecification: NodeTableSpecification<User>
     = new NodeTableSpecification<User>("users", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("username", "username"),
         RowSpecification.fromProperty("displayname", "displayName"),
-        RowSpecification.fromProperty("pw_hash", "passwordHash"),
         RowSpecification.fromProperty("email", "email"),
-        new RowSpecification<User>("permissions", (user) => user.permissions.toDatabase()));
+        new RowSpecification("linked_user_id", user => user.linkedUserProperty.getId()));
 
 /**
  * A user is a CCIMSNode to represent a user (account) of the ccims with a username, password, email etc.
@@ -39,53 +36,65 @@ export const UserTableSpecification: NodeTableSpecification<User>
 export class User<T extends User = any> extends CCIMSNode<T> {
 
     /**
+     * the linked user (might be the same user)
+     */
+    public readonly linkedUserProperty: NodeProperty<User, User>;
+
+    /**
+     * specification for linkedUserProperty
+     */
+    private static readonly linkedUserPropertySpecification: NodePropertySpecification<User, User>
+        = new NodePropertySpecification<User, User>(
+            (id, node) => {
+                const command = new LoadUsersCommand();
+                command.ids = [id];
+                return command;
+            },
+            node => new GetWithReloadCommand(node, "linked_user_id", new LoadUsersCommand()),
+            (user, node) => user.linkedByUsersProperty
+        );
+
+    /**
+     * list property with all users that link this user
+     */
+    public readonly linkedByUsersProperty: NodeListProperty<User, User>;
+
+    /**
+     * specification for linkedByUsersProperty
+     */
+    private static readonly linkedByUsersPropertySpecification: NodeListPropertySpecification<User, User>
+            = NodeListPropertySpecification.loadDynamic<User, User>(LoadRelationCommand.fromManySide("user", "linked_user_id"),
+            (ids, user) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadUsersCommand();
+                command.linksToUsers = [user.id];
+                return command;
+            })
+            .notifyChanged((linkedUser, user) => linkedUser.linkedUserProperty)
+            .noSave();
+
+
+    /**
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    private _username: string;
+    private _username?: string;
 
     /**
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    private _displayName: string;
-
-    /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    private _passwordHash: string;
+    private _displayName?: string;
 
     /**
      * The mail address of the user used for contacting him (e.g. notifications)
      * This isn't required and can be undefined
      */
-    private _email: string | undefined;
-
-    private _permissions: UserPermissions;
-
-    /**
-     * Property containing all projects this user is a part of
-     */
-    public readonly projectsProperty: NodeListProperty<Project, User>;
-
-    /**
-     * specification of the projectsProperty
-     */
-    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, User>
-        = NodeListPropertySpecification.loadDynamic<Project, User>(LoadRelationCommand.fromPrimary("user", "project"),
-            (ids, user) => {
-                const command = new LoadProjectsCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadProjectsCommand();
-                command.users = [user.id];
-                return command;
-            })
-            .notifyChanged((project, component) => project.usersProperty)
-            .saveOnPrimary("user", "project");
+    private _email?: string;
 
 
     /**
@@ -180,78 +189,29 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
+     * @param linkedUserId the id of the linked user
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
-        super(NodeType.User, databaseManager, UserTableSpecification, id);
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, linkedUserId: string, username?: string, displayName?: string, email?: string) {
+        super(type, databaseManager, UserTableSpecification, id);
         this._username = username;
         this._displayName = displayName;
-        this._passwordHash = passwordHash;
         this._email = email;
-        permissions.user = this;
-        this._permissions = permissions;
-        this.projectsProperty = new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this);
+        this.linkedUserProperty = new NodeProperty<User, User>(databaseManager, User.linkedUserPropertySpecification, this, linkedUserId);
+        this.linkedByUsersProperty = new NodeListProperty<User, User>(databaseManager, User.linkedByUsersPropertySpecification, this);
         this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
         this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
         this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
         this.ownedNodesProperty = new NodeListProperty<NamedOwnedNode, User>(databaseManager, User.ownedNodesPropertySpecification, this);
     }
 
-    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): Promise<User> {
-        if (username.length === 0) {
-            throw new Error("The username can't be empty");
-        }
-        if (username.length > 100) {
-            throw new Error("The given username is too long");
-        }
-        if (username.trim().toLowerCase() === "root") {
-            throw new Error("The username can't be 'root'");
-        }
-        if (displayName.length > 200) {
-            throw new Error("the given display name is too long");
-        }
-        if (email && email.length > 320) {
-            throw new Error("The given email is too long");
-        }
-        if (!(await User.usernameAvailable(databaseManager, username))) {
-            throw new Error("The username is already taken");
-        }
-
-        const passwordHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-
-        const user = new User(databaseManager, databaseManager.idGenerator.generateString(), username, displayName, passwordHash, new UserPermissions(), email);
-        user.markNew();
-        databaseManager.addCachedNode(user);
-        return user;
-    }
-
-    /**
-     * Checks wether the given userame is still available (not used by another user)
-     *
-     * @param databaseManager The database manager to use for checking
-     * @param username The username to be checked
-     */
-    public static async usernameAvailable(databaseManager: DatabaseManager, username: string) {
-        if (username.length === 0) {
-            throw new Error("The username can't be empty")
-        }
-        if (username.trim().toLowerCase() === "root" || username.trim().toLowerCase() === "deleted_user") {
-            return true;
-        }
-        const checkCmd = new LoadUsersCommand();
-        checkCmd.username = "^" + username + "$";
-        checkCmd.countMode = true;
-        databaseManager.addCommand(checkCmd);
-        await databaseManager.executePendingCommands();
-        return checkCmd.count === 0;
-    }
 
     /**
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    public get username(): string {
+    public get username(): string | undefined {
         return this._username;
     }
 
@@ -259,8 +219,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    public set username(value: string) {
-        if (value.length > 100) {
+    public set username(value: string |undefined) {
+        if (value !== undefined && value.length > 100) {
             throw new Error("The given username is too long");
         }
         this.markChanged();
@@ -271,7 +231,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    public get displayName(): string {
+    public get displayName(): string | undefined {
         return this._displayName;
     }
 
@@ -279,46 +239,12 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    public set displayName(value: string) {
-        if (value.length > 100) {
+    public set displayName(value: string | undefined) {
+        if (value !== undefined && value.length > 100) {
             throw new Error("The given display name is too long");
         }
         this.markChanged();
         this._displayName = value;
-    }
-
-    /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    public set passwordHash(value: string) {
-        if (value.length > 200) {
-            throw new Error("The given password hash is too long");
-        }
-        this.markChanged();
-        this._passwordHash = value;
-    }
-
-    /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    public get passwordHash(): string {
-        return this._passwordHash;
-    }
-
-    public verifyPasswordAndRehash(password: string): boolean {
-        const [oldAlgorithm, oldHash] = this._passwordHash.split(";");
-        const inputHash = crypto.createHmac(oldAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-        if (inputHash !== oldHash) {
-            return false;
-        }
-        if (oldAlgorithm.trim().toLowerCase() !== config.common.passwordAlgorithm.trim().toLowerCase()) {
-            log(6, "Rehashed user password for " + this._username);
-            const newHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-            this.passwordHash = newHash;
-        }
-        return true;
     }
 
     /**
@@ -345,14 +271,22 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         }
     }
 
+}
+
+/**
+ * Types of users
+ */
+export enum UserType {
     /**
-     * The permissions the user is allowed to do
-     * To change, call the setters on the returned object
+     * all users (ims and ccims)
      */
-    public get permissions(): UserPermissions {
-        return this._permissions;
-    }
-
-
-
+    ALL,
+    /**
+     * ccims users
+     */
+    CCIMS,
+    /**
+     * ims users
+     */
+    IMS
 }

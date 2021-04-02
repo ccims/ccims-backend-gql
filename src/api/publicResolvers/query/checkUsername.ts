@@ -1,7 +1,7 @@
 import { ResolverContext } from "../../ResolverContext";
 import { GraphQLFieldConfig, GraphQLBoolean, GraphQLString, GraphQLNonNull } from "graphql";
 import PreconditionCheck from "../../resolvers/utils/PreconditionCheck";
-import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommand";
+import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { User } from "../../../common/nodes/User";
 
 function checkUsername(): GraphQLFieldConfig<any, ResolverContext> {

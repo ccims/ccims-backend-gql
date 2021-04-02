@@ -5,11 +5,10 @@ import { LoadImsSystemsCommand } from "./LoadImsSystemsCommand";
 import { LoadIssuesCommand } from "./LoadIssuesCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
-import { LoadUsersCommand } from "./LoadUsersCommand";
 import { LoadAddedToComponentEventsCommand } from "./timeline/LoadAddedToComponentEventsCommand";
 import { LoadAssignedEventsCommand } from "./timeline/LoadAssignedEventsCommand";
 import { LoadBodiesCommand } from "./timeline/LoadBodiesCommand";
-import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEvents";
+import { LoadCategoryChangedEventsCommand } from "./timeline/LoadCategoryChangedEventsCommand";
 import { LoadDeletedIssueCommentsCommand } from "./timeline/LoadDeletedIssueCommentsCommand";
 import { LoadIssueCommentsCommand } from "./timeline/LoadIssueCommentsCommand";
 import { LoadLinkEventsCommand } from "./timeline/LoadLinkEventsCommand";
@@ -33,6 +32,8 @@ import { LoadReopenedEventsCommand } from "./timeline/LoadReopenedEventsCommand"
 import { LoadPriorityChangedEventsCommand } from "./timeline/LoadPriorityChangedEventsCommand";
 import { LoadAddedToLocationEventsCommand } from "./timeline/LoadAddedToLocationEventsCommand";
 import { LoadRemovedFromLocationEventsCommand } from "./timeline/LoadRemovedFromLocationEventsCommand";
+import { LoadCCIMSUsersCommand } from "./LoadCCIMSUsersCommand";
+import { LoadIMSUsersCommand } from "./LoadIMSUsersCommand";
 
 /**
  * map with method to create command for each table name
@@ -42,7 +43,8 @@ const commandFactories = new Map<string, () => LoadNodeListCommand<CCIMSNode>>([
     ["component_interface", () => new LoadComponentInterfacesCommand()],
     ["project", () => new LoadProjectsCommand()],
     ["ims_system", () => new LoadImsSystemsCommand()],
-    ["users", () => new LoadUsersCommand()],
+    ["ccims_users", () => new LoadCCIMSUsersCommand()],
+    ["ims_users", () => new LoadIMSUsersCommand()],
     ["issue_timeline_body", () => new LoadBodiesCommand()],
     ["issue_issue", () => new LoadIssuesCommand()],
     ["issue_label", () => new LoadLabelsCommand()],
