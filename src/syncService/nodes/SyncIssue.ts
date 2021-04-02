@@ -46,7 +46,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
     private static readonly commentsProviderSpecification: SyncNodeProviderSpecification<IssueComment, SyncComment<IssueComment>, LoadIssueCommentsCommand> = {
         createWrapper: comment => new SyncComment(comment),
         createCommand: modifiedSince => {
-            const command = new LoadIssueCommentsCommand();
+            const command = new LoadIssueCommentsCommand(true);
             command.modifiedSince = modifiedSince;
             return command;
         }

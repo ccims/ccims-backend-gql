@@ -12,8 +12,8 @@ export class LoadUnlabelledEventCommand extends LoadIssueTimelineItemsCommandBas
     /**
      * creates a new LoadUnlabelledEventCommand
      */
-    public constructor() {
-        super(UnlabelledEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnlabelledEventTableSpecification.rows, loadDeleted);
     }
 
     /**

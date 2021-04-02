@@ -66,7 +66,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             const ims = ImsSystem.create(context.dbManager, imsType, endpoint, connectionData);
-            const component = await Component.create(context.dbManager, name, description, owner);
+            const component = await Component.create(context.dbManager, name, description, owner, context.user, new Date());
             await component.imsSystemProperty.set(ims);
             if (projectCmd) {
                 await component.projectsProperty.addAll(projectCmd.getResult());

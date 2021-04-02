@@ -9,7 +9,6 @@ import { ComponentInterface } from "./ComponentInterface";
 import { ImsSystem } from "./ImsSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
-import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
@@ -21,19 +20,50 @@ import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { log } from "../../log";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
+import { SyncMetadata } from "./SyncMetadata";
 
 /**
  * the specification of the table which contains components
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
-    = new NodeTableSpecification<Component>("component", NamedOwnedNodeTableSpecification,
+    = new NodeTableSpecification<Component>("component", NamedSyncNodeTableSpecification,
+        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()),
         new RowSpecification("ims_system_id", component => component.imsSystemProperty.getId()));
 
 /**
  * A component known to ccims.
  * component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)
  */
-export class Component extends NamedOwnedNode implements IssueLocation {
+export class Component extends NamedSyncNode<Component> implements IssueLocation {
+
+    /**
+     * the owner property which contains the owner of this node
+     */
+    public readonly ownerProperty: NullableNodeProperty<User, Component>;
+
+    /**
+     * specification of the ownerProperty
+     */
+    private static readonly ownerPropertySpecification: NodePropertySpecification<User, Component>
+        = new NodePropertySpecification<User, Component>(
+            (id, node) => {
+                const command = new LoadUsersCommand();
+                command.ids = [id];
+                return command;
+            },
+            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
+            (user, node) => user.ownedComponentsProperty
+        );
+
+    /**
+     * Async getter funtion for the ownerProperty
+     * @returns A promise of the user owning this node
+     */
+    public async owner(): Promise<User | undefined> {
+        return this.ownerProperty.getPublic();
+    }
 
     /**
      * property for issues which are located on this component
@@ -104,15 +134,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
         = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -130,15 +158,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
         = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinned_issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -152,12 +178,12 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
@@ -175,12 +201,12 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumed_component_interface"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.consumedByComponent = [component.id];
                 return command;
             })
@@ -198,15 +224,13 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Component> =
         NodeListPropertySpecification.loadDynamic<Label, Component>(LoadRelationCommand.fromPrimary("component", "label"),
             (ids, component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             (component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((label, component) => label.componentsProperty)
@@ -223,8 +247,10 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId?: string) {
-        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string | undefined, createdById: string | undefined, createdAt: Date,
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
+        this.ownerProperty = new NullableNodeProperty<User, Component>(databaseManager, Component.ownerPropertySpecification, this, ownerId);
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
         this.imsSystemProperty = new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
@@ -246,7 +272,8 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param endpoint the endpoint of the associated imsSystemn
      * @param connectionData the connectionData of the associated imsSystem
      */
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Component> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User,
+        createdBy: User, createdAt: Date): Promise<Component> {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
         }
@@ -254,10 +281,11 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             throw new Error("the specified description is too long");
         }
 
-        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
+        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id, undefined,
+            createdBy.id, createdAt, false, createdAt, undefined);
         component.markNew();
         databaseManager.addCachedNode(component);
-        await owner.ownedNodesProperty.add(component);
+        await owner.ownedComponentsProperty.add(component);
         return component;
     }
 
@@ -268,6 +296,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     public async markDeleted(): Promise<void> {
         if(!this.isDeleted) {
             await super.markDeleted();
+            await this.ownerProperty.markDeleted();
             await Promise.all((await this.interfacesProperty.getElements()).map(componentInterface => componentInterface.markDeleted()));
             await this.pinnedIssuesProperty.clear();
             await this.labelsProperty.clear();

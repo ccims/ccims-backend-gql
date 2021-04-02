@@ -12,8 +12,8 @@ export class LoadAssignedEventsCommand extends LoadIssueTimelineItemsCommandBase
     /**
      * creates a new LoadAssignedEventsCommand
      */
-    public constructor() {
-        super(AssignedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(AssignedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

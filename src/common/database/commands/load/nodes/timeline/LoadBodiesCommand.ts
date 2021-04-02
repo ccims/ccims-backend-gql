@@ -12,8 +12,8 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(BodyTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(BodyTableSpecification.rows, loadDeleted);
     }
 
     /**

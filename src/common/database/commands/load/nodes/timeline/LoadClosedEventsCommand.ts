@@ -12,8 +12,8 @@ export class LoadClosedEventsCommand extends LoadIssueTimelineItemsCommandBase<C
     /**
      * creates a new LoadClosedEventsCommand
      */
-    public constructor() {
-        super(ClosedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ClosedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

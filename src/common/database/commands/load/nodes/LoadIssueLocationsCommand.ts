@@ -1,12 +1,12 @@
 import { IssueLocation } from "../../../../nodes/IssueLocation";
 import { ConditionSpecification } from "../ConditionSpecification";
-import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
+import { LoadMultipleSyncNodeListsCommand } from "./LoadMultipleSyncNodeListsCommand";
 import { createRelationFilterBySecundary } from "./RelationFilter";
 
 /**
  * command to load IssueLocations
  */
-export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<IssueLocation> {
+export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<IssueLocation> {
 
     /**
      * filters for IssueLocations where at least one of the issues is located
@@ -26,8 +26,8 @@ export class LoadIssueLocationsCommand extends LoadMultipleNodeListsCommand<Issu
     /**
      * creates a new LoadIssueLocationsCommand
      */
-    public constructor() {
-        super("issue_location");
+    public constructor(loadDeleted: boolean = false) {
+        super("issue_location", loadDeleted);
     }
 
     /**

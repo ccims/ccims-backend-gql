@@ -12,8 +12,8 @@ export class LoadUnpinnedEventsCommand extends LoadIssueTimelineItemsCommandBase
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(UnpinnedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnpinnedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

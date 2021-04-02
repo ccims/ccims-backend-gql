@@ -13,8 +13,8 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
     /**
      * creates a new LoadLabelledEventCommand
      */
-    public constructor() {
-        super(LabelledEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LabelledEventTableSpecification.rows, loadDeleted);
     }
 
     /**

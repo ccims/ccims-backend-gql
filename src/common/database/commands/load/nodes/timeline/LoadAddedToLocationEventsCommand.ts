@@ -12,8 +12,8 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
     /**
      * creates a new AddedToLocationEventsCommand
      */
-    public constructor() {
-        super(AddedToLocationEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(AddedToLocationEventTableSpecification.rows, loadDeleted);
     }
 
     /**

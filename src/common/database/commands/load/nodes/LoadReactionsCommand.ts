@@ -28,8 +28,8 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
     /**
      * creates a new LoadReactionsCommand
      */
-    public constructor() {
-        super(ReactionGroupTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ReactionGroupTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -12,8 +12,8 @@ export class LoadReopenedEventsCommand extends LoadIssueTimelineItemsCommandBase
     /**
      * creates a new LoadReopenedEventsCommand
      */
-    public constructor() {
-        super(ReopenedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ReopenedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

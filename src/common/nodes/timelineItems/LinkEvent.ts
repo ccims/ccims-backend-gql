@@ -22,11 +22,11 @@ export class LinkEvent extends IssueTimelineItem {
     private static readonly linkedIssuePropertySpecification: NodePropertySpecification<Issue, LinkEvent>
         = new NodePropertySpecification<Issue, LinkEvent>(
             (id, linkEvent) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue", new LoadIssuesCommand()),
+            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

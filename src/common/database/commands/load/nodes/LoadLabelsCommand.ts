@@ -33,10 +33,10 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     public assignedToIssues?: string[];
 
     /**
-     * creates a new LoadComponentsCommand
+     * creates a new LoadLabelsCommand
      */
-    public constructor() {
-        super(LabelTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LabelTableSpecification.rows, loadDeleted);
     }
 
     /**

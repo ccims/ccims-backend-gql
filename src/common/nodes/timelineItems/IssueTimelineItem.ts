@@ -31,11 +31,11 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
     private static readonly issuePropertySpecification: NodePropertySpecification<Issue, IssueTimelineItem>
         = new NodePropertySpecification<Issue, IssueTimelineItem>(
             (id, timelineItem) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand()),
+            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand(true)),
             (issue, timelineItem) => issue.timelineProperty
         );
 

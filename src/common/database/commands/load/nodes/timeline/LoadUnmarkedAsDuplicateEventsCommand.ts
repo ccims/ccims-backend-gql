@@ -12,8 +12,8 @@ export class LoadUnmarkedAsDuplicateEventsCommand extends LoadIssueTimelineItems
     /**
      * creates a new LoadUnmarkedAsDuplicateEventsCommand
      */
-    public constructor() {
-        super(UnmarkedAsDuplicateEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnmarkedAsDuplicateEventTableSpecification.rows, loadDeleted);
     }
 
     /**

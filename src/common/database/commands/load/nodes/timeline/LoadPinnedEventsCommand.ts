@@ -12,8 +12,8 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(PinnedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(PinnedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

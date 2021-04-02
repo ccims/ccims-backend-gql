@@ -12,8 +12,8 @@ export class LoadUnassignedEventsCommand extends LoadIssueTimelineItemsCommandBa
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(UnassignedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnassignedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

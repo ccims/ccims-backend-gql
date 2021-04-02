@@ -22,11 +22,11 @@ export class WasUnlinkedEvent extends IssueTimelineItem {
     private static readonly unlinkedByIssuePropertySpecification: NodePropertySpecification<Issue, WasUnlinkedEvent>
         = new NodePropertySpecification<Issue, WasUnlinkedEvent>(
             (id, wasUnlinkedEvent) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by", new LoadIssuesCommand()),
+            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

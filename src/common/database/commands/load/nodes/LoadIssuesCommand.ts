@@ -184,8 +184,8 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
      */
     public issueOrTimelineModifiedSince?: Date;
 
-    public constructor() {
-        super(IssueTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(IssueTableSpecification.rows, loadDeleted);
     }
 
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Issue {

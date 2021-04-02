@@ -12,8 +12,8 @@ export class LoadRemovedFromLocationEventsCommand extends LoadIssueTimelineItems
     /**
      * creates a new LoadRemovedFromLocationEventsCommand
      */
-    public constructor() {
-        super(RemovedFromLocationEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(RemovedFromLocationEventTableSpecification.rows, loadDeleted);
     }
 
     /**

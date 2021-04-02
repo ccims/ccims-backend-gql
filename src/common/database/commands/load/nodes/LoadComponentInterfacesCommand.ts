@@ -37,8 +37,8 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
     /**
      * creates a new LoadComponentInterfacesCommand
      */
-    public constructor() {
-        super(ComponentInterfaceTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ComponentInterfaceTableSpecification.rows, loadDeleted);
     }
 
     /**

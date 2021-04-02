@@ -1,16 +1,9 @@
-import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { SyncNode } from "../../../../nodes/SyncNode";
-import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
-import { QueryPart } from "../QueryPart";
+import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
-/**
- * loads a list of syncNodes
- * @param T the type of SyncNode to load
- */
-export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNodeListCommand<T> {
-    
+export class LoadMultipleSyncNodeListsCommand<T extends SyncNode> extends LoadMultipleNodeListsCommand<T> {
     /**
      * If true also loads nodes which are marked as deleted
      */
@@ -36,16 +29,13 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      */
     public modifiedSince?: Date;
 
-    protected constructor(rows: RowSpecification<T>[], loadDeleted: boolean = false) {
-        super(rows);
+    protected constructor(tableName: string, loadDeleted: boolean = false) {
+        super(tableName);
         this.loadDeleted = loadDeleted;
     }
 
-    /**
-     * gets a string with all rows that should be selected
-     */
-    protected rows(databaseManager: DatabaseManager): string {
-        return super.rows(databaseManager) + (databaseManager.metadataId !== undefined ? ", main.last_modified_at, metadata.metadata" : ", main.last_modified_at");
+    protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
+        return require("./LoadFromIdsCommand").getLoadCommand(tableName, [], this.loadDeleted) as LoadNodeListCommand<T>;
     }
 
     /**
@@ -53,7 +43,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
         if (!this.loadDeleted) {
             conditions.conditions.push({
@@ -109,27 +99,4 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         return conditions;
     }
 
-    /**
-     * Generates a default query start QueryPart from a tablename and the databaseManager
-     * Can be overwritten to implement node specific behaviour
-     * Uses main as default alias for the table that is queried
-     * If a metadataId is set, metadata is queried, metadata is the table name
-     * WARNING: only use constants for tableName!
-     * @param tableName the name of the table to query from
-     * @param databaseManager the database manager
-     */
-    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
-        const metadataId = databaseManager.metadataId;
-        if (metadataId === undefined) {
-            return {
-                text: `SELECT ${this.rows} FROM ${tableName} main `,
-                values: []
-            }
-        } else {
-            return {
-                text: `SELECT ${this.rows} FROM ${tableName} main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1) `,
-                values: [metadataId]
-            }
-        }
-    }
 }
