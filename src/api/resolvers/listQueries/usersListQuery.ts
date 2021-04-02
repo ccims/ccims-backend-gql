@@ -1,8 +1,7 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
-import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommandBase";
+import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { User } from "../../../common/nodes/User";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLUserFilter from "../types/filters/GraphQLUserFilter";
@@ -25,11 +24,11 @@ function usersListQuery<TSource extends CCIMSNode, TProperty extends Partial<Use
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
             const cmd = new LoadUsersCommand();
+            cmd.loadLinkedUsers = true;
             baseQuery.addParams(cmd, args);
             cmd.username = args.filterBy?.username;
             cmd.displayName = args.filterBy?.displayName;
             cmd.email = args.filterBy?.email;
-            cmd.onProjects = args.filterBy?.projects;
             cmd.assignedToIssues = args.filterBy?.assignedToIssues;
             cmd.participantOfIssue = args.filterBy?.participantOfIssues;
             cmd.editedComments = args.filterBy?.comments;

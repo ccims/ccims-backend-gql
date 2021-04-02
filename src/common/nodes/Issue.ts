@@ -6,7 +6,6 @@ import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadCompo
 import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommandBase";
 import { LoadBodiesCommand } from "../database/commands/load/nodes/timeline/LoadBodiesCommand";
 import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
@@ -53,6 +52,7 @@ import { ReopenedEvent } from "./timelineItems/ReopenedEvent";
 import { PriorityChangedEvent } from "./timelineItems/PriorityChangedEvent";
 import { SyncMetadata } from "./SyncMetadata";
 import { SortedNodeListProperty } from "./properties/SortedNodeListProperty";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 

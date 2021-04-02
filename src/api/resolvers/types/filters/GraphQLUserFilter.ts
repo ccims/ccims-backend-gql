@@ -17,10 +17,6 @@ const userFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "The users email must match this given RegEx"
         },
-        projects: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The user must be member of at least one of the projects with the given ids"
-        },
         assignedToIssues: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The user must be assigned to at least one of the issues with the given ids"

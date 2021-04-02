@@ -1,6 +1,6 @@
 import { config } from "../../config/Config";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommandBase";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Issue } from "./Issue";

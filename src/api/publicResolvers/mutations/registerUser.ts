@@ -6,6 +6,7 @@ import GraphQLRegisterUserInput from "../types/mutations/inputs/GraphQLRegisterU
 import { User } from "../../../common/nodes/User";
 import { APIConfig } from "../../../config/APIConfig";
 import { config } from "../../../config/Config";
+import { CCIMSUser } from "../../../common/nodes/CCIMSUser";
 
 function registerUser(): GraphQLFieldConfig<any, ResolverContext> {
     return {
@@ -29,7 +30,7 @@ function registerUser(): GraphQLFieldConfig<any, ResolverContext> {
             const displayName = PreconditionCheck.checkString(input, "displayName", 200);
             const password = PreconditionCheck.checkString(input, "password");
             const email = PreconditionCheck.checkNullableString(input, "email", 320);
-            const user = await User.create(context.dbManager, username, displayName, password, email);
+            const user = await CCIMSUser.create(context.dbManager, username, displayName, password, email);
             if (config.api.createAllUsersAsGlobalAdmin) {
                 user.permissions.globalPermissions = {
                     addRemoveComponents: true,

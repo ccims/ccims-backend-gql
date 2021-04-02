@@ -29,7 +29,6 @@ const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
         },
         components: componentsListQuery<Project, Component>("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
         interfaces: interfacesListQuery<Project, ComponentInterface>("Requests component interfaces which are offered by any of this project's components", project => project.interfacesProperty),
-        users: usersListQuery<Project, User>("All users that participate in this project and (if given)match `filterBy`", project => project.usersProperty),
         owner: {
             type: GraphQLUser,
             description: "The user who administrates \"owns\" the project, null if deleted"

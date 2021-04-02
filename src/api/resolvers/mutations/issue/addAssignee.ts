@@ -1,5 +1,5 @@
 import { GraphQLFieldConfig } from "graphql";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommandBase";
+import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLAddAssigneeInput from "../../types/mutations/inputs/issue/GraphQLAddAssigneeInput";
 import GraphQLAddAssigneePayload from "../../types/mutations/payloads/issue/GraphQLAddAssigneePayload";

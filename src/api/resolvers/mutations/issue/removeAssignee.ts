@@ -4,7 +4,7 @@ import GraphQLRemoveAssigneePayload from "../../types/mutations/payloads/issue/G
 import GraphQLRemoveAssigneeInput from "../../types/mutations/inputs/issue/GraphQLRemoveAssigneeInput";
 import timelineMutation from "./timelineMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommandBase";
+import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
 
 function removeAssignee(): GraphQLFieldConfig<any, ResolverContext> {
     const base = timelineMutation(GraphQLRemoveAssigneePayload, GraphQLRemoveAssigneeInput, "Unassignes a user that is currently an assinee on an issue");

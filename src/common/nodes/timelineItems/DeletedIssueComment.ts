@@ -1,5 +1,5 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
-import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommandBase";
+import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
 import { Issue } from "../Issue";

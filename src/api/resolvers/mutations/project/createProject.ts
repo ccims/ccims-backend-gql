@@ -1,6 +1,5 @@
 import { GraphQLFieldConfig } from "graphql";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { Component } from "../../../../common/nodes/Component";
 import { Project } from "../../../../common/nodes/Project";
 import { User } from "../../../../common/nodes/User";
@@ -22,10 +21,9 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
             const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
-            if ((componentIds.size > 0 || userIds.size > 0) && !(ownerUserId === context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
+            if ((componentIds.size > 0) && !(ownerUserId === context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
                 throw new Error("You are not the owner of the new project, you can't add users or components")
             }
-            context.dbManager.addCommand(userCmd);
             let componentCmd: LoadComponentsCommand | undefined;
             if (componentIds.size > 0) {
                 componentCmd = new LoadComponentsCommand();

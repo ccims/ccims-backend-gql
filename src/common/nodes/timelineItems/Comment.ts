@@ -1,6 +1,5 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../../database/commands/load/LoadRelationCommand";
-import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommandBase";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
@@ -12,6 +11,7 @@ import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { ReactionGroup } from "../ReactionGroup";
+import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * a table specification for a Comment

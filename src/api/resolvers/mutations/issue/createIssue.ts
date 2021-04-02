@@ -7,8 +7,8 @@ import { Issue, IssueCategory } from "../../../../common/nodes/Issue";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadLabelsCommand } from "../../../../common/database/commands/load/nodes/LoadLabelsCommand";
-import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { LoadIssueLocationsCommand } from "../../../../common/database/commands/load/nodes/LoadIssueLocationsCommand";
+import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
 
 function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateIssuePayload, GraphQLCreateIssueInput, "Creates a new issue");

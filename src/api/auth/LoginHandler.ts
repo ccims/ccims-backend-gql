@@ -2,8 +2,8 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommandBase";
 import { ResolverContextOptional } from "../ResolverContext";
+import { LoadCCIMSUsersCommand } from "../../common/database/commands/load/nodes/LoadCCIMSUsersCommand";
 
 /**
  * Express middleware for generating and returning a JWT
@@ -81,7 +81,7 @@ class LoginHandler {
         log(5, "User login attempt");
         log(7, userInfo);
         if (UserCredentials.checkCredentialStructure(userInfo)) {
-            const cmd = new LoadUsersCommand();
+            const cmd = new LoadCCIMSUsersCommand();
             cmd.username = "^" + userInfo.username + "$";
             req.dbManager.addCommand(cmd);
             await req.dbManager.executePendingCommands();

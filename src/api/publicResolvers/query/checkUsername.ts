@@ -1,8 +1,7 @@
 import { ResolverContext } from "../../ResolverContext";
 import { GraphQLFieldConfig, GraphQLBoolean, GraphQLString, GraphQLNonNull } from "graphql";
 import PreconditionCheck from "../../resolvers/utils/PreconditionCheck";
-import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommandBase";
-import { User } from "../../../common/nodes/User";
+import { CCIMSUser } from "../../../common/nodes/CCIMSUser";
 
 function checkUsername(): GraphQLFieldConfig<any, ResolverContext> {
     return {
@@ -19,7 +18,7 @@ function checkUsername(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The arguments are mandatory for checking the username");
             }
             const username = PreconditionCheck.checkString(args, "username", 100);
-            return User.usernameAvailable(context.dbManager, username);
+            return CCIMSUser.usernameAvailable(context.dbManager, username);
         }
     }
 }

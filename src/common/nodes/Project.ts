@@ -19,6 +19,7 @@ import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * the specification of the table which contains projects
