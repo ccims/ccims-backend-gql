@@ -26,7 +26,7 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
      * creates a command to load a node
      * @param tableName the name of the super table which contains all nodes
      */
-    protected constructor(protected readonly tableName: string) {
+    public constructor(protected readonly tableName: string) {
         super([RowSpecification.fromProperty("id", "id")]);
         verifyIsAllowedSqlIdent(tableName);
     }
