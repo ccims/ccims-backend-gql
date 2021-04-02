@@ -1,12 +1,12 @@
 import { IssueTimelineItem, IssueTimelineItemType } from "../../../../../nodes/timelineItems/IssueTimelineItem";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { QueryPart } from "../../QueryPart";
-import { LoadMultipleNodeListsCommand } from "../LoadMultipleNodeListsCommand";
+import { LoadMultipleSyncNodeListsCommand } from "../LoadMultipleSyncNodeListsCommand";
 import { LoadNodeListCommand } from "../LoadNodeListCommand";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
 import { createStringListFilter } from "../RelationFilter";
 
-export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTimelineItem> extends LoadMultipleNodeListsCommand<T> {
+export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTimelineItem> extends LoadMultipleSyncNodeListsCommand<T> {
 
     /**
      * filter for timelineItems that are on any of the issues
@@ -29,11 +29,6 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     public constructor() {
         super("issue_timeline_item");
     }
-    public loadWithMetadata: boolean = false;
-    public loadDeleted: boolean = false;
-    public createdBy?: string[];
-    public createdAfter?: Date;
-    public createdBefore?: Date;
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
         const command = super.getLoadCommand(tableName) as LoadSyncNodeListCommand<T>;
@@ -75,14 +70,6 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
                 });
             }
             conditions.i++;
-        }
-
-        if (!this.loadDeleted) {
-            conditions.conditions.push({
-                priority: 3,
-                text: "main.deleted=false",
-                values: []
-            });
         }
 
         return conditions;

@@ -193,11 +193,13 @@ export class Issue extends SyncNode<Issue> {
             (ids, issue) => {
                 const command = new LoadIssueLocationsCommand();
                 command.ids = ids;
+                command.loadDeleted = true;
                 return command;
             },
             issue => {
                 const command = new LoadIssueLocationsCommand();
                 command.hasIssueOnLocation = [issue.id];
+                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issueLocation, issue) => issueLocation.issuesOnLocationProperty)

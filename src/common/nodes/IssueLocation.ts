@@ -1,18 +1,15 @@
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { CCIMSNode } from "./CCIMSNode";
 import { Issue } from "./Issue";
-import { NamedNode } from "./NamedNode";
+import { NamedSyncNode } from "./NamedSyncNode";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 
 /**
  * interface which specifies what a IssueLocation is (a named node with the issuesOnLocationProperty)
  */
-export interface IssueLocation<T extends IssueLocation = any> extends CCIMSNode<T> {
-    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>,
-    description: string,
-    name: string
+export interface IssueLocation<T extends IssueLocation = any> extends NamedSyncNode<T> {
+    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>
 }
 
 /**
