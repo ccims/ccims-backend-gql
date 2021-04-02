@@ -12,8 +12,8 @@ export class LoadLinkEventsCommand extends LoadIssueTimelineItemsCommandBase<Lin
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(LinkEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LinkEventTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -12,8 +12,8 @@ export class LoadIssueCommentsCommand extends LoadCommentsCommandBase<IssueComme
     /**
      * creates a new LoadIssueCommentCommand
      */
-    public constructor() {
-        super(IssueCommentTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(IssueCommentTableSpecification.rows, loadDeleted);
     }
 
     /**

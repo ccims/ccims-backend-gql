@@ -23,7 +23,7 @@ import { SyncNamedNode } from "./SyncNamedNode";
       private static readonly issuesProviderSpecification: SyncNodeProviderSpecification<Issue, SyncIssue, LoadIssuesCommand> = {
         createWrapper: issue => new SyncIssue(issue),
         createCommand: modifiedSince => {
-            const command = new LoadIssuesCommand();
+            const command = new LoadIssuesCommand(true);
             command.issueOrTimelineModifiedSince = modifiedSince;
             return command;
         }
@@ -41,7 +41,7 @@ import { SyncNamedNode } from "./SyncNamedNode";
     private static readonly labelsProviderSpecification: SyncNodeProviderSpecification<Label, SyncLabel, LoadLabelsCommand> = {
         createWrapper: label => new SyncLabel(label),
         createCommand: modifiedSince => {
-            const command = new LoadLabelsCommand();
+            const command = new LoadLabelsCommand(true);
             command.modifiedSince = modifiedSince;
             return command;
         }
@@ -59,7 +59,7 @@ import { SyncNamedNode } from "./SyncNamedNode";
      private static readonly componentinterfacesProviderSpecification: SyncNodeProviderSpecification<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand> = {
         createWrapper: componentinterface => new SyncComponentInterface(componentinterface),
         createCommand: modifiedSince => {
-            const command = new LoadComponentInterfacesCommand();
+            const command = new LoadComponentInterfacesCommand(true);
             command.modifiedSince = modifiedSince;
             return command;
         }

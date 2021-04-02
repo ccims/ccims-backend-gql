@@ -105,11 +105,11 @@ export class Issue extends SyncNode<Issue> {
     private static readonly bodyPropertySpecification: NodePropertySpecification<Body, Issue>
         = new NodePropertySpecification<Body, Issue>(
             (id, timelineItem) => {
-                const command = new LoadBodiesCommand();
+                const command = new LoadBodiesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand()),
+            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand(true)),
             // no notifier because this is never allowed to change
         );
 
@@ -135,15 +135,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
         = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
             (ids, issue) => {
-                const command = new LoadIssueTimelineItemsCommand();
+                const command = new LoadIssueTimelineItemsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadIssueTimelineItemsCommand();
+                const command = new LoadIssueTimelineItemsCommand(true);
                 command.onIssues = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
@@ -191,15 +189,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly locationsPropertySpecification: NodeListPropertySpecification<IssueLocation, Issue>
         = NodeListPropertySpecification.loadDynamic<IssueLocation, Issue>(LoadRelationCommand.fromSecundary("issue_location", "issue"),
             (ids, issue) => {
-                const command = new LoadIssueLocationsCommand();
+                const command = new LoadIssueLocationsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadIssueLocationsCommand();
+                const command = new LoadIssueLocationsCommand(true);
                 command.hasIssueOnLocation = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issueLocation, issue) => issueLocation.issuesOnLocationProperty)
@@ -210,15 +206,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Issue>
         = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "issue"),
             (ids, issue) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.hasIssue = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issueLocation, issue) => issueLocation.issuesProperty)
@@ -236,15 +230,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly pinnedOnPropertySpecification: NodeListPropertySpecification<Component, Issue>
         = NodeListPropertySpecification.loadDynamic<Component, Issue>(LoadRelationCommand.fromSecundary("component", "pinned_issue"),
             (ids, issue) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.hasIssue = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, issue) => component.pinnedIssuesProperty)
@@ -262,15 +254,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly linksToIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
         = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromPrimary("issue", "linked_issue"),
             (ids, issue) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.linkedByIssues = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((linksToIssue, issue) => linksToIssue.linkedByIssuesProperty)
@@ -288,15 +278,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly linkedByIssuesPropertySpecification: NodeListPropertySpecification<Issue, Issue>
         = NodeListPropertySpecification.loadDynamic<Issue, Issue>(LoadRelationCommand.fromSecundary("issue", "linked_issue"),
             (ids, issue) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.linkedByIssues = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((linkedByIssue, issue) => linkedByIssue.linksToIssuesProperty)
@@ -314,15 +302,13 @@ export class Issue extends SyncNode<Issue> {
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Issue>
         = NodeListPropertySpecification.loadDynamic<Label, Issue>(LoadRelationCommand.fromPrimary("issue", "label"),
             (ids, issue) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             issue => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.assignedToIssues = [issue.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((label, issue) => label.issuesProperty)

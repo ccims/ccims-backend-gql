@@ -35,8 +35,8 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     /**
      * creates a new LoadLabelsCommand
      */
-    public constructor() {
-        super(LabelTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LabelTableSpecification.rows, loadDeleted);
     }
 
     /**

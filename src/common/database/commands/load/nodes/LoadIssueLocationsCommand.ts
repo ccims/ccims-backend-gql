@@ -26,8 +26,8 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
     /**
      * creates a new LoadIssueLocationsCommand
      */
-    public constructor() {
-        super("issue_location");
+    public constructor(loadDeleted: boolean = false) {
+        super("issue_location", loadDeleted);
     }
 
     /**

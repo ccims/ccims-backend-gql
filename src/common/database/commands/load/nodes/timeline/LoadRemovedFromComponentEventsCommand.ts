@@ -12,8 +12,8 @@ export class LoadRemovedFromComponentEventsCommand extends LoadIssueTimelineItem
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(RemovedFromComponentEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(RemovedFromComponentEventTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -24,11 +24,11 @@ export class UnlabelledEvent extends IssueTimelineItem {
     private static readonly labelPropertySpecification: NodePropertySpecification<Label, UnlabelledEvent>
         = new NodePropertySpecification<Label, UnlabelledEvent>(
             (id, labelledEvent) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = [id];
                 return command;
             },
-            labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand()),
+            labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand(true)),
         );
 
     public constructor(databaseManager: DatabaseManager, id: string,

@@ -124,15 +124,13 @@ export class Label extends NamedSyncNode {
         NodeListPropertySpecification.loadDynamic<Component, Label>(
             LoadRelationCommand.fromSecundary("component", "label"),
             (ids, label) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             (label) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.labels = [label.id];
-                command.loadDeleted = true;
                 return command;
             }
         )
@@ -179,15 +177,13 @@ export class Label extends NamedSyncNode {
         NodeListPropertySpecification.loadDynamic<Issue, Label>(
             LoadRelationCommand.fromSecundary("issue", "label"),
             (ids, label) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             (label) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.labels = [label.id];
-                command.loadDeleted = true;
                 return command;
             }
         )

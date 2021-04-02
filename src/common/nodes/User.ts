@@ -95,15 +95,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User>
         = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "assignee"),
             (ids, user) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             user => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.userAssigned = [user.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, user) => issue.assigneesProperty)
@@ -114,15 +112,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
         = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
             (ids, user) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             user => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.userParticipated = [user.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, user) => issue.participantsProperty)
@@ -133,15 +129,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public static readonly commentsPropertySpecification: NodeListPropertySpecification<Comment, User>
         = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "edited_by"),
             (ids, user) => {
-                const command = new LoadCommentsCommand();
+                const command = new LoadCommentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             user => {
-                const command = new LoadCommentsCommand();
+                const command = new LoadCommentsCommand(true);
                 command.editedBy = [user.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((comment, user) => comment.editedByProperty)
@@ -159,15 +153,13 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         = NodeListPropertySpecification.loadDynamic<Component, User>(
             user => LoadRelationCommand.fromManySideBase("component", "owner_user_id", user),
             (ids, user) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             user => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ownedBy = [user.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, user) => component.ownerProperty)

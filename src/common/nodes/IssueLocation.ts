@@ -18,12 +18,12 @@ export interface IssueLocation<T extends IssueLocation = any> extends NamedSyncN
 export const issuesOnLocationPropertySpecification: NodeListPropertySpecification<Issue, IssueLocation>
     = NodeListPropertySpecification.loadDynamic<Issue, IssueLocation>(LoadRelationCommand.fromPrimary("issue_location", "issue"),
     (ids, issueLocation) => {
-        const command = new LoadIssuesCommand();
+        const command = new LoadIssuesCommand(true);
         command.ids = ids;
         return command;
     },
     issueLocation => {
-        const command = new LoadIssuesCommand();
+        const command = new LoadIssuesCommand(true);
         command.onLocations = [issueLocation.id];
         return command;
     })

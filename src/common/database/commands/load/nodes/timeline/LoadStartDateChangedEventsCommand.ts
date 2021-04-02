@@ -12,8 +12,8 @@ export class LoadStartDateChangedEventsCommand extends LoadIssueTimelineItemsCom
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(StartDateChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(StartDateChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

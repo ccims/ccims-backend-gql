@@ -40,12 +40,11 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
     private static readonly componentPropertySpecification: NodePropertySpecification<Component, ComponentInterface>
         = new NodePropertySpecification<Component, ComponentInterface>(
             (id, componentInterface) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = [id];
-                command.loadDeleted = true;
                 return command;
             },
-            componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand()),
+            componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand(true)),
             (component, componentInterface) => component.interfacesProperty
         );
 
@@ -68,15 +67,13 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<Component, ComponentInterface>
         = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumed_component_interface"),
             (ids, componentInterface) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             componentInterface => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.consumesInterface = [componentInterface.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, componentInterface) => component.consumedInterfacesProperty)

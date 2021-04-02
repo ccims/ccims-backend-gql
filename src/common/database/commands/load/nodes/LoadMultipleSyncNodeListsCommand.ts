@@ -1,6 +1,7 @@
 import { SyncNode } from "../../../../nodes/SyncNode";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
+import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
 export class LoadMultipleSyncNodeListsCommand<T extends SyncNode> extends LoadMultipleNodeListsCommand<T> {
     /**
@@ -27,6 +28,15 @@ export class LoadMultipleSyncNodeListsCommand<T extends SyncNode> extends LoadMu
      * Selects only sync nodes which were modified after the given Date __(inclusive)__
      */
     public modifiedSince?: Date;
+
+    protected constructor(tableName: string, loadDeleted: boolean = false) {
+        super(tableName);
+        this.loadDeleted = loadDeleted;
+    }
+
+    protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
+        return require("./LoadFromIdsCommand").getLoadCommand(tableName, [], this.loadDeleted) as LoadNodeListCommand<T>;
+    }
 
     /**
      * adds the id condition

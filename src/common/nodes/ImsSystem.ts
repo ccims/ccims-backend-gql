@@ -68,13 +68,12 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
     private static componentPropertySpecification: NodePropertySpecification<Component, ImsSystem>
         = new NodePropertySpecification<Component, ImsSystem>(
             (id, imsSystem) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = [id];
-                command.loadDeleted = true;
                 return command;
             },
             imsSystem => {
-                return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand());
+                return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand(true));
             },
             (component, imsSystem) => component.imsSystemProperty
         );

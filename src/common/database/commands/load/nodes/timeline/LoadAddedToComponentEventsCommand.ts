@@ -12,8 +12,8 @@ export class LoadAddedToComponentEventsCommand extends LoadIssueTimelineItemsCom
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(AddedToComponentEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(AddedToComponentEventTableSpecification.rows, loadDeleted);
     }
 
     /**

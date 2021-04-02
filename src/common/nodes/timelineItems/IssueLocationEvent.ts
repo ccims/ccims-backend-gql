@@ -19,12 +19,11 @@ export abstract class IssueLocationEvent<T extends IssueLocationEvent = any> ext
     private static readonly issueLocationPropertySpecification: NodePropertySpecification<IssueLocation, IssueLocationEvent>
         = new NodePropertySpecification<IssueLocation, IssueLocationEvent>(
             (id, issueLocationEvent) => {
-                const command = new LoadIssueLocationsCommand();
+                const command = new LoadIssueLocationsCommand(true);
                 command.ids = [id];
-                command.loadDeleted = true;
                 return command;
             },
-            issueLocationEvent => new GetWithReloadCommand(issueLocationEvent, "location", new LoadIssueLocationsCommand()),
+            issueLocationEvent => new GetWithReloadCommand(issueLocationEvent, "location", new LoadIssueLocationsCommand(true)),
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

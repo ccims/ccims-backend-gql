@@ -20,12 +20,11 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
     private static readonly componentPropertySpecification: NodePropertySpecification<Component, ComponentEvent>
         = new NodePropertySpecification<Component, ComponentEvent>(
             (id, componentEvent) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = [id];
-                command.loadDeleted = true;
                 return command;
             },
-            componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand()),
+            componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand(true)),
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

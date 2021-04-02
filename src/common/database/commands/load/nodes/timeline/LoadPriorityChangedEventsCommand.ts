@@ -12,8 +12,8 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(PriorityChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(PriorityChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -12,8 +12,8 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(DueDateChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(DueDateChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -22,11 +22,11 @@ export class UnlinkEvent extends IssueTimelineItem {
     private static readonly unlinkedIssuePropertySpecification: NodePropertySpecification<Issue, UnlinkEvent>
         = new NodePropertySpecification<Issue, UnlinkEvent>(
             (id, unlinkEvent) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand()),
+            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

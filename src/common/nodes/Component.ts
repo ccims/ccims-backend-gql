@@ -134,15 +134,13 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
         = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -160,15 +158,13 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
         = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinned_issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((issue, component) => issue.componentsProperty)
@@ -182,12 +178,12 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
@@ -205,12 +201,12 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumed_component_interface"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.consumedByComponent = [component.id];
                 return command;
             })
@@ -228,15 +224,13 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Component> =
         NodeListPropertySpecification.loadDynamic<Label, Component>(LoadRelationCommand.fromPrimary("component", "label"),
             (ids, component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             (component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.onComponents = [component.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((label, component) => label.componentsProperty)

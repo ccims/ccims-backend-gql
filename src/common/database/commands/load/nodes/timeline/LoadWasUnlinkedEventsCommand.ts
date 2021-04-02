@@ -12,8 +12,8 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(WasUnlinkedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(WasUnlinkedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

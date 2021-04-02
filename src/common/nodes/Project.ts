@@ -72,15 +72,13 @@ export class Project extends NamedNode<Project> {
     private static readonly componentsPropertySpecification: NodeListPropertySpecification<Component, Project>
         = NodeListPropertySpecification.loadDynamic<Component, Project>(LoadRelationCommand.fromPrimary("project", "component"),
             (ids, project) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             project => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.onProjects = [project.id];
-                command.loadDeleted = true;
                 return command;
             })
             .notifyChanged((component, project) => component.projectsProperty)
@@ -123,15 +121,13 @@ export class Project extends NamedNode<Project> {
         = NodeListPropertySpecification.loadDynamic<Issue, Project>(
             project => new LoadIssueIdsCommand(project.id),
             (ids, project) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command;
             },
             project => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onProjects = [project.id];
-                command.loadDeleted = true;
                 return command;
             })
             .noSave();
@@ -150,12 +146,12 @@ export class Project extends NamedNode<Project> {
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Project>(
             project => new LoadComponentInterfacesIdsCommand(project.id),
             (ids, project) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             project => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.onProjects = [project.id];
                 return command;
             })
@@ -174,15 +170,13 @@ export class Project extends NamedNode<Project> {
         NodeListPropertySpecification.loadDynamic<Label, Project>(
             project => new LoadLabelsIdsCommand(project.id),
             (ids, project) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = ids;
-                command.loadDeleted = true;
                 return command
             },
             (project) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.onProjects = [project.id];
-                command.loadDeleted = true;
                 return command;
             }
         )

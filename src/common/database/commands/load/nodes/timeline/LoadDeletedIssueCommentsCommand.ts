@@ -12,8 +12,8 @@ export class LoadDeletedIssueCommentsCommand extends LoadIssueTimelineItemsComma
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(DeletedIssueCommentTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(DeletedIssueCommentTableSpecification.rows, loadDeleted);
     }
 
     /**

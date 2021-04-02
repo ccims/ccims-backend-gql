@@ -26,8 +26,8 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     /**
      * creates a new
      */
-    public constructor() {
-        super("issue_timeline_item");
+    public constructor(loadDeleted: boolean = false) {
+        super("issue_timeline_item", loadDeleted);
     }
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {

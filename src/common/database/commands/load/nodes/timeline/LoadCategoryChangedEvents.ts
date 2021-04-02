@@ -12,8 +12,8 @@ export class LoadCategoryChangedEventsCommand extends LoadIssueTimelineItemsComm
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(CategoryChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(CategoryChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**

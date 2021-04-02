@@ -50,8 +50,8 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
     /**
      * creates a new LoadComponentsCommand
      */
-    public constructor() {
-        super(ComponentTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ComponentTableSpecification.rows, loadDeleted);
     }
 
     /**

@@ -1,3 +1,4 @@
+import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { SyncNode } from "../../../../nodes/SyncNode";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
@@ -35,6 +36,10 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      */
     public modifiedSince?: Date;
 
+    protected constructor(rows: RowSpecification<T>[], loadDeleted: boolean = false) {
+        super(rows);
+        this.loadDeleted = loadDeleted;
+    }
 
     /**
      * gets a string with all rows that should be selected

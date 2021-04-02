@@ -12,8 +12,8 @@ export class LoadRenamedTitleEventsCommand extends LoadIssueTimelineItemsCommand
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(RenamedTitleEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(RenamedTitleEventTableSpecification.rows, loadDeleted);
     }
 
     /**
