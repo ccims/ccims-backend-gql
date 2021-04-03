@@ -1,11 +1,13 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { CCIMSUser } from "../../../../common/nodes/CCIMSUser";
 import { Component } from "../../../../common/nodes/Component";
+import { IMSUser } from "../../../../common/nodes/IMSUser";
 import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
 import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
+import imsUsersListQuery from "../../listQueries/imsUsersListQuery";
 import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
@@ -37,7 +39,8 @@ const ccimsUserConfig: GraphQLObjectTypeConfig<CCIMSUser, ResolverContext> = {
         ownedComponents: componentsListQuery<CCIMSUser, Component>("All the components this user ownes of matching `filterBy`", user => user.ownedComponentsProperty),
         assignedToIssues: issuesListQuery<CCIMSUser, Issue>("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
         participantOfIssues: issuesListQuery<CCIMSUser, Issue>("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
-        issueComments: issueCommentsListQuery<CCIMSUser, IssueComment>("All issue comments (not including issues) written by this user", user => user.commentsProperty)
+        issueComments: issueCommentsListQuery<CCIMSUser, IssueComment>("All issue comments (not including issues) written by this user", user => user.commentsProperty),
+        imsUsers: imsUsersListQuery<CCIMSUser, IMSUser>("All IMSUsers of this CCIMSUser which match `filterBy`", user => user.linkedByUsersProperty)
     })
 };
 const GraphQLCCIMSUser = new GraphQLObjectType(ccimsUserConfig);

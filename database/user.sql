@@ -16,6 +16,7 @@ CREATE TABLE ccims_users (
 
 CREATE TABLE ims_users (
     ims_data JSON,
+    ims_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (users);
 

@@ -52,14 +52,7 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
      */
     public linksToUsers?: string[];
 
-    /**
-     * creates a new LoadUsersCommand
-     */
-    public constructor() {
-        super(UserTableSpecification.rows);
-    }
-
-
+    
     /**
      * generates the start of the query
      */

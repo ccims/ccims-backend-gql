@@ -1,10 +1,15 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
+import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Component } from "./Component";
+import { IMSUser } from "./IMSUser";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 
@@ -87,6 +92,30 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
     }
 
     /**
+     * list of all IMSUsers with this ImsSystem
+     */
+    public readonly usersProperty: NodeListProperty<IMSUser, ImsSystem>;
+
+    /**
+     * specification for usersProperty 
+     */
+    private static readonly usersPropertySpecification: NodeListPropertySpecification<IMSUser, ImsSystem>
+        = NodeListPropertySpecification.loadDynamic<IMSUser, ImsSystem>(
+            ims => LoadRelationCommand.fromManySideBase("ims_user", "ims_id", ims),
+            (ids, ims) => {
+                const command = new LoadIMSUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            ims => {
+                const command = new LoadIMSUsersCommand();
+                command.imsSystems = [ims.id];
+                return command
+            })
+            .notifyChanged((user, ims) => user.imsProperty)
+            .noSave();
+
+    /**
      * warning: this does only create a new ImsSystem instance, but not a new ImsSystem
      * to create a new ImsSystem, use @see Component.create
      * @param databaseManager the databaseManager
@@ -102,6 +131,7 @@ export class ImsSystem extends CCIMSNode<ImsSystem> {
         this._connectionData = connectionData;
         this._endpoint = endpoint;
         this.componentProperty = new NullableNodeProperty<Component, ImsSystem>(databaseManager, ImsSystem.componentPropertySpecification, this, componentId);
+        this.usersProperty = new NodeListProperty<IMSUser, ImsSystem>(databaseManager, ImsSystem.usersPropertySpecification, this);
     }
 
     /**
