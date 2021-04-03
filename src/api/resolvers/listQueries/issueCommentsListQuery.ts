@@ -32,6 +32,7 @@ function issueCommentsListQuery<TSource extends CCIMSNode, TProperty extends Par
             cmd.lastEditedBefore = args.filterBy?.editedBefore;
             cmd.body = args.filterBy?.body;
             cmd.reactions = args.filterBy?.reactions;
+            /*
             if (typeof args.filterBy?.currentUserCanEdit === "boolean") {
                 if (args.filterBy?.currentUserCanEdit) {
                     cmd.onComponents = context.user.permissions.filterComponent(permissions => permissions.editIssues || permissions.moderate || permissions.componentAdmin);
@@ -39,6 +40,7 @@ function issueCommentsListQuery<TSource extends CCIMSNode, TProperty extends Par
                     cmd.onComponents = context.user.permissions.filterComponent(permissions => !(permissions.editIssues || permissions.moderate || permissions.componentAdmin));
                 }
             }
+            */
             return baseQuery.createResult(src, context, cmd);
         }
     };

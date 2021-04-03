@@ -21,9 +21,11 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
             const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
+            /*
             if ((componentIds.size > 0) && !(ownerUserId === context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
                 throw new Error("You are not the owner of the new project, you can't add users or components")
             }
+            */
             let componentCmd: LoadComponentsCommand | undefined;
             if (componentIds.size > 0) {
                 componentCmd = new LoadComponentsCommand();
@@ -46,7 +48,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             if (components && components.length >= 1) {
                 await project.componentsProperty.addAll(components);
             }
-            owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
+            // owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
             await context.dbManager.save();
             return base.createResult(args, { project });
         }

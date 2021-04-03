@@ -21,9 +21,11 @@ function addIssueToComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id was no valid component id");
             }
             const component = componentCmd.getResult()[0];
+            /*
             if (!context.user.permissions.getComponentPermissions(component.id).editIssueLocation && !context.user.permissions.globalPermissions.globalAdmin) {
                 throw new Error("You are not permitted to add issues to the given component")
             }
+            */
             const event = await issue.addToComponent(component, new Date(), context.user);
             await context.dbManager.save();
             return base.createResult(args, issue, event, { component });

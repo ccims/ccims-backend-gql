@@ -32,11 +32,13 @@ function registerUser(): GraphQLFieldConfig<any, ResolverContext> {
             const email = PreconditionCheck.checkNullableString(input, "email", 320);
             const user = await CCIMSUser.create(context.dbManager, username, displayName, password, email);
             if (config.api.createAllUsersAsGlobalAdmin) {
+                /*
                 user.permissions.globalPermissions = {
                     addRemoveComponents: true,
                     addRemoveProjects: true,
                     globalAdmin: true
                 };
+                */
             }
             await context.dbManager.save();
             return { userId: user.id };

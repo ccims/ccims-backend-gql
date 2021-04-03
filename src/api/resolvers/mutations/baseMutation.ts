@@ -59,9 +59,11 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
             return args.input;
         },
         userAllowed: (context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => {
+            /*
             if (!context.user.permissions.globalPermissions.globalAdmin && !neededPermissions(context.user.permissions)) {
                 throw new Error(`You are not permitted to perform this permission`);
             }
+            */
         },
         initMutation: (args: any, context: ResolverContext, neededPermissions: (permissions: UserPermissions) => boolean) => {
             base.userAllowed(context, neededPermissions);

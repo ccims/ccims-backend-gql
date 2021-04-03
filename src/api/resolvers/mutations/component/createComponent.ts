@@ -28,6 +28,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const projectIds = new Set(PreconditionCheck.checkNullableStringList(input, "projects", 32));
             const consumedInterfacesIds = new Set(PreconditionCheck.checkNullableStringList(input, "consumedInterfaces", 32));
 
+            /*
             if (Array.from(projectIds).some(id => !context.user.permissions.getProjectPermissions(id).addRemoveComponents) && !context.user.permissions.globalPermissions.globalAdmin) {
                 throw new Error("You are not permitted to add the component to at least one of the specified pojects");
             }
@@ -35,6 +36,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             if (consumedInterfacesIds.size > 0 && (ownerId !== context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
                 throw new Error("You are not permitted to set consumed interfaces for the component as you arne't the owner");
             }
+            */
 
             const owner = await context.dbManager.getNode(ownerId);
             if (!owner || !(owner instanceof User)) {
@@ -74,7 +76,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
             if (interfacesCmd) {
                 await component.consumedInterfacesProperty.addAll(interfacesCmd?.getResult());
             }
-            owner.permissions.setComponentPermissions(component.id, new ComponentPermission(true, true, true, true, true));
+            // owner.permissions.setComponentPermissions(component.id, new ComponentPermission(true, true, true, true, true));
             await context.dbManager.save();
             return base.createResult(args, { component, ims });
         }

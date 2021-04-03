@@ -61,12 +61,14 @@ function timelineMutation(payload: GraphQLObjectType, input: GraphQLInputObjectT
                 throw new Error(`The given id is no valid issue id`);
             }
             const issue = cmd.getResult()[0];
+            /*
             if (!context.user.permissions.globalPermissions.globalAdmin && !(await issue.componentsProperty.getIds()).some(id => {
                 const perm = context.user.permissions.getComponentPermissions(id);
                 return neededPermissions(perm, issue);
             })) {
                 throw new Error(`You have to have the permission to perform this mutation on the issue`);
             }
+            */
             return issue;
         },
         createResult: <TReturn extends object>(args: any, issue: Issue, event: IssueTimelineItem | undefined, returnObject: TReturn): typeof returnObject & { clientMutationID: string | undefined, issue: Issue, event: typeof event, timelineEdge: ({ cursor: string, node: typeof event }) | undefined } => {
