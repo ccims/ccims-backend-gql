@@ -1,6 +1,6 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../ResolverContext";
-import GraphQLUser from "../../nodes/GraphQLUser";
+import GraphQLCCIMSUser from "../../nodes/GraphQLCCIMSUser";
 
 const createUserPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "CreateUserPayload",
@@ -11,7 +11,7 @@ const createUserPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
             description: "The string provided by the client on sending the mutation"
         },
         user: {
-            type: GraphQLUser,
+            type: GraphQLCCIMSUser,
             description: "The user created by this mutation"
         }
     })
