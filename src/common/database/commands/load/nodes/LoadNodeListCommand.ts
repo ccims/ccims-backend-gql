@@ -213,7 +213,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      */
     protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
         return {
-            text: `SELECT ${this.rows} FROM ${tableName} main `,
+            text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main `,
             values: []
         }
     }
