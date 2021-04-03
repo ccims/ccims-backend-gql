@@ -71,5 +71,4 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * @result the parameters and a new i
      */
     protected abstract generateConditions(i: number): { conditions: ConditionSpecification[], i: number }
-
 }

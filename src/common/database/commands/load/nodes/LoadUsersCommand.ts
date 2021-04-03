@@ -1,4 +1,4 @@
-import { User, UserType } from "../../../../nodes/User";
+import { User } from "../../../../nodes/User";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
@@ -51,12 +51,6 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
     public linksToUsers?: string[];
 
     /**
-     * the type of users to load
-     * defaults to ALL
-     */
-    public type: UserType = UserType.ALL;
-
-    /**
      * If true the linked users are loaded instread of the actual user
      * defaults to false
      */
@@ -104,6 +98,38 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             });
             conditions.i++;
         }
+
+        const linkedConditions = this.generateLinkedConditions(conditions.i);
+        if (this.loadLinkedUsers) {
+            const values = [];
+            for (const conditionSpecification of linkedConditions.conditions) {
+                values.push(...conditionSpecification.values);
+            }
+            linkedConditions.conditions.sort((spec1, spec2) => spec1.priority - spec2.priority);
+            const linkedConditionsText = linkedConditions.conditions.map(spec => `(${spec.text})`).join(" AND ");
+            conditions.conditions.push({
+                text: `main.id = ANY(SELECT id FROM users WHERE ${linkedConditionsText})`,
+                values: values,
+                priority: 1
+            });
+        } else {
+            conditions.conditions.push(...linkedConditions.conditions);
+        }
+        conditions.i = linkedConditions.i;
+
+        return conditions;
+    }
+
+    /**
+     * Generates the linked conditions, a list of conditions that must be applied to the not linked users
+     * @param i the start value index
+     * @returns the generated conditions
+     */
+    private generateLinkedConditions(i: number): { conditions: ConditionSpecification[], i: number} {
+        const conditions = {
+            conditions: [] as ConditionSpecification[],
+            i: i
+        };
 
         if (this.assignedToIssues !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("issue", "assignee", this.assignedToIssues, conditions.i));

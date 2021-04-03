@@ -292,21 +292,3 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     }
 
 }
-
-/**
- * Types of users
- */
-export enum UserType {
-    /**
-     * all users (ims and ccims)
-     */
-    ALL,
-    /**
-     * ccims users
-     */
-    CCIMS,
-    /**
-     * ims users
-     */
-    IMS
-}
