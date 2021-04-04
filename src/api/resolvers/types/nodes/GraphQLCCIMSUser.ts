@@ -1,7 +1,6 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { CCIMSUser } from "../../../../common/nodes/CCIMSUser";
 import { Component } from "../../../../common/nodes/Component";
-import { IMSUser } from "../../../../common/nodes/IMSUser";
 import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
 import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
@@ -13,6 +12,7 @@ import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
+import { IMSUser } from "../../../../common/nodes/IMSUser";
 
 const ccimsUserConfig: GraphQLObjectTypeConfig<CCIMSUser, ResolverContext> = {
     name: "CCIMSUser",

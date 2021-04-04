@@ -4,8 +4,8 @@ import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
 import imsUsersListQuery from "../../listQueries/imsUsersListQuery";
-import { IMSUser } from "../../../../common/nodes/IMSUser";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
+import { IMSUser } from "../../../../common/nodes/IMSUser";
 
 const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IMS",

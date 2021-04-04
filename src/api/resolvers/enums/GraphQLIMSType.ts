@@ -1,5 +1,5 @@
 import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
-import { IMSSystem, IMSType } from "../../../common/nodes/IMSSystem";
+import { IMSType } from "../../../common/nodes/enums/IMSType";
 
 const imsTypeConfig: GraphQLEnumTypeConfig = {
     name: "IMSType",

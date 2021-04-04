@@ -1,7 +1,6 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadIssuesCommand } from "../../database/commands/load/nodes/LoadIssuesCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { IMSType } from "../IMSSystem";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";

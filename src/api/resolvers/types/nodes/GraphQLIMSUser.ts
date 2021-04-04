@@ -1,5 +1,4 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
-import { IMSUser } from "../../../../common/nodes/IMSUser";
 import { Component } from "../../../../common/nodes/Component";
 import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
@@ -12,6 +11,7 @@ import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
 import GraphQLIMS from "./GraphQLIMS";
+import { IMSUser } from "../../../../common/nodes/IMSUser";
 
 const imsUserConfig: GraphQLObjectTypeConfig<IMSUser, ResolverContext> = {
     name: "IMSUser",

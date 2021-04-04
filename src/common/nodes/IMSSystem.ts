@@ -5,24 +5,14 @@ import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUser
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Component } from "./Component";
-import { IMSUser } from "./IMSUser";
+import { IMSType } from "./enums/IMSType";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
-
-/**
- * enum with all (currently not) supported issue management systems
- */
-export enum IMSType {
-    GITHUB = "GITHUB",
-    GITLAB = "GITLAB",
-    JIRA = "JIRA",
-    REDMINE = "REDMINE",
-    CCIMS = "CCIMS"
-}
+import { IMSUser } from "./IMSUser";
 
 /**
  * interface for connectionData

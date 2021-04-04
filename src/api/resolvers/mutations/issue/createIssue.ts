@@ -3,12 +3,13 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLCreateIssuePayload from "../../types/mutations/payloads/issue/GraphQLCreateIssuePayload";
 import GraphQLCreateIssueInput from "../../types/mutations/inputs/issue/GraphQLCreateIssueInput";
 import baseMutation from "../baseMutation";
-import { Issue, IssueCategory } from "../../../../common/nodes/Issue";
+import { Issue } from "../../../../common/nodes/Issue";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadLabelsCommand } from "../../../../common/database/commands/load/nodes/LoadLabelsCommand";
 import { LoadIssueLocationsCommand } from "../../../../common/database/commands/load/nodes/LoadIssueLocationsCommand";
 import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
+import { IssueCategory } from "../../../../common/nodes/enums/IssueCategory";
 
 function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateIssuePayload, GraphQLCreateIssueInput, "Creates a new issue");

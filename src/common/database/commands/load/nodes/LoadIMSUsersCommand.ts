@@ -1,10 +1,10 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { IMSUser, IMSUserTableSpecification } from "../../../../nodes/IMSUser";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadUsersCommandBase } from "./LoadUsersCommandBase";
 import { createStringListFilter } from "./RelationFilter";
+import { IMSUser, IMSUserTableSpecification } from "../../../../nodes/IMSUser";
 
 /**
  * command to load a list of ims users

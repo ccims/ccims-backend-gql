@@ -6,11 +6,12 @@ import { Component } from "../../../../common/nodes/Component";
 import { User } from "../../../../common/nodes/User";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { IMSType, IMSSystem } from "../../../../common/nodes/IMSSystem";
+import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadComponentInterfacesCommand } from "../../../../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { ComponentPermission } from "../../../../utils/UserPermissions";
+import { IMSType } from "../../../../common/nodes/enums/IMSType";
 
 function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateComponentPayload, GraphQLCreateComponentInput, "Creates a new component in the ccims and adds it to the given users");

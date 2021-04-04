@@ -1,5 +1,6 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { Issue, IssueCategory, IssueTableSpecification } from "../../../../nodes/Issue";
+import { IssueCategory } from "../../../../nodes/enums/IssueCategory";
+import { Issue, IssueTableSpecification } from "../../../../nodes/Issue";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { OrConditionSpecification } from "../OrConditionSpecification";

@@ -5,8 +5,9 @@ import GraphQLUpdateComponentInput from "../../types/mutations/inputs/component/
 import { Component } from "../../../../common/nodes/Component";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { IMSType, IMSSystem } from "../../../../common/nodes/IMSSystem";
+import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { log } from "../../../../log";
+import { IMSType } from "../../../../common/nodes/enums/IMSType";
 
 function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a component in the ccims and adds it to the given users");

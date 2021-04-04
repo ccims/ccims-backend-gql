@@ -1,7 +1,7 @@
 import { printSchema } from "graphql";
-import { Client, Pool } from "pg";
-import { CCIMSApi } from "./api/CCIMSApi";
+import { Pool } from "pg";
 import ccimsSchema from "./api/resolvers/CCIMSSchema";
+import { CCIMSApi } from "./api/CCIMSApi";
 import { initTypeParsers } from "./common/database/DatabaseManager";
 import { config } from "./config/Config";
 import { SnowflakeGenerator } from "./utils/Snowflake";

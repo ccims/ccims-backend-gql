@@ -1,6 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { Component, ComponentTableSpecification } from "../../../../nodes/Component";
-import { IMSType } from "../../../../nodes/IMSSystem";
+import { IMSType } from "../../../../nodes/enums/IMSType";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";

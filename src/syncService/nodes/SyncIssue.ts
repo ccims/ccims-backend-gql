@@ -1,5 +1,5 @@
 import { CCIMSNode } from "../../common/nodes/CCIMSNode";
-import { Issue, IssueCategory, IssuePriority } from "../../common/nodes/Issue";
+import { Issue } from "../../common/nodes/Issue";
 import { IssueLocation } from "../../common/nodes/IssueLocation";
 import { Label } from "../../common/nodes/Label";
 import { NodeType } from "../../common/nodes/NodeType";
@@ -34,6 +34,8 @@ import { UnmarkedAsDuplicateEvent } from "../../common/nodes/timelineItems/Unmar
 import { MarkedAsDuplicateEvent } from "../../common/nodes/timelineItems/MarkedAsDuplicateEvent";
 import { PriorityChangedEvent } from "../../common/nodes/timelineItems/PriorityChangedEvent";
 import { CategoryChangedEvent } from "../../common/nodes/timelineItems/CategoryChangedEvent";
+import { IssueCategory } from "../../common/nodes/enums/IssueCategory";
+import { IssuePriority } from "../../common/nodes/enums/IssuePriority";
 
 /**
  * Sync wraüüer for Issue

@@ -1,5 +1,6 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { Issue, IssueCategory } from "../Issue";
+import { IssueCategory } from "../enums/IssueCategory";
+import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadata } from "../SyncMetadata";

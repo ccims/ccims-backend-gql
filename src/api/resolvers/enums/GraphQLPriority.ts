@@ -1,5 +1,5 @@
 import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
-import { IssuePriority } from "../../../common/nodes/Issue";
+import { IssuePriority } from "../../../common/nodes/enums/IssuePriority";
 
 const priorityConfig: GraphQLEnumTypeConfig = {
     name: "Priority",

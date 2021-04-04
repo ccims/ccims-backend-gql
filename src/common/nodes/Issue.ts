@@ -53,6 +53,8 @@ import { PriorityChangedEvent } from "./timelineItems/PriorityChangedEvent";
 import { SyncMetadata } from "./SyncMetadata";
 import { SortedNodeListProperty } from "./properties/SortedNodeListProperty";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { IssuePriority } from "./enums/IssuePriority";
+import { IssueCategory } from "./enums/IssueCategory";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -949,16 +951,4 @@ export class Issue extends SyncNode<Issue> {
         }
     }
 
-}
-
-export enum IssueCategory {
-    BUG = "BUG",
-    FEATURE_REQUEST = "FEATURE_REQUEST",
-    UNCLASSIFIED = "UNCLASSIFIED"
-}
-
-export enum IssuePriority {
-    LOW = "LOW",
-    DEFAULT = "DEFAULT",
-    HIGH = "HIGH"
 }

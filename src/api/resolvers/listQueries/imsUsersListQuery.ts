@@ -1,14 +1,12 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
-import { LoadIMSUsersCommand } from "../../../common/database/commands/load/nodes/LoadIMSUsersCommand";
-import { LoadUsersCommand } from "../../../common/database/commands/load/nodes/LoadUsersCommand";
-import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { IMSUser } from "../../../common/nodes/IMSUser";
-import { ListProperty } from "../../../common/nodes/properties/ListProperty";
+import { CCIMSNode } from "../../../common/nodes/CCIMSNode";import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { User } from "../../../common/nodes/User";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLUserFilter from "../types/filters/GraphQLUserFilter";
 import GraphQLUserPage from "../types/pages/GraphQLUserPage";
 import nodeListQuery from "./nodeListQuery";
+import { IMSUser } from "../../../common/nodes/IMSUser";
+import { LoadIMSUsersCommand } from "../../../common/database/commands/load/nodes/LoadIMSUsersCommand";
 
 /**
  * Creates a IMSUser query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context

@@ -1,5 +1,6 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { Issue, IssuePriority } from "../Issue";
+import { IssuePriority } from "../enums/IssuePriority";
+import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadata } from "../SyncMetadata";

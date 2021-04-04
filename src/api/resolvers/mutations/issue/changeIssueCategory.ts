@@ -4,7 +4,7 @@ import GraphQLChangeIssueCategoryPayload from "../../types/mutations/payloads/is
 import GraphQLChangeIssueCategoryInput from "../../types/mutations/inputs/issue/GraphQLChangeIssueCategoryInput";
 import timelineMutation from "./timelineMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { IssueCategory } from "../../../../common/nodes/Issue";
+import { IssueCategory } from "../../../../common/nodes/enums/IssueCategory";
 
 function changeIssueCategory(): GraphQLFieldConfig<any, ResolverContext> {
     const base = timelineMutation(GraphQLChangeIssueCategoryPayload, GraphQLChangeIssueCategoryInput, "Changes the category of an issue");

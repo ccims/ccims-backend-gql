@@ -1,13 +1,14 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
 import { DatabaseCommand } from "./DatabaseCommand";
-import { Client, ClientBase, Pool } from "pg";
+import { ClientBase, Pool } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
 import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
 import { setTypeParser } from "pg-types"
-import { IssueCategory, IssuePriority } from "../nodes/Issue";
-import { IMSType } from "../nodes/IMSSystem";
 import { Saveable } from "../nodes/Saveable";
+import { IMSType } from "../nodes/enums/IMSType";
+import { IssueCategory } from "../nodes/enums/IssueCategory";
+import { IssuePriority } from "../nodes/enums/IssuePriority";
 
 /**
  * Adds database support, also has an IdGenerator

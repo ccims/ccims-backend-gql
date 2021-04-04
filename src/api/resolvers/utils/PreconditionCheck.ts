@@ -1,5 +1,3 @@
-import { IMSType } from "../../../common/nodes/IMSSystem";
-
 export default class PreconditionCheck {
     public static checkString(args: any, property: string, maxLength?: number): string {
         const checked = PreconditionCheck.checkNullableString(args, property, maxLength);
