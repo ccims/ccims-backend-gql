@@ -30,8 +30,9 @@ CREATE TABLE global_permissions (
     global_admin boolean NOT NULL DEFAULT false,
     create_delete_projects boolean NOT NULL DEFAULT false,
     create_delete_components boolean NOT NULL DEFAULT false,
-    PRIMARY KEY (user_role_id)
-);
+    UNIQUE (user_role_id),
+    PRIMARY KEY (id)
+) INHERITS (node);
 
 CREATE TABLE project_permissions (
     user_role_id id NOT NULL,
@@ -39,8 +40,9 @@ CREATE TABLE project_permissions (
     read_project boolean NOT NULL DEFAULT false,
     project_admin boolean NOT NULL DEFAULT false,
     add_remove_components boolean NOT NULL DEFAULT false,
-    PRIMARY KEY (user_role_id, project_id)
-);
+    UNIQUE (user_role_id, project_id),
+    PRIMARY KEY (id)
+) INHERITS (node);
 
 CREATE TABLE component_permissions (
     user_role_id id NOT NULL,
@@ -52,8 +54,9 @@ CREATE TABLE component_permissions (
     edit_issue_location boolean NOT NULL DEFAULT false,
     change_ims boolean NOT NULL DEFAULT false,
     link_issues boolean NOT NULL DEFAULT false,
-    PRIMARY KEY (user_role_id, component_id)
-);
+    UNIQUE (user_role_id, component_id),
+    PRIMARY KEY (id)
+) INHERITS (node);
 
 CREATE TABLE relation_user_project (
     user_id id NOT NULL,
