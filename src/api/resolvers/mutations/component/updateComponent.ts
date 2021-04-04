@@ -5,7 +5,7 @@ import GraphQLUpdateComponentInput from "../../types/mutations/inputs/component/
 import { Component } from "../../../../common/nodes/Component";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { ImsType, ImsSystem } from "../../../../common/nodes/ImsSystem";
+import { IMSType, IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { log } from "../../../../log";
 
 function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
@@ -15,7 +15,7 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
             const componentId = PreconditionCheck.checkString(input, "componentId", 32);
-            const imsType = PreconditionCheck.checkNullableEnum<ImsType>(input, "imsType", ImsType);
+            const imsType = PreconditionCheck.checkNullableEnum<IMSType>(input, "imsType", IMSType);
             const endpoint = PreconditionCheck.checkNullableString(input, "endpoint");
             const connectionData = input.connectionData; // TODO: Check that Connection data
 
@@ -39,7 +39,7 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             let imsSystem = await component.ims();
             if (imsType !== undefined || endpoint !== undefined || connectionData !== undefined) {
                 if (component.imsSystemProperty.getId() === undefined) {
-                    await component.imsSystemProperty.set(ImsSystem.create(context.dbManager, imsType ?? ImsType.CCIMS, endpoint ?? "", connectionData ?? {}));
+                    await component.imsSystemProperty.set(IMSSystem.create(context.dbManager, imsType ?? IMSType.CCIMS, endpoint ?? "", connectionData ?? {}));
                 }
                 imsSystem = await component.ims();
                 if (imsSystem === undefined) {

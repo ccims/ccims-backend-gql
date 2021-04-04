@@ -6,7 +6,7 @@ import { Component } from "../../../../common/nodes/Component";
 import { User } from "../../../../common/nodes/User";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { ImsType, ImsSystem } from "../../../../common/nodes/ImsSystem";
+import { IMSType, IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadComponentInterfacesCommand } from "../../../../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
@@ -18,7 +18,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
-            const imsType = PreconditionCheck.checkEnum<ImsType>(input, "imsType", ImsType);
+            const imsType = PreconditionCheck.checkEnum<IMSType>(input, "imsType", IMSType);
             const endpoint = PreconditionCheck.checkNullableString(input, "endpoint") ?? "";
             const connectionData = input.connectionData ?? {}; // TODO: Check that Connection data
 
@@ -67,7 +67,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("All ids given for the consumedInterfaces must must be valid ids of existing component interfaces");
             }
 
-            const ims = ImsSystem.create(context.dbManager, imsType, endpoint, connectionData);
+            const ims = IMSSystem.create(context.dbManager, imsType, endpoint, connectionData);
             const component = await Component.create(context.dbManager, name, description, owner, context.user, new Date());
             await component.imsSystemProperty.set(ims);
             if (projectCmd) {

@@ -1,7 +1,7 @@
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadComponentInterfacesCommand } from "./LoadComponentInterfacesCommand";
 import { LoadComponentsCommand } from "./LoadComponentsCommand";
-import { LoadImsSystemsCommand } from "./LoadImsSystemsCommand";
+import { LoadIMSSystemsCommand } from "./LoadIMSSystemsCommand";
 import { LoadIssuesCommand } from "./LoadIssuesCommand";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { LoadProjectsCommand } from "./LoadProjectsCommand";
@@ -42,7 +42,7 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["component", (loadDeleted) => new LoadComponentsCommand(loadDeleted)],
     ["component_interface", (loadDeleted) => new LoadComponentInterfacesCommand(loadDeleted)],
     ["project", () => new LoadProjectsCommand()],
-    ["ims_system", () => new LoadImsSystemsCommand()],
+    ["ims_system", () => new LoadIMSSystemsCommand()],
     ["ccims_users", () => new LoadCCIMSUsersCommand()],
     ["ims_users", () => new LoadIMSUsersCommand()],
     ["issue_timeline_body", (loadDeleted) => new LoadBodiesCommand(loadDeleted)],

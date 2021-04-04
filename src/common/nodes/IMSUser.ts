@@ -1,7 +1,7 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
-import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
+import { LoadIMSSystemsCommand } from "../database/commands/load/nodes/LoadIMSSystemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
-import { ImsSystem } from "./ImsSystem";
+import { IMSSystem } from "./IMSSystem";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
@@ -13,7 +13,7 @@ import { User, UserTableSpecification } from "./User";
  */
 export const IMSUserTableSpecification: NodeTableSpecification<IMSUser>
     = new NodeTableSpecification<IMSUser>("ccims_users", UserTableSpecification,
-        new RowSpecification("ims_id", user => user.imsProperty.getId()),
+        new RowSpecification("ims_id", user => user.imsSystemProperty.getId()),
         RowSpecification.fromProperty("ims_data", "imsData"));
 
 export class IMSUser extends User {
@@ -23,21 +23,29 @@ export class IMSUser extends User {
     /**
      * the IMS associated with the IMS user
      */
-    public readonly imsProperty: NullableNodeProperty<ImsSystem, IMSUser>;
+    public readonly imsSystemProperty: NullableNodeProperty<IMSSystem, IMSUser>;
 
     /**
      * specification for imsProperty
      */
-    private static readonly imsPropertySpecification: NodePropertySpecification<ImsSystem, IMSUser>
-        = new NodePropertySpecification<ImsSystem, IMSUser>(
+    private static readonly imsSystemPropertySpecification: NodePropertySpecification<IMSSystem, IMSUser>
+        = new NodePropertySpecification<IMSSystem, IMSUser>(
             (id, node) => {
-                const command = new LoadImsSystemsCommand();
+                const command = new LoadIMSSystemsCommand();
                 command.ids = [id];
                 return command;
             },
-            node => new GetWithReloadCommand(node, "ims_id", new LoadImsSystemsCommand()),
+            node => new GetWithReloadCommand(node, "ims_id", new LoadIMSSystemsCommand()),
             (ims, node) => ims.usersProperty
         );
+
+    /**
+     * Async getter functio nof the ims of this IMSUser
+     * @returns A promise of a IMS that belongs to this component or `undefined`
+     */
+    public async ims(): Promise<IMSSystem | undefined> {
+        return this.imsSystemProperty.getPublic();
+    }
 
 
     /**
@@ -56,7 +64,7 @@ export class IMSUser extends User {
     public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, imsId: string, email?: string, imsData?: ImsUserData) {
         super(NodeType.IMSUser, databaseManager, id, linkedUserId, username, displayName, email);
         this._imsData = imsData;
-        this.imsProperty = new NullableNodeProperty<ImsSystem, IMSUser>(databaseManager, IMSUser.imsPropertySpecification, this, imsId);
+        this.imsSystemProperty = new NullableNodeProperty<IMSSystem, IMSUser>(databaseManager, IMSUser.imsSystemPropertySpecification, this, imsId);
     }
 
     /**
@@ -68,7 +76,7 @@ export class IMSUser extends User {
      * @param linkedUserId the id of the linkedUser, if undefined links itself
      * @returns the new created IMSUser
      */
-    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, ims: ImsSystem, email?: string, linkedUserId?: string, imsData?: ImsUserData): Promise<IMSUser> {
+    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, ims: IMSSystem, email?: string, linkedUserId?: string, imsData?: ImsUserData): Promise<IMSUser> {
         if (username.length === 0) {
             throw new Error("The username can't be empty");
         }

@@ -11,6 +11,7 @@ import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser from "./GraphQLUser";
+import GraphQLIMS from "./GraphQLIMS";
 
 const imsUserConfig: GraphQLObjectTypeConfig<IMSUser, ResolverContext> = {
     name: "IMSUser",
@@ -32,6 +33,10 @@ const imsUserConfig: GraphQLObjectTypeConfig<IMSUser, ResolverContext> = {
         email: {
             type: GraphQLString,
             description: "The mail address of the user"
+        },
+        ims: {
+            type: GraphQLIMS,
+            description: "The associated IMS of the user"
         },
         ownedProjects: projectsListQuery<IMSUser, Project>("All the projects this user ownes of matching `filterBy`", user => user.ownedProjectsProperty),
         ownedComponents: componentsListQuery<IMSUser, Component>("All the components this user ownes of matching `filterBy`", user => user.ownedComponentsProperty),

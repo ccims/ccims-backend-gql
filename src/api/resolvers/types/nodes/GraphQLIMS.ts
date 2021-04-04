@@ -3,6 +3,9 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
+import imsUsersListQuery from "../../listQueries/imsUsersListQuery";
+import { IMSUser } from "../../../../common/nodes/IMSUser";
+import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 
 const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "IMS",
@@ -20,7 +23,8 @@ const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         component: {
             type: GraphQLComponent,
             description: "The component this IMS belongs to"
-        }
+        },
+        users: imsUsersListQuery<IMSSystem, IMSUser>("All IMSUsers with this IMS", ims => ims.usersProperty)
     })
 };
 const GraphQLIMS = new GraphQLObjectType(imsConfig);

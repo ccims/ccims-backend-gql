@@ -1,6 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { Component, ComponentTableSpecification } from "../../../../nodes/Component";
-import { ImsType } from "../../../../nodes/ImsSystem";
+import { IMSType } from "../../../../nodes/IMSSystem";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
@@ -30,7 +30,7 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
     /**
      * select only components that have one of the given ims types
      */
-    public imsTypes?: ImsType[];
+    public imsTypes?: IMSType[];
 
     /**
      * filters for Components where at least one of the issues is located

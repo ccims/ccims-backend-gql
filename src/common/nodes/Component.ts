@@ -1,12 +1,12 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
-import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
+import { LoadIMSSystemsCommand } from "../database/commands/load/nodes/LoadIMSSystemsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ComponentInterface } from "./ComponentInterface";
-import { ImsSystem } from "./ImsSystem";
+import { IMSSystem } from "./IMSSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
@@ -96,20 +96,20 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     /**
      * property for the imsSystem of this component
      */
-    public readonly imsSystemProperty: NullableNodeProperty<ImsSystem, Component>;
+    public readonly imsSystemProperty: NullableNodeProperty<IMSSystem, Component>;
 
     /**
      * specification of the imsSystemProperty
      */
-    private static readonly imsSystemPropertySpecification: NodePropertySpecification<ImsSystem, Component>
-        = new NodePropertySpecification<ImsSystem, Component>(
+    private static readonly imsSystemPropertySpecification: NodePropertySpecification<IMSSystem, Component>
+        = new NodePropertySpecification<IMSSystem, Component>(
             (id, component) => {
-                const command = new LoadImsSystemsCommand();
+                const command = new LoadIMSSystemsCommand();
                 command.ids = [id];
                 return command;
             },
             component => {
-                return new GetWithReloadCommand(component, "ims_system_id", new LoadImsSystemsCommand());
+                return new GetWithReloadCommand(component, "ims_system_id", new LoadIMSSystemsCommand());
             },
             (imsSystem, component) => imsSystem.componentProperty
         );
@@ -118,7 +118,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * Async getter function for the ims of this component
      * @returns A promise of a ims that belongs to this component or `undefined`
      */
-    public async ims(): Promise<ImsSystem | undefined> {
+    public async ims(): Promise<IMSSystem | undefined> {
         return this.imsSystemProperty.getPublic();
     }
 
@@ -252,7 +252,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.ownerProperty = new NullableNodeProperty<User, Component>(databaseManager, Component.ownerPropertySpecification, this, ownerId);
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
-        this.imsSystemProperty = new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
+        this.imsSystemProperty = new NullableNodeProperty<IMSSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);

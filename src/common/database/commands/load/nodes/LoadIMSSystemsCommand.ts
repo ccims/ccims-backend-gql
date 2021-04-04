@@ -1,5 +1,5 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { ImsSystem, ImsSystemTableSpecification } from "../../../../nodes/ImsSystem";
+import { IMSSystem, IMSSystemTableSpecification } from "../../../../nodes/IMSSystem";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
@@ -7,13 +7,13 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
 /**
  * command to load ImsSystems
  */
-export class LoadImsSystemsCommand extends LoadNodeListCommand<ImsSystem> {
+export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
 
     /**
      * creates a new LoadImsSystemsCommand
      */
     public constructor() {
-        super(ImsSystemTableSpecification.rows);
+        super(IMSSystemTableSpecification.rows);
     }
 
     /**
@@ -22,8 +22,8 @@ export class LoadImsSystemsCommand extends LoadNodeListCommand<ImsSystem> {
      * @param result  the complete QueryResult for additional properties like fields
      * @returns the parsed imsSystem
      */
-    protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ImsSystem {
-        return new ImsSystem(databaseManager, resultRow.id, resultRow.type, resultRow.endpoint, resultRow.connection_data, resultRow.component_id);
+    protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): IMSSystem {
+        return new IMSSystem(databaseManager, resultRow.id, resultRow.type, resultRow.endpoint, resultRow.connection_data, resultRow.component_id);
     }
 
     /**
