@@ -4,6 +4,9 @@
 export enum NodeType {
     CCIMSUser = "CCIMSUser",
     IMSUser = "IMSUser",
+    GlobalPermission = "GlobalPermission",
+    ProjectPermission = "ProjectPermission",
+    ComponentPermission = "ComponentPermission",
     Project = "Project",
     Component = "Component",
     ComponentInterface = "ComponentInterface",

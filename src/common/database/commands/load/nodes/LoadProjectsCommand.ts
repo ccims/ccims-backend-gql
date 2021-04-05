@@ -78,7 +78,7 @@ export class LoadProjectsCommand extends LoadNamedNodesCommand<Project> {
             conditions.i++;
         }
         if (this.users !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("user", "project", this.users, conditions.i));
+            conditions.conditions.push(createRelationFilterByPrimary("users", "project", this.users, conditions.i));
             conditions.i++;
         }
 

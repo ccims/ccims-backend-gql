@@ -29,4 +29,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER insert_ccims_user_trigger BEFORE INSERT ON ccims_users FOR EACH ROW EXECUTE FUNCTION insert_ccims_user_function();
+CREATE TRIGGER insert_ccims_user_trigger BEFORE INSERT ON ccims_user FOR EACH ROW EXECUTE FUNCTION insert_ccims_user_function();

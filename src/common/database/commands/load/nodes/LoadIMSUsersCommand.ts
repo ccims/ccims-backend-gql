@@ -37,7 +37,7 @@ export class LoadIMSUsersCommand extends LoadUsersCommandBase<IMSUser> {
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("ims_users", databaseManager);
+        return this.generateQueryStartFromTableName("ims_user", databaseManager);
     }
 
     /**

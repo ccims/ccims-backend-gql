@@ -63,7 +63,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * specification for linkedByUsersProperty
      */
     private static readonly linkedByUsersPropertySpecification: NodeListPropertySpecification<User, User>
-            = NodeListPropertySpecification.loadDynamic<User, User>(LoadRelationCommand.fromManySide("user", "linked_user_id"),
+            = NodeListPropertySpecification.loadDynamic<User, User>(
+            LoadRelationCommand.fromManySide("users", "linked_user_id"),
             (ids, user) => {
                 const command = new LoadUsersCommand();
                 command.ids = ids;
@@ -103,7 +104,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
 
     public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User>
-        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "assignee"),
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(
+            LoadRelationCommand.fromSecundary("issue", "assignee"),
             (ids, user) => {
                 const command = new LoadIssuesCommand(true);
                 command.ids = ids;
@@ -120,7 +122,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
 
     public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
-        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(
+            LoadRelationCommand.fromSecundary("issue", "participant"),
             (ids, user) => {
                 const command = new LoadIssuesCommand(true);
                 command.ids = ids;
@@ -161,7 +164,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      */
     public static readonly ownedComponentsPropertySpecification: NodeListPropertySpecification<Component, User>
         = NodeListPropertySpecification.loadDynamic<Component, User>(
-            user => LoadRelationCommand.fromManySideBase("component", "owner_user_id", user),
+            LoadRelationCommand.fromManySide("component", "owner_user_id"),
             (ids, user) => {
                 const command = new LoadComponentsCommand(true);
                 command.ids = ids;
@@ -185,7 +188,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      */
     public static readonly ownedProjectsPropertySpecification: NodeListPropertySpecification<Project, User>
         = NodeListPropertySpecification.loadDynamic<Project, User>(
-            user => LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
+            LoadRelationCommand.fromManySide("project", "owner_user_id"),
             (ids, user) => {
                 const command = new LoadProjectsCommand();
                 command.ids = ids;

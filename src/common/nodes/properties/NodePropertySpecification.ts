@@ -23,7 +23,7 @@ export class NodePropertySpecification<T extends CCIMSNode, V extends CCIMSNode>
      * @param notifiers get properties to notify
      */
     public constructor(
-        public readonly loadFromId: (id: string, node: V) => LoadNodeListCommand<T>,
+        public readonly loadFromId: (id: string, node: V) => DatabaseCommand<T[]>,
         public readonly reload: (node: V) => DatabaseCommand<T | undefined>,
         ...notifiers: ((element: T, node: V) => Property<V, T>)[]
     ) {

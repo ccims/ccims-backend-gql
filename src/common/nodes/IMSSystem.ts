@@ -91,7 +91,7 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
      */
     private static readonly usersPropertySpecification: NodeListPropertySpecification<IMSUser, IMSSystem>
         = NodeListPropertySpecification.loadDynamic<IMSUser, IMSSystem>(
-            ims => LoadRelationCommand.fromManySideBase("ims_user", "ims_id", ims),
+            LoadRelationCommand.fromManySide("ims_user", "ims_id"),
             (ids, ims) => {
                 const command = new LoadIMSUsersCommand();
                 command.ids = ids;

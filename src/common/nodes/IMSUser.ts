@@ -12,7 +12,7 @@ import { User, UserTableSpecification } from "./User";
  * specification of a table which can contain ccims users
  */
 export const IMSUserTableSpecification: NodeTableSpecification<IMSUser>
-    = new NodeTableSpecification<IMSUser>("ccims_users", UserTableSpecification,
+    = new NodeTableSpecification<IMSUser>("ccims_user", UserTableSpecification,
         new RowSpecification("ims_id", user => user.imsSystemProperty.getId()),
         RowSpecification.fromProperty("ims_data", "imsData"));
 

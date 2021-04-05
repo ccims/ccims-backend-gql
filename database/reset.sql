@@ -33,12 +33,12 @@ DROP TABLE IF EXISTS issue_location;
 
 -- User Tables
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS ccims_users;
-DROP TABLE IF EXISTS ims_users;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS global_permissions;
-DROP TABLE IF EXISTS project_permissions;
-DROP TABLE IF EXISTS component_permissions;
+DROP TABLE IF EXISTS ccims_user;
+DROP TABLE IF EXISTS ims_user;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS global_permission;
+DROP TABLE IF EXISTS project_permission;
+DROP TABLE IF EXISTS component_permission;
 DROP TABLE IF EXISTS relation_user_project;
 DROP TABLE IF EXISTS relation_user_role;
 

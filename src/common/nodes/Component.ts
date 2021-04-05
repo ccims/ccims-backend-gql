@@ -79,7 +79,8 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * specification of the projectsProperty
      */
     private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component>
-        = NodeListPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
+        = NodeListPropertySpecification.loadDynamic<Project, Component>(
+            LoadRelationCommand.fromSecundary("project", "component"),
             (ids, component) => {
                 const command = new LoadProjectsCommand();
                 command.ids = ids;
@@ -132,7 +133,8 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * specification of the issuesProperty
      */
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
-        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(
+            LoadRelationCommand.fromPrimary("component", "issue"),
             (ids, component) => {
                 const command = new LoadIssuesCommand(true);
                 command.ids = ids;
@@ -156,7 +158,8 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * specification of the pinnedIssuesProperty
      */
     private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
-        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinned_issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(
+            LoadRelationCommand.fromPrimary("component", "pinned_issue"),
             (ids, component) => {
                 const command = new LoadIssuesCommand(true);
                 command.ids = ids;
@@ -176,7 +179,8 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     public readonly interfacesProperty: NodeListProperty<ComponentInterface, Component>;
 
     private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
-        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(
+            LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
             (ids, component) => {
                 const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;

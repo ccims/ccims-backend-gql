@@ -1,17 +1,22 @@
 import crypto from "crypto";
 import { config } from "../../config/Config";
 import { log } from "../../log";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadCCIMSUsersCommand } from "../database/commands/load/nodes/LoadCCIMSUsersCommand";
+import { LoadPermissionsCommand } from "../database/commands/load/nodes/LoadPermissionsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { BasePermission } from "./BasePermission";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { User, UserTableSpecification } from "./User";
 
 /**
  * specification of a table which can contain ccims users
  */
 export const CCIMSUserTableSpecification: NodeTableSpecification<CCIMSUser>
-    = new NodeTableSpecification<CCIMSUser>("ccims_users", UserTableSpecification,
+    = new NodeTableSpecification<CCIMSUser>("ccims_user", UserTableSpecification,
         RowSpecification.fromProperty("pw_hash", "passwordHash"));
 
 export class CCIMSUser extends User {
@@ -21,6 +26,31 @@ export class CCIMSUser extends User {
      * The database allows 200 characters max.
      */
     private _passwordHash: string;
+
+    /**
+     * property with all permissions
+     */
+    public readonly permissionsProperty: NodeListProperty<BasePermission, CCIMSUser>;
+
+        /**
+         * specification for permissionsProperty
+         */
+        private static readonly permissionsPropertySpecification: NodeListPropertySpecification<BasePermission, CCIMSUser>
+            = NodeListPropertySpecification.loadDynamic<BasePermission, CCIMSUser>(
+                LoadRelationCommand.fromManySide("base_permission", "authorizable_id"),
+                (ids, node) => {
+                    const command = new LoadPermissionsCommand();
+                    command.ids = ids;
+                    return command;
+                },
+                node => {
+                    const command = new LoadPermissionsCommand();
+                    command.authorizables = [node.id];
+                    return command;
+                }
+            )
+            .notifyChanged((permission, node) => permission.authorizableProperty)
+            .noSave();
 
     /**
      * Constructor for creating a ccims user from database
@@ -37,7 +67,9 @@ export class CCIMSUser extends User {
      */
     public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, passwordHash: string, email?: string) {
         super(NodeType.CCIMSUser, databaseManager, id, linkedUserId, username, displayName, email);
+        
         this._passwordHash = passwordHash;
+        this.permissionsProperty = new NodeListProperty<BasePermission, CCIMSUser>(databaseManager, CCIMSUser.permissionsPropertySpecification, this);
     }
 
     /**

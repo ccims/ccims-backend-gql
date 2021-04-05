@@ -1,11 +1,9 @@
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
-import { User, UserTableSpecification } from "../../../../nodes/User";
+import { User } from "../../../../nodes/User";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { QueryResultRow, QueryResult } from "pg";
-import { UserPermissions } from "../../../../../utils/UserPermissions";
 import { QueryPart } from "../QueryPart";
 import { ConditionSpecification } from "../ConditionSpecification";
-import { createRelationFilterByPrimary, createRelationFilterBySecundary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
+import { createRelationFilterByPrimary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
 /**
  * base command to load a list of users

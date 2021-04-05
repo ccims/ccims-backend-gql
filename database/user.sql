@@ -6,7 +6,7 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 ) INHERITS (node);
 
-CREATE TABLE ccims_users (
+CREATE TABLE ccims_user (
     pw_hash character varying(200) NOT NULL,
     UNIQUE (username),
     CHECK (username IS NOT NULL),
@@ -14,38 +14,41 @@ CREATE TABLE ccims_users (
     PRIMARY KEY (id)
 ) INHERITS (users);
 
-CREATE TABLE ims_users (
+CREATE TABLE ims_user (
     ims_data JSON,
     ims_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (users);
 
-CREATE TABLE roles (
-    name varchar(256) NOT NULL,
+CREATE TABLE role (
+    name character varying(256) NOT NULL,
+    description character varying(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
-CREATE TABLE global_permissions (
-    user_role_id id NOT NULL,
+CREATE TABLE base_permission (
+    authorizable_id id NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (node);
+
+CREATE TABLE global_permission (
     global_admin boolean NOT NULL DEFAULT false,
     create_delete_projects boolean NOT NULL DEFAULT false,
     create_delete_components boolean NOT NULL DEFAULT false,
-    UNIQUE (user_role_id),
+    UNIQUE (authorizable_id),
     PRIMARY KEY (id)
-) INHERITS (node);
+) INHERITS (base_permission);
 
-CREATE TABLE project_permissions (
-    user_role_id id NOT NULL,
+CREATE TABLE project_permission (
     project_id id NOT NULL,
     read_project boolean NOT NULL DEFAULT false,
     project_admin boolean NOT NULL DEFAULT false,
     add_remove_components boolean NOT NULL DEFAULT false,
-    UNIQUE (user_role_id, project_id),
+    UNIQUE (authorizable_id, project_id),
     PRIMARY KEY (id)
-) INHERITS (node);
+) INHERITS (base_permission);
 
-CREATE TABLE component_permissions (
-    user_role_id id NOT NULL,
+CREATE TABLE component_permission (
     component_id id NOT NULL,
     read_component boolean NOT NULL DEFAULT false,
     component_admin boolean NOT NULL DEFAULT false,
@@ -54,9 +57,9 @@ CREATE TABLE component_permissions (
     edit_issue_location boolean NOT NULL DEFAULT false,
     change_ims boolean NOT NULL DEFAULT false,
     link_issues boolean NOT NULL DEFAULT false,
-    UNIQUE (user_role_id, component_id),
+    UNIQUE (authorizable_id, component_id),
     PRIMARY KEY (id)
-) INHERITS (node);
+) INHERITS (base_permission);
 
 CREATE TABLE relation_user_project (
     user_id id NOT NULL,
