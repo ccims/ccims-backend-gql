@@ -20,6 +20,8 @@ import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand"
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
+import { LoadProjectPermissionsCommand } from "../database/commands/load/nodes/LoadProjectPermissionsCommand";
+import { ProjectPermission } from "./ProjectPermission";
 
 /**
  * the specification of the table which contains projects
@@ -160,6 +162,32 @@ export class Project extends NamedNode<Project> {
             .notifyChanged((label, project) => label.projectsProperty)
             .noSave();
 
+    
+    /**
+     * property with all permissions which affect this project
+     */
+    public readonly permissionsProperty: NodeListProperty<ProjectPermission, Project>;
+
+    /**
+     * specification for permissionsProperty
+     */
+    private static readonly permissionsPropertySpecification: NodeListPropertySpecification<ProjectPermission, Project>
+        = NodeListPropertySpecification.loadDynamic<ProjectPermission, Project>(
+            LoadRelationCommand.fromManySide("project_permission", "project_id"),
+            (ids, node) => {
+                const command = new LoadProjectPermissionsCommand();
+                command.ids = ids;
+                return command;
+            },
+            node => {
+                const command = new LoadProjectPermissionsCommand();
+                command.projects = [node.id];
+                return command;
+            }
+        )
+        .notifyChanged((permission, node) => permission.projectProperty)
+        .noSave();
+
 
     /**
      * creates a new Component instance
@@ -177,6 +205,7 @@ export class Project extends NamedNode<Project> {
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
+        this.permissionsProperty = new NodeListProperty<ProjectPermission, Project>(databaseManager, Project.permissionsPropertySpecification, this);
     }
 
     /**

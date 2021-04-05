@@ -19,21 +19,21 @@ export class GlobalPermission extends BasePermission<GlobalPermission> {
     /**
      * `true` iff a user is allowed to create and delete projects
      */
-    public _createDeleteProjects: boolean = false;
+    private _createDeleteProjects: boolean = false;
 
     /**
      * `true`, iff a user is allowed to create and delete a component
      */
-    public _createDeleteComponents: boolean = false;
+     private _createDeleteComponents: boolean = false;
 
     /**
      * `true` iff the user is a global admin (ALL Permissions; use this VERY carefully)
      */
-    public _globalAdmin: boolean = false;
+     private _globalAdmin: boolean = false;
 
 
     /**
-     * Creates a new GlobalPermissions object
+     * Creates a new GlobalPermissions
      */
     public constructor(databaseManager: DatabaseManager, id: string, authorizableId: string,
         createDeleteProjects: boolean, createDeleteComponents: boolean, globalAdmin: boolean) {
