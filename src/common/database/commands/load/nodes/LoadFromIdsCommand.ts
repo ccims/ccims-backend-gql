@@ -34,6 +34,9 @@ import { LoadAddedToLocationEventsCommand } from "./timeline/LoadAddedToLocation
 import { LoadRemovedFromLocationEventsCommand } from "./timeline/LoadRemovedFromLocationEventsCommand";
 import { LoadCCIMSUsersCommand } from "./LoadCCIMSUsersCommand";
 import { LoadIMSUsersCommand } from "./LoadIMSUsersCommand";
+import { LoadGlobalPermissionsCommand } from "./LoadGlobalPermissionsCommand";
+import { LoadProjectPermissionsCommand } from "./LoadProjectPermissionsCommand";
+import { LoadComponentPermissionsCommand } from "./LoadComponentPermissionsCommand";
 
 /**
  * map with method to create command for each table name
@@ -45,6 +48,9 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["ims_system", () => new LoadIMSSystemsCommand()],
     ["ccims_user", () => new LoadCCIMSUsersCommand()],
     ["ims_user", () => new LoadIMSUsersCommand()],
+    ["global_permission", () => new LoadGlobalPermissionsCommand()],
+    ["project_permission", () => new LoadProjectPermissionsCommand()],
+    ["component_permission", () => new LoadComponentPermissionsCommand()],
     ["issue_timeline_body", (loadDeleted) => new LoadBodiesCommand(loadDeleted)],
     ["issue_issue", (loadDeleted) => new LoadIssuesCommand(loadDeleted)],
     ["issue_label", (loadDeleted) => new LoadLabelsCommand(loadDeleted)],

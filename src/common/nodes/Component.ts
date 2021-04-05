@@ -23,6 +23,8 @@ import { log } from "../../log";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
 import { SyncMetadata } from "./SyncMetadata";
+import { LoadComponentPermissionsCommand } from "../database/commands/load/nodes/LoadComponentPermissionsCommand";
+import { ComponentPermission } from "./ComponentPermission";
 
 /**
  * the specification of the table which contains components
@@ -240,6 +242,31 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
             .notifyChanged((label, component) => label.componentsProperty)
             .saveOnPrimary("component", "label");
 
+    /**
+     * property with all permissions which affect this component
+     */
+    public readonly permissionsProperty: NodeListProperty<ComponentPermission, Component>;
+
+    /**
+     * specification for permissionsProperty
+     */
+    private static readonly permissionsPropertySpecification: NodeListPropertySpecification<ComponentPermission, Component>
+        = NodeListPropertySpecification.loadDynamic<ComponentPermission, Component>(
+            LoadRelationCommand.fromManySide("component_permission", "component_id"),
+            (ids, node) => {
+                const command = new LoadComponentPermissionsCommand();
+                command.ids = ids;
+                return command;
+            },
+            node => {
+                const command = new LoadComponentPermissionsCommand();
+                command.components = [node.id];
+                return command;
+            }
+        )
+        .notifyChanged((permission, node) => permission.componentProperty)
+        .noSave();
+
 
     /**
      * creates a new Component instance
@@ -263,6 +290,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
         this.pinnedIssuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.pinnedIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Component>(databaseManager, Component.labelsPropertySpecification, this);
+        this.permissionsProperty = new NodeListProperty<ComponentPermission, Component>(databaseManager, Component.permissionsPropertySpecification, this);
     }
 
     /**
