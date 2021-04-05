@@ -96,6 +96,9 @@ export class IMSUser extends User {
         const id = databaseManager.idGenerator.generateString();
         const user = new IMSUser(databaseManager, id, linkedUserId ?? id, username, displayName, ims.id, email, imsData);
         user.markNew();
+        const linkedUser = await user.linkedUserProperty.get();
+        await linkedUser.linkedByUsersProperty.add(user);
+        await ims.usersProperty.add(user);
         databaseManager.addCachedNode(user);
         return user;
     }

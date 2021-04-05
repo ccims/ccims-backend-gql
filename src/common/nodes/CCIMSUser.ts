@@ -107,6 +107,8 @@ export class CCIMSUser extends User {
         const id = databaseManager.idGenerator.generateString();
         const user = new CCIMSUser(databaseManager, id, linkedUserId ?? id, username, displayName, passwordHash, email);
         user.markNew();
+        const linkedUser = await user.linkedUserProperty.get();
+        await linkedUser.linkedByUsersProperty.add(user);
         databaseManager.addCachedNode(user);
         return user;
     }
