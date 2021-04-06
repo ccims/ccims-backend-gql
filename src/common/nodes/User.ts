@@ -294,4 +294,17 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         }
     }
 
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.commentsProperty.clear();
+            await this.linkedUserProperty.markDeleted();
+            await this.ownedProjectsProperty.clear();
+            await this.linkedByUsersProperty.clear();
+            await this.ownedComponentsProperty.clear();
+            await this.assignedToIssuesProperty.clear();
+            await this.participantOfIssuesProperty.clear();
+        }
+    }
+
 }

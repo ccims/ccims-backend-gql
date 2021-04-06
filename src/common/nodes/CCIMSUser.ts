@@ -201,4 +201,11 @@ export class CCIMSUser extends User {
         super.displayName = value;
     }
 
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.permissionsProperty.clear();
+        }
+    }
+
 }

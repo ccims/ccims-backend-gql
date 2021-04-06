@@ -45,4 +45,11 @@ export class BasePermission<T extends BasePermission = any> extends CCIMSNode<T>
 
         this.authorizableProperty = new NullableNodeProperty<Role | CCIMSUser, BasePermission>(databaseManager, BasePermission.authorizablePropertySpecification, this, authorizableId);
     }
+
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.authorizableProperty.markDeleted();
+        }
+    }
 }

@@ -163,4 +163,11 @@ export class ComponentPermission extends BasePermission<ComponentPermission> {
         this.markChanged();
         this._readComponent = value;
     }
+
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.componentProperty.markDeleted();
+        }
+    }
 }

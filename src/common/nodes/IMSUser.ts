@@ -117,6 +117,13 @@ export class IMSUser extends User {
     public get imsData(): ImsUserData | undefined {
         return this._imsData;
     }
+
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.imsSystemProperty.markDeleted();
+        }
+    }
 }
 
 /**

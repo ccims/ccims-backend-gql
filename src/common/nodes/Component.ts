@@ -320,37 +320,4 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         await owner.ownedComponentsProperty.add(component);
         return component;
     }
-
-    /**
-     * marks this node as deleted
-     * this also marks this node as changed
-     */
-    public async markDeleted(): Promise<void> {
-        if(!this.isDeleted) {
-            await super.markDeleted();
-            await this.ownerProperty.markDeleted();
-            await Promise.all((await this.interfacesProperty.getElements()).map(componentInterface => componentInterface.markDeleted()));
-            await this.pinnedIssuesProperty.clear();
-            await this.labelsProperty.clear();
-            await this.consumedInterfacesProperty.clear();
-            const imsSystem = await this.ims();
-            await this.imsSystemProperty.set(undefined);
-            if (imsSystem) {
-                await imsSystem.markDeleted();
-            }
-            await this.issuesOnLocationProperty.clear();
-            const issues = await this.issuesProperty.getPublicElements();
-            await Promise.all(issues.map(async issue => {
-                if ((await issue.componentsProperty.getIds()).length === 1) {
-                    await issue.markDeleted();
-                } else {
-                    try {
-                        await issue.removeFromComponent(this, new Date());
-                    } catch {
-                        log(2, `could not remove issue ${issue.id} from component ${this.id}`);
-                    }
-                }
-            }));
-        }
-    }
 }

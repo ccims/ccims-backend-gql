@@ -162,4 +162,12 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
         this._connectionData = this.connectionData;
     }
 
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.usersProperty.clear();
+            await this.componentProperty.markDeleted();
+        }
+    }
+
 }

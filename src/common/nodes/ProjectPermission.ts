@@ -100,4 +100,11 @@ export class ProjectPermission extends BasePermission<ProjectPermission> {
         this.markChanged();
         this._readProject = value;
     }
+
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.projectProperty.markDeleted();
+        }
+    }
 }

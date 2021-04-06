@@ -238,6 +238,10 @@ export class Project extends NamedNode<Project> {
             await super.markDeleted();
             await this.ownerProperty.markDeleted();
             await this.componentsProperty.clear();
+            await this.issuesProperty.clear();
+            await this.labelsProperty.clear();
+            await this.interfacesProperty.clear();
+            await this.permissionsProperty.clear();
         }
     }
 }

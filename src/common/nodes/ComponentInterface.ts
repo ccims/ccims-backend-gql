@@ -119,16 +119,4 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
         return componentInterface;
     }
 
-    /**
-     * marks this node as deleted
-     * this also marks this node as changed
-     */
-    public async markDeleted(): Promise<void> {
-        if(!this.isDeleted) {
-            await super.markDeleted();
-            await this.consumedByProperty.clear();
-            await (await this.component()).interfacesProperty.remove(this);
-        }
-    }
-
 }

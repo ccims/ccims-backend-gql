@@ -932,23 +932,4 @@ export class Issue extends SyncNode<Issue> {
         }
     }
 
-    /**
-     * marks this node as deleted
-     * this also marks this node as changed
-     */
-    public async markDeleted(): Promise<void> {
-        if (!this.isDeleted) {
-            await super.markDeleted();
-            await Promise.all((await this.timelineProperty.getElements()).map(item => item.markDeleted()));
-            await this.assigneesProperty.clear();
-            await this.participantsProperty.clear();
-            await this.labelsProperty.clear();
-            await this.locationsProperty.clear();
-            await this.componentsProperty.clear();
-            await this.pinnedOnProperty.clear();
-            await this.linksToIssuesProperty.clear();
-            await this.linkedByIssuesProperty.clear();
-        }
-    }
-
 }
