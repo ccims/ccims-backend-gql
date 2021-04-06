@@ -7,6 +7,8 @@ import { NodeType } from "./NodeType";
 import { Component } from "./Component";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { CCIMSUser } from "./CCIMSUser";
+import { Role } from "./Role";
 
 /**
  * table specification for ComponentPermission
@@ -99,6 +101,19 @@ export class ComponentPermission extends BasePermission<ComponentPermission> {
         this._linkIssues = linkIssues;
         this._readComponent = readComponent;
         this.componentProperty = new NullableNodeProperty<Component, ComponentPermission>(databaseManager, ComponentPermission.componentPropertySpecification, this, componentId);
+    }
+
+    /**
+     * Creats a new ComponentPermission
+     */
+    public static async create(databaseManager: DatabaseManager, authorizable: CCIMSUser | Role, component: Component,
+        editIssues: boolean, moderate: boolean, editIssueLocation: boolean, componentAdmin: boolean, changeIMS: boolean, linkIssues: boolean, readComponent: boolean): Promise<ComponentPermission> {
+        const permission = new ComponentPermission(databaseManager, databaseManager.idGenerator.generateString(), authorizable.id, component.id,
+        editIssues, moderate, editIssueLocation, componentAdmin, changeIMS, linkIssues, readComponent);
+
+        await authorizable.permissionsProperty.add(permission);
+        await component.permissionsProperty.add(permission);
+        return permission;
     }
 
     public get editIssues(): boolean {

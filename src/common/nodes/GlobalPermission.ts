@@ -1,7 +1,9 @@
 import { DatabaseManager } from "../database/DatabaseManager";
 import { BasePermission, BasePermissionTableSpecification } from "./BasePermission";
+import { CCIMSUser } from "./CCIMSUser";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
+import { Role } from "./Role";
 
 /**
  * table specification for GlobalPermission
@@ -34,6 +36,7 @@ export class GlobalPermission extends BasePermission<GlobalPermission> {
 
     /**
      * Creates a new GlobalPermissions
+     * WARNING: do not use to create new GlobalPermissions
      */
     public constructor(databaseManager: DatabaseManager, id: string, authorizableId: string,
         createDeleteProjects: boolean, createDeleteComponents: boolean, globalAdmin: boolean) {
@@ -42,6 +45,18 @@ export class GlobalPermission extends BasePermission<GlobalPermission> {
         this._createDeleteProjects = createDeleteProjects;
         this._createDeleteComponents = createDeleteComponents;
         this._globalAdmin = globalAdmin;
+    }
+
+    /**
+     * Creats a new GlobalPermission
+     */
+    public static async create(databaseManager: DatabaseManager, authorizable: CCIMSUser | Role,
+        createDeleteProjects: boolean, createDeleteComponents: boolean, globalAdmin: boolean): Promise<GlobalPermission> {
+        const permission = new GlobalPermission(databaseManager, databaseManager.idGenerator.generateString(), authorizable.id,
+            createDeleteProjects, createDeleteComponents, globalAdmin);
+        await authorizable.permissionsProperty.add(permission);
+
+        return permission;
     }
 
 

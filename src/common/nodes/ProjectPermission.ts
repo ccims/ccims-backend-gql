@@ -2,11 +2,13 @@ import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand"
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { BasePermission, BasePermissionTableSpecification } from "./BasePermission";
+import { CCIMSUser } from "./CCIMSUser";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { Role } from "./Role";
 
 /**
  * table specification for ProjectPermission
@@ -71,6 +73,19 @@ export class ProjectPermission extends BasePermission<ProjectPermission> {
         this._projectAdmin = projectAdmin;
         this._readProject = readProject;
         this.projectProperty = new NullableNodeProperty<Project, ProjectPermission>(databaseManager, ProjectPermission.projectPropertySpecification, this, projectId);
+    }
+
+    /**
+     * Creats a new ProjectPermission
+     */
+    public static async create(databaseManager: DatabaseManager, authorizable: CCIMSUser | Role, project: Project,
+        addRemoveComponents: boolean, projectAdmin: boolean, readProject: boolean): Promise<ProjectPermission> {
+        const permission = new ProjectPermission(databaseManager, databaseManager.idGenerator.generateString(), authorizable.id, project.id,
+        addRemoveComponents, projectAdmin, readProject);
+
+        await authorizable.permissionsProperty.add(permission);
+        await project.permissionsProperty.add(permission);
+        return permission;
     }
     
     

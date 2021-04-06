@@ -58,4 +58,23 @@ export class Role extends NamedNode<Role> {
         this.permissionsProperty = new NodeListProperty<BasePermission, Role>(databaseManager, Role.permissionsPropertySpecification, this);
     }
 
+    /**
+     * creates a new Role with the specified name, description, owner and a new id
+     * @param name the name of the Role, must be shorter than 257 chars
+     * @param description the description of the Role, must be shorter than 65537 chars
+     * @param owner the owner of the Role
+     */
+    public static async create(databaseManager: DatabaseManager, name: string, description: string): Promise<Role> {
+        if (name.length > 256) {
+            throw new Error("The specified name is too long");
+        }
+        if (description.length > 65536) {
+            throw new Error("The specified description is too long");
+        }
+
+        const role = new Role(databaseManager, databaseManager.idGenerator.generateString(), name, description);
+        databaseManager.addCachedNode(role);
+        return role;
+    }
+
 }
