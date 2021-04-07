@@ -1,3 +1,4 @@
+import { GitHubAdapter } from "./github/GitHubAdapter";
 import { SyncAdapter } from "./SyncAdapter";
 
 /**
@@ -64,4 +65,4 @@ class SyncAdapters {
 /**
  * The currently existing SyncAdapters
  */
-export const Adapters = new SyncAdapters([]); 
+export const Adapters = new SyncAdapters([GitHubAdapter]); 
