@@ -5,7 +5,6 @@ import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUser
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Component } from "./Component";
-import { IMSType } from "./enums/IMSType";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
@@ -13,6 +12,7 @@ import { NodeListPropertySpecification } from "./properties/NodeListPropertySpec
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { IMSUser } from "./IMSUser";
+import { Adapters } from "../../sync/adapter/SyncAdapters";
 
 /**
  * interface for connectionData
@@ -26,8 +26,7 @@ export interface ConnectionData {
  */
 export const IMSSystemTableSpecification: NodeTableSpecification<IMSSystem>
     = new NodeTableSpecification<IMSSystem>("ims_system", CCIMSNodeTableSpecification,
-        RowSpecification.fromProperty("type", "imsType"),
-        RowSpecification.fromProperty("endpoint", "endpoint"),
+        new RowSpecification("type", imsSystem => Adapters.adapterIdByTag(imsSystem.imsType)),
         RowSpecification.fromProperty("connection_data", "connectionData"),
         new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));
 
@@ -40,12 +39,7 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
     /**
      * the type if the ims
      */
-    private _imsType: IMSType;
-
-    /**
-     * the endpoint used for the ims
-     */
-    private _endpoint: string;
+    private _imsType: string;
 
     /**
      * other data necessary for the ims
@@ -70,7 +64,7 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
             imsSystem => {
                 return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand(true));
             },
-            (component, imsSystem) => component.imsSystemProperty
+            (component, imsSystem) => component.imsSystemsProperty
         );
 
     /**
@@ -115,42 +109,32 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
      * @param connectionData the connectionData
      * @param componentId the id of the component on which this ImsSystem is
      */
-    public constructor(databaseManager: DatabaseManager, id: string, imsType: IMSType, endpoint: string, connectionData: ConnectionData, componentId?: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, componentId: string, imsType: string, connectionData: ConnectionData) {
         super(NodeType.ImsSystem, databaseManager, IMSSystemTableSpecification, id);
         this._imsType = imsType;
         this._connectionData = connectionData;
-        this._endpoint = endpoint;
         this.componentProperty = new NullableNodeProperty<Component, IMSSystem>(databaseManager, IMSSystem.componentPropertySpecification, this, componentId);
         this.usersProperty = new NodeListProperty<IMSUser, IMSSystem>(databaseManager, IMSSystem.usersPropertySpecification, this);
     }
 
     /**
      * creates a new ImsSystem with the specififed imsType, endpoint and connectionData
-     *
      */
-    public static create(databaseManager: DatabaseManager, imsType: IMSType, endpoint: string, connectionData: ConnectionData): IMSSystem {
-        const imsSystem = new IMSSystem(databaseManager, databaseManager.idGenerator.generateString(), imsType, endpoint, connectionData);
+    public static async create(databaseManager: DatabaseManager, component: Component, imsType: string, connectionData: ConnectionData): Promise<IMSSystem> {
+        const imsSystem = new IMSSystem(databaseManager, databaseManager.idGenerator.generateString(), component.id, imsType, connectionData);
         imsSystem.markNew();
         databaseManager.addCachedNode(imsSystem);
+        await component.imsSystemsProperty.add(imsSystem);
         return imsSystem;
     }
 
-    public get imsType(): IMSType {
+    public get imsType(): string {
         return this._imsType;
     }
 
-    public set imsType(value: IMSType) {
+    public set imsType(value: string) {
         this.markChanged();
         this._imsType = value;
-    }
-
-    public get endpoint(): string {
-        return this._endpoint;
-    }
-
-    public set endpoint(value: string) {
-        this.markChanged();
-        this._endpoint = value;
     }
 
     public get connectionData(): ConnectionData {

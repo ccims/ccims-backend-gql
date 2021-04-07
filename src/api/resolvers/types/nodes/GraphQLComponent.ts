@@ -6,7 +6,6 @@ import interfacesListQuery from "../../listQueries/interfacesListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
-import GraphQLIMS from "./GraphQLIMS";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
 import GraphQLUser from "./GraphQLUser";
 import labelsListQuery from "../../listQueries/labelsListQuery";
@@ -14,6 +13,8 @@ import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { Label } from "../../../../common/nodes/Label";
+import { IMSSystem } from "../../../../common/nodes/IMSSystem";
+import imsListQuery from "../../listQueries/imsListQuery";
 
 const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -36,16 +37,13 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLString,
             description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters"
         },
-        ims: {
-            type: GraphQLIMS,
-            description: "The IMS instance used by this component."
-        },
         issues: issuesListQuery<Component, Issue>("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
         issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),
         projects: projectsListQuery<Component, Project>("All projects that this component is assigned to matching the `filterBy`", component => component.projectsProperty),
         interfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces which this component offers", component => component.interfacesProperty),
         consumedInterfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
         labels: labelsListQuery<Component, Label>("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
+        ims: imsListQuery<Component, IMSSystem>("All IMS which this component is synced to, matching (if given) `filterBy`", component => component.imsSystemsProperty)
     })
 };
 const GraphQLComponent = new GraphQLObjectType(componentConfig);

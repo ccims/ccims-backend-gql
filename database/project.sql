@@ -15,7 +15,6 @@ CREATE TABLE issue_location (
 CREATE TABLE component
 (
     owner_user_id id NOT NULL,
-    ims_system_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
@@ -65,3 +64,11 @@ CREATE TABLE relation_component_consumed_component_interface
     consumed_component_interface_id id NOT NULL,
     PRIMARY KEY (component_id, consumed_component_interface_id)
 );
+
+CREATE TABLE ims_system
+(
+    component_id id,
+    type INT NOT NULL,
+    connection_data json NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (node);

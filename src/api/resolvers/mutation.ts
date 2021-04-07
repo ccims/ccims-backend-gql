@@ -4,7 +4,7 @@ import { ResolverContext } from "../ResolverContext";
 import issueMutations from "./issueMutations";
 import createProject from "./mutations/project/createProject";
 import createComponent from "./mutations/component/createComponent";
-import createUser from "./mutations/createUser";
+import createUser from "./mutations/user/createUser";
 import createLabel from "./mutations/createLabel";
 import deleteProject from "./mutations/project/deleteProject"
 import updateProject from "./mutations/project/updateProject";
@@ -18,6 +18,7 @@ import addConsumedInterface from "./mutations/component/addConsumedInterface";
 import removeConsumedInterface from "./mutations/component/removeConsumedInterface";
 import deleteComponent from "./mutations/component/deleteComponent";
 import updateComponent from "./mutations/component/updateComponent";
+import linkUserToIMS from "./mutations/user/linkUserToIMS";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -39,6 +40,7 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         addConsumedInterface: addConsumedInterface(),
         removeConsumedInterface: removeConsumedInterface(),
         createUser: createUser(),
+        linkUserToIMS: linkUserToIMS(),
         registerUser: registerUser(),
         createLabel: createLabel()
     })

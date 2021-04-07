@@ -6,7 +6,6 @@ import { SnowflakeGenerator } from "../../utils/Snowflake";
 import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
 import { setTypeParser } from "pg-types"
 import { Saveable } from "../nodes/Saveable";
-import { IMSType } from "../nodes/enums/IMSType";
 import { IssueCategory } from "../nodes/enums/IssueCategory";
 import { IssuePriority } from "../nodes/enums/IssuePriority";
 
@@ -180,8 +179,6 @@ export class DatabaseManager {
 export async function initTypeParsers(client: ClientBase): Promise<void> {
     const issueCategoryOid = (await client.query("SELECT 'issue_category'::regtype::oid;")).rows[0].oid;
     const priorityOid = (await client.query("SELECT 'priority'::regtype::oid;")).rows[0].oid;
-    const imsTypeOid = (await client.query("SELECT 'ims_type'::regtype::oid;")).rows[0].oid;
     setTypeParser(issueCategoryOid, value => IssueCategory[value as keyof typeof IssueCategory]);
     setTypeParser(priorityOid, value => IssuePriority[value as keyof typeof IssuePriority]);
-    setTypeParser(imsTypeOid, value => IMSType[value as keyof typeof IMSType]);
 }

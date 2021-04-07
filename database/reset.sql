@@ -13,10 +13,9 @@ BEGIN
     END LOOP;
 END;
 $$ language 'plpgsql';
-DROP TRIGGER IF EXISTS insert_ccims_user_trigger ON ccims_users;
+DROP TRIGGER IF EXISTS insert_ccims_user_trigger ON ccims_user;
 
 -- IMS Tables
-DROP TABLE IF EXISTS user_ims_credential;
 DROP TABLE IF EXISTS ims_system;
 
 -- Project/_component tables
@@ -87,5 +86,4 @@ DROP TABLE IF EXISTS sync_node;
 DROP TABLE IF EXISTS node;
 DROP TYPE IF EXISTS issue_category;
 DROP TYPE IF EXISTS priority;
-DROP TYPE IF EXISTS ims_type;
 DROP DOMAIN IF EXISTS id;

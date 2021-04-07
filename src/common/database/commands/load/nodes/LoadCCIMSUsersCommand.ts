@@ -30,6 +30,6 @@ export class LoadCCIMSUsersCommand extends LoadUsersCommandBase<CCIMSUser> {
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("ccms_users", databaseManager);
+        return this.generateQueryStartFromTableName("ccims_user", databaseManager);
     }
 }

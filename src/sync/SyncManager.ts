@@ -5,8 +5,9 @@ import { DatabaseManager } from "../common/database/DatabaseManager";
 import { Component } from "../common/nodes/Component";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { SyncComponent } from "./nodes/SyncComponent";
-import { SyncAdapter } from "./SyncAdapter";
+import { SyncAdapter } from "./adapter/SyncAdapter";
 import { SyncModifiableContainer } from "./SyncModifiableContainer";
+import { IMSSystem } from "../common/nodes/IMSSystem";
 
 /**
  * Class which provides nodes for sync
@@ -20,8 +21,15 @@ export class SyncManager extends SyncModifiableContainer {
 
     /**
      * The component which is currently synced
+     * This is lazy-loaded
      */
     private _component?: SyncComponent;
+
+    /**
+     * The ImsSystem which is currently synced
+     * This is lazy-loaded
+     */
+    private _ims?: IMSSystem;
 
     /**
      * The DatabaseManager used to load nodes and execute commands
@@ -43,7 +51,7 @@ export class SyncManager extends SyncModifiableContainer {
      * @param componentId the id of the component to be synced
      * @param imsId the id of the ims associated with the component
      */
-    public constructor(private readonly componentId: string, private readonly imsId: string, idGenerator: SnowflakeGenerator, pool: Pool) {
+    public constructor(private readonly imsId: string, idGenerator: SnowflakeGenerator, pool: Pool) {
         super();
         this._databaseManager = new DatabaseManager(idGenerator, pool, imsId);
     }
@@ -53,10 +61,23 @@ export class SyncManager extends SyncModifiableContainer {
      */
     public async component(): Promise<SyncComponent> {
         if (this._component === undefined) {
-            const component = await this.databaseManager.getNode(this.componentId) as Component;
+            const component = await (await this.ims()).component();
+            if (component === undefined) {
+                throw new Error("no component found");
+            }
             this._component = this.registerSyncModifiable(new SyncComponent(component));
         }
         return this._component;
+    }
+
+    /**
+     * Gets the ims which is synced
+     */
+    public async ims(): Promise<IMSSystem> {
+        if (this._ims === undefined) {
+            this._ims = await this.databaseManager.getNode(this.imsId) as IMSSystem;
+        }
+        return this._ims;
     }
 
     /**
@@ -72,7 +93,7 @@ export class SyncManager extends SyncModifiableContainer {
      * @returns true if the sync was performed, otherwise false
      */
     public async performSync(adapter: SyncAdapter): Promise<boolean> {
-        if (await adapter.canSync((await this.component()).node)) {
+        if (await adapter.canSync(await this.ims())) {
             await adapter.sync(this);
             if (!this._discardChanges) {
                 await this.saveChanges();

@@ -31,8 +31,7 @@ import { ComponentPermission } from "./ComponentPermission";
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
     = new NodeTableSpecification<Component>("component", NamedSyncNodeTableSpecification,
-        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()),
-        new RowSpecification("ims_system_id", component => component.imsSystemProperty.getId()));
+        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
 
 /**
  * A component known to ccims.
@@ -99,31 +98,26 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     /**
      * property for the imsSystem of this component
      */
-    public readonly imsSystemProperty: NullableNodeProperty<IMSSystem, Component>;
+    public readonly imsSystemsProperty: NodeListProperty<IMSSystem, Component>;
 
     /**
      * specification of the imsSystemProperty
      */
-    private static readonly imsSystemPropertySpecification: NodePropertySpecification<IMSSystem, Component>
-        = new NodePropertySpecification<IMSSystem, Component>(
-            (id, component) => {
+    private static readonly imsSystemsPropertySpecification: NodeListPropertySpecification<IMSSystem, Component>
+        = NodeListPropertySpecification.loadDynamic<IMSSystem, Component>(
+            LoadRelationCommand.fromManySide("ims_system", "component_id"),
+            (ids, component) => {
                 const command = new LoadIMSSystemsCommand();
-                command.ids = [id];
+                command.ids = ids;
                 return command;
             },
             component => {
-                return new GetWithReloadCommand(component, "ims_system_id", new LoadIMSSystemsCommand());
-            },
-            (imsSystem, component) => imsSystem.componentProperty
-        );
-
-    /**
-     * Async getter function for the ims of this component
-     * @returns A promise of a ims that belongs to this component or `undefined`
-     */
-    public async ims(): Promise<IMSSystem | undefined> {
-        return this.imsSystemProperty.getPublic();
-    }
+                const command = new LoadIMSSystemsCommand();
+                command.components = [component.id];
+                return command;
+            })
+            .notifyChanged((imsSystem, component) => imsSystem.componentProperty)
+            .noSave();
 
     /**
      * property with all issues
@@ -283,7 +277,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.ownerProperty = new NullableNodeProperty<User, Component>(databaseManager, Component.ownerPropertySpecification, this, ownerId);
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
-        this.imsSystemProperty = new NullableNodeProperty<IMSSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
+        this.imsSystemsProperty = new NodeListProperty<IMSSystem, Component>(databaseManager, Component.imsSystemsPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);
