@@ -1,6 +1,4 @@
-import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
@@ -9,17 +7,10 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { IMSUser } from "./IMSUser";
 import { Adapters } from "../../sync/adapter/SyncAdapters";
-
-/**
- * interface for connectionData
- */
-export interface ConnectionData {
-
-}
+import { IMSComponent } from "./IMSComponent";
+import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
 
 /**
  * specification of the table which contains ImsSystems
@@ -27,8 +18,7 @@ export interface ConnectionData {
 export const IMSSystemTableSpecification: NodeTableSpecification<IMSSystem>
     = new NodeTableSpecification<IMSSystem>("ims_system", CCIMSNodeTableSpecification,
         new RowSpecification("type", imsSystem => Adapters.adapterIdByTag(imsSystem.imsType)),
-        RowSpecification.fromProperty("connection_data", "connectionData"),
-        new RowSpecification("component_id", imsSystem => imsSystem.componentProperty.getId()));
+        RowSpecification.fromProperty("ims_data", "imsData"));
 
 /**
  * An issue management system. This will be an instance of one of the available IMS Types.
@@ -44,36 +34,7 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
     /**
      * other data necessary for the ims
      */
-    private _connectionData: ConnectionData;
-
-    /**
-     * property with the component on which this imsSystem is
-     */
-    public componentProperty: NullableNodeProperty<Component, IMSSystem>;
-
-    /**
-     * specification of the componentProperty
-     */
-    private static componentPropertySpecification: NodePropertySpecification<Component, IMSSystem>
-        = new NodePropertySpecification<Component, IMSSystem>(
-            (id, imsSystem) => {
-                const command = new LoadComponentsCommand(true);
-                command.ids = [id];
-                return command;
-            },
-            imsSystem => {
-                return new GetWithReloadCommand(imsSystem, "component_id", new LoadComponentsCommand(true));
-            },
-            (component, imsSystem) => component.imsSystemsProperty
-        );
-
-    /**
-     * Async getter function for the componentProperty
-     * @returns A promise of the component which is using this ims or `undefined` if none
-     */
-    public async component(): Promise<Component | undefined> {
-        return this.componentProperty.getPublic();
-    }
+    private _imsData: IMSSystemData;
 
     /**
      * list of all IMSUsers with this ImsSystem
@@ -100,31 +61,54 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
             .noSave();
 
     /**
+     * list of all IMSComponent with this ImsSystem
+     */
+    public readonly imsComponentsProperty: NodeListProperty<IMSComponent, IMSSystem>;
+
+    /**
+     * specification for imsComponentsProperty 
+     */
+    private static readonly imsComponentsPropertySpecification: NodeListPropertySpecification<IMSComponent, IMSSystem>
+        = NodeListPropertySpecification.loadDynamic<IMSComponent, IMSSystem>(
+            LoadRelationCommand.fromManySide("ims_user", "ims_system_id"),
+            (ids, ims) => {
+                const command = new LoadIMSComponentsCommand();
+                command.ids = ids;
+                return command;
+            },
+            ims => {
+                const command = new LoadIMSComponentsCommand();
+                command.imsSystems = [ims.id];
+                return command
+            })
+            .notifyChanged((user, ims) => user.imsSystemProperty)
+            .noSave();
+
+    /**
      * warning: this does only create a new ImsSystem instance, but not a new ImsSystem
      * to create a new ImsSystem, use @see Component.create
      * @param databaseManager the databaseManager
      * @param id the id
      * @param imsType the type of the imsSystem
      * @param endpoint the endpoint of the imsSystem
-     * @param connectionData the connectionData
+     * @param imsData the IMSSystemData
      * @param componentId the id of the component on which this ImsSystem is
      */
-    public constructor(databaseManager: DatabaseManager, id: string, componentId: string, imsType: string, connectionData: ConnectionData) {
-        super(NodeType.ImsSystem, databaseManager, IMSSystemTableSpecification, id);
+    public constructor(databaseManager: DatabaseManager, id: string, imsType: string, imsData: IMSSystemData) {
+        super(NodeType.IMSSystem, databaseManager, IMSSystemTableSpecification, id);
         this._imsType = imsType;
-        this._connectionData = connectionData;
-        this.componentProperty = new NullableNodeProperty<Component, IMSSystem>(databaseManager, IMSSystem.componentPropertySpecification, this, componentId);
+        this._imsData = imsData;
         this.usersProperty = new NodeListProperty<IMSUser, IMSSystem>(databaseManager, IMSSystem.usersPropertySpecification, this);
+        this.imsComponentsProperty = new NodeListProperty<IMSComponent, IMSSystem>(databaseManager, IMSSystem.imsComponentsPropertySpecification, this);
     }
 
     /**
-     * creates a new ImsSystem with the specififed imsType, endpoint and connectionData
+     * creates a new ImsSystem with the specififed imsType, endpoint and IMSData
      */
-    public static async create(databaseManager: DatabaseManager, component: Component, imsType: string, connectionData: ConnectionData): Promise<IMSSystem> {
-        const imsSystem = new IMSSystem(databaseManager, databaseManager.idGenerator.generateString(), component.id, imsType, connectionData);
+    public static async create(databaseManager: DatabaseManager, imsType: string, imsData: IMSSystemData): Promise<IMSSystem> {
+        const imsSystem = new IMSSystem(databaseManager, databaseManager.idGenerator.generateString(), imsType, imsData);
         imsSystem.markNew();
         databaseManager.addCachedNode(imsSystem);
-        await component.imsSystemsProperty.add(imsSystem);
         return imsSystem;
     }
 
@@ -137,21 +121,27 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
         this._imsType = value;
     }
 
-    public get connectionData(): ConnectionData {
-        return this._connectionData;
+    public get imsData(): IMSSystemData {
+        return this._imsData;
     }
 
-    public set connectionData(value: ConnectionData) {
+    public set imsData(value: IMSSystemData) {
         this.markChanged();
-        this._connectionData = this.connectionData;
+        this._imsData = value;
     }
 
     public async markDeleted(): Promise<void> {
         if (!this.isDeleted) {
             await super.markDeleted();
             await this.usersProperty.clear();
-            await this.componentProperty.markDeleted();
         }
     }
+
+}
+
+/**
+ * interface for IMSData
+ */
+ export interface IMSSystemData {
 
 }

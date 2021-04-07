@@ -1,5 +1,5 @@
 import { CCIMSUser } from "../../common/nodes/CCIMSUser";
-import { ConnectionData, IMSSystem } from "../../common/nodes/IMSSystem";
+import { IMSSystemData, IMSSystem } from "../../common/nodes/IMSSystem";
 import { IMSUser, ImsUserData } from "../../common/nodes/IMSUser";
 import { SyncManager } from "../SyncManager";
 
@@ -37,7 +37,7 @@ export interface SyncAdapter {
      * may throw an Exception if the provided data is incorrect
      * @param data the connection data provided by the api
      */
-    createsIMSConnectionData(data: ConnectionData): Promise<ConnectionData>;
+    createIMSSystemData(data: IMSSystemData): Promise<IMSSystemData>;
 
     /**
      * Creates the ims data for an IMSUser from the ims data provided by the api

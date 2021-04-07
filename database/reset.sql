@@ -17,6 +17,7 @@ DROP TRIGGER IF EXISTS insert_ccims_user_trigger ON ccims_user;
 
 -- IMS Tables
 DROP TABLE IF EXISTS ims_system;
+DROP TABLE IF EXISTS ims_component;
 
 -- Project/_component tables
 DROP TABLE IF EXISTS relation_component_consumed_component_interface;

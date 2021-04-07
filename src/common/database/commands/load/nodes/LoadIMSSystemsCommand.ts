@@ -13,11 +13,6 @@ import { createStringListFilter } from "./RelationFilter";
 export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
 
     /**
-     * Selects only IMSSystems
-     */
-    public components?: string[];
-
-    /**
      * creates a new LoadImsSystemsCommand
      */
     public constructor() {
@@ -25,13 +20,13 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
     }
 
     /**
-     * parses a imsSystem
+     * parses a IMSSystem
      * @param resultRow  the row to parse
      * @param result  the complete QueryResult for additional properties like fields
-     * @returns the parsed imsSystem
+     * @returns the parsed IMSSystem
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): IMSSystem {
-        return new IMSSystem(databaseManager, resultRow.id, resultRow.component_id, Adapters.adapterById(resultRow.type).tag, resultRow.connection_data);
+        return new IMSSystem(databaseManager, resultRow.id, Adapters.adapterById(resultRow.type).tag, resultRow.connection_data);
     }
 
     /**
@@ -39,23 +34,6 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
         return this.generateQueryStartFromTableName("ims_system", databaseManager);
-    }
-
-    /**
-     * adds the id condition
-     * can be overwritten to add other conditions, calling the super function is recommended
-     * @param i the first index of query parameter to use
-     * @returns the conditions
-     */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions = super.generateConditions(i);
-
-        if (this.components !== undefined) {
-            conditions.conditions.push(createStringListFilter("component_id", this.components, conditions.i, 4));
-            conditions.i++;
-        }
-
-        return conditions;
     }
 
 }

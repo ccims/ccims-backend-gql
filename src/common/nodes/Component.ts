@@ -25,6 +25,8 @@ import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode"
 import { SyncMetadata } from "./SyncMetadata";
 import { LoadComponentPermissionsCommand } from "../database/commands/load/nodes/LoadComponentPermissionsCommand";
 import { ComponentPermission } from "./ComponentPermission";
+import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
+import { IMSComponent } from "./IMSComponent";
 
 /**
  * the specification of the table which contains components
@@ -96,27 +98,27 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
             .noSave();
 
     /**
-     * property for the imsSystem of this component
+     * list of all IMSComponent with this Component
      */
-    public readonly imsSystemsProperty: NodeListProperty<IMSSystem, Component>;
+    public readonly imsComponentsProperty: NodeListProperty<IMSComponent, Component>;
 
     /**
-     * specification of the imsSystemProperty
+     * specification for imsComponentsProperty 
      */
-    private static readonly imsSystemsPropertySpecification: NodeListPropertySpecification<IMSSystem, Component>
-        = NodeListPropertySpecification.loadDynamic<IMSSystem, Component>(
-            LoadRelationCommand.fromManySide("ims_system", "component_id"),
-            (ids, component) => {
-                const command = new LoadIMSSystemsCommand();
+    private static readonly imsComponentsPropertySpecification: NodeListPropertySpecification<IMSComponent, Component>
+        = NodeListPropertySpecification.loadDynamic<IMSComponent, Component>(
+            LoadRelationCommand.fromManySide("ims_user", "ims_system_id"),
+            (ids, ims) => {
+                const command = new LoadIMSComponentsCommand();
                 command.ids = ids;
                 return command;
             },
-            component => {
-                const command = new LoadIMSSystemsCommand();
-                command.components = [component.id];
-                return command;
+            ims => {
+                const command = new LoadIMSComponentsCommand();
+                command.imsSystems = [ims.id];
+                return command
             })
-            .notifyChanged((imsSystem, component) => imsSystem.componentProperty)
+            .notifyChanged((user, ims) => user.imsSystemProperty)
             .noSave();
 
     /**
@@ -277,7 +279,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.ownerProperty = new NullableNodeProperty<User, Component>(databaseManager, Component.ownerPropertySpecification, this, ownerId);
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
-        this.imsSystemsProperty = new NodeListProperty<IMSSystem, Component>(databaseManager, Component.imsSystemsPropertySpecification, this);
+        this.imsComponentsProperty = new NodeListProperty<IMSComponent, Component>(databaseManager, Component.imsComponentsPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);

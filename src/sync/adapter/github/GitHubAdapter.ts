@@ -1,4 +1,4 @@
-import { ConnectionData, IMSSystem } from "../../../common/nodes/IMSSystem";
+import { IMSSystemData, IMSSystem } from "../../../common/nodes/IMSSystem";
 import { SyncAdapter } from "../SyncAdapter";
 import { SyncManager } from "../../SyncManager";
 import { CCIMSUser } from "../../../common/nodes/CCIMSUser";
@@ -14,7 +14,7 @@ export const GitHubAdapter: SyncAdapter = {
     sync: async (syncManager: SyncManager) => {
         throw new Error("not implemented yet");
     },
-    createsIMSConnectionData: async (data: ConnectionData) => {
+    createIMSSystemData: async (data: IMSSystemData) => {
         throw new Error("not implemented yet");
     },
     linkUser: async (user: CCIMSUser, data: ImsUserData) => {

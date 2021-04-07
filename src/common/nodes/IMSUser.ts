@@ -18,7 +18,7 @@ export const IMSUserTableSpecification: NodeTableSpecification<IMSUser>
 
 export class IMSUser extends User {
 
-    private _imsData?: ImsUserData;
+    private _imsData: ImsUserData;
 
     /**
      * the IMS associated with the IMS user
@@ -61,7 +61,7 @@ export class IMSUser extends User {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, imsId: string, email?: string, imsData?: ImsUserData) {
+    public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, imsId: string, email: string | undefined, imsData: ImsUserData) {
         super(NodeType.IMSUser, databaseManager, id, linkedUserId, username, displayName, email);
         this._imsData = imsData;
         this.imsSystemProperty = new NullableNodeProperty<IMSSystem, IMSUser>(databaseManager, IMSUser.imsSystemPropertySpecification, this, imsId);
@@ -76,7 +76,7 @@ export class IMSUser extends User {
      * @param linkedUserId the id of the linkedUser, if undefined links itself
      * @returns the new created IMSUser
      */
-    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, ims: IMSSystem, email?: string, linkedUserId?: string, imsData?: ImsUserData): Promise<IMSUser> {
+    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, ims: IMSSystem, email: string | undefined, linkedUserId: string | undefined, imsData: ImsUserData): Promise<IMSUser> {
         if (username.length === 0) {
             throw new Error("The username can't be empty");
         }
@@ -106,7 +106,7 @@ export class IMSUser extends User {
     /**
      * Gets the ims data for the user
      */
-    public set imsData(value: ImsUserData | undefined) {
+    public set imsData(value: ImsUserData) {
         this.markChanged();
         this._imsData = value;
     }
@@ -114,7 +114,7 @@ export class IMSUser extends User {
     /**
      * Sets the ims data for the user
      */
-    public get imsData(): ImsUserData | undefined {
+    public get imsData(): ImsUserData {
         return this._imsData;
     }
 

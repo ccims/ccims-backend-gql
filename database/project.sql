@@ -67,8 +67,15 @@ CREATE TABLE relation_component_consumed_component_interface
 
 CREATE TABLE ims_system
 (
-    component_id id,
     type INT NOT NULL,
-    connection_data json NOT NULL,
+    ims_data json NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (node);
+
+CREATE TABLE ims_component
+(
+    component_id id NOT NULL,
+    ims_system_id id NOT NULL,
+    ims_data json NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
