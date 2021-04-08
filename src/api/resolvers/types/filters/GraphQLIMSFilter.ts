@@ -6,8 +6,12 @@ const imsFilterConfig: GraphQLInputObjectTypeConfig = {
     fields: () => ({
         components: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The IMS must be used for at least one of the specified components" 
-        }
+            description: "The IMS must be used for at least one of the specified Components using any IMSComponent" 
+        },
+        imsComponents: {
+            type: GraphQLList(GraphQLNonNull(GraphQLID)),
+            description: "The IMS must be used for at least one of the specified IMSComponents" 
+        },
     })
 };
 const GraphQLIMSFilter = new GraphQLInputObjectType(imsFilterConfig);

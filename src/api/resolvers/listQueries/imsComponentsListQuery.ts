@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
-import { LoadIMSSystemsCommand } from "../../../common/database/commands/load/nodes/LoadIMSSystemsCommand";
+import { LoadIMSComponentsCommand } from "../../../common/database/commands/load/nodes/LoadIMSComponentsCommand";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { IMSSystem } from "../../../common/nodes/IMSSystem";
+import { IMSComponent } from "../../../common/nodes/IMSComponent";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLImsFilter from "../types/filters/GraphQLIMSFilter";
@@ -15,20 +15,20 @@ import nodeListQuery from "./nodeListQuery";
  * @param propertyProvider A provider function providing a property of the destination/node type from which to request the nodes when given a node of the source type
  * @returns A GraphQLFieldConfig with fields needed for a resolvable imss query
  */
-function imsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IMSSystem>>(
+function imsComponentsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IMSComponent>>(
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = nodeListQuery<TSource, IMSSystem>(GraphQLImsPage, GraphQLImsFilter, description, "ims", propertyProvider);
+    const baseQuery = nodeListQuery<TSource, IMSComponent>(GraphQLImsPage, GraphQLImsFilter, description, "IMSComponents", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
-            const cmd = new LoadIMSSystemsCommand();
+            const cmd = new LoadIMSComponentsCommand();
             baseQuery.addParams(cmd, args);
             cmd.components = args.filterBy?.components;
-            cmd.imsComponents = args.filterBy?.ImsComponents;
+            cmd.imsSystems = args.filterBy?.ims;
             return baseQuery.createResult(src, context, cmd);
         }
     };
 }
-export default imsListQuery;
+export default imsComponentsListQuery;

@@ -1,4 +1,6 @@
 import { CCIMSUser } from "../../common/nodes/CCIMSUser";
+import { Component } from "../../common/nodes/Component";
+import { IMSComponent, IMSComponentData } from "../../common/nodes/IMSComponent";
 import { IMSSystemData, IMSSystem } from "../../common/nodes/IMSSystem";
 import { IMSUser, ImsUserData } from "../../common/nodes/IMSUser";
 import { SyncManager } from "../SyncManager";
@@ -21,10 +23,10 @@ export interface SyncAdapter {
     /**
      * If true, the IMS can sync
      * should only return true, if it is likely that the sync can be completed
-     * @param ims the ims which is synced
+     * @param imsComponent the IMSComponent which is synced (contains both IMSSystem and Component)
      * @returns true if a sync is possible, otherwise false
      */
-    canSync(ims: IMSSystem): Promise<boolean>;
+    canSync(imsComponent: IMSComponent): Promise<boolean>;
 
     /**
      * Sync the underlaying component using the provided SyncManager
@@ -40,10 +42,23 @@ export interface SyncAdapter {
     createIMSSystemData(data: IMSSystemData): Promise<IMSSystemData>;
 
     /**
-     * Creates the ims data for an IMSUser from the ims data provided by the api
+     * Creates the IMSUser from the IMSUserData, user and ims provided by the api
      * may throw an Exception if the provided data is incorrect
-     * @param data the ims data provided by the api
+     * @param user the CCIMSUser which is linked
+     * @param ims the IMSSystem the user is linked to
+     * @param data the IMSUserData provided by the api
      * @returns the created or updated IMSUser
      */
-    linkUser(user: CCIMSUser, data: ImsUserData): Promise<IMSUser>;
+    linkUserToIMS(user: CCIMSUser, ims: IMSSystem, data: ImsUserData): Promise<IMSUser>;
+
+    /**
+     * Creates the IMSComponent from the IMSComponentData, user and ims provided by the api
+     * may throw an Exception if the provided data is incorrect
+     * It is guaranteed that currently no IMSComponent with ims and component exists
+     * @param component the Component which is linked
+     * @param ims the IMSSystem the component is linked to
+     * @param data the IMSComponentData provided by the api
+     * @returns the created or IMSComponent
+     */
+    linkComponentToIMS(component: Component, ims: IMSSystem, data: IMSComponentData): Promise<IMSComponent>;
 }

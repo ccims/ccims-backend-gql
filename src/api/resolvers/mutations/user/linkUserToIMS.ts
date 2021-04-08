@@ -18,7 +18,7 @@ function linkUserToIMS(): GraphQLFieldConfig<any, ResolverContext> {
             //TODO: permissions
             const userId = PreconditionCheck.checkString(input, "user", 32);
             const imsId = PreconditionCheck.checkString(input, "ims", 32);
-            const apiImsData = input.imsData ?? {};
+            const apiIMSData = input.imsData ?? {};
 
             const user = await context.dbManager.getNode(userId);
             if (!user || !(user instanceof CCIMSUser)) {
@@ -30,7 +30,7 @@ function linkUserToIMS(): GraphQLFieldConfig<any, ResolverContext> {
             }
             
             const syncAdapter = Adapters.adapterByTag(ims.type);
-            const imsUser = await syncAdapter.linkUser(user, apiImsData);
+            const imsUser = await syncAdapter.linkUserToIMS(user, ims, apiIMSData);
             
             return base.createResult(args, { imsUser });
         }

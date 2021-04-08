@@ -1,8 +1,7 @@
 import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
-import GraphQLIMSType from "../../../../enums/GraphQLIMSType";
 import GraphQLJSON from "../../../../scalars/GraphQLJSON";
 
-const createIMSInputConfig: GraphQLInputObjectTypeConfig = {
+const createIMSComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateIMSInput",
     description: "The inputs for the createIMS mutation",
     fields: () => ({
@@ -10,18 +9,22 @@ const createIMSInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        imsType: {
-            type: GraphQLNonNull(GraphQLIMSType),
-            description: "The type/system the IMS of this component is an instance of"
+        component: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The component which the IMS is linked to"
+        },
+        ims: {
+            type: GraphQLNonNull(GraphQLID),
+            description: "The IMS which is linked to the component"
         },
         imsData: {
             type: GraphQLJSON,
-            description: `Data needed for the connection to the IMS API.
+            description: `Data needed for the connection to the IMS API to this specific component.
 
 See the documentation for the IMS extensions for information which keys are expected.
 This must be a valid JSON-string`
         }
     })
 };
-const GraphQLCreateIMSInput = new GraphQLInputObjectType(createIMSInputConfig);
-export default GraphQLCreateIMSInput;
+const GraphQLCreateIMSComponentInput = new GraphQLInputObjectType(createIMSComponentInputConfig);
+export default GraphQLCreateIMSComponentInput;

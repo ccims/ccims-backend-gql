@@ -48,19 +48,19 @@ export class LoadIMSComponentsCommand extends LoadNodeListCommand<IMSComponent> 
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-         protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-            const conditions = super.generateConditions(i);
-    
-            if (this.components !== undefined) {
-                conditions.conditions.push(createStringListFilter("component_id", this.components, conditions.i, 4));
-                conditions.i++;
-            }
+    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+        const conditions = super.generateConditions(i);
 
-            if (this.imsSystems !== undefined) {
-                conditions.conditions.push(createStringListFilter("ims_system_id", this.imsSystems, conditions.i, 4));
-                conditions.i++;
-            }
-    
-            return conditions;
+        if (this.components !== undefined) {
+            conditions.conditions.push(createStringListFilter("component_id", this.components, conditions.i, 4));
+            conditions.i++;
         }
+
+        if (this.imsSystems !== undefined) {
+            conditions.conditions.push(createStringListFilter("ims_system_id", this.imsSystems, conditions.i, 4));
+            conditions.i++;
+        }
+
+        return conditions;
+    }
 }

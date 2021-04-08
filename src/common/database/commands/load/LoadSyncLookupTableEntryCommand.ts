@@ -10,18 +10,18 @@ export class LoadSyncLookupTableEntryCommand extends DatabaseCommand<string | un
     /**
      * Creates a new SetSyncLookupTableEntryCommand
      * @param id the id used by the ims
-     * @param imsId the id of the ims
+     * @param imsComponentId the id of the IMSComponent
      */
-    public constructor(private readonly id: string, private readonly imsId: string) {
+    public constructor(private readonly id: string, private readonly imsComponentId: string) {
         super();
     }
 
     public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
-            text: "SELECT (ccims_id) FROM sync_lookup_table WHERE id = $1 AND ims_id = $2",
+            text: "SELECT (ccims_id) FROM sync_lookup_table WHERE id = $1 AND ims_component_id = $2",
             values: [
                 this.id,
-                this.imsId
+                this.imsComponentId
             ]
         };
     }

@@ -40,6 +40,10 @@ export class DatabaseManager {
      */
     private readonly pool: Pool;
 
+    /**
+     * the id used to load metadata
+     * This is normally a IMSComponent id
+     */
     private readonly _metadataId?: string;
 
     /**

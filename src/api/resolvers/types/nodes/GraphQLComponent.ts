@@ -13,8 +13,8 @@ import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { Label } from "../../../../common/nodes/Label";
-import { IMSSystem } from "../../../../common/nodes/IMSSystem";
-import imsListQuery from "../../listQueries/imsListQuery";
+import imsComponentsListQuery from "../../listQueries/imsComponentsListQuery";
+import { IMSComponent } from "../../../../common/nodes/IMSComponent";
 
 const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
     name: "Component",
@@ -43,7 +43,7 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         interfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces which this component offers", component => component.interfacesProperty),
         consumedInterfaces: interfacesListQuery<Component, ComponentInterface>("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
         labels: labelsListQuery<Component, Label>("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
-        ims: imsListQuery<Component, IMSSystem>("All IMS which this component is synced to, matching (if given) `filterBy`", component => component.imsSystemsProperty)
+        imsComponents: imsComponentsListQuery<Component, IMSComponent>("All IMS which this component is synced to, matching (if given) `filterBy`", component => component.imsComponentsProperty)
     })
 };
 const GraphQLComponent = new GraphQLObjectType(componentConfig);

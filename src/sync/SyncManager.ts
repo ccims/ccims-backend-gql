@@ -8,6 +8,7 @@ import { SyncComponent } from "./nodes/SyncComponent";
 import { SyncAdapter } from "./adapter/SyncAdapter";
 import { SyncModifiableContainer } from "./SyncModifiableContainer";
 import { IMSSystem } from "../common/nodes/IMSSystem";
+import { IMSComponent } from "../common/nodes/IMSComponent";
 
 /**
  * Class which provides nodes for sync
@@ -26,10 +27,10 @@ export class SyncManager extends SyncModifiableContainer {
     private _component?: SyncComponent;
 
     /**
-     * The ImsSystem which is currently synced
+     * The IMSComponent which is currently synced
      * This is lazy-loaded
      */
-    private _ims?: IMSSystem;
+    private _imsComponent?: IMSComponent;
 
     /**
      * The DatabaseManager used to load nodes and execute commands
@@ -48,12 +49,11 @@ export class SyncManager extends SyncModifiableContainer {
 
     /**
      * Creates a new SyncManager
-     * @param componentId the id of the component to be synced
-     * @param imsId the id of the ims associated with the component
+     * @param imsComponentId the id of the ims associated with the component
      */
-    public constructor(private readonly imsId: string, idGenerator: SnowflakeGenerator, pool: Pool) {
+    public constructor(private readonly imsComponentId: string, idGenerator: SnowflakeGenerator, pool: Pool) {
         super();
-        this._databaseManager = new DatabaseManager(idGenerator, pool, imsId);
+        this._databaseManager = new DatabaseManager(idGenerator, pool, imsComponentId);
     }
 
     /**
@@ -61,7 +61,7 @@ export class SyncManager extends SyncModifiableContainer {
      */
     public async component(): Promise<SyncComponent> {
         if (this._component === undefined) {
-            const component = await (await this.ims()).component();
+            const component = await (await this.imsComponent()).component();
             if (component === undefined) {
                 throw new Error("no component found");
             }
@@ -73,11 +73,11 @@ export class SyncManager extends SyncModifiableContainer {
     /**
      * Gets the ims which is synced
      */
-    public async ims(): Promise<IMSSystem> {
-        if (this._ims === undefined) {
-            this._ims = await this.databaseManager.getNode(this.imsId) as IMSSystem;
+    public async imsComponent(): Promise<IMSComponent> {
+        if (this._imsComponent === undefined) {
+            this._imsComponent = await this.databaseManager.getNode(this.imsComponentId) as IMSComponent;
         }
-        return this._ims;
+        return this._imsComponent;
     }
 
     /**
@@ -93,7 +93,7 @@ export class SyncManager extends SyncModifiableContainer {
      * @returns true if the sync was performed, otherwise false
      */
     public async performSync(adapter: SyncAdapter): Promise<boolean> {
-        if (await adapter.canSync(await this.ims())) {
+        if (await adapter.canSync(await this.imsComponent())) {
             await adapter.sync(this);
             if (!this._discardChanges) {
                 await this.saveChanges();
@@ -112,7 +112,7 @@ export class SyncManager extends SyncModifiableContainer {
     private async saveChanges(): Promise<void> {
         await this.databaseManager.saveAndClearCache();
         for (const lookupTableEntry of this.lookupTableChanges.entries()) {
-            const setCommand = new SetSyncLookupTableEntryCommand(lookupTableEntry[0], this.imsId, lookupTableEntry[1]);
+            const setCommand = new SetSyncLookupTableEntryCommand(lookupTableEntry[0], this.imsComponentId, lookupTableEntry[1]);
             this.databaseManager.addCommand(setCommand);
         }
         await this.databaseManager.executePendingCommands();
@@ -137,7 +137,7 @@ export class SyncManager extends SyncModifiableContainer {
         if (this.lookupTableCache.has(id)) {
             return this.lookupTableCache.get(id);
         } else {
-            const loadCommand = new LoadSyncLookupTableEntryCommand(id, this.imsId);
+            const loadCommand = new LoadSyncLookupTableEntryCommand(id, this.imsComponentId);
             this.databaseManager.addCommand(loadCommand);
             await this.databaseManager.executePendingCommands();
             this.lookupTableCache.set(id, loadCommand.getResult())
