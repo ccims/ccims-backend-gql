@@ -63,7 +63,7 @@ const mdRenderer = new MarkdownIt(config.markdown);
  * does not specifiy the metadata, because this is up to the save method
  */
 export const IssueTableSpecification: NodeTableSpecification<Issue>
-    = new NodeTableSpecification<Issue>("issue_issue", SyncNodeTableSpecification,
+    = new NodeTableSpecification<Issue>("issue", SyncNodeTableSpecification,
         RowSpecification.fromProperty("title", "title"),
         RowSpecification.fromProperty("is_open", "isOpen"),
         RowSpecification.fromProperty("is_duplicate", "isDuplicate"),

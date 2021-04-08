@@ -13,7 +13,7 @@ import { Label } from "../Label";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 
 export const LabelledEventTableSpecification: NodeTableSpecification<LabelledEvent>
-    = new NodeTableSpecification<LabelledEvent>("issue_timeline_labelled_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<LabelledEvent>("labelled_event", IssueTimelineItemTableSpecification,
         new RowSpecification("label", labelledEvent => labelledEvent.labelProperty.getId()));
 
 export class LabelledEvent extends IssueTimelineItem {

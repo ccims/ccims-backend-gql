@@ -32,7 +32,7 @@ export class LoadWasLinkedEventsCommand extends LoadIssueTimelineItemsCommandBas
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_was_linked_event", databaseManager);
+        return this.generateQueryStartFromTableName("was_linked_event", databaseManager);
     }
 
 }

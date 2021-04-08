@@ -12,7 +12,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const UnassignedEventTableSpecification: NodeTableSpecification<UnassignedEvent>
-    = new NodeTableSpecification<UnassignedEvent>("issue_timeline_unassigned_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<UnassignedEvent>("unassigned_event", IssueTimelineItemTableSpecification,
     new RowSpecification("removed_assignee", unassignedEvent => unassignedEvent.removedAssigneeProperty.getId()));
 
 export class UnassignedEvent extends IssueTimelineItem {

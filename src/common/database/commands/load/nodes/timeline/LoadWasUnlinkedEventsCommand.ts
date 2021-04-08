@@ -32,7 +32,7 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_was_unlinked_event", databaseManager);
+        return this.generateQueryStartFromTableName("was_unlinked_event", databaseManager);
     }
 
 }

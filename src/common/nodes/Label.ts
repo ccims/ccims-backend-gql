@@ -21,7 +21,7 @@ import { User } from "./User";
  * specification of a table which can contain labels
  */
 export const LabelTableSpecification: NodeTableSpecification<Label>
-    = new NodeTableSpecification<Label>("issue_label", NamedSyncNodeTableSpecification,
+    = new NodeTableSpecification<Label>("label", NamedSyncNodeTableSpecification,
         new RowSpecification<Label>("color", (label) => label.color.toString()));
 
 /**

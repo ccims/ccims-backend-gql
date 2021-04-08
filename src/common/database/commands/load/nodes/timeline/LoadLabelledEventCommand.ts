@@ -33,7 +33,7 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_labelled_event", databaseManager);
+        return this.generateQueryStartFromTableName("labelled_event", databaseManager);
     }
 
 }

@@ -32,7 +32,7 @@ export class LoadDeletedIssueCommentsCommand extends LoadIssueTimelineItemsComma
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_deleted_issue_comment", databaseManager);
+        return this.generateQueryStartFromTableName("deleted_issue_comment", databaseManager);
     }
 
 }

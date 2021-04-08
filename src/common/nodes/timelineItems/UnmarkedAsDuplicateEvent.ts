@@ -7,7 +7,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const UnmarkedAsDuplicateEventTableSpecification: NodeTableSpecification<UnmarkedAsDuplicateEvent>
-    = new NodeTableSpecification("issue_timeline_unmarked_as_duplicate_event", IssueTimelineItemTableSpecification);
+    = new NodeTableSpecification("unmarked_as_duplicate_event", IssueTimelineItemTableSpecification);
 
 export class UnmarkedAsDuplicateEvent extends IssueTimelineItem {
 

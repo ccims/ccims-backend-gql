@@ -32,7 +32,7 @@ export class LoadUnassignedEventsCommand extends LoadIssueTimelineItemsCommandBa
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_unassigned_event", databaseManager);
+        return this.generateQueryStartFromTableName("unassigned_event", databaseManager);
     }
 
 }

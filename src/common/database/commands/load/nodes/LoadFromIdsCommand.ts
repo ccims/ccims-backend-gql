@@ -37,6 +37,7 @@ import { LoadIMSUsersCommand } from "./LoadIMSUsersCommand";
 import { LoadGlobalPermissionsCommand } from "./LoadGlobalPermissionsCommand";
 import { LoadProjectPermissionsCommand } from "./LoadProjectPermissionsCommand";
 import { LoadComponentPermissionsCommand } from "./LoadComponentPermissionsCommand";
+import { LoadReactionsCommand } from "./LoadReactionsCommand";
 
 /**
  * map with method to create command for each table name
@@ -51,34 +52,34 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["global_permission", () => new LoadGlobalPermissionsCommand()],
     ["project_permission", () => new LoadProjectPermissionsCommand()],
     ["component_permission", () => new LoadComponentPermissionsCommand()],
-    ["issue_timeline_body", (loadDeleted) => new LoadBodiesCommand(loadDeleted)],
-    ["issue_issue", (loadDeleted) => new LoadIssuesCommand(loadDeleted)],
-    ["issue_label", (loadDeleted) => new LoadLabelsCommand(loadDeleted)],
-    ["issue_timeline_category_changed_event", (loadDeleted) => new LoadCategoryChangedEventsCommand(loadDeleted)],
-    ["issue_timeline_added_to_component_event", (loadDeleted) => new LoadAddedToComponentEventsCommand(loadDeleted)],
-    ["issue_timeline_removed_from_component_event", (loadDeleted) => new LoadRemovedFromComponentEventsCommand(loadDeleted)],
-    ["issue_timeline_comment", (loadDeleted) => new LoadIssueCommentsCommand(loadDeleted)],
-    ["issue_timeline_link_event", (loadDeleted) => new LoadLinkEventsCommand(loadDeleted)],
-    ["issue_timeline_unlink_event", (loadDeleted) => new LoadUnlinkEventsCommand(loadDeleted)],
-    ["issue_timeline_was_linked_event", (loadDeleted) => new LoadWasLinkedEventsCommand(loadDeleted)],
-    ["issue_timeline_was_unlinked_event", (loadDeleted) => new LoadWasUnlinkedEventsCommand(loadDeleted)],
-    ["issue_timeline_pinned_event", (loadDeleted) => new LoadPinnedEventsCommand(loadDeleted)],
-    ["issue_timeline_unpinned_event", (loadDeleted) => new LoadUnpinnedEventsCommand(loadDeleted)],
-    ["issue_timeline_renamed_title_event", (loadDeleted) => new LoadRenamedTitleEventsCommand(loadDeleted)],
-    ["issue_timeline_deleted_issue_comment", (loadDeleted) => new LoadDeletedIssueCommentsCommand(loadDeleted)],
-    ["issue_timeline_assigned_event", (loadDeleted) => new LoadAssignedEventsCommand(loadDeleted)],
-    ["issue_timeline_unassigned_event", (loadDeleted) => new LoadUnassignedEventsCommand(loadDeleted)],
-    ["issue_timeline_labelled_event", (loadDeleted) => new LoadLabelledEventCommand(loadDeleted)],
-    ["issue_timeline_unlabelled_event", (loadDeleted) => new LoadUnlabelledEventCommand(loadDeleted)],
-    ["issue_timeline_start_date_changed_event", (loadDeleted) => new LoadStartDateChangedEventsCommand(loadDeleted)],
+    ["body", (loadDeleted) => new LoadBodiesCommand(loadDeleted)],
+    ["issue", (loadDeleted) => new LoadIssuesCommand(loadDeleted)],
+    ["label", (loadDeleted) => new LoadLabelsCommand(loadDeleted)],
+    ["category_changed_event", (loadDeleted) => new LoadCategoryChangedEventsCommand(loadDeleted)],
+    ["added_to_component_event", (loadDeleted) => new LoadAddedToComponentEventsCommand(loadDeleted)],
+    ["removed_from_component_event", (loadDeleted) => new LoadRemovedFromComponentEventsCommand(loadDeleted)],
+    ["comment", (loadDeleted) => new LoadIssueCommentsCommand(loadDeleted)],
+    ["link_event", (loadDeleted) => new LoadLinkEventsCommand(loadDeleted)],
+    ["unlink_event", (loadDeleted) => new LoadUnlinkEventsCommand(loadDeleted)],
+    ["was_linked_event", (loadDeleted) => new LoadWasLinkedEventsCommand(loadDeleted)],
+    ["was_unlinked_event", (loadDeleted) => new LoadWasUnlinkedEventsCommand(loadDeleted)],
+    ["pinned_event", (loadDeleted) => new LoadPinnedEventsCommand(loadDeleted)],
+    ["unpinned_event", (loadDeleted) => new LoadUnpinnedEventsCommand(loadDeleted)],
+    ["renamed_title_event", (loadDeleted) => new LoadRenamedTitleEventsCommand(loadDeleted)],
+    ["deleted_issue_comment", (loadDeleted) => new LoadDeletedIssueCommentsCommand(loadDeleted)],
+    ["assigned_event", (loadDeleted) => new LoadAssignedEventsCommand(loadDeleted)],
+    ["unassigned_event", (loadDeleted) => new LoadUnassignedEventsCommand(loadDeleted)],
+    ["labelled_event", (loadDeleted) => new LoadLabelledEventCommand(loadDeleted)],
+    ["unlabelled_event", (loadDeleted) => new LoadUnlabelledEventCommand(loadDeleted)],
+    ["start_date_changed_event", (loadDeleted) => new LoadStartDateChangedEventsCommand(loadDeleted)],
     ["issue_timneline_due_date_changed_event", (loadDeleted) => new LoadDueDateChangedEventsCommand(loadDeleted)],
-    ["issue_timeline_marked_as_duplicate_event", (loadDeleted) => new LoadMarkedAsDuplicateEventsCommand(loadDeleted)],
-    ["issue_timeline_unmarked_as_duplicate_event", (loadDeleted) => new LoadUnmarkedAsDuplicateEventsCommand(loadDeleted)],
-    ["issue_timeline_closed_event", (loadDeleted) => new LoadClosedEventsCommand(loadDeleted)],
-    ["issue_timeline_reopened_event", (loadDeleted) => new LoadReopenedEventsCommand(loadDeleted)],
-    ["issue_timeline_priority_changed_event", (loadDeleted) => new LoadPriorityChangedEventsCommand(loadDeleted)],
-    ["issue_timeline_added_to_location_event", (loadDeleted) => new LoadAddedToLocationEventsCommand(loadDeleted)],
-    ["issue_timeline_removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)]
+    ["marked_as_duplicate_event", (loadDeleted) => new LoadMarkedAsDuplicateEventsCommand(loadDeleted)],
+    ["unmarked_as_duplicate_event", (loadDeleted) => new LoadUnmarkedAsDuplicateEventsCommand(loadDeleted)],
+    ["closed_event", (loadDeleted) => new LoadClosedEventsCommand(loadDeleted)],
+    ["reopened_event", (loadDeleted) => new LoadReopenedEventsCommand(loadDeleted)],
+    ["priority_changed_event", (loadDeleted) => new LoadPriorityChangedEventsCommand(loadDeleted)],
+    ["added_to_location_event", (loadDeleted) => new LoadAddedToLocationEventsCommand(loadDeleted)],
+    ["removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)]
 ]);
 
 /**

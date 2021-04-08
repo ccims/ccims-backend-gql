@@ -32,7 +32,7 @@ export class LoadClosedEventsCommand extends LoadIssueTimelineItemsCommandBase<C
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_closed_event", databaseManager);
+        return this.generateQueryStartFromTableName("closed_event", databaseManager);
     }
 
 }

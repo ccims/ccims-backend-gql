@@ -32,7 +32,7 @@ export class LoadRemovedFromLocationEventsCommand extends LoadIssueTimelineItems
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_removed_from_location_event", databaseManager);
+        return this.generateQueryStartFromTableName("removed_from_location_event", databaseManager);
     }
 
 }

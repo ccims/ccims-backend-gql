@@ -32,7 +32,7 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_added_to_location_event", databaseManager);
+        return this.generateQueryStartFromTableName("added_to_location_event", databaseManager);
     }
 
 }

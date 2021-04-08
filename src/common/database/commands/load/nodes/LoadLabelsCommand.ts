@@ -53,7 +53,7 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_label", databaseManager);
+        return this.generateQueryStartFromTableName("label", databaseManager);
     }
 
     /**

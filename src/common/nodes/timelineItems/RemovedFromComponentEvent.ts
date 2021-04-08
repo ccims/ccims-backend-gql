@@ -8,7 +8,7 @@ import { User } from "../User";
 import { ComponentEvent, ComponentEventTableSpecification } from "./ComponentEvent";
 
 export const RemovedFromComponentEventTableSpecification: NodeTableSpecification<RemovedFromComponentEvent>
-    = new NodeTableSpecification("issue_timeline_removed_from_component_event", ComponentEventTableSpecification);
+    = new NodeTableSpecification("removed_from_component_event", ComponentEventTableSpecification);
 
 export class RemovedFromComponentEvent extends ComponentEvent {
 

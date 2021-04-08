@@ -12,7 +12,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const LinkEventTableSpecification: NodeTableSpecification<LinkEvent>
-    = new NodeTableSpecification<LinkEvent>("issue_timeline_link_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<LinkEvent>("link_event", IssueTimelineItemTableSpecification,
     new RowSpecification("linked_issue", linkEvent => linkEvent.linkedIssueProperty.getId()));
 
 export class LinkEvent extends IssueTimelineItem {

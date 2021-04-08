@@ -32,7 +32,7 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_pinned_event", databaseManager);
+        return this.generateQueryStartFromTableName("pinned_event", databaseManager);
     }
 
 }

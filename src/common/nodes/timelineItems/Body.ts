@@ -9,7 +9,7 @@ import { Comment, CommentTableSpecification } from "./Comment";
  * does not specifiy the metadata, because this is up to the save method
  */
 export const BodyTableSpecification: NodeTableSpecification<Body>
-    = new NodeTableSpecification<Body>("issue_timeline_body", CommentTableSpecification,
+    = new NodeTableSpecification<Body>("body", CommentTableSpecification,
         RowSpecification.fromProperty("initial_title", "initialTitle"));
 
 export class Body extends Comment<Body> {

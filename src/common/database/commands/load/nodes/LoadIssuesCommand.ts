@@ -196,7 +196,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     }
 
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_issue", databaseManager);
+        return this.generateQueryStartFromTableName("issue", databaseManager);
     }
 
     /**
@@ -262,7 +262,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.lastEditedBefore !== undefined) {
             conditions.conditions.push({
                 priority: 2,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND last_edited_at <= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND last_edited_at <= $${conditions.i})`,
                 values: [this.lastEditedBefore]
             });
             conditions.i++;
@@ -270,7 +270,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.lastEditedAfter !== undefined) {
             conditions.conditions.push({
                 priority: 2,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND last_edited_at >= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND last_edited_at >= $${conditions.i})`,
                 values: [this.lastEditedAfter]
             });
             conditions.i++;
@@ -286,7 +286,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.body !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND body ~* $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND body ~* $${conditions.i})`,
                 values: [this.body],
             });
             conditions.i++;
@@ -301,7 +301,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
                 });
                 orConditions.push({
                     priority: 5,
-                    text: `EXISTS(SELECT 1 FROM issue_timeline_body WHERE issue=main.id AND body ~* $${conditions.i + 1})`,
+                    text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND body ~* $${conditions.i + 1})`,
                     values: [this.fullSearch.text],
                 });
                 conditions.i += 2;

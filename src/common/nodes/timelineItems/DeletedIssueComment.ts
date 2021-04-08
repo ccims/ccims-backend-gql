@@ -13,7 +13,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const DeletedIssueCommentTableSpecification: NodeTableSpecification<DeletedIssueComment>
-    = new NodeTableSpecification<DeletedIssueComment>("issue_timeline_deleted_issue_comment", IssueTimelineItemTableSpecification);
+    = new NodeTableSpecification<DeletedIssueComment>("deleted_issue_comment", IssueTimelineItemTableSpecification);
 
 export class DeletedIssueComment extends IssueTimelineItem {
 

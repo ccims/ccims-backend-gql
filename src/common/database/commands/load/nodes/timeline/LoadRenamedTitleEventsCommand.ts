@@ -32,7 +32,7 @@ export class LoadRenamedTitleEventsCommand extends LoadIssueTimelineItemsCommand
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_renamed_title_event", databaseManager);
+        return this.generateQueryStartFromTableName("renamed_title_event", databaseManager);
     }
 
 }

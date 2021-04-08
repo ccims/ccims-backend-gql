@@ -32,7 +32,7 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
      * generates the due of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_due_date_changed_event", databaseManager);
+        return this.generateQueryStartFromTableName("due_date_changed_event", databaseManager);
     }
 
 }

@@ -32,7 +32,7 @@ export class LoadCategoryChangedEventsCommand extends LoadIssueTimelineItemsComm
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_category_changed_event", databaseManager);
+        return this.generateQueryStartFromTableName("category_changed_event", databaseManager);
     }
 
 }

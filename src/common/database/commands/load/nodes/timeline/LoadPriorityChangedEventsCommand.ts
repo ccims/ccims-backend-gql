@@ -32,7 +32,7 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_priority_changed_event", databaseManager);
+        return this.generateQueryStartFromTableName("priority_changed_event", databaseManager);
     }
 
 }

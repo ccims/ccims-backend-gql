@@ -51,7 +51,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
             conditions.conditions.push({
                 priority: 10,
                 text: `pg_class.relname != $${conditions.i}`,
-                values: ["issue_timeline_body"]
+                values: ["body"]
             });
             conditions.i++;
         }

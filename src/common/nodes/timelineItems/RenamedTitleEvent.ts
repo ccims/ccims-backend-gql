@@ -7,7 +7,7 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const RenamedTitleEventTableSpecification: NodeTableSpecification<RenamedTitleEvent>
-    = new NodeTableSpecification<RenamedTitleEvent>("issue_timeline_renamed_title_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<RenamedTitleEvent>("renamed_title_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_title", "oldTitle"),
     RowSpecification.fromProperty("new_title", "newTitle"));
 

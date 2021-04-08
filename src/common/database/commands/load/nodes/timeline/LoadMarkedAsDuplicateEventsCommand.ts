@@ -32,7 +32,7 @@ export class LoadMarkedAsDuplicateEventsCommand extends LoadIssueTimelineItemsCo
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_marked_as_duplicate_event", databaseManager);
+        return this.generateQueryStartFromTableName("marked_as_duplicate_event", databaseManager);
     }
 
 }

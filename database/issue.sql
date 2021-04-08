@@ -1,4 +1,4 @@
-CREATE TABLE issue_issue (
+CREATE TABLE issue (
     LIKE sync_node,
     title varchar(256),
     updated_at timestamp NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE issue_timeline_item (
     PRIMARY KEY (id)
 ) INHERITS (node);
 
-CREATE TABLE issue_timeline_referenced_by_other_event (
+CREATE TABLE referenced_by_other_event (
     LIKE issue_timeline_item,
     source text NOT NULL,
     source_url text NOT NULL,
@@ -62,38 +62,38 @@ CREATE TABLE issue_timeline_referenced_by_other_event (
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_referenced_by_issue_event (
+CREATE TABLE referenced_by_issue_event (
     LIKE issue_timeline_item,
     mentioned_at_issue id NOT NULL,
     mentioned_in_comment id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_was_linked_event (
+CREATE TABLE was_linked_event (
     LIKE issue_timeline_item,
     linked_by id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_was_unlinked_event (
+CREATE TABLE was_unlinked_event (
     LIKE issue_timeline_item,
     unlinked_by id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_link_event (
+CREATE TABLE link_event (
     LIKE issue_timeline_item,
     linked_issue id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_unlink_event (
+CREATE TABLE unlink_event (
     LIKE issue_timeline_item,
     linked_issue_to_remove id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_comment (
+CREATE TABLE comment (
     LIKE issue_timeline_item,
     last_edited_at timestamp NOT NULL,
     last_edited_by id NOT NULL,
@@ -101,140 +101,140 @@ CREATE TABLE issue_timeline_comment (
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_body (
-    LIKE issue_timeline_comment,
+CREATE TABLE body (
+    LIKE comment,
     initial_title varchar(256) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_deleted_comment (
+CREATE TABLE deleted_comment (
     LIKE issue_timeline_item,
     deleted_by id NOT NULL,
     deleted_at timestamp NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_labelled_event (
+CREATE TABLE labelled_event (
     LIKE issue_timeline_item,
     label id NOT NULL
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_unlabelled_event (
+CREATE TABLE unlabelled_event (
     LIKE issue_timeline_item,
     label id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_renamed_title_event (
+CREATE TABLE renamed_title_event (
     LIKE issue_timeline_item,
     old_title varchar(256) NOT NULL,
     new_title varchar(256) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_priority_changed_event (
+CREATE TABLE priority_changed_event (
     LIKE issue_timeline_item,
     old_priority priority,
     new_priority priority,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_start_date_changed_event (
+CREATE TABLE start_date_changed_event (
     LIKE issue_timeline_item,
     old_start_date timestamp,
     new_start_date timestamp,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_due_date_changed_event (
+CREATE TABLE due_date_changed_event (
     LIKE issue_timeline_item,
     old_due_date timestamp,
     new_due_date timestamp,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_estimated_time_changed_event (
+CREATE TABLE estimated_time_changed_event (
     LIKE issue_timeline_item,
     old_estimated_time interval,
     new_estimated_time interval,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_added_to_location_event (
+CREATE TABLE added_to_location_event (
     LIKE issue_timeline_item,
     location id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_removed_from_location_event (
-    LIKE issue_timeline_added_to_location_event,
+CREATE TABLE removed_from_location_event (
+    LIKE added_to_location_event,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_added_to_component_event (
+CREATE TABLE added_to_component_event (
     LIKE issue_timeline_item,
     component id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_removed_from_component_event (
-    LIKE issue_timeline_added_to_component_event,
+CREATE TABLE removed_from_component_event (
+    LIKE added_to_component_event,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_pinned_event (
+CREATE TABLE pinned_event (
     Like issue_timeline_item,
     component id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_unpinned_event (
+CREATE TABLE unpinned_event (
     LIKE issue_timeline_item,
     component id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_assigned_event (
+CREATE TABLE assigned_event (
     Like issue_timeline_item,
     assignee id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_unassigned_event (
+CREATE TABLE unassigned_event (
     LIKE issue_timeline_item,
     removed_assignee id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_marked_as_duplicate_event (
+CREATE TABLE marked_as_duplicate_event (
     LIKE issue_timeline_item,
     original_issue id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_unmarked_as_duplicate_event (
+CREATE TABLE unmarked_as_duplicate_event (
     LIKE issue_timeline_item,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_category_changed_event (
+CREATE TABLE category_changed_event (
     LIKE issue_timeline_item,
     old_category issue_category,
     new_category issue_category,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_closed_event (
+CREATE TABLE closed_event (
     LIKE issue_timeline_item,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_timeline_reopened_event (
+CREATE TABLE reopened_event (
     LIKE issue_timeline_item,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE issue_reaction_group (
+CREATE TABLE reaction_group (
     LIKE sync_node,
     origin id NOT NULL,
     reaction varchar(100) NOT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE issue_reaction_group (
     PRIMARY KEY (id)
 ) INHERITS (node);
 
-CREATE TABLE issue_label (
+CREATE TABLE label (
     LIKE sync_node,
     name varchar(256) NOT NULL,
     description varchar(65536) NOT NULL,

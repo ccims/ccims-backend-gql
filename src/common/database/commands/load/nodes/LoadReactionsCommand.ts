@@ -49,12 +49,12 @@ export class LoadReactionsCommand extends LoadSyncNodeListCommand<ReactionGroup>
         const metadataId = databaseManager.metadataId;
         if (metadataId === undefined) {
             return {
-                text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows(databaseManager)} FROM (SELECT ${this.rows(databaseManager)}, generate_subscripts(users,1) as i FROM issue_reaction_group) as main `,
+                text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows(databaseManager)} FROM (SELECT ${this.rows(databaseManager)}, generate_subscripts(users,1) as i FROM reaction_group) as main `,
                 values: []
             }
         } else {
             return {
-                text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows(databaseManager)} FROM (SELECT ${this.rows(databaseManager)}, generate_subscripts(users,1) as i FROM issue_reaction_group) as main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1)`,
+                text: `SELECT DISTINCT ON (id) id as distinct_id, ${this.rows(databaseManager)} FROM (SELECT ${this.rows(databaseManager)}, generate_subscripts(users,1) as i FROM reaction_group) as main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1)`,
                 values: [metadataId]
             }
         }

@@ -33,7 +33,7 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_body", databaseManager);
+        return this.generateQueryStartFromTableName("body", databaseManager);
     }
 
 }

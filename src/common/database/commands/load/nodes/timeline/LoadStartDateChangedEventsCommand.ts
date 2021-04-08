@@ -32,7 +32,7 @@ export class LoadStartDateChangedEventsCommand extends LoadIssueTimelineItemsCom
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_start_date_changed_event", databaseManager);
+        return this.generateQueryStartFromTableName("start_date_changed_event", databaseManager);
     }
 
 }

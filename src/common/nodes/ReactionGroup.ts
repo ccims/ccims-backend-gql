@@ -17,7 +17,7 @@ import { User } from "./User";
  * The table specification for ReactionGroup
  */
 export const ReactionGroupTableSpecification: NodeTableSpecification<ReactionGroup> =
-    new NodeTableSpecification<ReactionGroup>("issue_reactiongroup", SyncNodeTableSpecification,
+    new NodeTableSpecification<ReactionGroup>("reactiongroup", SyncNodeTableSpecification,
         RowSpecification.fromProperty("origin", "originCommentId"),
         RowSpecification.fromProperty("reaction", "reaction"),
         RowSpecification.fromProperty("users", "userIds"));

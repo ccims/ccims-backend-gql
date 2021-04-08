@@ -32,7 +32,7 @@ export class LoadIssueCommentsCommand extends LoadCommentsCommandBase<IssueComme
      * generates the start of the query
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("issue_timeline_comment", databaseManager);
+        return this.generateQueryStartFromTableName("comment", databaseManager);
     }
 
 }
