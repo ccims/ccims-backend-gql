@@ -12,6 +12,7 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { Adapters } from "../../sync/adapter/SyncAdapters";
 import { IMSSystem } from "./IMSSystem";
 import { LoadIMSSystemsCommand } from "../database/commands/load/nodes/LoadIMSSystemsCommand";
+import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
 
 /**
  * specification of the table which contains ImsComponents
@@ -112,12 +113,28 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
      * creates a new ImsComponent with the specififed imsType, endpoint and IMSData
      */
     public static async create(databaseManager: DatabaseManager, component: Component, imsSystem: IMSSystem, imsData: IMSComponentData): Promise<IMSComponent> {
+        if (IMSComponent.imsComponentAlreadyExists(databaseManager, component, imsSystem)) {
+            throw new Error("An IMSComponent with the specified IMS and Component already exists");
+        }
+
         const imsComponent = new IMSComponent(databaseManager, databaseManager.idGenerator.generateString(), component.id, imsSystem.id, imsData);
         imsComponent.markNew();
         databaseManager.addCachedNode(imsComponent);
         await component.imsComponentsProperty.add(imsComponent);
         await imsSystem.imsComponentsProperty.add(imsComponent);
         return imsComponent;
+    }
+
+    /**
+     * Checks if an IMSComponent with the specified ims and component already exists
+     */
+    public static async imsComponentAlreadyExists(databaseManager: DatabaseManager, component: Component, imsSystem: IMSSystem): Promise<boolean> {
+        const loadImsComponentCommand = new LoadIMSComponentsCommand();
+        loadImsComponentCommand.imsSystems = [imsSystem.id];
+        loadImsComponentCommand.components = [component.id];
+        databaseManager.addCommand(loadImsComponentCommand);
+        databaseManager.executePendingCommands();
+        return loadImsComponentCommand.getResult().length > 0;
     }
 
     public get imsData(): IMSComponentData {

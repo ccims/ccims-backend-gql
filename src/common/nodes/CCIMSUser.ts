@@ -119,7 +119,7 @@ export class CCIMSUser extends User {
      * @param databaseManager The database manager to use for checking
      * @param username The username to be checked
      */
-    public static async usernameAvailable(databaseManager: DatabaseManager, username: string) {
+    public static async usernameAvailable(databaseManager: DatabaseManager, username: string): Promise<boolean> {
         if (username.length === 0) {
             throw new Error("The username can't be empty")
         }

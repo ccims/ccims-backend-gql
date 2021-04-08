@@ -29,15 +29,6 @@ function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The specified ims id is not the id of a valid IMS");
             }
 
-            const loadImsComponentCommand = new LoadIMSComponentsCommand();
-            loadImsComponentCommand.imsSystems = [ims.id];
-            loadImsComponentCommand.components = [component.id];
-            context.dbManager.addCommand(loadImsComponentCommand);
-            await context.dbManager.executePendingCommands();
-            if (loadImsComponentCommand.getResult().length > 0) {
-                throw new Error("There is already a IMSComponent which links the specified IMS to the specified Component")
-            }
-
             const syncAdapter = Adapters.adapterByTag(ims.type);
             const imsComponent = await syncAdapter.linkComponentToIMS(component, ims, apiIMSData);
             
