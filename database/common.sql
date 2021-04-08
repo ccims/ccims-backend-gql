@@ -26,5 +26,5 @@ CREATE TABLE sync_lookup_table (
     id varchar(128) NOT NULL,
     ims_component_id id NOT NULL,
     ccims_id id,
-    PRIMARY KEY (id, ims_id)
+    PRIMARY KEY (id, ims_component_id)
 );

@@ -19,6 +19,8 @@ import removeConsumedInterface from "./mutations/component/removeConsumedInterfa
 import deleteComponent from "./mutations/component/deleteComponent";
 import updateComponent from "./mutations/component/updateComponent";
 import linkUserToIMS from "./mutations/user/linkUserToIMS";
+import createIMS from "./mutations/ims/createIMS";
+import createIMSComponent from "./mutations/ims/createIMSComponent";
 
 const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Mutation",
@@ -42,7 +44,9 @@ const mutationConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
         createUser: createUser(),
         linkUserToIMS: linkUserToIMS(),
         registerUser: registerUser(),
-        createLabel: createLabel()
+        createLabel: createLabel(),
+        createIMS: createIMS(),
+        createIMSComponent: createIMSComponent()
     })
 };
 const mutation = new GraphQLObjectType(mutationConfig);

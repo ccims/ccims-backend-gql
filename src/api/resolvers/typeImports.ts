@@ -82,6 +82,10 @@ import GraphQLUnlinkEvent from "./types/nodes/timelineItems/GraphQLUnlinkEvent";
 import GraphQLIMSPage from "./types/pages/GraphQLIMSPage";
 import GraphQLIMSEdge from "./types/edges/GraphQLIMSEdge";
 import GraphQLIMSFilter from "./types/filters/GraphQLIMSFilter";
+import GraphQLIMSComponent from "./types/nodes/GraphQLIMSComponent";
+import GraphQLIMSComponentEdge from "./types/edges/GraphQLIMSComponentEdge";
+import GraphQLIMSComponentFilter from "./types/filters/GraphQLIMSComponentFilter";
+import GraphQLIMSComponentPage from "./types/pages/GraphQLIMSComponentPage";
 
 export default [
     GraphQLIMSType,
@@ -167,5 +171,9 @@ export default [
     GraphQLIMSUser,
     GraphQLIMSPage,
     GraphQLIMSEdge,
-    GraphQLIMSFilter
+    GraphQLIMSFilter,
+    GraphQLIMSComponent,
+    GraphQLIMSComponentEdge,
+    GraphQLIMSComponentFilter,
+    GraphQLIMSComponentPage
 ];
