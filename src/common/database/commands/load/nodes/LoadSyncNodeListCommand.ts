@@ -122,12 +122,12 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         const metadataId = databaseManager.metadataId;
         if (metadataId === undefined) {
             return {
-                text: `SELECT ${this.rows} FROM ${tableName} main `,
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main `,
                 values: []
             }
         } else {
             return {
-                text: `SELECT ${this.rows} FROM ${tableName} main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1) `,
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1) `,
                 values: [metadataId]
             }
         }
