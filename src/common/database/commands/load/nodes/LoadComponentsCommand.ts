@@ -4,7 +4,7 @@ import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
-import { createRelationFilterByPrimary, createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
+import { createRelationFilterByPrimary, createRelationFilterBySecundary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
 /**
  * command to load a list of components
@@ -45,6 +45,11 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
      * Select only Components that have at least one of these labels
      */
     public labels?: string[];
+
+    /**
+     * Selects only Components that have at least one of these artifacts
+     */
+    public artifacts?: string[];
 
     /**
      * creates a new LoadComponentsCommand
@@ -120,6 +125,11 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
 
         if (this.labels !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("component", "label", this.labels, conditions.i));
+            conditions.i++;
+        }
+
+        if (this.artifacts !== undefined) {
+            conditions.conditions.push(createRelationFilterOnMany("artifact", "component_id", this.artifacts, conditions.i));
             conditions.i++;
         }
 

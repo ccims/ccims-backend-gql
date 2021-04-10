@@ -22,6 +22,8 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { LoadProjectPermissionsCommand } from "../database/commands/load/nodes/LoadProjectPermissionsCommand";
 import { ProjectPermission } from "./ProjectPermission";
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 
 /**
  * the specification of the table which contains projects
@@ -115,6 +117,7 @@ export class Project extends NamedNode<Project> {
      * property with all interfaces
      * do NOT add an interfaces via this property
      * do NOT remove an interface via this property
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly interfacesProperty: NodeListProperty<ComponentInterface, Project>;
 
@@ -139,11 +142,12 @@ export class Project extends NamedNode<Project> {
     /**
      * Property of all labels that are available on this project (all labels on all components on this project)
      * IT IS __NOT__ POSSIBLE TO ADD A LABEL TO A PROJECT VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly labelsProperty: NodeListProperty<Label, Project>;
 
     /**
-     * Specification for the labelsProperty loading all ids of labels and the corresponding labels
+     * Specification for the labelsProperty
      */
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Project> =
         NodeListPropertySpecification.loadDynamic<Label, Project>(
@@ -160,6 +164,31 @@ export class Project extends NamedNode<Project> {
             }
         )
             .notifyChanged((label, project) => label.projectsProperty)
+            .noSave();
+
+    /**
+     * Property of all Artifacts that are available on this project (all Artifacts on all components on this project)
+     * IT IS __NOT__ POSSIBLE TO ADD AN ARTIFACT TO A PROJECT VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Project>;
+
+    /**
+     * Specification for the artifactsProperty
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Project> =
+        NodeListPropertySpecification.loadDynamic<Artifact, Project>(
+            project => new LoadArtifactsIdsCommand(project.id),
+            (ids, project) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command
+            },
+            (project) => {
+                const command = new LoadArtifactsCommand(true);
+                command.onProjects = [project.id];
+                return command;
+            })
             .noSave();
 
     
@@ -205,6 +234,7 @@ export class Project extends NamedNode<Project> {
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Project>(databaseManager, Project.artifactsPropertySpecification, this);
         this.permissionsProperty = new NodeListProperty<ProjectPermission, Project>(databaseManager, Project.permissionsPropertySpecification, this);
     }
 
@@ -313,7 +343,40 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
         this.result = result.rows.map(row => row.label_id);
         return [];
     }
+}
 
+/**
+ * command to laod all ids of Artifacts on a project
+ */
+ class LoadArtifactsIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadArtifactsIdsCommand
+     * @param projectId the id of the project
+     */
+    public constructor(private readonly projectId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return {
+            text: "SELECT DISTINCT ON(artifact_id) id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            values: [this.projectId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.artifact_id);
+        return [];
+    }
 }
 
 /**

@@ -44,6 +44,8 @@ DROP TABLE IF EXISTS relation_user_role;
 
 -- Issue Tables
 DROP TABLE IF EXISTS label;
+DROP TABLE IF EXISTS artifact;
+DROP TABLE IF EXISTS non_functional_constraint;
 DROP TABLE IF EXISTS reaction_group;
 DROP TABLE IF EXISTS reopened_event;
 DROP TABLE IF EXISTS closed_event;
@@ -80,6 +82,8 @@ DROP TABLE IF EXISTS relation_issue_participant;
 DROP TABLE IF EXISTS relation_issue_assignee;
 DROP TABLE IF EXISTS relation_issue_linked_issue;
 DROP TABLE IF EXISTS relation_comment_edited_by;
+DROP TABLE IF EXISTS relation_issue_artifact;
+DROP TABLE IF EXISTS relation_issue_non_functional_constraint;
 DROP TABLE IF EXISTS issue;
 
 -- Common

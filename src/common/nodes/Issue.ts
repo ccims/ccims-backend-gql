@@ -55,6 +55,8 @@ import { SortedNodeListProperty } from "./properties/SortedNodeListProperty";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { IssuePriority } from "./enums/IssuePriority";
 import { IssueCategory } from "./enums/IssueCategory";
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -316,6 +318,30 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
+    /**
+     * Property conaining all Artifacts currently assigned to this issue
+     * do NOT assign an Artifact to an issue via this property
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Issue>;
+
+    /**
+     * Specification for the artifactsProperty property
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Issue>
+        = NodeListPropertySpecification.loadDynamic<Artifact, Issue>(LoadRelationCommand.fromPrimary("issue", "artifact"),
+            (ids, issue) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadArtifactsCommand(true);
+                command.assignedToIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((artifact, issue) => artifact.issuesProperty)
+            .saveOnPrimary("issue", "artifact");
+
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
     // TODO
@@ -357,6 +383,7 @@ export class Issue extends SyncNode<Issue> {
         this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Issue>(databaseManager, Issue.artifactsPropertySpecification, this);
         this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
     }
 

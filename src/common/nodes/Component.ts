@@ -27,6 +27,8 @@ import { LoadComponentPermissionsCommand } from "../database/commands/load/nodes
 import { ComponentPermission } from "./ComponentPermission";
 import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
 import { IMSComponent } from "./IMSComponent";
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 
 /**
  * the specification of the table which contains components
@@ -61,7 +63,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         );
 
     /**
-     * Async getter funtion for the ownerProperty
+     * Async getter function for the ownerProperty
      * @returns A promise of the user owning this node
      */
     public async owner(): Promise<User | undefined> {
@@ -216,7 +218,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
             .saveOnPrimary("component", "consumed_component_interface");
 
     /**
-     * Property of all labels on thic component
+     * Property of all labels on this component
      */
     public readonly labelsProperty: NodeListProperty<Label, Component>;
 
@@ -237,6 +239,29 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
             })
             .notifyChanged((label, component) => label.componentsProperty)
             .saveOnPrimary("component", "label");
+
+    /**
+     * Property of all Artifacts on this component
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Component>;
+
+    /**
+     * Specification for the artifactsProperty
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Component> = 
+        NodeListPropertySpecification.loadDynamic<Artifact, Component>(LoadRelationCommand.fromManySide("artifact", "component_id"),
+            (ids, component) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            (component) => {
+                const command = new LoadArtifactsCommand(true);
+                command.onComponents = [component.id];
+                return command;
+            })
+            .notifyChanged((artifact, component) => artifact.componentProperty)
+            .noSave();
 
     /**
      * property with all permissions which affect this component
@@ -286,6 +311,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
         this.pinnedIssuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.pinnedIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Component>(databaseManager, Component.labelsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Component>(databaseManager, Component.artifactsPropertySpecification, this);
         this.permissionsProperty = new NodeListProperty<ComponentPermission, Component>(databaseManager, Component.permissionsPropertySpecification, this);
     }
 

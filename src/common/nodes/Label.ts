@@ -69,7 +69,7 @@ export class Label extends NamedSyncNode {
      * @param description The labels description
      * @param components A list of component ID to which the label is added immediately after creation
      */
-    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User, createdAt: Date, description?: string, components?: Component[]) {
+    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User | undefined, createdAt: Date, description?: string, components?: Component[]) {
         if (name.length > 256) {
             throw new Error("The given name is too long");
         }
@@ -80,7 +80,7 @@ export class Label extends NamedSyncNode {
             throw new Error("The color can't be undefined or null");
         }
 
-        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy.id, createdAt, false, new Date());
+        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy?.id, createdAt, false, new Date());
         label.markNew();
         databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {
@@ -140,6 +140,7 @@ export class Label extends NamedSyncNode {
     /**
      * A property of projects on which this label is available on (on components assigned to the project)
      * IT IS __NOT__ POSSIBLE TO ADD A PROJECT TO A LABEL VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly projectsProperty: NodeListProperty<Project, Label>;
 
@@ -185,8 +186,7 @@ export class Label extends NamedSyncNode {
                 const command = new LoadIssuesCommand(true);
                 command.labels = [label.id];
                 return command;
-            }
-        )
+            })
             .notifyChanged((issue, label) => issue.labelsProperty)
             .noSave();
 

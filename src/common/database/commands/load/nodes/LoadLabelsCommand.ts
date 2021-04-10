@@ -40,10 +40,10 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     }
 
     /**
-     * parses a component
+     * parses a Label
      * @param resultRow  the row to parse
      * @param result  the complete QueryResult for additional properties like fields
-     * @returns the parsed component
+     * @returns the parsed Label
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Label {
         return new Label(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.color, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);

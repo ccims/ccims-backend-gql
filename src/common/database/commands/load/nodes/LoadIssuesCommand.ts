@@ -117,6 +117,11 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     public labels?: string[];
 
     /**
+     * Select only issues that have one of these Artifacts assigned
+     */
+    public artifacts?: string[];
+
+    /**
      * filters for issues where any of the users perticipated
      */
     public userParticipated?: string[];
@@ -384,6 +389,10 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
         if (this.labels !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("issue", "label", this.labels, conditions.i));
+            conditions.i++;
+        }
+        if (this.artifacts !== undefined) {
+            conditions.conditions.push(createRelationFilterBySecundary("issue", "artifact", this.artifacts, conditions.i));
             conditions.i++;
         }
         if (this.startDateAfter !== undefined) {

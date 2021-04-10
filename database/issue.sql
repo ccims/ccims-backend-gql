@@ -40,6 +40,18 @@ CREATE TABLE relation_issue_label (
     PRIMARY KEY (issue_id, label_id)
 );
 
+CREATE TABLE relation_issue_artifact (
+    issue_id id NOT NULL,
+    artifact_id id NOT NULL,
+    PRIMARY KEY (issue_id, artifact_id)
+);
+
+CREATE TABLE relation_issue_non_functional_constraint (
+    issue_id id NOT NULL,
+    non_functional_constraint_id NOT NULL,
+    PRIMARY KEY (issue_id, non_functional_constraint_id)
+);
+
 CREATE TABLE relation_comment_edited_by (
     comment_id id NOT NULL,
     edited_by_id id NOT NULL,
@@ -182,6 +194,28 @@ CREATE TABLE removed_from_component_event (
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
+CREATE TABLE artifact_added_event (
+    LIKE issue_timeline_item INCLUDING DEFAULTS,
+    artifact id NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (issue_timeline_item);
+
+CREATE TABLE artifact_removed_event (
+    LIKE artifact_added_event INCLUDING DEFAULTS,
+    PRIMARY KEY (id)
+) INHERITS (issue_timeline_item);
+
+CREATE TABLE non_functional_constraint_added_event (
+    LIKE issue_timeline_item INCLUDING DEFAULTS,
+    non_functional_constraint id NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (issue_timeline_item);
+
+CREATE TABLE non_functional_constraint_removed_event (
+    LIKE non_functional_constraint_added_event INCLUDING DEFAULTS,
+    PRIMARY KEY (id)
+) INHERITS (issue_timeline_item);
+
 CREATE TABLE pinned_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     component id NOT NULL,
@@ -248,4 +282,20 @@ CREATE TABLE label (
     description varchar(65536) NOT NULL,
     color varchar(9) NOT NULL,
     PRIMARY KEY (id)
- ) INHERITS (node);
+) INHERITS (node);
+
+CREATE TABLE artifact (
+    LIKE sync_node INCLUDING DEFAULTS,
+    component_id id NOT NULL,
+    uri varchar(65536) NOT NULL,
+    line_range_start: int,
+    line_range_end: int,
+    PRIMARY KEY (id)
+) INHERITS (node);
+
+CREATE TABLE non_functional_constraint (
+    LIKE sync_node INCLUDING DEFAULTS,
+    content varchar(65536) NOT NULL,
+    description varchar(65536) NOT NULL,
+    PRIMARY KEY (id) 
+) INHERITS (node);
