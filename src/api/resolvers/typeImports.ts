@@ -1,3 +1,4 @@
+import GraphQLIssueComment from "./types/nodes/timelineItems/GraphQLIssueComment";
 import GraphQLCCIMSUser from "./types/nodes/GraphQLCCIMSUser";
 import GraphQLIMSUser from "./types/nodes/GraphQLIMSUser";
 import GraphQLIMSType from "./enums/GraphQLIMSType";
@@ -60,7 +61,6 @@ import GraphQLDueDateChangedEvent from "./types/nodes/timelineItems/GraphQLDueDa
 import GraphQLDeletedIssueComment from "./types/nodes/timelineItems/GraphQLDeletedIssueComment";
 import GraphQLEstimatedTimeChangedEvent from "./types/nodes/timelineItems/GraphQLEstimatedTimeChangedEvent";
 import GraphQLLabelledEvent from "./types/nodes/timelineItems/GraphQLLabelledEvent";
-import GraphQLIssueComment from "./types/nodes/timelineItems/GraphQLIssueComment";
 import GraphQLMarkedAsDuplicateEvent from "./types/nodes/timelineItems/GraphQLMarkedAsDuplicateEvent";
 import GraphQLLinkEvent from "./types/nodes/timelineItems/GraphQLLinkEvent";
 import GraphQLPinnedEvent from "./types/nodes/timelineItems/GraphQLPinnedEvent";

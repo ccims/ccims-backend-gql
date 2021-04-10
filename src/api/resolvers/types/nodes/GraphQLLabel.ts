@@ -22,7 +22,7 @@ const labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
             description: "The name of the label to display.\n\n Max. 256 characters"
         },
         description: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: "A text describing the labels' function\n\nMax. 65536 characters"
         },
         color: {

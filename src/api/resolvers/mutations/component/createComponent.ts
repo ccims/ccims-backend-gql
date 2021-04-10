@@ -3,12 +3,9 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLCreateComponentPayload from "../../types/mutations/payloads/component/GraphQLCreateComponentPayload";
 import GraphQLCreateComponentInput from "../../types/mutations/inputs/component/GraphQLCreateComponentInput";
 import { Component } from "../../../../common/nodes/Component";
-import { User } from "../../../../common/nodes/User";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
-import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { LoadComponentInterfacesCommand } from "../../../../common/database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { ComponentPermission } from "../../../../utils/UserPermissions";
 
@@ -21,7 +18,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
 
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
-            const ownerId = PreconditionCheck.checkString(input, "owner", 32);
+            const repositoryURL = PreconditionCheck.checkNullableString(input, "repositoryURL", 65536) ?? "";
             const projectIds = new Set(PreconditionCheck.checkNullableStringList(input, "projects", 32));
             const consumedInterfacesIds = new Set(PreconditionCheck.checkNullableStringList(input, "consumedInterfaces", 32));
 
@@ -34,11 +31,6 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("You are not permitted to set consumed interfaces for the component as you arne't the owner");
             }
             */
-
-            const owner = await context.dbManager.getNode(ownerId);
-            if (!owner || !(owner instanceof User)) {
-                throw new Error("The given owner user id is not a valid user id");
-            }
 
             let projectCmd: LoadProjectsCommand | undefined;
             if (projectIds.size > 0) {
@@ -64,7 +56,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("All ids given for the consumedInterfaces must must be valid ids of existing component interfaces");
             }
 
-            const component = await Component.create(context.dbManager, name, description, owner, context.user, new Date());
+            const component = await Component.create(context.dbManager, name, description, repositoryURL, context.user, new Date());
             
             if (projectCmd) {
                 await component.projectsProperty.addAll(projectCmd.getResult());

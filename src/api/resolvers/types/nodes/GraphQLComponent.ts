@@ -7,7 +7,6 @@ import issuesListQuery from "../../listQueries/issuesListQuery";
 import projectsListQuery from "../../listQueries/projectsListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLIssueLocation from "./GraphQLIssueLocation";
-import GraphQLUser from "./GraphQLUser";
 import labelsListQuery from "../../listQueries/labelsListQuery";
 import { Issue } from "../../../../common/nodes/Issue";
 import { Project } from "../../../../common/nodes/Project";
@@ -29,13 +28,13 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The (non unique) display name of this component\n\nMax. 256 characters"
         },
-        owner: {
-            type: GraphQLUser,
-            description: "The user who administrates \"owns\" the component"
-        },
         description: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters"
+        },
+        repositoryURL: {
+            type: GraphQLString,
+            description: "The URL where the code repository of this component is located\n\nMax. 65536 characters"
         },
         issues: issuesListQuery<Component, Issue>("All issues that are mirrored on this component (not the issue location but the ims) matching (if given) `filterBy`", component => component.issuesProperty),
         issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assigned to this components issue location matching (if given) `filterBy`", component => component.issuesOnLocationProperty),

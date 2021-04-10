@@ -38,8 +38,6 @@ const imsUserConfig: GraphQLObjectTypeConfig<IMSUser, ResolverContext> = {
             type: GraphQLIMS,
             description: "The associated IMS of the user"
         },
-        ownedProjects: projectsListQuery<IMSUser, Project>("All the projects this user ownes of matching `filterBy`", user => user.ownedProjectsProperty),
-        ownedComponents: componentsListQuery<IMSUser, Component>("All the components this user ownes of matching `filterBy`", user => user.ownedComponentsProperty),
         assignedToIssues: issuesListQuery<IMSUser, Issue>("All issues that this the user is assigned to matching (if given) `filterBy`", user => user.assignedToIssuesProperty),
         participantOfIssues: issuesListQuery<IMSUser, Issue>("All issues that this the user is a participant of matching (if given) `filterBy`", user => user.participantOfIssuesProperty),
         issueComments: issueCommentsListQuery<IMSUser, IssueComment>("All issue comments (not including issues) written by this user", user => user.commentsProperty)

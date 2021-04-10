@@ -16,10 +16,6 @@ const projectFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "At least one of the users with the given ids must be part of the project"
         },
-        owner: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The Owner of the project must be a user with one of the given ids"
-        },
         issues: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "At least one of the issues given must be on a component assigned to the project"

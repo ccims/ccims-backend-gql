@@ -23,8 +23,8 @@ const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Reso
             description: "The name of the component interface\n\nMax. 256 characters"
         },
         description: {
-            type: GraphQLString,
-            description: "A textual description (of the fuction) of this component interface .\n\nMax. 65536 characters"
+            type: GraphQLNonNull(GraphQLString),
+            description: "A textual description (of the function) of this component interface .\n\nMax. 65536 characters"
         },
         component: {
             type: GraphQLComponent,

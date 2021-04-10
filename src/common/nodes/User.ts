@@ -155,54 +155,6 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             .noSave();
 
     /**
-     * components owned by this user
-     */
-    public readonly ownedComponentsProperty: NodeListProperty<Component, User>;
-
-    /**
-     * specification for ownedComponentsProperty
-     */
-    public static readonly ownedComponentsPropertySpecification: NodeListPropertySpecification<Component, User>
-        = NodeListPropertySpecification.loadDynamic<Component, User>(
-            LoadRelationCommand.fromManySide("component", "owner_user_id"),
-            (ids, user) => {
-                const command = new LoadComponentsCommand(true);
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadComponentsCommand(true);
-                command.ownedBy = [user.id];
-                return command;
-            })
-            .notifyChanged((component, user) => component.ownerProperty)
-            .noSave();
-
-    /**
-     * projects owned by this user
-     */
-    public readonly ownedProjectsProperty: NodeListProperty<Project, User>;
-
-    /**
-     * specification for ownedProjectsProperty
-     */
-    public static readonly ownedProjectsPropertySpecification: NodeListPropertySpecification<Project, User>
-        = NodeListPropertySpecification.loadDynamic<Project, User>(
-            LoadRelationCommand.fromManySide("project", "owner_user_id"),
-            (ids, user) => {
-                const command = new LoadProjectsCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadProjectsCommand();
-                command.ownedBy = [user.id]
-                return command;
-            })
-            .notifyChanged((project, user) => project.ownerProperty)
-            .noSave();
-
-    /**
      * Constructor for creating a user from database
      *
      * DONT'T USE TO CREATE A NEW USER!
@@ -225,8 +177,6 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
         this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
         this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
-        this.ownedComponentsProperty = new NodeListProperty<Component, User>(databaseManager, User.ownedComponentsPropertySpecification, this);
-        this.ownedProjectsProperty = new NodeListProperty<Project, User>(databaseManager, User.ownedProjectsPropertySpecification, this);
     }
 
 
@@ -299,9 +249,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             await super.markDeleted();
             await this.commentsProperty.clear();
             await this.linkedUserProperty.markDeleted();
-            await this.ownedProjectsProperty.clear();
             await this.linkedByUsersProperty.clear();
-            await this.ownedComponentsProperty.clear();
             await this.assignedToIssuesProperty.clear();
             await this.participantOfIssuesProperty.clear();
         }

@@ -15,7 +15,8 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const componentId = PreconditionCheck.checkString(input, "componentId", 32);
 
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
-            const description = PreconditionCheck.checkNullableString(input, "description", 65536);            
+            const description = PreconditionCheck.checkNullableString(input, "description", 65536);  
+            const repositoryURL = PreconditionCheck.checkNullableString(input, "repositoryURL", 65536);                      
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
 
@@ -29,6 +30,9 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
             if (description !== undefined) {
                 component.description = description;
+            }
+            if (repositoryURL !== undefined) {
+                component.repositoryURL = repositoryURL;
             }
 
             await context.dbManager.save();

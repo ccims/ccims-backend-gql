@@ -26,7 +26,7 @@ function componentsListQuery<TSource extends CCIMSNode, TProperty extends Partia
             const cmd = new LoadComponentsCommand();
             baseQuery.addParams(cmd, args);
             cmd.imsTypes = args.filterBy?.imsType;
-            cmd.ownedBy = args.filterBy?.owner;
+            cmd.repositoryURL = args.filterBy?.repositoryURL;
             return baseQuery.createResult(src, context, cmd);
         }
     };

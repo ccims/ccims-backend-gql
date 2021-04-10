@@ -19,7 +19,7 @@ const issueLocationConfig: GraphQLInterfaceTypeConfig<IssueLocation, ResolverCon
             description: "The name of the location\n\nMax. 256 characters"
         },
         description: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: "A textual description (of the fuction) of this issue location.\n\nMax. 65536 characters"
         },
         issuesOnLocation: issuesListQuery<IssueLocation, Issue>("All issues that are assinged to on this issue location matching (if given) `filterBy`", issueLocation => issueLocation.issuesOnLocationProperty)

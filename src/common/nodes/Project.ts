@@ -29,41 +29,13 @@ import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifa
  * the specification of the table which contains projects
  */
 export const ProjectTableSpecification: NodeTableSpecification<Project>
-    = new NodeTableSpecification<Project>("project", NamedNodeTableSpecification,
-        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
+    = new NodeTableSpecification<Project>("project", NamedNodeTableSpecification);
 
 
 /**
  * A project
  */
 export class Project extends NamedNode<Project> {
-
-    /**
-     * the owner property which contains the owner of this node
-     */
-    public readonly ownerProperty: NullableNodeProperty<User, Project>;
-
-    /**
-     * specification of the ownerProperty
-     */
-    private static readonly ownerPropertySpecification: NodePropertySpecification<User, Project>
-        = new NodePropertySpecification<User, Project>(
-            (id, node) => {
-                const command = new LoadUsersCommand();
-                command.ids = [id];
-                return command;
-            },
-            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
-            (user, node) => user.ownedProjectsProperty
-        );
-
-    /**
-     * Async getter funtion for the ownerProperty
-     * @returns A promise of the user owning this node
-     */
-    public async owner(): Promise<User | undefined> {
-        return this.ownerProperty.getPublic();
-    }
 
     /**
      * property with the components on this project
@@ -225,11 +197,9 @@ export class Project extends NamedNode<Project> {
      * @param id the id
      * @param name the name of the component
      * @param description the description of the component
-     * @param ownerId the id of the owner of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description);
-        this.ownerProperty = new NullableNodeProperty<User, Project>(databaseManager, Project.ownerPropertySpecification, this, ownerId);
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
@@ -242,9 +212,8 @@ export class Project extends NamedNode<Project> {
      * creates a new project with the specified name, description, owner and a new id
      * @param name the name of the project, must be shorter than 257 chars
      * @param description the description of the project, must be shorter than 65537 chars
-     * @param owner the owner of the project
      */
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Project> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string): Promise<Project> {
         if (name.length > 256) {
             throw new Error("The specified name is too long");
         }
@@ -252,10 +221,9 @@ export class Project extends NamedNode<Project> {
             throw new Error("The specified description is too long");
         }
 
-        const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
+        const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description);
         project.markNew();
         databaseManager.addCachedNode(project);
-        await owner.ownedProjectsProperty.add(project);
         return project;
     }
 
@@ -266,7 +234,6 @@ export class Project extends NamedNode<Project> {
     public async markDeleted(): Promise<void> {
         if (!this.isDeleted) {
             await super.markDeleted();
-            await this.ownerProperty.markDeleted();
             await this.componentsProperty.clear();
             await this.issuesProperty.clear();
             await this.labelsProperty.clear();

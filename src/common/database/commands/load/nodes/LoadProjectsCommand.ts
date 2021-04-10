@@ -12,11 +12,6 @@ import { createRelationFilterByPrimary, createRelationFilterBySecundary, createS
 export class LoadProjectsCommand extends LoadNamedNodesCommand<Project> {
 
     /**
-     * Only select projects which have one of the given users as owner
-     */
-    public ownedBy?: string[];
-
-    /**
      * select the projects with have one of the specified components
      */
     public components?: string[];
@@ -50,7 +45,7 @@ export class LoadProjectsCommand extends LoadNamedNodesCommand<Project> {
      * @returns the parsed project
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Project {
-        return new Project(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.owner_user_id);
+        return new Project(databaseManager, resultRow.id, resultRow.name, resultRow.description);
     }
 
     /**
@@ -67,11 +62,6 @@ export class LoadProjectsCommand extends LoadNamedNodesCommand<Project> {
      */
     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
         const conditions = super.generateConditions(i);
-
-        if (this.ownedBy !== undefined) {
-            conditions.conditions.push(createStringListFilter("owner_user_id", this.ownedBy, conditions.i, 3));
-            conditions.i++;
-        }
 
         if (this.components !== undefined) {
             conditions.conditions.push(createRelationFilterBySecundary("project", "component", this.components, conditions.i));

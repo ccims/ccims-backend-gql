@@ -1,12 +1,10 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
-import { LoadIMSSystemsCommand } from "../database/commands/load/nodes/LoadIMSSystemsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ComponentInterface } from "./ComponentInterface";
-import { IMSSystem } from "./IMSSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
@@ -19,7 +17,6 @@ import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { log } from "../../log";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
 import { SyncMetadata } from "./SyncMetadata";
@@ -35,7 +32,7 @@ import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifa
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
     = new NodeTableSpecification<Component>("component", NamedSyncNodeTableSpecification,
-        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
+        RowSpecification.fromProperty("repository_url", "repositoryURL"));
 
 /**
  * A component known to ccims.
@@ -44,31 +41,9 @@ export const ComponentTableSpecification: NodeTableSpecification<Component>
 export class Component extends NamedSyncNode<Component> implements IssueLocation {
 
     /**
-     * the owner property which contains the owner of this node
+     * The url for the repository containing the code of the component, optional
      */
-    public readonly ownerProperty: NullableNodeProperty<User, Component>;
-
-    /**
-     * specification of the ownerProperty
-     */
-    private static readonly ownerPropertySpecification: NodePropertySpecification<User, Component>
-        = new NodePropertySpecification<User, Component>(
-            (id, node) => {
-                const command = new LoadUsersCommand();
-                command.ids = [id];
-                return command;
-            },
-            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
-            (user, node) => user.ownedComponentsProperty
-        );
-
-    /**
-     * Async getter function for the ownerProperty
-     * @returns A promise of the user owning this node
-     */
-    public async owner(): Promise<User | undefined> {
-        return this.ownerProperty.getPublic();
-    }
+    private _repositoryURL?: string;
 
     /**
      * property for issues which are located on this component
@@ -299,10 +274,10 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId: string | undefined, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, repositoryURL: string | undefined,
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
-        this.ownerProperty = new NullableNodeProperty<User, Component>(databaseManager, Component.ownerPropertySpecification, this, ownerId);
+        this._repositoryURL = repositoryURL;
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
         this.imsComponentsProperty = new NodeListProperty<IMSComponent, Component>(databaseManager, Component.imsComponentsPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
@@ -321,12 +296,12 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * @param databaseManager
      * @param name the name of the component, must be shorter than 257 chars
      * @param description the description of the component, must be shorter than 65537 chars
-     * @param owner the owner of the component
+     * @param repositoryURL the url where to find the code repository, must be shorter than 65537 chars
      * @param imsType the type of the associated imsSystem
      * @param endpoint the endpoint of the associated imsSystemn
      * @param connectionData the connectionData of the associated imsSystem
      */
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User,
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, repositoryURL: string | undefined,
         createdBy: User, createdAt: Date): Promise<Component> {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
@@ -334,12 +309,26 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         if (description.length > 65536) {
             throw new Error("the specified description is too long");
         }
+        if (repositoryURL != undefined && repositoryURL.length > 65536) {
+            throw new Error("the specified reposityURL is too long");
+        }
 
-        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id, undefined,
+        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, repositoryURL,
             createdBy.id, createdAt, false, createdAt, undefined);
         component.markNew();
         databaseManager.addCachedNode(component);
-        await owner.ownedComponentsProperty.add(component);
         return component;
+    }
+
+    public get repositoryURL(): string | undefined {
+        return this._repositoryURL;
+    }
+
+    public set repositoryURL(value: string | undefined) {
+        if (value != undefined && value.length > 65536) {
+            throw new Error("reposityUrl is too long, max length = 65536");
+        }
+        this.markChanged();
+        this._repositoryURL = value;
     }
 }

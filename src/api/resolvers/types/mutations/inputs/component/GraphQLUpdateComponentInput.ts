@@ -18,7 +18,11 @@ const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         description: {
             type: GraphQLString,
-            description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters. `null` equivalent to \"\""
+            description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters."
+        },
+        repositoryURL: {
+            type: GraphQLString,
+            description: "The URL where the code repository of this component is located\n\nMax. 65536 characters"
         }
     })
 };

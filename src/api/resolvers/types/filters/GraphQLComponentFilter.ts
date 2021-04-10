@@ -9,13 +9,13 @@ const componentFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "The name of the component must match the given RegEx"
         },
-        owner: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The owner of the component must have any of the given ids"
-        },
         description: {
             type: GraphQLString,
             description: "The components description must match the given __RegEx__"
+        },
+        repositoryURL: {
+            type: GraphQLString,
+            description: "The components repositoryURL must match the given __RegEx__"
         },
         imsType: {
             type: GraphQLList(GraphQLNonNull(GraphQLIMSType)),

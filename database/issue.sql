@@ -48,7 +48,8 @@ CREATE TABLE relation_issue_artifact (
 
 CREATE TABLE relation_issue_non_functional_constraint (
     issue_id id NOT NULL,
-    non_functional_constraint_id NOT NULL,
+
+    non_functional_constraint_id id NOT NULL,
     PRIMARY KEY (issue_id, non_functional_constraint_id)
 );
 
@@ -288,8 +289,8 @@ CREATE TABLE artifact (
     LIKE sync_node INCLUDING DEFAULTS,
     component_id id NOT NULL,
     uri varchar(65536) NOT NULL,
-    line_range_start: int,
-    line_range_end: int,
+    line_range_start int,
+    line_range_end int,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
