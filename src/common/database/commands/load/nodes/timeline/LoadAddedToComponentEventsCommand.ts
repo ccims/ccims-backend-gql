@@ -10,7 +10,7 @@ import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsComma
 export class LoadAddedToComponentEventsCommand extends LoadIssueTimelineItemsCommandBase<AddedToComponentEvent> {
 
     /**
-     * creates a new LoadBodiesCommand
+     * creates a new LoadAddedToComponentEventsCommand
      */
     public constructor(loadDeleted: boolean = false) {
         super(AddedToComponentEventTableSpecification.rows, loadDeleted);

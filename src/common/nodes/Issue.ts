@@ -57,6 +57,8 @@ import { IssuePriority } from "./enums/IssuePriority";
 import { IssueCategory } from "./enums/IssueCategory";
 import { Artifact } from "./Artifact";
 import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
+import { NonFunctionalConstraint } from "./NonFunctionalConstraint";
+import { LoadNonFunctionalConstraintsCommand } from "../database/commands/load/nodes/LoadNonFunctionalConstraintsCommand";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -134,8 +136,14 @@ export class Issue extends SyncNode<Issue> {
     }
 
 
+    /**
+     * property with all IssueTimelineItems
+     */
     public readonly timelineProperty: SortedNodeListProperty<IssueTimelineItem, Issue>;
 
+    /**
+     * specification for timelineProperty
+     */
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
         = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
             (ids, issue) => {
@@ -151,8 +159,14 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
             .noSave();
 
+    /**
+     * property with all participants of the Issue
+     */
     public readonly participantsProperty: NodeListProperty<User, Issue>;
 
+    /**
+     * specification for participantsProperty
+     */
     private static readonly participantsPropertySpecification: NodeListPropertySpecification<User, Issue>
         = NodeListPropertySpecification.loadDynamic<User, Issue>(LoadRelationCommand.fromPrimary("issue", "participant"),
             (ids, issue) => {
@@ -342,6 +356,29 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((artifact, issue) => artifact.issuesProperty)
             .saveOnPrimary("issue", "artifact");
 
+    /**
+     * property with all NonFunctionalConstraints
+     */
+    public readonly nonFunctionalConstraintsProperty: NodeListProperty<NonFunctionalConstraint, Issue>;
+
+    /**
+     * specification for nonFunctionalConstraintsProperty
+     */
+    private static readonly nonFunctionalConstraintsPropertySpecification: NodeListPropertySpecification<NonFunctionalConstraint, Issue>
+        = NodeListPropertySpecification.loadDynamic<NonFunctionalConstraint, Issue>(LoadRelationCommand.fromManySide("non_functional_constraint", "issue_id"),
+            (ids, issue) => {
+                const command = new LoadNonFunctionalConstraintsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadNonFunctionalConstraintsCommand(true);
+                command.onIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
+            .noSave();
+
     public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
     // TODO
@@ -385,6 +422,7 @@ export class Issue extends SyncNode<Issue> {
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
         this.artifactsProperty = new NodeListProperty<Artifact, Issue>(databaseManager, Issue.artifactsPropertySpecification, this);
         this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
+        this.nonFunctionalConstraintsProperty = new NodeListProperty<NonFunctionalConstraint, Issue>(databaseManager, Issue.nonFunctionalConstraintsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {

@@ -1,4 +1,3 @@
-import { QueryConfig, QueryResult } from "pg";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
@@ -21,10 +20,14 @@ import { User } from "./User";
  */
 export const ArtifactTableSpecification: NodeTableSpecification<Artifact>
     = new NodeTableSpecification<Artifact>("artifact", SyncNodeTableSpecification,
+        new RowSpecification("component_id", artifact => artifact.componentProperty.getId()),
         RowSpecification.fromProperty("uri", "uri"),
         RowSpecification.fromProperty("line_range_start", "lineRangeStart"),
         RowSpecification.fromProperty("line_range_end", "lineRangeEnd"));
 
+/**
+ * An Artifact is a document on a Component
+ */
 export class Artifact extends SyncNode<Artifact> {
 
     /**

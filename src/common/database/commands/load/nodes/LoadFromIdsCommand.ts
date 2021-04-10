@@ -38,6 +38,12 @@ import { LoadGlobalPermissionsCommand } from "./LoadGlobalPermissionsCommand";
 import { LoadProjectPermissionsCommand } from "./LoadProjectPermissionsCommand";
 import { LoadComponentPermissionsCommand } from "./LoadComponentPermissionsCommand";
 import { LoadReactionsCommand } from "./LoadReactionsCommand";
+import { LoadNonFunctionalConstraintsCommand } from "./LoadNonFunctionalConstraintsCommand";
+import { LoadArtifactsCommand } from "./LoadArtifactsCommand";
+import { LoadAddedNonFunctionalConstraintEventsCommand } from "./timeline/LoadAddedNonFunctionalConstraintEventsCommand";
+import { LoadRemovedNonFunctionalConstraintEventsCommand } from "./timeline/LoadRemovedNonFunctionalConstraintEventsCommand";
+import { LoadAddedArtifactEventsCommand } from "./timeline/LoadAddedArtifactEventsCommand";
+import { LoadRemovedArtifactEventsCommand } from "./timeline/LoadRemovedArtifactEventsCommand";
 
 /**
  * map with method to create command for each table name
@@ -79,7 +85,13 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["reopened_event", (loadDeleted) => new LoadReopenedEventsCommand(loadDeleted)],
     ["priority_changed_event", (loadDeleted) => new LoadPriorityChangedEventsCommand(loadDeleted)],
     ["added_to_location_event", (loadDeleted) => new LoadAddedToLocationEventsCommand(loadDeleted)],
-    ["removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)]
+    ["removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)],
+    ["non_functional_constraint", (loadDeleted) => new LoadNonFunctionalConstraintsCommand(loadDeleted)],
+    ["artifact", (loadDeleted) => new LoadArtifactsCommand(loadDeleted)],
+    ["added_non_functional_constraint_event", (loadDeleted) => new LoadAddedNonFunctionalConstraintEventsCommand(loadDeleted)],
+    ["removed_non_functional_constraint_event", (loadDeleted) => new LoadRemovedNonFunctionalConstraintEventsCommand(loadDeleted)],
+    ["added_artifact_event", (loadDeleted) => new LoadAddedArtifactEventsCommand(loadDeleted)],
+    ["removed_artifact_event", (loadDeleted) => new LoadRemovedArtifactEventsCommand(loadDeleted)]
 ]);
 
 /**

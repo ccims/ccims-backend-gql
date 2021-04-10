@@ -195,25 +195,25 @@ CREATE TABLE removed_from_component_event (
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE artifact_added_event (
+CREATE TABLE added_artifact_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     artifact id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE artifact_removed_event (
-    LIKE artifact_added_event INCLUDING DEFAULTS,
+CREATE TABLE removed_artifact_event (
+    LIKE added_artifact_event INCLUDING DEFAULTS,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE non_functional_constraint_added_event (
+CREATE TABLE added_non_functional_constraint_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     non_functional_constraint id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
-CREATE TABLE non_functional_constraint_removed_event (
-    LIKE non_functional_constraint_added_event INCLUDING DEFAULTS,
+CREATE TABLE removed_non_functional_constraint_event (
+    LIKE added_non_functional_constraint_event INCLUDING DEFAULTS,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -296,7 +296,10 @@ CREATE TABLE artifact (
 
 CREATE TABLE non_functional_constraint (
     LIKE sync_node INCLUDING DEFAULTS,
+    issue_id id NOT NULL,
     content varchar(65536) NOT NULL,
     description varchar(65536) NOT NULL,
+    is_active boolean NOT NULL DEFAULT true,
+    UNIQUE (issue_id, content),
     PRIMARY KEY (id) 
 ) INHERITS (node);

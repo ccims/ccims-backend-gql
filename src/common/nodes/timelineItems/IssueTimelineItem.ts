@@ -99,4 +99,8 @@ export class IssueTimelineItemType {
     public static UNMARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("unmarkedAsDuplicateEvent");
     public static ADDED_TO_COMPONENT_EVENT = new IssueTimelineItemType("addedToComponentEvent");
     public static REMOVED_FROM_COMPONENT_EVENT = new IssueTimelineItemType("removedFromComponentEvent");
+    public static ADDED_ARTIFACT_EVENT = new IssueTimelineItemType("addedArtifactEvent");
+    public static REMOVED_ARTIFACT_EVENT = new IssueTimelineItemType("removedArtifactEvent");
+    public static ADDED_NON_FUNCTIONAL_CONSTRAINT = new IssueTimelineItemType("addedNonFunctionalConstraint");
+    public static REMOVED_NON_FUNCTIONAL_CONSTRAINT_EVENT = new IssueTimelineItemType("removedNonFunctionalConstraint");
 }

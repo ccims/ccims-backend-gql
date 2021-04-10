@@ -1,8 +1,5 @@
-import { QueryResultRow, QueryResult } from "pg";
 import { IssueTimelineItem } from "../../../../../nodes/timelineItems/IssueTimelineItem";
-import { DatabaseManager } from "../../../../DatabaseManager";
 import { ConditionSpecification } from "../../ConditionSpecification";
-import { QueryPart } from "../../QueryPart";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
 import { createStringListFilter } from "../RelationFilter";
 

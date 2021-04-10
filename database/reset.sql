@@ -76,14 +76,17 @@ DROP TABLE IF EXISTS was_unlinked_event;
 DROP TABLE IF EXISTS was_linked_event;
 DROP TABLE IF EXISTS referenced_by_issue_event;
 DROP TABLE IF EXISTS referenced_by_other_event;
-DROP TABLE IF EXISTS isue_timeline_item;
+DROP TABLE IF EXISTS added_artifact_event;
+DROP TABLE IF EXISTS removed_artifact_event;
+DROP TABLE IF EXISTS added_non_functional_constraint_event;
+DROP TABLE IF EXISTS removed_non_functional_constraint_event;
+DROP TABLE IF EXISTS issue_timeline_item;
 DROP TABLE IF EXISTS relation_issue_label;
 DROP TABLE IF EXISTS relation_issue_participant;
 DROP TABLE IF EXISTS relation_issue_assignee;
 DROP TABLE IF EXISTS relation_issue_linked_issue;
 DROP TABLE IF EXISTS relation_comment_edited_by;
 DROP TABLE IF EXISTS relation_issue_artifact;
-DROP TABLE IF EXISTS relation_issue_non_functional_constraint;
 DROP TABLE IF EXISTS issue;
 
 -- Common
