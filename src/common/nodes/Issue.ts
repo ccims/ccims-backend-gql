@@ -59,6 +59,10 @@ import { Artifact } from "./Artifact";
 import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 import { NonFunctionalConstraint } from "./NonFunctionalConstraint";
 import { LoadNonFunctionalConstraintsCommand } from "../database/commands/load/nodes/LoadNonFunctionalConstraintsCommand";
+import { AddedArtifactEvent } from "./timelineItems/AddedArtifactEvent";
+import { RemovedArtifactEvent } from "./timelineItems/RemovedArtifactEvent";
+import { AddedNonFunctionalConstraintEvent } from "./timelineItems/AddedNonFunctionalConstraintEvent";
+import { RemovedNonFunctionalConstraintEvent } from "./timelineItems/RemovedNonFunctionalConstraintEvent";
 const mdRenderer = new MarkdownIt(config.markdown);
 
 
@@ -854,6 +858,84 @@ export class Issue extends SyncNode<Issue> {
             return event;
         } else {
             throw new Error("The given label is currently not assigned to this issue");
+        }
+    }
+
+    /**
+     * Add/Assign a artifact to this issue
+     *
+     * @param artifact The artifact node to be added to the issue
+     * @param atDate The date at which the artifact was added
+     * @param asUser The user who added the artifact
+     */
+    public async addArtifact(artifact: Artifact, atDate: Date, asUser?: User): Promise<AddedArtifactEvent | undefined> {
+        if (!(await this.artifactsProperty.hasId(artifact.id))) {
+            await this.artifactsProperty.add(artifact);
+            const event = await AddedArtifactEvent.create(this._databaseManager, asUser, atDate, this, artifact);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Remove/Unassign a artifact from this issue
+     *
+     * @param artifact The artifact node to be added to the issue
+     * @param atDate The date at which the artifact was added
+     * @param asUser The user who added the artifact
+     */
+    public async removeArtifact(artifact: Artifact, atDate: Date, asUser?: User): Promise<RemovedArtifactEvent | undefined> {
+        if (await this.artifactsProperty.hasId(artifact.id)) {
+            await this.artifactsProperty.remove(artifact);
+            const event = await RemovedArtifactEvent.create(this._databaseManager, asUser, atDate, this, artifact);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The given artifact is currently not assigned to this issue");
+        }
+    }
+
+    /**
+     * Add/Assign a nonfunctionalconstraint to this issue
+     *
+     * @param nonFunctionalConstraint The nonfunctionalconstraint node to be added to the issue
+     * @param atDate The date at which the nonfunctionalconstraint was added
+     * @param asUser The user who added the nonfunctionalconstraint
+     */
+    public async addNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<AddedNonFunctionalConstraintEvent | undefined> {
+        if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
+            throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
+        }
+        if (!nonFunctionalConstraint.isActive) {
+            await this.nonFunctionalConstraintsProperty.add(nonFunctionalConstraint);
+            const event = await AddedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Remove/Unassign a nonfunctionalconstraint from this issue
+     *
+     * @param nonFunctionalConstraint The nonfunctionalconstraint node to be added to the issue
+     * @param atDate The date at which the nonfunctionalconstraint was added
+     * @param asUser The user who added the nonfunctionalconstraint
+     */
+    public async removeNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<RemovedNonFunctionalConstraintEvent | undefined> {
+        if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
+            throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
+        }
+        if (nonFunctionalConstraint.isActive) {
+            await this.nonFunctionalConstraintsProperty.remove(nonFunctionalConstraint);
+            const event = await RemovedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The given NonFunctionalConstraint is currently not assigned to this issue");
         }
     }
 
