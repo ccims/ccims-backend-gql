@@ -1,32 +1,9 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLPage from "./GraphQLPage";
-import GraphQLPageInfo from "./GraphQLPageInfo";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { createPageConfig } from "./GraphQLPage";
 import GraphQLLabel from "../nodes/GraphQLLabel";
 import GraphQLLabelEdge from "../edges/GraphQLLabelEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
-    name: "LabelPage",
-    description: "A page of multiple labels",
-    interfaces: () => ([GraphQLPage]),
-    fields: () => ({
-        nodes: {
-            type: GraphQLList(GraphQLLabel),
-            description: "All labels on this page"
-        },
-        edges: {
-            type: GraphQLList(GraphQLLabelEdge),
-            description: "Edges to all nodes containing the cursor"
-        },
-        pageInfo: {
-            type: GraphQLNonNull(GraphQLPageInfo),
-            description: "Information about the current page (like length, first/last element)"
-        },
-        totalCount: {
-            type: GraphQLNonNull(GraphQLInt),
-            description: "The total number of elements matching the filter\n\n(Even ones that don't match the current page)"
-        }
-    })
-};
-const GraphQLLabelPage = new GraphQLObjectType(labelPageConfig);
+const LabelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLLabel, () => GraphQLLabelEdge, "Label");
+const GraphQLLabelPage = new GraphQLObjectType(LabelPageConfig);
 export default GraphQLLabelPage;
