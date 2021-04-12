@@ -37,13 +37,13 @@ import { LoadIMSUsersCommand } from "./LoadIMSUsersCommand";
 import { LoadGlobalPermissionsCommand } from "./LoadGlobalPermissionsCommand";
 import { LoadProjectPermissionsCommand } from "./LoadProjectPermissionsCommand";
 import { LoadComponentPermissionsCommand } from "./LoadComponentPermissionsCommand";
-import { LoadReactionsCommand } from "./LoadReactionsCommand";
 import { LoadNonFunctionalConstraintsCommand } from "./LoadNonFunctionalConstraintsCommand";
 import { LoadArtifactsCommand } from "./LoadArtifactsCommand";
 import { LoadAddedNonFunctionalConstraintEventsCommand } from "./timeline/LoadAddedNonFunctionalConstraintEventsCommand";
 import { LoadRemovedNonFunctionalConstraintEventsCommand } from "./timeline/LoadRemovedNonFunctionalConstraintEventsCommand";
 import { LoadAddedArtifactEventsCommand } from "./timeline/LoadAddedArtifactEventsCommand";
 import { LoadRemovedArtifactEventsCommand } from "./timeline/LoadRemovedArtifactEventsCommand";
+import { LoadReactionGroupsCommand } from "./LoadReactionGroupsCommand";
 
 /**
  * map with method to create command for each table name
@@ -91,7 +91,8 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["added_non_functional_constraint_event", (loadDeleted) => new LoadAddedNonFunctionalConstraintEventsCommand(loadDeleted)],
     ["removed_non_functional_constraint_event", (loadDeleted) => new LoadRemovedNonFunctionalConstraintEventsCommand(loadDeleted)],
     ["added_artifact_event", (loadDeleted) => new LoadAddedArtifactEventsCommand(loadDeleted)],
-    ["removed_artifact_event", (loadDeleted) => new LoadRemovedArtifactEventsCommand(loadDeleted)]
+    ["removed_artifact_event", (loadDeleted) => new LoadRemovedArtifactEventsCommand(loadDeleted)],
+    ["reaction_group", () => new LoadReactionGroupsCommand()]
 ]);
 
 /**

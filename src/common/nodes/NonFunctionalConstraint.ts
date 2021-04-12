@@ -6,6 +6,7 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { NodeType } from "./NodeType";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { SyncMetadata } from "./SyncMetadata";
 import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { User } from "./User";
@@ -106,7 +107,7 @@ export class NonFunctionalConstraint extends SyncNode<NonFunctionalConstraint> {
         return this._content;
     }
 
-    public async setBody(value: string, atDate: Date, asUser?: User): Promise<void> {
+    public async setContent(value: string, atDate: Date, asUser?: User): Promise<void> {
         this._content = value;
         this.markChanged();
         await (await this.issueProperty.getPublic()).participatedAt(asUser, atDate);

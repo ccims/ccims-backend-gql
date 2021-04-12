@@ -1,6 +1,6 @@
 CREATE TABLE users (
-    username character varying(100),
-    displayname character varying(200),
+    username character varying(100) NOT NULL,
+    displayname character varying(200) NOT NULL,
     email character varying(320),
     linked_user_id id NOT NULL,
     PRIMARY KEY (id)
@@ -9,8 +9,6 @@ CREATE TABLE users (
 CREATE TABLE ccims_user (
     pw_hash character varying(200) NOT NULL,
     UNIQUE (username),
-    CHECK (username IS NOT NULL),
-    CHECK (displayname IS NOT NULL),
     PRIMARY KEY (id)
 ) INHERITS (users);
 

@@ -142,6 +142,6 @@ export class IMSSystem extends CCIMSNode<IMSSystem> {
 /**
  * interface for IMSData
  */
- export interface IMSSystemData {
+export interface IMSSystemData {
 
 }

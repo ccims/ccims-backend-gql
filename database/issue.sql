@@ -271,11 +271,16 @@ CREATE TABLE reopened_event (
 
 CREATE TABLE reaction_group (
     LIKE sync_node INCLUDING DEFAULTS,
-    origin id NOT NULL,
+    comment_id id NOT NULL,
     reaction varchar(100) NOT NULL,
-    users id[] NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
+
+CREATE TABLE relation_reaction_group_user (
+    reaction_group_id id NOT NULL,
+    user_id id NOT NULL,
+    PRIMARY KEY (reaction_group_id, user_id)
+);
 
 CREATE TABLE label (
     LIKE sync_node INCLUDING DEFAULTS,

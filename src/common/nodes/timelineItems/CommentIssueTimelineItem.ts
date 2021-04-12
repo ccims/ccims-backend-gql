@@ -10,27 +10,34 @@ import { NodePropertySpecification } from "../properties/NodePropertySpecificati
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
+import { Comment } from "../Comment";
 import { ReactionGroup } from "../ReactionGroup";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
+import MarkdownIt from "markdown-it";
+import { config } from "../../../config/Config";
+import { LoadReactionGroupsCommand } from "../../database/commands/load/nodes/LoadReactionGroupsCommand";
+
+const mdRenderer = new MarkdownIt(config.markdown);
 
 /**
  * a table specification for a Comment
  * does not specifiy the metadata, because this is up to the save method
  */
-export const CommentTableSpecification: NodeTableSpecification<Comment>
-    = new NodeTableSpecification<Comment>("issue_timeline_item", IssueTimelineItemTableSpecification,
+export const CommentIssueTimelineItemTableSpecification: NodeTableSpecification<CommentIssueTimelineItem>
+    = new NodeTableSpecification<CommentIssueTimelineItem>("issue_timeline_item", IssueTimelineItemTableSpecification,
         RowSpecification.fromProperty("body", "body"),
         RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
         new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
 
-export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
+export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> extends IssueTimelineItem<T> implements Comment<T> {
 
     private _body: string;
 
-    public readonly editedByProperty: NodeListProperty<User, Comment>;
+    public readonly editedByProperty: NodeListProperty<User, CommentIssueTimelineItem>;
 
-    private static readonly editedByPropertySpecification: NodeListPropertySpecification<User, Comment>
-        = NodeListPropertySpecification.loadDynamic<User, Comment>(LoadRelationCommand.fromPrimary("comment", "edited_by"),
+    private static readonly editedByPropertySpecification: NodeListPropertySpecification<User, CommentIssueTimelineItem>
+        = NodeListPropertySpecification.loadDynamic<User, Comment>(
+            LoadRelationCommand.fromPrimary("comment", "edited_by"),
             (ids, comment) => {
                 const command = new LoadUsersCommand();
                 command.ids = ids;
@@ -44,10 +51,10 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
             .notifyChanged((user, comment) => user.commentsProperty)
             .saveOnPrimary("comment", "edited_by");
 
-    public readonly lastEditedByProperty: NullableNodeProperty<User, Comment>;
+    public readonly lastEditedByProperty: NullableNodeProperty<User, CommentIssueTimelineItem>;
 
-    private static readonly lastEditedByPropertySpecification: NodePropertySpecification<User, Comment>
-        = new NodePropertySpecification<User, Comment>(
+    private static readonly lastEditedByPropertySpecification: NodePropertySpecification<User, CommentIssueTimelineItem>
+        = new NodePropertySpecification<User, CommentIssueTimelineItem>(
             (id, comment) => {
                 const command = new LoadUsersCommand();
                 command.ids = [id];
@@ -58,10 +65,29 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
 
     private _lastEditedAt: Date;
 
-    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Comment>;
+    /**
+     * Property with all reactions on this Comment
+     */
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, CommentIssueTimelineItem>;
 
-    // TODO
-    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Comment> = undefined as any;
+    /**
+     * specification for reactionsProperty
+     */
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, CommentIssueTimelineItem> 
+        = NodeListPropertySpecification.loadDynamic<ReactionGroup, CommentIssueTimelineItem>(
+            LoadRelationCommand.fromManySide("reaction_group", "comment_id"),
+            (ids, comment) => {
+                const command = new LoadReactionGroupsCommand();
+                command.ids = ids;
+                return command;
+            },
+            comment => {
+                const command = new LoadReactionGroupsCommand();
+                command.onComments = [comment.id];
+                return command;
+            })
+            .notifyChanged((reactionGroup, comment) => reactionGroup.commentProperty)
+            .noSave();
 
 
     // TODO? currentUserCanEdit
@@ -81,9 +107,9 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
         super(type, databaseManager, tableSpecification, id, createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
         this._lastEditedAt = lastEditedAt;
         this._body = body;
-        this.editedByProperty = new NodeListProperty<User, Comment>(databaseManager, Comment.editedByPropertySpecification, this);
-        this.lastEditedByProperty = new NullableNodeProperty<User, Comment>(databaseManager, Comment.lastEditedByPropertySpecification, this, lastEditedById);
-        this.reactionsProperty = new NodeListProperty<ReactionGroup, Comment>(databaseManager, Comment.reactionsPropertySpecification, this);
+        this.editedByProperty = new NodeListProperty<User, CommentIssueTimelineItem>(databaseManager, CommentIssueTimelineItem.editedByPropertySpecification, this);
+        this.lastEditedByProperty = new NullableNodeProperty<User, CommentIssueTimelineItem>(databaseManager, CommentIssueTimelineItem.lastEditedByPropertySpecification, this, lastEditedById);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, CommentIssueTimelineItem>(databaseManager, CommentIssueTimelineItem.reactionsPropertySpecification, this);
     }
 
     public get body(): string {
@@ -98,6 +124,14 @@ export class Comment<T extends Comment = any> extends IssueTimelineItem<T> {
             this.markChanged();
             await (await this.issueProperty.getPublic()).participatedAt(asUser, atDate);
         }
+    }
+
+    /**
+     * Async getter function for the bodyProperty but rendered out to html returning the rendered version of the markdown
+     * @returns A promise of the body __html__ of this issue
+     */
+     public async bodyRendered(): Promise<string> {
+        return mdRenderer.render(await this.body);
     }
 
     /**

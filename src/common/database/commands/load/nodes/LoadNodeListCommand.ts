@@ -68,7 +68,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
 
     protected constructor(rows: RowSpecification<T>[]) {
         super();
-        this._rows = rows.map(row => row.rowName).join(", ");
+        this._rows = rows.map(row => `main.${row.rowName}`).join(", ");
     }
 
     /**

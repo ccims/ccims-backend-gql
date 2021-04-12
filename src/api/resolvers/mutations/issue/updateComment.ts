@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { Comment } from "../../../../common/nodes/timelineItems/Comment";
 import baseMutation from "../baseMutation";
 import GraphQLUpdateCommentPayload from "../../types/mutations/payloads/issue/GraphQLUpdateCommentMutation";
 import GraphQLUpdateCommentInput from "../../types/mutations/inputs/issue/GraphQLUpdateCommentInput";
+import { CommentIssueTimelineItem } from "../../../../common/nodes/timelineItems/CommentIssueTimelineItem";
 
 function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLUpdateCommentPayload, GraphQLUpdateCommentInput, "Creates a new comment on an existing issue");
@@ -18,7 +18,7 @@ function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
             }
             
             const comment = await context.dbManager.getNode(input.comment);
-            if (comment === undefined || !(comment instanceof Comment)) {
+            if (comment === undefined || !(comment instanceof CommentIssueTimelineItem)) {
                 throw new Error("The given comment id is not a valid comment id");
             }
 

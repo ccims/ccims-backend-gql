@@ -1,33 +1,17 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { DeletedIssueComment } from "../../../../../common/nodes/timelineItems/DeletedIssueComment";
 import { ResolverContext } from "../../../../ResolverContext";
-import GraphQLIssue from "../GraphQLIssue";
 import GraphQLUser from "../GraphQLUser";
 import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
-import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
+import GraphQLIssueTimelineItem, { issueTimelineItemFields } from "../GraphQLIssueTimelineItem";
 
 const deletedIssueCommentConfig: GraphQLObjectTypeConfig<DeletedIssueComment, ResolverContext> = {
     name: "DeletedIssueComment",
     description: "An DeletedIssueComment in the timeline of an issue with a date and a creator",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this timeline item"
-        },
-        issue: {
-            type: GraphQLNonNull(GraphQLIssue),
-            description: "The issue this timeline event belongs to"
-        },
-        createdBy: {
-            type: GraphQLUser,
-            description: "The user responsible who originally wrote the comment"
-        },
-        createdAt: {
-            type: GraphQLNonNull(GraphQLDate),
-            description: "The date the original comment was first written. It's importand to user __this__ date for sorting to maintain the conversation order"
-        },
+        ...issueTimelineItemFields<DeletedIssueComment>("DeletedIssueComment"),
         deletedBy: {
             type: GraphQLUser,
             description: "The user who __deleted__ the comment"

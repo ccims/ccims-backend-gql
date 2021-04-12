@@ -14,7 +14,7 @@ const createComponentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         description: {
             type: GraphQLString,
-            description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters. `null` equivalent to \"\""
+            description: "A textual description (of the function) of this component.\n\nMax. 65536 characters. `null` equivalent to \"\""
         },
         repositoryURL: {
             type: GraphQLString,

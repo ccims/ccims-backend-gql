@@ -41,6 +41,11 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
     public editedComments?: string[];
 
     /**
+     * selects only Users that added at least one of the specified ReactionGroups to any comment
+     */
+    public reactions?: string[];
+
+    /**
      * selects only users that are linked by at least one of the given users
      */
     public linkedByUsers?: string[];
@@ -143,6 +148,11 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
 
         if (this.editedComments !== undefined) {
             conditions.conditions.push(createRelationFilterByPrimary("comment", "editedBy", this.editedComments, conditions.i));
+            conditions.i++;
+        }
+
+        if (this.reactions !== undefined) {
+            conditions.conditions.push(createRelationFilterByPrimary("reaction_group", "user", this.reactions, conditions.i));
             conditions.i++;
         }
 

@@ -4,7 +4,7 @@ import { SyncNamedNode } from "./SyncNamedNode";
 /**
  * Sync wrapper for ComponentInterface
  */
- export class SyncComponentInterface extends SyncNamedNode<ComponentInterface> {
+export class SyncComponentInterface extends SyncNamedNode<ComponentInterface> {
 
     /**
      * Creates a new SyncComponentInterface based on the provided componentinterface

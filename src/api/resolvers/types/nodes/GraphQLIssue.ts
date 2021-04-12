@@ -20,7 +20,7 @@ import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLNode from "../GraphQLNode";
-import GraphQLComment from "./GraphQLComment";
+import GraphQLComment, { commentFields } from "./GraphQLComment";
 import GraphQLUser from "./GraphQLUser";
 
 const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
@@ -28,37 +28,10 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     description: "A cross component issue within ccims which links multiple issues from single ims",
     interfaces: () => ([GraphQLComment, GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this issue"
-        },
+        ...commentFields<Issue>("Issue"),
         title: {
             type: GraphQLNonNull(GraphQLString),
             description: "The title to display for this issue.\n\nNot unique; Max. 256 characters"
-        },
-        body: {
-            type: GraphQLString,
-            description: "The body text of the issue.\nMarkdown supported.\n\nMax. 65536 characters"
-        },
-        bodyRendered: {
-            type: GraphQLString,
-            description: "The body text of the issue rendered to html"
-        },
-        createdBy: {
-            type: GraphQLUser,
-            description: "The user who originally created the issue (in ccims or any ims)"
-        },
-        editedBy: {
-            type: GraphQLList(GraphQLNonNull(GraphQLUser)),
-            description: "A list of all people who edited the root of this issue (body and title)"
-        },
-        createdAt: {
-            type: GraphQLNonNull(GraphQLDate),
-            description: "The date the issue was first created on"
-        },
-        lastEditedAt: {
-            type: GraphQLDate,
-            description: "Date when the core issue(title, body etc.) was last changed (comments and other events DO NOT count)"
         },
         updatedAt: {
             type: GraphQLDate,
@@ -75,10 +48,6 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         category: {
             type: GraphQLNonNull(GraphQLIssueCategory),
             description: "The ccims-issue-category the issue belongs to.\n\nThis can be one of BUG,FEATURE_REQUEST or UNCLASSIFIED"
-        },
-        currentUserCanEdit: {
-            type: GraphQLNonNull(GraphQLBoolean),
-            description: "`true` iff the user authenticated by the given JWT is permitted to edit this issue.\n\nThis only refers to editing the core issue (title, body, etc.)"
         },
         currentUserCanComment: {
             type: GraphQLNonNull(GraphQLBoolean),

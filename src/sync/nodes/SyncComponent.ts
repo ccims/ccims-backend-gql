@@ -15,7 +15,7 @@ import { SyncNamedNode } from "./SyncNamedNode";
 /**
  * Sync wrapper for Label
  */
- export class SyncComponent extends SyncNamedNode<Component> {
+export class SyncComponent extends SyncNamedNode<Component> {
 
     /**
      * Specification for the issuesProvider

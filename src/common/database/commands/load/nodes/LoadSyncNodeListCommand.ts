@@ -43,6 +43,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
     /**
      * gets a string with all rows that should be selected
+     * Also selects last_modified_at (not in rows because this is not saved) and metadata (not on main)
      */
     protected rows(databaseManager: DatabaseManager): string {
         if (!this.countMode) {

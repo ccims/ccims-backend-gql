@@ -331,7 +331,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         if (renamedTitleEvent !== undefined) {
             return (renamedTitleEvent as RenamedTitleEvent).newTitle;
         } else {
-            return (await this.node.bodyProperty.get()).initialTitle;
+            return this.node.bodyTimelineItem.initialTitle;
         }
     }
 
@@ -368,7 +368,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      */
     public async body(): Promise<SyncComment<Body>> {
         if (this._body === undefined) {
-            this._body = this.registerSyncModifiable(new SyncComment(await this.node.bodyProperty.get()));
+            this._body = this.registerSyncModifiable(new SyncComment(this.node.bodyTimelineItem));
         }
         return this._body;
     }

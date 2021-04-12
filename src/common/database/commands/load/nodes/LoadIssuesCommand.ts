@@ -1,6 +1,7 @@
 import { QueryResultRow, QueryResult } from "pg";
 import { IssueCategory } from "../../../../nodes/enums/IssueCategory";
 import { Issue, IssueTableSpecification } from "../../../../nodes/Issue";
+import { Body, BodyTableSpecification } from "../../../../nodes/timelineItems/Body";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { OrConditionSpecification } from "../OrConditionSpecification";
@@ -195,9 +196,40 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     }
 
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Issue {
-        return new Issue(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.title, resultRow.is_open, resultRow.is_duplicate,
+        console.log(resultRow.body_id);
+        console.log(resultRow.body_body);
+        console.log(resultRow.body_last_modified_at);
+        let body = databaseManager.getCachedNode(resultRow.body_id) as Body | undefined;
+        if (body === undefined) {
+            body = new Body(databaseManager, resultRow.body_id, resultRow.body_created_by, resultRow.body_created_at, resultRow.body_issue,
+                resultRow.body_body, resultRow.body_last_edited_by, resultRow.body_last_edited_at, resultRow.body_initial_title, resultRow.body_deleted,
+                resultRow.body_last_modified_at, resultRow.body_metadata);
+            databaseManager.addCachedNode(body);
+        }
+        return new Issue(databaseManager, body, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.title, resultRow.is_open, resultRow.is_duplicate,
             resultRow.category, resultRow.start_date, resultRow.due_date, resultRow.estimated_time, resultRow.spent_time, resultRow.updated_at,
             resultRow.body_id, resultRow.priority, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+    }
+
+    /**
+     * gets a string with all rows that should be selected
+     * Also selects the necessary rows from body to load the Body
+     */
+    protected rows(databaseManager: DatabaseManager): string {
+        if (!this.countMode) {
+            let bodyRows = BodyTableSpecification.rows
+                .map(row => row.rowName)
+                .filter(name => name != "id")
+                .map(name => `body.${name} AS body_${name}`)
+                .join(", ");
+            bodyRows += ", body.last_modified_at AS body_last_modified_at";
+            if (databaseManager.metadataId !== undefined) {
+                bodyRows += ", body_metadata.metadata AS body_metadata";
+            }
+            return `${super.rows(databaseManager)}, ${bodyRows}`;
+        } else {
+            return super.rows(databaseManager);
+        }
     }
 
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
@@ -470,6 +502,30 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
 
         return conditions;
+    }
+
+    /**
+     * Generates a default query start QueryPart from a tablename and the databaseManager
+     * Can be overwritten to implement node specific behaviour
+     * Uses main as default alias for the table that is queried
+     * If a metadataId is set, metadata is queried, metadata is the table name
+     * WARNING: only use constants for tableName!
+     * @param tableName the name of the table to query from
+     * @param databaseManager the database manager
+     */
+    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
+        const metadataId = databaseManager.metadataId;
+        if (metadataId === undefined) {
+            return {
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main LEFT JOIN body ON (main.body_id = body.id) `,
+                values: []
+            }
+        } else {
+            return {
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main LEFT JOIN metadata metadata ON (main.id = metadata.node_id AND metadata.id = $1) LEFT JOIN body ON (main.body_id = body.id) LEFT JOIN metadata body_metadata ON (body.id = body_metadata.node_id AND body_metadata.id = $1) `,
+                values: [metadataId]
+            }
+        }
     }
 
 }

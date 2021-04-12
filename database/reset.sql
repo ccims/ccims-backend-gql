@@ -87,6 +87,7 @@ DROP TABLE IF EXISTS relation_issue_assignee;
 DROP TABLE IF EXISTS relation_issue_linked_issue;
 DROP TABLE IF EXISTS relation_comment_edited_by;
 DROP TABLE IF EXISTS relation_issue_artifact;
+DROP TABLE IF EXISTS relation_reaction_group_user;
 DROP TABLE IF EXISTS issue;
 
 -- Common

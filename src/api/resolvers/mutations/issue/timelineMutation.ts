@@ -10,7 +10,7 @@ import { IssueTimelineItem } from "../../../../common/nodes/timelineItems/IssueT
 type timelineMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     /**
      * Creates adds the clientMutationID to the return object
-     * @param args The arguments passed to the reslve fuction
+     * @param args The arguments passed to the resolve function
      * @param returnObject The object to be returned where to add the clientMutationID
      */
     createResult: <TReturn extends object>(args: any, issue: Issue, event: IssueTimelineItem | undefined, returnObject: TReturn) => typeof returnObject & { clientMutationID: string | undefined, issue: Issue, event: typeof event, timelineEdge: ({ cursor: string, node: typeof event }) | undefined };

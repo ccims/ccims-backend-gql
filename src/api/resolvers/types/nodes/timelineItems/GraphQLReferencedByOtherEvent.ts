@@ -1,11 +1,8 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ReferencedByOtherEvent } from "../../../../../common/nodes/timelineItems/ReferencedByOtherEvent";
 import { ResolverContext } from "../../../../ResolverContext";
-import GraphQLIssue from "../GraphQLIssue";
-import GraphQLUser from "../GraphQLUser";
-import GraphQLDate from "../../../scalars/GraphQLDate";
 import GraphQLNode from "../../GraphQLNode";
-import GraphQLIssueTimelineItem from "../GraphQLIssueTimelineItem";
+import GraphQLIssueTimelineItem, { issueTimelineItemFields } from "../GraphQLIssueTimelineItem";
 import GraphQLComponent from "../GraphQLComponent";
 
 const referencedByOtherEventConfig: GraphQLObjectTypeConfig<ReferencedByOtherEvent, ResolverContext> = {
@@ -14,26 +11,10 @@ const referencedByOtherEventConfig: GraphQLObjectTypeConfig<ReferencedByOtherEve
         "This occures if this issue is referenced outside of an issue (e.g. pull request etc.)",
     interfaces: () => ([GraphQLIssueTimelineItem, GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this timeline item"
-        },
-        issue: {
-            type: GraphQLNonNull(GraphQLIssue),
-            description: "The issue this timeline event belongs to"
-        },
-        createdBy: {
-            type: GraphQLUser,
-            description: "The user responsible for the creation of the event (e.g. autor of a comment)\n\n" +
-                "It's possible there is no autor, for example if the action was performed automatically"
-        },
-        createdAt: {
-            type: GraphQLNonNull(GraphQLDate),
-            description: "The date the event occured on/was created.\n\nThis ISN'T updated if the event is be changed"
-        },
+        ...issueTimelineItemFields<ReferencedByOtherEvent>("ReferencedByOtherEvent"),
         component: {
             type: GraphQLComponent,
-            description: "The component from which this issue was referenced"
+            description: "The component from which this issue was referenced, null if deleted"
         },
         source: {
             type: GraphQLString,

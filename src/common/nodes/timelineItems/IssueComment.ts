@@ -4,16 +4,16 @@ import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
-import { Comment, CommentTableSpecification } from "./Comment";
+import { CommentIssueTimelineItem, CommentIssueTimelineItemTableSpecification } from "./CommentIssueTimelineItem";
 
 /**
  * a table specification for an IssueComment
  * does not specifiy the metadata, because this is up to the save method
  */
 export const IssueCommentTableSpecification: NodeTableSpecification<IssueComment>
-   = new NodeTableSpecification<IssueComment>("comment", CommentTableSpecification);
+   = new NodeTableSpecification<IssueComment>("comment", CommentIssueTimelineItemTableSpecification);
 
-export class IssueComment extends Comment<IssueComment> {
+export class IssueComment extends CommentIssueTimelineItem<IssueComment> {
 
     /**
      * Creates a new IssueComment

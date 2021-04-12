@@ -5,7 +5,7 @@ import { UserPermissions } from "../../../utils/UserPermissions";
 type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     /**
      * Creates adds the clientMutationID to the return object
-     * @param args The arguments passed to the reslve fuction
+     * @param args The arguments passed to the resolve function
      * @param returnObject The object to be returned where to add the clientMutationID
      */
     createResult: <TReturn extends object>(args: any, returnObject: TReturn) => typeof returnObject & { clientMutationID: string | undefined };

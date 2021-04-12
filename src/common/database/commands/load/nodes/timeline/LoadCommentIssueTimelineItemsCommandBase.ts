@@ -1,9 +1,9 @@
-import { Comment } from "../../../../../nodes/timelineItems/Comment";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsCommandBase";
 import { createRelationFilterBySecundary } from "../RelationFilter";
+import { CommentIssueTimelineItem } from "../../../../../nodes/timelineItems/CommentIssueTimelineItem";
 
-export abstract class LoadCommentsCommandBase<T extends Comment> extends LoadIssueTimelineItemsCommandBase<T> {
+export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends CommentIssueTimelineItem> extends LoadIssueTimelineItemsCommandBase<T> {
     /**
      * filters for reactions
      */

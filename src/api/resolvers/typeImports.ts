@@ -1,3 +1,4 @@
+import GraphQLIssueTimelineItem from "./types/nodes/GraphQLIssueTimelineItem";
 import GraphQLIssueComment from "./types/nodes/timelineItems/GraphQLIssueComment";
 import GraphQLCCIMSUser from "./types/nodes/GraphQLCCIMSUser";
 import GraphQLIMSUser from "./types/nodes/GraphQLIMSUser";
@@ -47,7 +48,6 @@ import GraphQLComponent from "./types/nodes/GraphQLComponent";
 import GraphQLComponentInterface from "./types/nodes/GraphQLComponentInterface";
 import GraphQLIssue from "./types/nodes/GraphQLIssue";
 import GraphQLIssueLocation from "./types/nodes/GraphQLIssueLocation";
-import GraphQLIssueTimelineItem from "./types/nodes/GraphQLIssueTimelineItem";
 import GraphQLLabel from "./types/nodes/GraphQLLabel";
 import GraphQLReactionGroup from "./types/nodes/GraphQLReactionGroup";
 import GraphQLProject from "./types/nodes/GraphQLProject";

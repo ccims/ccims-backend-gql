@@ -10,24 +10,14 @@ import interfacesListQuery from "../../listQueries/interfacesListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
 import GraphQLNode from "../GraphQLNode";
+import { namedNodeFields } from "./namedNodeFields";
 
 const projectConfig: GraphQLObjectTypeConfig<Project, ResolverContext> = {
     name: "Project",
     description: "A project is a one unit in which the participating components colaborate",
     interfaces: () => ([GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this project"
-        },
-        name: {
-            type: GraphQLNonNull(GraphQLString),
-            description: "The human readable name of this project\n\nMax. 256 characters"
-        },
-        description: {
-            type: GraphQLNonNull(GraphQLString),
-            description: "A textual description of this project.\n\nMax. 65536 characters"
-        },
+        ...namedNodeFields("Project"),
         components: componentsListQuery<Project, Component>("All compomponents which are a part of this project and match (if given) `filterBy`", project => project.componentsProperty),
         interfaces: interfacesListQuery<Project, ComponentInterface>("Requests component interfaces which are offered by any of this project's components", project => project.interfacesProperty),
         issues: issuesListQuery<Project, Issue>("All issues on components that are assigned to this project", project => project.issuesProperty),

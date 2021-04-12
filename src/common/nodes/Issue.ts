@@ -63,7 +63,9 @@ import { AddedArtifactEvent } from "./timelineItems/AddedArtifactEvent";
 import { RemovedArtifactEvent } from "./timelineItems/RemovedArtifactEvent";
 import { AddedNonFunctionalConstraintEvent } from "./timelineItems/AddedNonFunctionalConstraintEvent";
 import { RemovedNonFunctionalConstraintEvent } from "./timelineItems/RemovedNonFunctionalConstraintEvent";
-const mdRenderer = new MarkdownIt(config.markdown);
+import { Comment } from "./Comment";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
 
 
 /**
@@ -82,13 +84,13 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
         RowSpecification.fromProperty("spent_time", "spentTime"),
         RowSpecification.fromProperty("updated_at", "updatedAt"),
         RowSpecification.fromProperty("priority", "priority"),
-        new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
+        new RowSpecification("body_id", issue => issue.bodyTimelineItem.id));
 
 
 /**
  * An issue
  */
-export class Issue extends SyncNode<Issue> {
+export class Issue extends SyncNode<Issue> implements Comment {
 
     private _title: string;
 
@@ -110,35 +112,15 @@ export class Issue extends SyncNode<Issue> {
 
     private _updatedAt: Date;
 
-    public readonly bodyProperty: NodeProperty<Body, Issue>;
-
-    private static readonly bodyPropertySpecification: NodePropertySpecification<Body, Issue>
-        = new NodePropertySpecification<Body, Issue>(
-            (id, timelineItem) => {
-                const command = new LoadBodiesCommand(true);
-                command.ids = [id];
-                return command;
-            },
-            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand(true)),
-            // no notifier because this is never allowed to change
-        );
+    private readonly _body: Body; 
 
     /**
-     * Async getter function for the bodyProperty returning only the body __text__
-     * @returns A promise of the body __text__ of this issue
+     * Gets the Body TimelineItem
+     * Should only be used for internal purposes
      */
-    public async body(): Promise<string> {
-        return (await this.bodyProperty.getPublic()).body
+    get bodyTimelineItem(): Body {
+        return this._body;
     }
-
-    /**
-     * Async getter function for the bodyProperty but rendered out to html returning the rendered version of the markdown
-     * @returns A promise of the body __html__ of this issue
-     */
-    public async bodyRendered(): Promise<string> {
-        return mdRenderer.render(await this.body());
-    }
-
 
     /**
      * property with all IssueTimelineItems
@@ -383,10 +365,52 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
             .noSave();
 
-    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
 
-    // TODO
-    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
+    //#region Comment properties and functions
+
+    /**
+     * @see {@link Body.body}
+     */
+    public get body(): string {
+        return this._body.body;
+    }
+
+    /**
+     * @see {@link Body.setBody}
+     */
+    public async setBody(value: string, atDate: Date, asUser?: User): Promise<void> {
+        this._body.setBody(value, atDate, asUser);
+    }
+
+    /**
+     * @see {@link Body.bodyRendered}
+     */
+    public async bodyRendered(): Promise<string> {
+        return this._body.bodyRendered();
+    }
+
+    /**
+     * @see {@link Body.reactionsProperty}
+     */
+    public get reactionsProperty(): NodeListProperty<ReactionGroup, CommentIssueTimelineItem> {
+        return this._body.reactionsProperty;
+    }
+
+    /**
+     * @see {@link Body.editedByProperty}
+     */
+    public get editedByProperty(): NodeListProperty<User, CommentIssueTimelineItem> {
+        return this._body.editedByProperty;
+    }
+
+    /**
+     * @see {@link Body.lastEditedByProperty}
+     */
+    public get lastEditedByProperty(): NullableNodeProperty<User, CommentIssueTimelineItem> {
+        return this._body.lastEditedByProperty;
+    }
+
+    //#endregion
 
     /**
      * abstract constructor for extending classes
@@ -397,7 +421,7 @@ export class Issue extends SyncNode<Issue> {
      * @param lastChangedAt the Date where this node was last changed
      * @param metadata metadata for the sync
      */
-    public constructor(databaseManager: DatabaseManager, id: string,
+    public constructor(databaseManager: DatabaseManager, body: Body, id: string,
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
         startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string, priority: IssuePriority,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
@@ -413,7 +437,9 @@ export class Issue extends SyncNode<Issue> {
         this._spentTime = spentTime;
         this._updatedAt = updateAt;
         this._priority = priority;
-        this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
+        this._body = body;
+        //console.log(body);
+        //console.log(body.body);
         this.timelineProperty = new SortedNodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this, 
             (a, b) => b.lastEditedAt.getTime() - a.lastEditedAt.getTime());
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
@@ -425,7 +451,6 @@ export class Issue extends SyncNode<Issue> {
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
         this.artifactsProperty = new NodeListProperty<Artifact, Issue>(databaseManager, Issue.artifactsPropertySpecification, this);
-        this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
         this.nonFunctionalConstraintsProperty = new NodeListProperty<NonFunctionalConstraint, Issue>(databaseManager, Issue.nonFunctionalConstraintsPropertySpecification, this);
     }
 
@@ -433,14 +458,14 @@ export class Issue extends SyncNode<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
-        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
-            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false, new Date());
-        issue.markNew();
-        databaseManager.addCachedNode(issue);
-
         const timelineBody = new Body(databaseManager, bodyId, createdBy?.id, createdAt, issueId, body, createdBy?.id, createdAt, title, false, new Date());
         timelineBody.markNew();
         databaseManager.addCachedNode(timelineBody);
+
+        const issue = new Issue(databaseManager, timelineBody, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
+            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false, new Date());
+        issue.markNew();
+        databaseManager.addCachedNode(issue);
 
         if (createdBy) {
             await timelineBody.editedByProperty.add(createdBy);

@@ -159,6 +159,6 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
 /**
  * interface for IMSData
  */
- export interface IMSComponentData {
+export interface IMSComponentData {
 
 }

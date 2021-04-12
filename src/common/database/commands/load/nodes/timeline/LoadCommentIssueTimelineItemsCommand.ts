@@ -1,9 +1,9 @@
-import { Comment } from "../../../../../nodes/timelineItems/Comment";
+import { CommentIssueTimelineItem } from "../../../../../nodes/timelineItems/CommentIssueTimelineItem";
 import { ConditionSpecification } from "../../ConditionSpecification";
 import { createRelationFilterBySecundary } from "../RelationFilter";
 import { LoadIssueTimelineItemsCommand } from "./LoadIssueTimelineItemsCommand";
 
-export class LoadCommentsCommand extends LoadIssueTimelineItemsCommand<Comment> {
+export class LoadCommentIssueTimelineItemsCommand extends LoadIssueTimelineItemsCommand<CommentIssueTimelineItem> {
 
     /**
      * filters for comments edited by the specified user

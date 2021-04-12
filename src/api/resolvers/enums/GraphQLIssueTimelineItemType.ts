@@ -115,6 +115,22 @@ const issueTimelineItemTypeConfig: GraphQLEnumTypeConfig = {
         REMOVED_FROM_COMPONENT_EVENT: {
             value: "REMOVED_FROM_COMPONENT_EVENT",
             description: "An event if the issue has been removed from a component and deleted in the components ims (not a issue location)"
+        },
+        ADDED_ARTIFACT_EVENT: {
+            value: "ADDED_ARTIFACT_EVENT",
+            description: "An event if an artifact has been added to the issue"
+        },
+        REMOVED_ARTIFACT_EVENT: {
+            value: "REMOVED_ARTIFACT_EVENT",
+            description: "An event if an artifact has been removed from the issue"
+        },
+        ADDED_NON_FUNCTIONAL_CONSTRAINT_EVENT: {
+            value: "ADDED_NON_FUNCTIONAL_CONSTRAIN_EVENT",
+            description: "An event if a non functional constraint has been added to the issue"
+        },
+        REMOVED_NON_FUNCTIONAL_CONSTRAIN_EVENT: {
+            value: "REMOVED_NON_FUNCTIONAL_CONSTRAIN_EVENT",
+            description: "An event if a non functional constraint has been removed from the issue"
         }
     }
 };
