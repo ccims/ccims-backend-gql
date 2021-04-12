@@ -5,8 +5,8 @@ import GraphQLPageInfo from "./GraphQLPageInfo";
 /**
  * Creates the config for a GraphQLPage
  * The name for the config is name + "Page"
- * @param nodeTypeProvider The GraphQL type for the Node
- * @param edgeTypeProvier The GraphQL typo for the Edge
+ * @param nodeTypeProvider provider for the GraphQL type for the Node
+ * @param edgeTypeProvier provider for the GraphQL typo for the Edge
  * @param name the name of the node
  * @param namePlural the plural of name, defaults to name + "s"
  * @returns a GraphQLObjectTypeConfig for the Page

@@ -1,20 +1,8 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
-import GraphQLIMS from "../nodes/GraphQLIMS";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import GraphQLIMSComponent from "../nodes/GraphQLIMSComponent";
 import { ResolverContext } from "../../../ResolverContext";
+import { createEdge } from "./createEdge";
 
-const imsComponentEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
-    name: "IMSComponentEdge",
-    description: "An edge for a IMSComponentPage to link a cursor to an element",
-    fields: () => ({
-        node: {
-            type: GraphQLIMS,
-            description: "The ims linked to by this edge"
-        },
-        cursor: {
-            type: GraphQLNonNull(GraphQLString),
-            description: "The cursor for use in the pagination"
-        }
-    })
-};
-const GraphQLIMSComponentEdge = new GraphQLObjectType(imsComponentEdgeConfig);
+const IMSComponentEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIMSComponent, "IMSComponent");
+const GraphQLIMSComponentEdge = new GraphQLObjectType(IMSComponentEdgeConfig);
 export default GraphQLIMSComponentEdge;
