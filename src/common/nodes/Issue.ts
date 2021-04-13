@@ -413,7 +413,7 @@ export class Issue extends SyncNode<Issue> implements Comment {
      * @see {@link Body.setBody}
      */
     public async setBody(value: string, atDate: Date, asUser?: User): Promise<void> {
-        this._body.setBody(value, atDate, asUser);
+        await this._body.setBody(value, atDate, asUser);
     }
 
     /**

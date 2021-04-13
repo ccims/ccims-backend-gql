@@ -113,7 +113,7 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
      * creates a new ImsComponent with the specififed imsType, endpoint and IMSData
      */
     public static async create(databaseManager: DatabaseManager, component: Component, imsSystem: IMSSystem, imsData: IMSComponentData): Promise<IMSComponent> {
-        if (IMSComponent.imsComponentAlreadyExists(databaseManager, component, imsSystem)) {
+        if (await IMSComponent.imsComponentAlreadyExists(databaseManager, component, imsSystem)) {
             throw new Error("An IMSComponent with the specified IMS and Component already exists");
         }
 
@@ -133,7 +133,7 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
         loadImsComponentCommand.imsSystems = [imsSystem.id];
         loadImsComponentCommand.components = [component.id];
         databaseManager.addCommand(loadImsComponentCommand);
-        databaseManager.executePendingCommands();
+        await databaseManager.executePendingCommands();
         return loadImsComponentCommand.getResult().length > 0;
     }
 

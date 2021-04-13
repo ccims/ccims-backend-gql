@@ -393,7 +393,7 @@ function getCurrentListPropertyStatus<T extends CCIMSNode<any>>(
 ) : (item: T, node: SyncIssue) => Promise<{ currentStatus: boolean, lastUpdatedAt?: Date}> {
     return async (item: T, node: SyncIssue) => {
         const property = propertyProvider(node);
-        if (property.hasId(item.id)) {
+        if (await property.hasId(item.id)) {
             return {
                 currentStatus: true,
                 lastUpdatedAt: (await getLatestTimelineItem(node, addedTimelineItemType, timelineItem => addedTimelineItemFilter(timelineItem, item)))?.lastUpdatedAt
@@ -437,6 +437,6 @@ async function getLatestTimelineItem (
  * @returns the SyncUpdate with timelineItem as new node
  */
 async function fromTimelineItemWithMetadata(node: SyncIssue, timelineItem: IssueTimelineItem, item: SyncValue<any>): Promise<SyncUpdate> {
-    node.node.participatedAt(item.asUser, item.atDate);
+    await node.node.participatedAt(item.asUser, item.atDate);
     return fromNewNodeWithMetadata(timelineItem, item.metadata);
 }
