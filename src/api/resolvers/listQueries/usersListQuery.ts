@@ -55,7 +55,7 @@ export function usersListQueryBase<TSource extends CCIMSNode, TNode extends User
             cmd.editedComments = args.filterBy?.comments;
         }
     };
-};
+}
 
 /**
  * Creates a users query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -79,5 +79,5 @@ function usersListQuery<TSource extends CCIMSNode, TProperty extends Partial<Use
             return baseQuery.createResult(src, context, cmd);
         }
     };
-};
+}
 export default usersListQuery;

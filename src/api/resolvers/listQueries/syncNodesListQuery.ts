@@ -46,6 +46,6 @@ function syncNodesListQuery<TSource extends CCIMSNode, TNode extends SyncNode>(
             cmd.createdBefore = args.filterBy?.createdBefore;
         }
     };
-};
+}
 
 export default syncNodesListQuery;

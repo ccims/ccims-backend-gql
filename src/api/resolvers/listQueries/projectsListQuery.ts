@@ -31,5 +31,5 @@ function projectsListQuery<TSource extends CCIMSNode, TProperty extends Partial<
             return baseQuery.createResult(src, context, cmd);
         }
     };
-};
+}
 export default projectsListQuery;

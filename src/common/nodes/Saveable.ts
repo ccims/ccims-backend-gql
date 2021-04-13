@@ -16,7 +16,7 @@ export abstract class Saveable {
      */
     public save(): void {
         this._isChanged = false;
-    };
+    }
 
     public get isChanged() {
         return this._isChanged;

@@ -44,6 +44,6 @@ function namedNodesListQuery<TSource extends CCIMSNode, TNode extends NamedNode>
             cmd.description = args.filterBy?.description;
         }
     };
-};
+}
 
 export default namedNodesListQuery;

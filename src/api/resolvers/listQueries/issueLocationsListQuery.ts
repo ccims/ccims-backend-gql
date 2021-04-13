@@ -48,7 +48,7 @@ export function issueLocationsListQueryBase<TSource extends CCIMSNode, TNode ext
             baseQuery.addParams(cmd, args);
         }
     };
-};
+}
 
 
 /**
@@ -73,5 +73,5 @@ function issueLocationsListQuery<TSource extends CCIMSNode, TProperty extends Pa
             return baseQuery.createResult(src, context, cmd);
         }
     };
-};
+}
 export default issueLocationsListQuery;

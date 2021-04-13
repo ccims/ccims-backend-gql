@@ -48,6 +48,6 @@ function namedSyncNodesListQuery<TSource extends CCIMSNode, TNode extends NamedS
             cmd.lastUpdatedBefore = args.filterBy?.lastUpdatedBefore;
         }
     };
-};
+}
 
 export default namedSyncNodesListQuery;

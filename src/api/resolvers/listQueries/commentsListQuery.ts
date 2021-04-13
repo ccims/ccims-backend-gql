@@ -53,6 +53,6 @@ function commentsListQuery<TSource extends CCIMSNode, TNode extends Comment>(
             cmd.currentUserCanEdit = args.filterBy?.currentUserCanEdit;
         }
     };
-};
+}
 
 export default commentsListQuery;

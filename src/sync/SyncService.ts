@@ -12,9 +12,8 @@ export class SyncService {
 
     public startService(): void {
         if (this.timer === undefined) {
-            const that = this;
             this.timer = setInterval(() => {
-                that.sync();
+                this.sync();
             }, 5 * 60 * 1000);
         }
     }

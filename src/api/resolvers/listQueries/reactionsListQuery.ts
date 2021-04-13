@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";;
+import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ReactionGroup } from "../../../common/nodes/ReactionGroup";
@@ -31,5 +31,5 @@ function reactionsListQuery<TSource extends CCIMSNode, TProperty extends Partial
             return baseQuery.createResult(src, context, cmd);
         }
     };
-};
+}
 export default reactionsListQuery;

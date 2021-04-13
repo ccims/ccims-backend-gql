@@ -19,7 +19,7 @@ import { config } from "./config/Config";
  * @param text The text/data to be logged. This can contain formatting as in `console.log`
  * @param args The data to fill into the formatting. See `console.log`
  */
-export function log(logLevel: number, text: any, ...args: any) {
+export function log(logLevel: number, text: any, ...args: any): void {
     if (config.common.logLevel >= logLevel) {
         if (args.length > 0) {
             console.log(text, args);
