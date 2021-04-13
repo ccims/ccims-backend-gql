@@ -33,21 +33,14 @@ should be set in `./config/api.json`
 
 ## Without docker
 Make sure that you have installed postgres
-```
+```bash
 npm i
-node .\scripts\database.js | psql -U postgres -d ccims
+node ./scripts/database.js | psql -U postgres -d ccims # only if you want to (re)create the database
 npm start
 ```
 
 ## With docker
-```bash
-# for a clean build run this before docker compose:
-rm tsconfig.tsbuildinfo
-npm i
-npm run database-file
-docker-compose up
-```
-`./config/postgres.json` should look like this:
+set `./config/postgres.json` to something like this:
 ```json
 {
     "$schema": "./postgres.schema.json",
@@ -57,6 +50,13 @@ docker-compose up
     "host": "db",
     "port": 5432
 }
+```
+```bash
+# for a clean build run this before docker compose:
+rm tsconfig.tsbuildinfo
+npm i
+npm run database-file
+docker-compose up
 ```
 Access the db with psql:
 
