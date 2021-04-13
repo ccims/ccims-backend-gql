@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Artifact } from "../../../../common/nodes/Artifact";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode from "../GraphQLNode";

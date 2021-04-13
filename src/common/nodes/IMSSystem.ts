@@ -2,7 +2,6 @@ import { LoadRelationCommand } from "../database/commands/load/LoadRelationComma
 import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
-import { Component } from "./Component";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";

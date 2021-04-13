@@ -1,4 +1,4 @@
-import { GraphQLEnumType, GraphQLEnumTypeConfig, GraphQLEnumValueConfigMap } from "graphql";
+import { GraphQLEnumType, GraphQLEnumTypeConfig } from "graphql";
 import { SyncAdapter } from "../../../sync/adapter/SyncAdapter";
 import { Adapters } from "../../../sync/adapter/SyncAdapters";
 

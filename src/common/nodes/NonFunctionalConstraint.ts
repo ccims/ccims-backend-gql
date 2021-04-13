@@ -6,7 +6,6 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { NodeType } from "./NodeType";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { SyncMetadata } from "./SyncMetadata";
 import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { User } from "./User";

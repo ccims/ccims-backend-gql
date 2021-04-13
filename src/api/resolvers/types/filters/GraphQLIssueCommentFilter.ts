@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLInputObjectTypeConfig } from "graphql";
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
 import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
 import { commentFilterFields } from "./commentFilterFields";
 

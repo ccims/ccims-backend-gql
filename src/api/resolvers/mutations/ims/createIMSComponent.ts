@@ -7,7 +7,6 @@ import PreconditionCheck from "../../utils/PreconditionCheck";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import GraphQLCreateIMSPayload from "../../types/mutations/payloads/ims/GraphQLCreateIMSPayload";
 import { Adapters } from "../../../../sync/adapter/SyncAdapters";
-import { LoadIMSComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadIMSComponentsCommand";
 
 function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateIMSPayload, GraphQLCreateComponentInput, "Creates a new IMSComponent which links the specified component to the specified IMS");

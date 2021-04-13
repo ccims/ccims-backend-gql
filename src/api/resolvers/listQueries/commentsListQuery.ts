@@ -1,5 +1,4 @@
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { SyncNode } from "../../../common/nodes/SyncNode";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { listQueryType } from "./listQuery";
 import { GraphQLInputObjectType, GraphQLObjectType } from "graphql";

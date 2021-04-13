@@ -2,7 +2,6 @@ import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { log } from "../../../../log";
 import GraphQLRemoveConsumedInterfacePayload from "../../types/mutations/payloads/component/GraphQLRemoveConsumedInterfacePayload";
 import GraphQLRemoveConsumedInterfaceInput from "../../types/mutations/inputs/component/GraphQLRemoveConsumedInterfaceInput";
 import { Component } from "../../../../common/nodes/Component";

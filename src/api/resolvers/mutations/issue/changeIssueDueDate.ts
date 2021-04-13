@@ -3,7 +3,6 @@ import { ResolverContext } from "../../../ResolverContext";
 import GraphQLChangeIssueDueDatePayload from "../../types/mutations/payloads/issue/GraphQLChangeIssueDueDatePayload";
 import GraphQLChangeIssueDueDateInput from "../../types/mutations/inputs/issue/GraphQLChangeIssueDueDateInput";
 import timelineMutation from "./timelineMutation";
-import PreconditionCheck from "../../utils/PreconditionCheck";
 
 function changeIssueDueDate(): GraphQLFieldConfig<any, ResolverContext> {
     const base = timelineMutation(GraphQLChangeIssueDueDatePayload, GraphQLChangeIssueDueDateInput, "Changes the set due date on an issue");

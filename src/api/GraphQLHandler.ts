@@ -1,5 +1,5 @@
 import * as core from "express-serve-static-core";
-import { graphqlHTTP, GraphQLParams } from "express-graphql";
+import { graphqlHTTP } from "express-graphql";
 import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
 import { log } from "../log";
 import { GraphQLSchema } from "graphql";

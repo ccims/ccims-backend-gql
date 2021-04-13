@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull } from "graphql";
 import GraphQLIMSType from "../../../../enums/GraphQLIMSType";
 import GraphQLJSON from "../../../../scalars/GraphQLJSON";
 

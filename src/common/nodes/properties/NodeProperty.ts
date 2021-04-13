@@ -1,6 +1,5 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { NodePropertyBase } from "./NodePropertyBase";
-import { Property } from "./Property";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { log } from "../../../log";

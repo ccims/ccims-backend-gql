@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { NonFunctionalConstraint } from "../../../../common/nodes/NonFunctionalConstraint";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode, { nodeFields } from "../GraphQLNode";

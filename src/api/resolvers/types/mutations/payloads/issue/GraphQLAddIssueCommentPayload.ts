@@ -3,7 +3,6 @@ import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLIssueComment from "../../../nodes/timelineItems/GraphQLIssueComment";
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
-import GraphQLIssueCommentFilter from "../../../filters/GraphQLIssueCommentFilter";
 
 const addIssueCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddIssueCommentPayload",

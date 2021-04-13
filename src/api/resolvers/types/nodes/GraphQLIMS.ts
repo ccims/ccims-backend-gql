@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLID, GraphQLNonNull } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode, { nodeFields } from "../GraphQLNode";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";

@@ -1,4 +1,4 @@
-import { GraphQLScalarType, ValueNode, astFromValue, Kind, GraphQLScalarTypeConfig, StringValueNode } from "graphql";
+import { GraphQLScalarType, ValueNode, Kind, GraphQLScalarTypeConfig, StringValueNode } from "graphql";
 
 const color: GraphQLScalarTypeConfig<any, string> = {
     name: "JSON",

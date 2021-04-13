@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
 import GraphQLDate from "../../../../scalars/GraphQLDate";
 import GraphQLIssueCategory from "../../../../enums/GraphQLIssueCategory";
 import GraphQLTimeSpan from "../../../../scalars/GraphQLTimeSpan";

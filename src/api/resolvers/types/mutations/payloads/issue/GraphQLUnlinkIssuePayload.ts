@@ -1,7 +1,6 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLIssue from "../../../nodes/GraphQLIssue";
-import GraphQLMarkedAsDuplicateEvent from "../../../nodes/timelineItems/GraphQLMarkedAsDuplicateEvent";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLUnlinkEvent from "../../../nodes/timelineItems/GraphQLUnlinkEvent";
 

@@ -1,4 +1,4 @@
-import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLID, GraphQLInputObjectType } from "graphql";
+import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectType } from "graphql";
 
 const deleteComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
     name: "DeleteComponentInterfaceInput",

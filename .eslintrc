@@ -5,7 +5,8 @@
         "project": "./tsconfig.json"
     },
     "plugins": [
-      "@typescript-eslint"
+      "@typescript-eslint",
+      "unused-imports"
     ],
     "extends": [
       "eslint:recommended",
@@ -13,10 +14,12 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "@typescript-eslint/no-unused-vars": 0,
-        "@typescript-eslint/no-inferrable-types": 0,
-        "@typescript-eslint/no-empty-interface": 1,
-        "@typescript-eslint/no-misused-promises": 2,
-        "@typescript-eslint/no-floating-promises": 2
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-empty-interface": "warn",
+        "@typescript-eslint/no-misused-promises": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+		"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": "off"
     }
 }

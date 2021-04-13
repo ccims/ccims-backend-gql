@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { RenamedTitleEvent } from "../../../../../common/nodes/timelineItems/RenamedTitleEvent";
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLNode from "../../GraphQLNode";

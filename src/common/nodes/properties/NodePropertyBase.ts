@@ -1,7 +1,6 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { PropertySpecification } from "./PropertySpecification";
-import { Saveable } from "../Saveable";
 import { Property } from "./Property";
 
 /**

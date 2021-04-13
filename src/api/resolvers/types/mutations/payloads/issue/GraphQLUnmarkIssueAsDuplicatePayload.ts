@@ -1,4 +1,4 @@
-import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
+import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLIssueTimelineItemEdge from "../../../edges/GraphQLIssueTimelineItemEdge";
 import GraphQLIssue from "../../../nodes/GraphQLIssue";

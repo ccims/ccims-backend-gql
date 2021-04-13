@@ -2,8 +2,6 @@ import { GraphQLFieldConfig } from "graphql";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { Component } from "../../../../common/nodes/Component";
 import { Project } from "../../../../common/nodes/Project";
-import { User } from "../../../../common/nodes/User";
-import { ProjectPermission } from "../../../../utils/UserPermissions";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLCreateProjectInput from "../../types/mutations/inputs/project/GraphQLCreateProjectInput";
 import GraphQLCreateProjectPayload from "../../types/mutations/payloads/project/GraphQLCreateProjectPayload";

@@ -1,7 +1,5 @@
-import { GraphQLNonNull, GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLFieldConfigMap } from "graphql";
+import { GraphQLNonNull, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLFieldConfigMap } from "graphql";
 import GraphQLIssue from "./GraphQLIssue";
-import GraphQLUser from "./GraphQLUser";
-import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLNode from "../GraphQLNode";
 import { IssueTimelineItem } from "../../../../common/nodes/timelineItems/IssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";

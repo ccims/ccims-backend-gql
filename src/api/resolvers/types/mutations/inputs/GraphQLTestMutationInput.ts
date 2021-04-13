@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
 
 const testMutationInputConfig: GraphQLInputObjectTypeConfig = {
     name: "TestMutationInput",

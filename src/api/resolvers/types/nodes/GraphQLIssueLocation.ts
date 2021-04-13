@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInterfaceType, GraphQLInterfaceTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import GraphQLNode from "../GraphQLNode";

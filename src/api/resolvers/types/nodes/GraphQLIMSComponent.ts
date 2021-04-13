@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLID, GraphQLNonNull } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { IMSComponent } from "../../../../common/nodes/IMSComponent";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode, { nodeFields } from "../GraphQLNode";

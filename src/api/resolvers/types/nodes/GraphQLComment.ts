@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLID, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInterfaceType, GraphQLInterfaceTypeConfig, GraphQLNonNull, GraphQLString } from "graphql";
 import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
 import { User } from "../../../../common/nodes/User";
 import { ResolverContext } from "../../../ResolverContext";

@@ -1,9 +1,5 @@
-import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
-import { Issue } from "../../../../common/nodes/Issue";
-import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
-import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
-import issuesListQuery from "../../listQueries/issuesListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLUser, { userFields } from "./GraphQLUser";
 import GraphQLIMS from "./GraphQLIMS";

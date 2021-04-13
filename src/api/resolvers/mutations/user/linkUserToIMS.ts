@@ -1,5 +1,4 @@
 import { GraphQLFieldConfig } from "graphql";
-import { LoadIMSUsersCommand } from "../../../../common/database/commands/load/nodes/LoadIMSUsersCommand";
 import { CCIMSUser } from "../../../../common/nodes/CCIMSUser";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { Adapters } from "../../../../sync/adapter/SyncAdapters";

@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
+import { GraphQLInputObjectType, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { issueLocationFilterFields } from "./GraphQLIssueLocationFilter";
 

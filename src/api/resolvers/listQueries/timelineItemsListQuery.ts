@@ -1,7 +1,6 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";
+import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { IssueTimelineItem } from "../../../common/nodes/timelineItems/IssueTimelineItem";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import nodeListQuery from "./nodeListQuery";
 import GraphQLIssueTimelineItemPage from "../types/pages/GraphQLIssueTimelineItemPage";

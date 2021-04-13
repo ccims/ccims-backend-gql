@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLInt, GraphQLID, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode, { nodeFields } from "../GraphQLNode";
 import { ReactionGroup } from "../../../../common/nodes/ReactionGroup";
 import { ResolverContext } from "../../../ResolverContext";

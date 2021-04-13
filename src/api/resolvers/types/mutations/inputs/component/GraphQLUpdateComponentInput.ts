@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateComponentInput",

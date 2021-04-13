@@ -1,11 +1,9 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { Component } from "../Component";
 import { Issue } from "../Issue";
 import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";

@@ -3,8 +3,6 @@ import { ResolverContext } from "../../ResolverContext";
 import PreconditionCheck from "../../resolvers/utils/PreconditionCheck";
 import GraphQLRegisterUserPayload from "../types/mutations/payloads/GraphQLRegisterUserPayload";
 import GraphQLRegisterUserInput from "../types/mutations/inputs/GraphQLRegisterUserInput";
-import { User } from "../../../common/nodes/User";
-import { APIConfig } from "../../../config/APIConfig";
 import { config } from "../../../config/Config";
 import { CCIMSUser } from "../../../common/nodes/CCIMSUser";
 

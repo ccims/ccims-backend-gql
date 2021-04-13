@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
 import { Issue } from "../../../../common/nodes/Issue";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";

@@ -3,7 +3,6 @@ import { LoadIssueLocationsCommand } from "../../../common/database/commands/loa
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { IssueLocation } from "../../../common/nodes/IssueLocation";
 import { ResolverContext } from "../../ResolverContext";
-import nodeListQuery from "./nodeListQuery";
 import GraphQLIssueLocationPage from "../types/pages/GraphQLIssueLocationPage";
 import GraphQLIssueLocationFilter from "../types/filters/GraphQLIssueLocationFilter";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";

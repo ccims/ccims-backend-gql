@@ -1,6 +1,5 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";
+import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ReactionGroup } from "../../../common/nodes/ReactionGroup";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLReactionGroupPage from "../types/pages/GraphQLReactionGroupPage";

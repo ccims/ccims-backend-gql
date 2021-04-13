@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLID, GraphQLNonNull } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLNonNull } from "graphql";
 import { SyncNode } from "../../../../common/nodes/SyncNode";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLDate from "../../scalars/GraphQLDate";

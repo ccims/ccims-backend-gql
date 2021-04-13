@@ -2,7 +2,6 @@ import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graph
 import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLComment from "../../../nodes/GraphQLComment";
 import GraphQLReactionGroup from "../../../nodes/GraphQLReactionGroup";
-import GraphQLReactionGroupEdge from "../../../edges/GraphQLReactionGroupEdge";
 
 const addReactionToCommentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "AddReactionToCommentPayload",

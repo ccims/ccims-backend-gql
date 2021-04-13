@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { AddedToComponentEvent } from "../../../../../common/nodes/timelineItems/AddedToComponentEvent";
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLNode from "../../GraphQLNode";
