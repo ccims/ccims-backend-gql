@@ -14,18 +14,18 @@ export class LoadReactionGroupsCommand extends LoadNodeListCommand<ReactionGroup
     /**
      * Select only reaction groups that match this regex
      */
-    public reaction?: string;
+    public reaction: string | undefined;
 
     /**
      * Select only reaction groups that include one of these users
      */
-    public users?: string[];
+    public users: string[] | undefined;
 
     /**
      * Select only ReactionGroups that are part of at least on of the specified comments
      * NOTE: the Comment has to be a CommentIssueTimelineItem, Issues do NOT work
      */
-    public onComments?: string[];
+    public onComments: string[] | undefined;
 
     /**
      * creates a new LoadReactionsCommand

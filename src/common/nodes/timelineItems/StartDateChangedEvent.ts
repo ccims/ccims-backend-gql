@@ -13,9 +13,9 @@ export const StartDateChangedEventTableSpecification: NodeTableSpecification<Sta
 
 export class StartDateChangedEvent extends IssueTimelineItem {
 
-    private _oldStartDate?: Date;
+    private _oldStartDate: Date | undefined;
 
-    private _newStartDate?: Date;
+    private _newStartDate: Date | undefined;
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldStartDate: Date | undefined, newStartDate: Date | undefined,

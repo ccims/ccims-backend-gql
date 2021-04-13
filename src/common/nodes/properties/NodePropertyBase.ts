@@ -14,7 +14,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
     /**
      * the other node if already loaded
      */
-    protected _element?: T;
+    protected _element: T | undefined;
 
 
     /**

@@ -8,14 +8,24 @@ import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 export abstract class LoadNamedSyncNodesCommand<T extends NamedSyncNode> extends LoadSyncNodeListCommand<T> {
 
     /**
-     * select only nodes when their name matches this _POSIX_ RegEx
+     * select only NamedSyncNodes when their name matches this _POSIX_ RegEx
      */
-    public name?: string;
+    public name: string | undefined;
 
     /**
-     * select only nodes when their description matches this _POSIX_ RegEx
+     * select only NamedSyncNodes when their description matches this _POSIX_ RegEx
      */
-    public description?: string;
+    public description: string | undefined;
+
+    /**
+     * Select only NamedSyncNodes that were last updated after the given date (inclusive)
+     */
+    public lastUpdatedAfter: Date | undefined;
+
+    /**
+     * Select only NamedSyncNodes that were last updated before the given date (inclusive)
+     */
+    public lastUpdatedBefore: Date | undefined;
 
     /**
      * adds the id condition
@@ -39,6 +49,23 @@ export abstract class LoadNamedSyncNodesCommand<T extends NamedSyncNode> extends
                 text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
                 priority: 7
+            });
+            conditions.i++;
+        }
+
+        if (this.lastUpdatedAfter !== undefined) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.last_updated_at>=$${conditions.i}`,
+                values: [this.lastUpdatedAfter],
+            });
+            conditions.i++;
+        }
+        if (this.lastUpdatedBefore !== undefined) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.last_updated_at<=$${conditions.i}`,
+                values: [this.lastUpdatedBefore],
             });
             conditions.i++;
         }

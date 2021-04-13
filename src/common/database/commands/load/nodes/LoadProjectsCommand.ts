@@ -14,22 +14,22 @@ export class LoadProjectsCommand extends LoadNamedNodesCommand<Project> {
     /**
      * select the projects with have one of the specified components
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * select the projects with have one of the specified users as participants
      */
-    public users?: string[];
+    public users: string[] | undefined;
 
     /**
      * select only projects which have one of the given issues on a component assigned to them
      */
-    public issuesOnComponent?: string[];
+    public issuesOnComponent: string[] | undefined;
 
     /**
      * Select only projects where at least one of the given labels is available (on a acomponent assigned to this project)
      */
-    public labels?: string[];
+    public labels: string[] | undefined;
 
     /**
      * creates a new LoadProjectsCommand

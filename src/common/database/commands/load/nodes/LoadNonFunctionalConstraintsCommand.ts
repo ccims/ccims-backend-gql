@@ -13,17 +13,27 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
     /**
      * filter for timelineItems that are on any of the issues
      */
-    public onIssues?: string[];
+    public onIssues: string[] | undefined;
 
     /**
      * Only loads the NonFunctionalConstraint where the isActive state matches
      * a NonFunctionalConstraint is active if it is currently on its issue
      * undefined matches both true and false
      */
-    public isActive?: boolean;
+    public isActive: boolean | undefined;
 
     /**
-     * creates a new LoadNonFunctionalConstraintsCommand
+     * Selects only NonFunctionalConstraints when their content matches this _POSIX_ RegEx
+     */
+    public content: string | undefined;
+
+    /**
+     * Select only NonFunctionalConstraints when their description matches this _POSIX_ RegEx
+     */
+    public description: string | undefined;
+
+    /**
+     * Creates a new LoadNonFunctionalConstraintsCommand
      */
     public constructor(loadDeleted: boolean = false) {
         super(NonFunctionalConstraintTableSpecification.rows, loadDeleted);
@@ -65,6 +75,24 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
                 text: `is_active=$${conditions.i}`,
                 values: [this.isActive],
                 priority: 2
+            });
+            conditions.i++;
+        }
+
+        if (this.description !== undefined) {
+            conditions.conditions.push({
+                text: `main.description ~* $${conditions.i}`,
+                values: [this.description],
+                priority: 7
+            });
+            conditions.i++;
+        }
+
+        if (this.content !== undefined) {
+            conditions.conditions.push({
+                text: `main.content ~* $${conditions.i}`,
+                values: [this.content],
+                priority: 7
             });
             conditions.i++;
         }

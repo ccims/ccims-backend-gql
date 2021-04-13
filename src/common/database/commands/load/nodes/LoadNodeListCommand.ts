@@ -29,17 +29,17 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * limit the amount of results
      */
-    public limit?: number;
+    public limit: number | undefined;
 
     /**
      * returns only elements after elements with the specified id (exclusive)
      */
-    public afterId?: string;
+    public afterId: string | undefined;
 
     /**
      * returns only elements before elements with the specified id (exclusive)
      */
-    public beforeId?: string;
+    public beforeId: string | undefined;
 
     /**
      * if true, the pagination is not applied an the rows are just counted
@@ -49,7 +49,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * when countMode and the command was executed, count is the amount of the amount of results
      */
-    public count?: number;
+    public count: number | undefined;
 
     /**
      * true if forwards paginating and there are more results

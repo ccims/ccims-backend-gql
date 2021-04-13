@@ -6,7 +6,7 @@ import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLComponentFilter from "../types/filters/GraphQLComponentFilter";
 import GraphQLComponentPage from "../types/pages/GraphQLComponentPage";
-import namedSyncNodeListQuery from "./namedSyncNodeListQuery";
+import { issueLocationsListQueryBase } from "./issueLocationsListQuery";
 
 /**
  * Creates a components query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -19,7 +19,7 @@ function componentsListQuery<TSource extends CCIMSNode, TProperty extends Partia
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = namedSyncNodeListQuery<TSource, Component>(GraphQLComponentPage, GraphQLComponentFilter, description, "components", propertyProvider);
+    const baseQuery = issueLocationsListQueryBase<TSource, Component>(GraphQLComponentPage, GraphQLComponentFilter, description, "components", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {

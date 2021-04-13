@@ -62,7 +62,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
     /**
      * The body of the issue
      */
-    private _body?: SyncComment<Body>;
+    private _body: SyncComment<Body> | undefined;
 
     /**
      * Specification for the labelsProperty
@@ -171,7 +171,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.title,
-                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.RenamedTitleEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.RenamedTitleEvent, () => true))?.lastUpdatedAt ?? node.node.createdAt
             };
         }
     };
@@ -203,7 +203,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.isOpen,
-                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isOpen ? NodeType.ReopenedEvent : NodeType.ClosedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isOpen ? NodeType.ReopenedEvent : NodeType.ClosedEvent, () => true))?.lastUpdatedAt ?? node.node.createdAt
             };
         }
     };
@@ -235,7 +235,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.isDuplicate,
-                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isDuplicate ? NodeType.MarkedAsDuplicateEvent : NodeType.UnmarkedAsDuplicateEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, node.node.isDuplicate ? NodeType.MarkedAsDuplicateEvent : NodeType.UnmarkedAsDuplicateEvent, () => true))?.lastUpdatedAt ?? node.node.createdAt
             };
         }
     };
@@ -262,7 +262,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.category,
-                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.CategoryChangedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.CategoryChangedEvent, () => true))?.lastUpdatedAt ?? node.node.createdAt
             };
         }
     };
@@ -289,7 +289,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
         getCurrentStatus: async node => {
             return {
                 currentValue: node.node.priority,
-                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.PriorityChangedEvent, () => true))?.lastEditedAt ?? node.node.createdAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, NodeType.PriorityChangedEvent, () => true))?.lastUpdatedAt ?? node.node.createdAt
             };
         }
     };
@@ -327,7 +327,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      * @returns the title of the issue at the specified point in time
      */
     private async getTitleAt(date: Date): Promise<string> {
-        const renamedTitleEvent = await getLatestTimelineItem(this, NodeType.RenamedTitleEvent, item => item.lastEditedAt.getTime() < date.getTime());
+        const renamedTitleEvent = await getLatestTimelineItem(this, NodeType.RenamedTitleEvent, item => item.lastUpdatedAt.getTime() < date.getTime());
         if (renamedTitleEvent !== undefined) {
             return (renamedTitleEvent as RenamedTitleEvent).newTitle;
         } else {
@@ -341,7 +341,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      * @returns the category of the issue at the specified point in time
      */
     private async getCategoryAt(date: Date): Promise<IssueCategory> {
-        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.CategoryChangedEvent, item => item.lastEditedAt.getTime() < date.getTime());
+        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.CategoryChangedEvent, item => item.lastUpdatedAt.getTime() < date.getTime());
         if (categoryChangedEvent !== undefined) {
             return (categoryChangedEvent as CategoryChangedEvent).newCategory;
         } else {
@@ -355,7 +355,7 @@ export class SyncIssue extends SyncNodeWrapper<Issue> {
      * @returns the category of the issue at the specified point in time
      */
     private async getPriorityAt(date: Date): Promise<IssuePriority> {
-        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.PriorityChangedEvent, item => item.lastEditedAt.getTime() < date.getTime());
+        const categoryChangedEvent = await getLatestTimelineItem(this, NodeType.PriorityChangedEvent, item => item.lastUpdatedAt.getTime() < date.getTime());
         if (categoryChangedEvent !== undefined) {
             return (categoryChangedEvent as PriorityChangedEvent).newPriority;
         } else {
@@ -396,12 +396,12 @@ function getCurrentListPropertyStatus<T extends CCIMSNode<any>>(
         if (property.hasId(item.id)) {
             return {
                 currentStatus: true,
-                lastUpdatedAt: (await getLatestTimelineItem(node, addedTimelineItemType, timelineItem => addedTimelineItemFilter(timelineItem, item)))?.lastEditedAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, addedTimelineItemType, timelineItem => addedTimelineItemFilter(timelineItem, item)))?.lastUpdatedAt
             };
         } else {
             return {
                 currentStatus: false,
-                lastUpdatedAt: (await getLatestTimelineItem(node, removedTimelineItemType, timelineItem => removedTimelineItemFilter(timelineItem, item)))?.lastEditedAt
+                lastUpdatedAt: (await getLatestTimelineItem(node, removedTimelineItemType, timelineItem => removedTimelineItemFilter(timelineItem, item)))?.lastUpdatedAt
             };
         }
     }

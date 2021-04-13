@@ -7,7 +7,7 @@ export abstract class LoadIssueTimelineItemsCommandBase<T extends IssueTimelineI
     /**
      * filter for timelineItems that are on any of the issues
      */
-    public onIssues?: string[];
+    public onIssues: string[] | undefined;
 
     /**
      * adds the id condition

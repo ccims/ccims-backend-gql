@@ -79,8 +79,8 @@ export class IssueTimelineItemType {
     public static UNLINK_EVENT = new IssueTimelineItemType("unlinkEvent");
     public static WAS_LINKED_EVENT = new IssueTimelineItemType("wasLinkedEvent");
     public static WAS_UNLINKED_EVENT = new IssueTimelineItemType("wasUnlinkedEvent");
-    public static LABELLED_EVENT = new IssueTimelineItemType("labledEvent");
-    public static UNLABELLED_EVENT = new IssueTimelineItemType("unlabledEvent");
+    public static LABELLED_EVENT = new IssueTimelineItemType("labelledEvent");
+    public static UNLABELLED_EVENT = new IssueTimelineItemType("unlabelledEvent");
     public static PINNED_EVENT = new IssueTimelineItemType("pinnedEvent");
     public static UNPINNED_EVENT = new IssueTimelineItemType("unpinnedEvent");
     public static RENAMED_TITLE_EVENT = new IssueTimelineItemType("renamedTitleEvent");

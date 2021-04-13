@@ -39,12 +39,12 @@ export class Artifact extends SyncNode<Artifact> {
     /**
      * The start of the line range, must be an integer, optional, inclusive
      */
-    private _lineRangeStart?: number;
+    private _lineRangeStart: number | undefined;
 
     /**
      * The end of the line range, must be an integer, optional, inclusive
      */
-    private _lineRangeEnd?: number;
+    private _lineRangeEnd: number | undefined;
 
     /**
      * The Component this Artifact is part of

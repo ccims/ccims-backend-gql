@@ -10,12 +10,12 @@ export abstract class LoadNamedNodesCommand<T extends NamedNode> extends LoadNod
     /**
      * select only nodes when their name matches this _POSIX_ RegEx
      */
-    public name?: string;
+    public name: string | undefined;
 
     /**
      * select only nodes when their description matches this _POSIX_ RegEx
      */
-    public description?: string;
+    public description: string | undefined;
 
     /**
      * adds the id condition

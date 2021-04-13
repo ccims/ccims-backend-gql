@@ -1,17 +1,12 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
+import { Project } from "../../../../common/nodes/Project";
+import { namedNodeFilterFields } from "./namedNodeFilterFields";
 
 const projectFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ProjectFilter",
     description: "Filter for a Project. All parameters given in this filter will be connected via _AND_",
     fields: () => ({
-        name: {
-            type: GraphQLString,
-            description: "The name of the project must match the given RegEx"
-        },
-        components: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The project must have any of the components with the given ids"
-        },
+        ...namedNodeFilterFields<Project>("Project"),
         users: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "At least one of the users with the given ids must be part of the project"

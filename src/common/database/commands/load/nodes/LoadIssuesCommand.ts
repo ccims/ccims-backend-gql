@@ -14,182 +14,182 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     /**
      * Select only issues of which the title matches this regex
      */
-    public title?: string;
+    public title: string | undefined;
 
     /**
      * Selects issues of which the title or body matches the given text regex or which 
      * have at least on of the specified labels
      */
-    public fullSearch?: FullSearch;
+    public fullSearch: FullSearch | undefined;
 
     /**
      * Select only issues which are on one of these components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * Select only issues which are on any component on one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * Select only issues when their body matches this regex
      */
-    public body?: string;
+    public body: string | undefined;
 
     /**
      * Select only issues which were edited by one of these users
      */
-    public editedBy?: string[];
+    public editedBy: string[] | undefined;
 
     /**
      * Select only issues that were last edited after the given date (inclusive)
-     * Only including edits to the issues title or body
+     * Only including edits to the issues body
      */
-    public lastEditedAfter?: string[];
+    public lastEditedAfter: Date | undefined;
 
     /**
      * Select only issues that were last edited before the given date (inclusive)
-     * Only including edits to the issues title or body
+     * Only including edits to the issues body
      */
-    public lastEditedBefore?: string[];
+    public lastEditedBefore: Date | undefined;
 
     /**
      * Select only issues that were last updated after the given date (inclusive)
      * This includes any changes to the issue or its comments
      */
-    public updatedAfter?: string[];
+    public lastUpdatedAfter: Date | undefined;
 
     /**
      * Select only issues that were last updated before the given date (inclusive)
      * This includes any changes to the issue or its comments
      */
-    public updatedBefore?: string[];
+    public lastUpdatedBefore: Date | undefined;
 
     /**
      * If set and `true`, only issues that are open are selected. If `false`, only closed issue
      */
-    public isOpen?: boolean;
+    public isOpen: boolean | undefined;
 
     /**
      * If set and `true`, only issues that are a duplicate of another issue are selected. If `false`, only issues which are not marked as duplicate
      */
-    public isDuplicate?: boolean;
+    public isDuplicate: boolean | undefined;
 
     /**
      * filters for issues where any of the users is assigned
      */
-    public userAssigned?: string[];
+    public userAssigned: string[] | undefined;
 
     /**
      * filter for issues with one of the specified categories
      */
-    public ofCategory?: IssueCategory[]
+    public ofCategory: IssueCategory[] | undefined
 
     /**
      * Select only issues linking __to__ one of the given issues (origin of the relation)
      */
-    public linksToIssues?: string[];
+    public linksToIssues: string[] | undefined;
 
     /**
      * Select only issues __being linked to__ one of the given issues (destination of the relation)
      */
-    public linkedByIssues?: string[];
+    public linkedByIssues: string[] | undefined;
 
     /**
      * Select only issues, that link to at least one other issue
      */
-    public linksToAnyIssues?: boolean;
+    public linksToAnyIssues: boolean | undefined;
 
     /**
      * Select only issues, that are linked by at least one other issue
      */
-    public linkedByAnyIssues?: boolean;
+    public linkedByAnyIssues: boolean | undefined;
 
     /**
      * Select only issues that have all of the reactions in one of the given list entries on their body
      * TODO
      */
-    public reactions?: string[][];
+    public reactions: string[][] | undefined;
 
     /**
      * Select only issues that have one of these labels assigned
      */
-    public labels?: string[];
+    public labels: string[] | undefined;
 
     /**
      * Select only issues that have one of these Artifacts assigned
      */
-    public artifacts?: string[];
+    public artifacts: string[] | undefined;
 
     /**
      * filters for issues where any of the users perticipated
      */
-    public userParticipated?: string[];
+    public userParticipated: string[] | undefined;
 
     /**
      * Select only issues that are assigned to at least one of these locations
      */
-    public onLocations?: string[];
+    public onLocations: string[] | undefined;
 
     /**
      * If set and `true`, only issues that the current user is allowed to edit the body on will be selected. If `false` only those where he isn't.
      * TODO
      */
-    public currentUserCanEdit?: boolean;
+    public currentUserCanEdit: boolean | undefined;
 
     /**
      * If set and `true`, only issues that the current user is allowed to comment on will be selected. If `false` only those where he isn't.
      * TODO
      */
-    public currentUserCanComment?: boolean;
+    public currentUserCanComment: boolean | undefined;
 
     /**
      * Select only issues that have a start date after this date (inclusive)
      */
-    public startDateAfter?: Date;
+    public startDateAfter: Date | undefined;
 
     /**
      * Select only issues that have a start date before this date (inclusive)
      */
-    public startDateBefore?: Date;
+    public startDateBefore: Date | undefined;
 
     /**
      * Select only issues that have a due date after this date (inclusive)
      */
-    public dueDateAfter?: Date;
+    public dueDateAfter: Date | undefined;
 
     /**
      * Select only issues that have a due date before this date (inclusive)
      */
-    public dueDateBefore?: Date;
+    public dueDateBefore: Date | undefined;
 
     /**
      * Select only issues that have an estimated time which is at __least__ the given time span in milliseconds (inclusive)
      */
-    public estimatedTimeGreaterThan?: number;
+    public estimatedTimeGreaterThan: number | undefined;
 
     /**
      * Select only issues that have an estimated time which is at __most__ the given time span in milliseconds (inclusive)
      */
-    public estimatedTimeLowerThan?: number;
+    public estimatedTimeLowerThan: number | undefined;
 
     /**
      * Select only issues that have an spent time which is at __least__ the given time span in milliseconds (inclusive)
      */
-    public spentTimeGreaterThan?: number;
+    public spentTimeGreaterThan: number | undefined;
 
     /**
      * Select only issues that have an spent time which is at __most__ the given time span in milliseconds (inclusive)
      */
-    public spentTimeLowerThan?: number;
+    public spentTimeLowerThan: number | undefined;
 
     /**
      * Selects only issues which have been modified after the given date (__inclusive__)
      * This also includes issues where the timeline has been modified
      * 
      */
-    public issueOrTimelineModifiedSince?: Date;
+    public issueOrTimelineModifiedSince: Date | undefined;
 
     public constructor(loadDeleted: boolean = false) {
         super(IssueTableSpecification.rows, loadDeleted);
@@ -349,19 +349,19 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
             }
             conditions.conditions.push(new OrConditionSpecification(5, ...orConditions));
         }
-        if (this.updatedAfter !== undefined) {
+        if (this.lastUpdatedAfter !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `main.updated_at>=$${conditions.i}`,
-                values: [this.updatedAfter],
+                text: `main.last_updated_at>=$${conditions.i}`,
+                values: [this.lastUpdatedAfter],
             });
             conditions.i++;
         }
-        if (this.updatedBefore !== undefined) {
+        if (this.lastUpdatedBefore !== undefined) {
             conditions.conditions.push({
                 priority: 5,
-                text: `main.updated_at<=$${conditions.i}`,
-                values: [this.updatedBefore],
+                text: `main.last_updated_at<=$${conditions.i}`,
+                values: [this.lastUpdatedBefore],
             });
             conditions.i++;
         }

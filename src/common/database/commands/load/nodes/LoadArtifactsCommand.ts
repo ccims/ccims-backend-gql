@@ -10,20 +10,26 @@ import { createRelationFilterByPrimary, createStringListFilter } from "./Relatio
  * command to load a list of Artifacts
  */
 export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
+
+    /**
+     * Selects only Artifacts when their uri machts this _POSIX_ RegEx
+     */
+    public uri: string | undefined;
+
     /**
      * Select only Artifacts that are on one of these Components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * Select only labels that are on components assigned to at least one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * Select only Artifacts that are assigned to one of these Issues
      */
-    public assignedToIssues?: string[];
+    public assignedToIssues: string[] | undefined;
 
     /**
      * creates a new LoadArtifactsCommand
@@ -83,6 +89,15 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
                     priority: 5
                 });
             }
+            conditions.i++;
+        }
+
+        if (this.uri !== undefined) {
+            conditions.conditions.push({
+                text: `main.name ~* $${conditions.i}`,
+                values: [this.uri],
+                priority: 4
+            });
             conditions.i++;
         }
 

@@ -19,7 +19,7 @@ function imsListQuery<TSource extends CCIMSNode, TProperty extends Partial<IMSSy
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = nodeListQuery<TSource, IMSSystem>(GraphQLImsPage, GraphQLImsFilter, description, "ims", propertyProvider);
+    const baseQuery = nodeListQuery<TSource, IMSSystem>(GraphQLImsPage, GraphQLImsFilter, description, "IMS", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {

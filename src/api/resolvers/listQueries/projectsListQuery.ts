@@ -3,11 +3,10 @@ import { LoadProjectsCommand } from "../../../common/database/commands/load/node
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { Project } from "../../../common/nodes/Project";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLProjectFilter from "../types/filters/GraphQLProjectFilter";
 import GraphQLProjectPage from "../types/pages/GraphQLProjectPage";
-import namedNodeListQuery from "./namedNodeListQuery";
+import namedNodesListQuery from "./namedNodesListQuery";
 
 /**
  * Creates a projects query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -20,7 +19,7 @@ function projectsListQuery<TSource extends CCIMSNode, TProperty extends Partial<
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = namedNodeListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
+    const baseQuery = namedNodesListQuery<TSource, Project>(GraphQLProjectPage, GraphQLProjectFilter, description, "projects", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {

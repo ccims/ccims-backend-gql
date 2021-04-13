@@ -18,7 +18,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * if present, the id of the other node
      */
-    private _id?: string;
+    private _id: string | undefined;
 
     /**
      * creates a new nullable node property with the provided specification

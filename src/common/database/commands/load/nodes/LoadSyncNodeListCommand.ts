@@ -19,22 +19,22 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
     /**
      * Select only sync nodes that were created by one of the users with the given IDs
      */
-    public createdBy?: string[];
+    public createdBy: string[] | undefined;
 
     /**
      * Select only sync nodes created after the given Date __(inclusive)__
      */
-    public createdAfter?: Date;
+    public createdAfter: Date | undefined;
 
     /**
      * Select only sync nodes created before the given Date __(inclusive)__
      */
-    public createdBefore?: Date;
+    public createdBefore: Date | undefined;
 
     /**
      * Selects only sync nodes which were modified after the given Date __(inclusive)__
      */
-    public modifiedSince?: Date;
+    public modifiedSince: Date | undefined;
 
     protected constructor(rows: RowSpecification<T>[], loadDeleted: boolean = false) {
         super(rows);

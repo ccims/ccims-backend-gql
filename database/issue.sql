@@ -1,7 +1,7 @@
 CREATE TABLE issue (
     LIKE sync_node INCLUDING DEFAULTS,
     title varchar(256),
-    updated_at timestamp NOT NULL,
+    last_updated_at timestamp NOT NULL,
     is_open bool NOT NULL DEFAULT true,
     is_duplicate bool NOT NULL DEFAULT false,
     category issue_category NOT NULL,
@@ -283,7 +283,7 @@ CREATE TABLE relation_reaction_group_user (
 );
 
 CREATE TABLE label (
-    LIKE sync_node INCLUDING DEFAULTS,
+    LIKE named_sync_node INCLUDING DEFAULTS,
     name varchar(256) NOT NULL,
     description varchar(65536) NOT NULL,
     color varchar(9) NOT NULL,

@@ -16,23 +16,23 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
     /**
      * filter for ComponentInterfaces which are on any of the components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * filter for ComponentInterfaces which are consumed by any of the components
      */
-    public consumedByComponent?: string[];
+    public consumedByComponent: string[] | undefined;
 
     /**
      * filters for IssueLocations where at least one of the issues is located
      */
-    public hasIssueOnLocation?: string[];
+    public hasIssueOnLocation: string[] | undefined;
 
     
     /**
      * Select only component interfaces which are on any component on one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * creates a new LoadComponentInterfacesCommand

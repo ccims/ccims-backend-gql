@@ -15,12 +15,12 @@ export class LoadMultipleNodeListsCommand<T extends CCIMSNode> extends LoadNodeL
     /**
      * list of result ids
      */
-    private resultIds?: string[];
+    private resultIds: string[] | undefined;
 
     /**
      * list of follow up commands
      */
-    private commands?: LoadNodeListCommand<T>[];
+    private commands: LoadNodeListCommand<T>[] | undefined;
 
     /**
      * creates a command to load a node

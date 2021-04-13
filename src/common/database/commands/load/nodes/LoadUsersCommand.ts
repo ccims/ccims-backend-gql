@@ -1,7 +1,5 @@
 import { User } from "../../../../nodes/User";
-import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
-import { QueryPart } from "../QueryPart";
 import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
 import { createRelationFilterByPrimary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
@@ -13,47 +11,47 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
     /**
      * select only users that have a username that matches the given posix RegEx
      */
-    public username?: string;
+    public username: string | undefined;
 
     /**
      * select only users that have a display name that matches the given posix RegEx
      */
-    public displayName?: string;
+    public displayName: string | undefined;
 
     /**
      * select only users that have an email that matches the given posix RegEx
      */
-    public email?: string;
+    public email: string | undefined;
 
     /**
      * select only users that are assigned to one of the given issues
      */
-    public assignedToIssues?: string[];
+    public assignedToIssues: string[] | undefined;
 
     /**
      * select only users that are a participant of one ofthe given issues
      */
-    public participantOfIssue?: string[];
+    public participantOfIssues: string[] | undefined;
 
     /**
      * select only users that created/edited at least one of the given comments
      */
-    public editedComments?: string[];
+    public editedComments: string[] | undefined;
 
     /**
      * selects only Users that added at least one of the specified ReactionGroups to any comment
      */
-    public reactions?: string[];
+    public reactions: string[] | undefined;
 
     /**
      * selects only users that are linked by at least one of the given users
      */
-    public linkedByUsers?: string[];
+    public linkedByUsers: string[] | undefined;
 
     /**
      * selects only users that link to at least one of the given
      */
-    public linksToUsers?: string[];
+    public linksToUsers: string[] | undefined;
 
     /**
      * If true the linked users are loaded instread of the actual user
@@ -141,8 +139,8 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             conditions.i++;
         }
 
-        if (this.participantOfIssue !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssue, conditions.i));
+        if (this.participantOfIssues !== undefined) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssues, conditions.i));
             conditions.i++;
         }
 

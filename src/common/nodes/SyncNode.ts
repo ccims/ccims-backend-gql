@@ -34,7 +34,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * the DatabaseManager decides which metadata id is loaded
      * if undefined, the metadata is not loaded or not present
      */
-    private _metadata?: SyncMetadata;
+    private _metadata: SyncMetadata | undefined;
 
     private _metadataChanged: boolean = false;
 
@@ -142,6 +142,9 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         }
     }
 
+    /**
+     * The date when the SyncNode was created
+     */
     public get createdAt(): Date {
         return this._createdAt;
     }
@@ -150,7 +153,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * For all immutable SyncNodes, this is just the creation data
      * all other SyncNodes have to overwrite this to implement correct functionality
      */
-    public get lastEditedAt(): Date {
+    public get lastUpdatedAt(): Date {
         return this._createdAt;
     }
 

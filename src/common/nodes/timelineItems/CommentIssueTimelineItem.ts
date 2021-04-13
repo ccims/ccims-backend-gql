@@ -150,4 +150,12 @@ export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> 
             this.markChanged();
         }
     }
+
+    /**
+     * For all immutable SyncNodes, this is just the creation data
+     * all other SyncNodes have to overwrite this to implement correct functionality
+     */
+     public get lastUpdatedAt(): Date {
+        return this.lastEditedAt;
+    }
 }

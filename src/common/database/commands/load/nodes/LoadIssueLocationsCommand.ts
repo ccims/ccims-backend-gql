@@ -11,17 +11,27 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
     /**
      * filters for IssueLocations where at least one of the issues is located
      */
-    public hasIssueOnLocation?: string[];
+    public hasIssueOnLocation: string[] | undefined;
 
     /**
      * Select only issue locations that match this regex
      */
-    public name?: string;
+    public name: string | undefined;
 
     /**
      * Select only issue locations that match this regex
      */
-    public description?: string;
+    public description: string | undefined;
+
+    /**
+     * Select only IssueLocations that were last updated after the given date (inclusive)
+     */
+    public lastUpdatedAfter: Date | undefined;
+
+    /**
+     * Select only IssueLocations that were last updated before the given date (inclusive)
+     */
+    public lastUpdatedBefore: Date | undefined;
 
     /**
      * creates a new LoadIssueLocationsCommand
@@ -58,6 +68,23 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
                 text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
                 priority: 5
+            });
+            conditions.i++;
+        }
+
+        if (this.lastUpdatedAfter !== undefined) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.last_updated_at>=$${conditions.i}`,
+                values: [this.lastUpdatedAfter],
+            });
+            conditions.i++;
+        }
+        if (this.lastUpdatedBefore !== undefined) {
+            conditions.conditions.push({
+                priority: 5,
+                text: `main.last_updated_at<=$${conditions.i}`,
+                values: [this.lastUpdatedBefore],
             });
             conditions.i++;
         }

@@ -15,12 +15,12 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
     /**
      * Selects only IMSSystems which are indirectly linked to at least one of the specified components (via any IMSComponent)
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * Selects only IMSSystems which are linked to at least one of the specified IMSComponents
      */
-    public imsComponents?: string[];
+    public imsComponents: string[] | undefined;
 
     /**
      * creates a new LoadImsSystemsCommand

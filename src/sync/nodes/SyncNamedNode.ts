@@ -13,13 +13,13 @@ export class SyncNamedNode<T extends NamedSyncNode> extends SyncNodeWrapper<T> {
      */
     private static readonly namePropertySpecification: SyncPropertySpecification<string, NamedSyncNode, SyncNamedNode<NamedSyncNode>> = {
         apply: async (item, node) => {
-            node.node.name = item.value;
+            node.node.setName(item.value, item.atDate ?? new Date());
             return undefined;
         },
         applyHistoric: async () => undefined,
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastEditedAt,
+                lastUpdatedAt: node.node.lastUpdatedAt,
                 currentValue: node.node.name
             };
         }
@@ -36,13 +36,13 @@ export class SyncNamedNode<T extends NamedSyncNode> extends SyncNodeWrapper<T> {
      */
     private static readonly descriptionPropertySpecification: SyncPropertySpecification<string, NamedSyncNode, SyncNamedNode<NamedSyncNode>> = {
         apply: async (item, node) => {
-            node.node.description = item.value;
+            node.node.setDescription(item.value, item.atDate ?? new Date());
             return undefined;
         },
         applyHistoric: async () => undefined,
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastEditedAt,
+                lastUpdatedAt: node.node.lastUpdatedAt,
                 currentValue: node.node.description
             };
         }

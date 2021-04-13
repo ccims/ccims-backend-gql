@@ -24,13 +24,13 @@ export class SyncManager extends SyncModifiableContainer {
      * The component which is currently synced
      * This is lazy-loaded
      */
-    private _component?: SyncComponent;
+    private _component: SyncComponent | undefined;
 
     /**
      * The IMSComponent which is currently synced
      * This is lazy-loaded
      */
-    private _imsComponent?: IMSComponent;
+    private _imsComponent: IMSComponent | undefined;
 
     /**
      * The DatabaseManager used to load nodes and execute commands

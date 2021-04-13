@@ -11,7 +11,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     /**
      * filter for timelineItems that are on any of the issues
      */
-    public onIssues?: string[];
+    public onIssues: string[] | undefined;
 
     /**
      * if true, no body
@@ -21,7 +21,7 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     /**
      * filters for IssueTimelineItems of the specified types
      */
-    public types?: IssueTimelineItemType[];
+    public types: IssueTimelineItemType[] | undefined;
 
     /**
      * creates a new

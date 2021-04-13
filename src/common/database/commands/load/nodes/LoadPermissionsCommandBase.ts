@@ -11,7 +11,7 @@ export abstract class LoadPermissionsCommandBase<T extends BasePermission> exten
     /**
      * Only selects permissions which authorize at least one of the provided authorizables
      */
-    public authorizables?: string[];
+    public authorizables: string[] | undefined;
 
 
     /**

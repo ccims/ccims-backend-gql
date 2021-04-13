@@ -21,10 +21,6 @@ export function syncNodeFields<T extends SyncNode>(name: string, namePlural: str
         createdAt: {
             type: GraphQLNonNull(GraphQLDate),
             description: `The date the ${name} was first created on`
-        },
-        lastEditedAt: {
-            type: GraphQLDate,
-            description: `Date when the ${name} was last changed`
         }
     };
 }

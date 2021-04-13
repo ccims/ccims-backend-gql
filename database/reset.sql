@@ -92,6 +92,7 @@ DROP TABLE IF EXISTS issue;
 
 -- Common
 DROP TABLE IF EXISTS sync_node;
+DROP TABLE IF EXISTS named_sync_node;
 DROP TABLE IF EXISTS node;
 DROP TYPE IF EXISTS issue_category;
 DROP TYPE IF EXISTS priority;

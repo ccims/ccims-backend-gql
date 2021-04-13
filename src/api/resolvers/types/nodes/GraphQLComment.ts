@@ -6,6 +6,7 @@ import reactionsListQuery from "../../listQueries/reactionsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import { syncNodeFields } from "./syncNodeFields";
 import { Comment } from "../../../../common/nodes/Comment";
+import GraphQLDate from "../../scalars/GraphQLDate";
 
 /**
  * Generates the fields for a Comment
@@ -27,6 +28,10 @@ export function commentFields<T extends Comment>(name: string, namePlural: strin
         currentUserCanEdit: {
             type: GraphQLNonNull(GraphQLBoolean),
             description: `\`true\` iff the User authenticated by the given JWT is permitted to edit this ${name}.\n\nThis only refers to editing the core comment (title, body, etc.)`
+        },
+        lastEditedAt: {
+            type: GraphQLDate,
+            description: `Date when the ${name}'s body was last edited`
         },
         editedBy: usersListQuery<T, User>(`All Users who edited this ${name} (body and/or title)`, comment => comment.editedByProperty),
         reactions: reactionsListQuery<T, ReactionGroup>(`All reactions that have been added to this ${name}`, comment => comment.reactionsProperty)

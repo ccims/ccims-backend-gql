@@ -12,7 +12,7 @@ export abstract class DatabaseCommand<T> {
      */
     public subCommands: DatabaseCommand<any>[] = [];
 
-    protected result?: T;
+    protected result: T | undefined;
 
     /**
      * overrite this method to generate the query

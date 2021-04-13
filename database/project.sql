@@ -6,7 +6,7 @@ CREATE TABLE project
 ) INHERITS (node);
 
 CREATE TABLE issue_location (
-    LIKE sync_node INCLUDING DEFAULTS,
+    LIKE named_sync_node INCLUDING DEFAULTS,
     name varchar(256) NOT NULL,
     description varchar(65536) NOT NULL,
     PRIMARY KEY (id)

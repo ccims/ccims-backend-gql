@@ -11,7 +11,7 @@ export class LoadComponentPermissionsCommand extends LoadPermissionsCommandBase<
     /**
      * Only selects ComponentPermissions which apply to at least of of the provided components
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * Creates a new LoadComponentPermissionsCommand

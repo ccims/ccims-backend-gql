@@ -15,22 +15,22 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     /**
      * Select only components which have one of the specified colors
      */
-    public colors?: Color[];
+    public colors: Color[] | undefined;
 
     /**
      * Select only labels that are on components assigned to at least one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * Select only labels that are on one of these components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * Select only labels that are assigned to one of these issues
      */
-    public assignedToIssues?: string[];
+    public assignedToIssues: string[] | undefined;
 
     /**
      * creates a new LoadLabelsCommand

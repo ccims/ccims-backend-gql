@@ -82,7 +82,7 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
         RowSpecification.fromProperty("due_date", "dueDate"),
         RowSpecification.fromProperty("estimated_time", "estimatedTime"),
         RowSpecification.fromProperty("spent_time", "spentTime"),
-        RowSpecification.fromProperty("updated_at", "updatedAt"),
+        RowSpecification.fromProperty("last_updated_at", "lastUpdatedAt"),
         RowSpecification.fromProperty("priority", "priority"),
         new RowSpecification("body_id", issue => issue.bodyTimelineItem.id));
 
@@ -92,26 +92,60 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
  */
 export class Issue extends SyncNode<Issue> implements Comment {
 
+    /**
+     * the current title of the issue
+     */
     private _title: string;
 
+    /**
+     * true if this Issue is currently open
+     */
     private _isOpen: boolean;
 
+    /**
+     * true if this Issue has been marked as duplicate
+     */
     private _isDuplicate: boolean;
 
+    /**
+     * the category of this Issue
+     */
     private _category: IssueCategory;
 
+    /**
+     * the priority of this Issue
+     */
     private _priority: IssuePriority;
 
-    private _startDate?: Date;
+    /**
+     * the startDate of this Issue
+     */
+    private _startDate: Date | undefined;
 
-    private _dueDate?: Date;
+    /**
+     * the dueDate of this Issue
+     */
+    private _dueDate: Date | undefined;
 
-    private _estimatedTime?: number;
+    /**
+     * the estimated timespan of this Issue
+     */
+    private _estimatedTime: number | undefined;
 
-    private _spentTime?: number;
+    /**
+     * the spent timespan of this Issue
+     */
+    private _spentTime: number | undefined;
 
-    private _updatedAt: Date;
+    /**
+     * the date when this Issue was last updated
+     * this includes any added or changed IssueTimelineItems
+     */
+    private _lastUpdatedAt: Date;
 
+    /**
+     * the Body of this Issue
+     */
     private readonly _body: Body; 
 
     /**
@@ -162,7 +196,7 @@ export class Issue extends SyncNode<Issue> implements Comment {
             },
             issue => {
                 const command = new LoadUsersCommand();
-                command.participantOfIssue = [issue.id];
+                command.participantOfIssues = [issue.id];
                 return command;
             })
             .notifyChanged((user, issue) => user.participantOfIssuesProperty)
@@ -410,6 +444,13 @@ export class Issue extends SyncNode<Issue> implements Comment {
         return this._body.lastEditedByProperty;
     }
 
+    /**
+     * @see {@link Body.lastEditedAt}
+     */
+    public get lastEditedAt(): Date {
+        return this._body.lastEditedAt;
+    }
+
     //#endregion
 
     /**
@@ -435,13 +476,11 @@ export class Issue extends SyncNode<Issue> implements Comment {
         this._dueDate = dueDate;
         this._estimatedTime = estimatedTime;
         this._spentTime = spentTime;
-        this._updatedAt = updateAt;
+        this._lastUpdatedAt = updateAt;
         this._priority = priority;
         this._body = body;
-        //console.log(body);
-        //console.log(body.body);
         this.timelineProperty = new SortedNodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this, 
-            (a, b) => b.lastEditedAt.getTime() - a.lastEditedAt.getTime());
+            (a, b) => b.lastUpdatedAt.getTime() - a.lastUpdatedAt.getTime());
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
         this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
         this.locationsProperty = new NodeListProperty<IssueLocation, Issue>(databaseManager, Issue.locationsPropertySpecification, this);
@@ -1075,29 +1114,29 @@ export class Issue extends SyncNode<Issue> implements Comment {
     }
 
 
-    public get updatedAt(): Date {
-        return this._updatedAt;
+    public get lastUpdatedAt(): Date {
+        return this._lastUpdatedAt;
     }
 
     /**
      * sets updateAt if the provided date is newer
      */
-    public set updatedAt(value: Date) {
-        if (this._updatedAt < value) {
-            this._updatedAt = value;
+    public set lastUpdatedAt(value: Date) {
+        if (this._lastUpdatedAt < value) {
+            this._lastUpdatedAt = value;
             this.markChanged();
         }
     }
 
     /**
-     * Adds a participant to the participants if provided and sets updatedAt
+     * Adds a participant to the participants if provided and sets lastUpdatedAt
      * if the provided Date is newer
      * @param participant the participant
      * @param atDate the date at which the participatin occurred
      */
     public async participatedAt(participant?: User, atDate?: Date): Promise<void> {
-        if (atDate && this.updatedAt.getTime() < atDate.getTime()) {
-            this.updatedAt = atDate;
+        if (atDate && this.lastUpdatedAt.getTime() < atDate.getTime()) {
+            this.lastUpdatedAt = atDate;
         }
         if (participant) {
             await this.participantsProperty.add(participant);

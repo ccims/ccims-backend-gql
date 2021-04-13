@@ -11,12 +11,12 @@ export class LoadIMSComponentsCommand extends LoadNodeListCommand<IMSComponent> 
     /**
      * Selects only IMSComponents which have any of the provided components
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * Selects only IMSComponents which have any of the povided IMSSystems
      */
-    public imsSystems?: string[];
+    public imsSystems: string[] | undefined;
 
     /**
      * creates a new LoadIMSComponentsCommand

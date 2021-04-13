@@ -93,7 +93,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The mail address of the user used for contacting him (e.g. notifications)
      * This isn't required and can be undefined
      */
-    private _email?: string;
+    private _email: string | undefined;
 
 
     /**

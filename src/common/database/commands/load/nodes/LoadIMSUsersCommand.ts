@@ -12,9 +12,9 @@ import { IMSUser, IMSUserTableSpecification } from "../../../../nodes/IMSUser";
 export class LoadIMSUsersCommand extends LoadUsersCommandBase<IMSUser> {
 
     /**
-     * select onlsy IMSUsers that have one of the specified issues
+     * select only IMSUsers that have one of the specified issues
      */
-    public imsSystems?: string[];
+    public imsSystems: string[] | undefined;
 
     /**
      * creates a new LoadUsersCommand

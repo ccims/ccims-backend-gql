@@ -13,15 +13,18 @@ import componentsListQuery from "../../listQueries/componentsListQuery";
 import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
-import locationsListQuery from "../../listQueries/locationsListQuery";
 import reactionsListQuery from "../../listQueries/reactionsListQuery";
-import timelineItemsListQuery from "../../listQueries/timelineListQuery";
+import timelineItemsListQuery from "../../listQueries/timelineItemsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLComment, { commentFields } from "./GraphQLComment";
-import GraphQLUser from "./GraphQLUser";
+import issueLocationsListQuery from "../../listQueries/issueLocationsListQuery";
+import artifactsListQuery from "../../listQueries/artifactsListQuery";
+import { Artifact } from "../../../../common/nodes/Artifact";
+import nonFunctionalConstraintsListQuery from "../../listQueries/nonFunctionalConstraintsListQuery";
+import { NonFunctionalConstraint } from "../../../../common/nodes/NonFunctionalConstraint";
 
 const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
@@ -33,7 +36,7 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             type: GraphQLNonNull(GraphQLString),
             description: "The title to display for this issue.\n\nNot unique; Max. 256 characters"
         },
-        updatedAt: {
+        lastUpdatedAt: {
             type: GraphQLDate,
             description: "Date when any update / activity was made to any part of the issue (__including__ title, commens, reactions)"
         },
@@ -83,8 +86,11 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         pinnedOn: componentsListQuery<Issue, Component>("All components where this issue has been pinned, matching the given filter.\n" +
             "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
         timeline: timelineItemsListQuery<Issue, IssueTimelineItem>("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
-        locations: locationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty),
-        components: componentsListQuery<Issue, Component>("All components this issue is on", issue => issue.componentsProperty)
+        locations: issueLocationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty),
+        components: componentsListQuery<Issue, Component>("All components this issue is on", issue => issue.componentsProperty),
+        artifacts: artifactsListQuery<Issue, Artifact>("All Artifacts that are currently assigned to this Issue, matching (if given) `filterBy", issue => issue.artifactsProperty),
+        nonFunctionalConstraints: nonFunctionalConstraintsListQuery<Issue, NonFunctionalConstraint>("All NonFunctionalConstraints on this Issue, matching (if given) `filterBy.\n" +
+            "WARNING: if filterBy.isActive is not set, ALL NonFunctionalConstraints are returned")
     })
 };
 const GraphQLIssue = new GraphQLObjectType(issueConfig);

@@ -8,7 +8,7 @@ export class LoadCommentIssueTimelineItemsCommand extends LoadIssueTimelineItems
     /**
      * filters for comments edited by the specified user
      */
-    public editedBy?: string[];
+    public editedBy: string[] | undefined;
 
     /**
      * adds the id condition

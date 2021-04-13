@@ -26,13 +26,13 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             if (name !== undefined) {
-                component.name = name;
+                component.setName(name, new Date());
             }
             if (description !== undefined) {
-                component.description = description;
+                component.setDescription(description, new Date());
             }
             if (repositoryURL !== undefined) {
-                component.repositoryURL = repositoryURL;
+                component.setRepositoryURL(repositoryURL, new Date());
             }
 
             await context.dbManager.save();

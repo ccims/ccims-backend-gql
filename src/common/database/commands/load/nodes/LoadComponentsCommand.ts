@@ -14,42 +14,42 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
     /**
      * Select only nodes when their repositoryURL matches this _POSIX_ RegEx
      */
-     public repositoryURL?: string;
+     public repositoryURL: string | undefined;
 
     /**
      * load the components which are registered on any of the projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * filters the components which consume any of the specified componentInterfaces
      */
-    public consumesInterface?: string[];
+    public consumesInterface: string[] | undefined;
 
     /**
      * select only components that have one of the given ims types
      */
-    public imsTypes?: number[];
+    public imsTypes: number[] | undefined;
 
     /**
      * filters for Components where at least one of the issues is located
      */
-    public hasIssueOnLocation?: string[];
+    public hasIssueOnLocation: string[] | undefined;
 
     /**
      * filters for components with at least one of the issues
      */
-    public hasIssue?: string[];
+    public hasIssue: string[] | undefined;
 
     /**
      * Select only Components that have at least one of these labels
      */
-    public labels?: string[];
+    public labels: string[] | undefined;
 
     /**
      * Selects only Components that have at least one of these artifacts
      */
-    public artifacts?: string[];
+    public artifacts: string[] | undefined;
 
     /**
      * creates a new LoadComponentsCommand

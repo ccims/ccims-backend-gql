@@ -43,15 +43,16 @@ export class Label extends NamedSyncNode {
      * @param id The unique id of this node
      * @param name The display name for this label. Max. 256 characters
      * @param description The description for this label. Max 25536 charactes
+     * @param lastUpdatedAt the date when the description or name was last updated
      * @param color The color in which to show the label
      * @param createdById The creator users ID
      * @param createdAt The date the label was created
      * @param isDeleted Weather this label is deleted (needed for sync)
      * @param metadata The metadate of this label for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, color: Color, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, color: Color, 
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, lastUpdatedAt, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._color = color;
         this.projectsProperty = new NodeListProperty<Project, Label>(databaseManager, Label.projectsPropertySpecifiaction, this);
         this.componentsProperty = new NodeListProperty<Component, Label>(databaseManager, Label.componentsPropertySpecifiaction, this);
@@ -69,7 +70,7 @@ export class Label extends NamedSyncNode {
      * @param description The labels description
      * @param components A list of component ID to which the label is added immediately after creation
      */
-    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User | undefined, createdAt: Date, description?: string, components?: Component[]) {
+    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User | undefined, createdAt: Date, description: string, components?: Component[]) {
         if (name.length > 256) {
             throw new Error("The given name is too long");
         }
@@ -80,7 +81,7 @@ export class Label extends NamedSyncNode {
             throw new Error("The color can't be undefined or null");
         }
 
-        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy?.id, createdAt, false, new Date());
+        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, color, createdBy?.id, createdAt, false, new Date());
         label.markNew();
         databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {
@@ -104,10 +105,11 @@ export class Label extends NamedSyncNode {
     /**
      * The color in which to show the label
      */
-    public set color(color: Color) {
+    public setColor(color: Color, atDate: Date) {
         if (color === undefined || color === null) {
             throw new Error("The color can't be null or undefined");
         }
+        this.lastUpdatedAt = atDate;
         this._color = color;
         this.markChanged();
     }

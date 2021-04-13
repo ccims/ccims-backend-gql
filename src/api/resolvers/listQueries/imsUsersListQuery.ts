@@ -4,9 +4,9 @@ import { User } from "../../../common/nodes/User";
 import { ResolverContext } from "../../ResolverContext";
 import GraphQLUserFilter from "../types/filters/GraphQLUserFilter";
 import GraphQLUserPage from "../types/pages/GraphQLUserPage";
-import nodeListQuery from "./nodeListQuery";
 import { IMSUser } from "../../../common/nodes/IMSUser";
 import { LoadIMSUsersCommand } from "../../../common/database/commands/load/nodes/LoadIMSUsersCommand";
+import { usersListQueryBase } from "./usersListQuery";
 
 /**
  * Creates a IMSUser query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -19,18 +19,14 @@ function imsUsersListQuery<TSource extends CCIMSNode, TProperty extends Partial<
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = nodeListQuery<TSource, User>(GraphQLUserPage, GraphQLUserFilter, description, "users", propertyProvider);
+    const baseQuery = usersListQueryBase<TSource, User>(GraphQLUserPage, GraphQLUserFilter, description, "IMSUsers", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
             const cmd = new LoadIMSUsersCommand();
             baseQuery.addParams(cmd, args);
-            cmd.username = args.filterBy?.username;
-            cmd.displayName = args.filterBy?.displayName;
-            cmd.email = args.filterBy?.email;
-            cmd.assignedToIssues = args.filterBy?.assignedToIssues;
-            cmd.participantOfIssue = args.filterBy?.participantOfIssues;
-            cmd.editedComments = args.filterBy?.comments;
+            cmd.imsSystems = args.filterBy?.ims;
+            
             return baseQuery.createResult(src, context, cmd);
         }
     };

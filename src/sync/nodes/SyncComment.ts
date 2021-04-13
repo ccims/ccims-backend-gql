@@ -22,7 +22,7 @@ export class SyncComment<T extends CommentIssueTimelineItem> extends SyncNodeWra
         },
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastEditedAt,
+                lastUpdatedAt: node.node.lastUpdatedAt,
                 currentValue: node.node.body
             };
         }

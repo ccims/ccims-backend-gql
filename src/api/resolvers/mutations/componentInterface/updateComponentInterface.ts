@@ -25,10 +25,10 @@ function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
 
             
             if (name !== undefined) {
-                componentInterface.name = name;
+                componentInterface.setName(name, new Date());
             }
             if (description !== undefined) {
-                componentInterface.description = description;
+                componentInterface.setDescription(description, new Date());
             }
 
             await context.dbManager.save();

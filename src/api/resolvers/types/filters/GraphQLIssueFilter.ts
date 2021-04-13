@@ -26,29 +26,9 @@ const issueFilterConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLFullSearchInput,
             description: "The issue must match the full search"
         },
-        createdBy: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The id of the user creating the issue must be any of the given ones"
-        },
         editedBy: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The id of the user last editing the issue must match any of the ones in the list"
-        },
-        createdAfter: {
-            type: GraphQLDate,
-            description: "The issue must have been created __after__ the given date (inclusive)"
-        },
-        createdBefore: {
-            type: GraphQLDate,
-            description: "The issue must have been created __before__ the given date (inclusive)"
-        },
-        editedAfter: {
-            type: GraphQLDate,
-            description: "The issue must have been last edited __after__ the given date (inclusive)"
-        },
-        editedBefore: {
-            type: GraphQLDate,
-            description: "The issue must have been last edited __before__ the given date (inclusive)"
         },
         updatedAfter: {
             type: GraphQLDate,

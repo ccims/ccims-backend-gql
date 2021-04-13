@@ -11,7 +11,7 @@ export class LoadProjectPermissionsCommand extends LoadPermissionsCommandBase<Pr
     /**
      * Only selects ProjectPermissions which apply to at least of of the provided projects
      */
-    public projects?: string[];
+    public projects: string[] | undefined;
 
     /**
      * Creates a new LoadProjectPermissionsCommand

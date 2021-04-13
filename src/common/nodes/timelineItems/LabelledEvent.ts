@@ -33,7 +33,7 @@ export class LabelledEvent extends IssueTimelineItem {
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, labelId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.AssignedEvent, databaseManager, LabelledEventTableSpecification, id,
+        super(NodeType.LabelledEvent, databaseManager, LabelledEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this.labelProperty = new NullableNodeProperty<Label, LabelledEvent>(databaseManager, LabelledEvent.labelPropertySpecification, this, labelId);

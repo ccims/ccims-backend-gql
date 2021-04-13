@@ -7,32 +7,38 @@ export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends Comment
     /**
      * filters for reactions
      */
-    public reactions?: string[][];
+    public reactions: string[][] | undefined;
 
     /**
      * filters for Comments which were last edited before the specified date
      */
-    public lastEditedBefore?: Date;
+    public lastEditedBefore: Date | undefined;
 
     /**
      * filters for Comments which were last edited after the specified date
      */
-    public lastEditedAfter?: Date;
+    public lastEditedAfter: Date | undefined;
 
     /**
      * Select only comments that were deited by at least one of the given users
      */
-    public editedBy?: string[];
+    public editedBy: string[] | undefined;
 
     /**
      * filters for Comments where the body matches the provided regex
      */
-    public body?: string;
+    public body: string | undefined;
 
     /**
      * Select only comments on issues that are assigned to at least one of these components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
+
+    /**
+     * If set and `true`, only CommentIssueTimelineItems that the current user is allowed to edit the body on will be selected. If `false` only those where he isn't.
+     * TODO
+     */
+    public currentUserCanEdit: boolean | undefined;
 
     /**
      * adds the id condition

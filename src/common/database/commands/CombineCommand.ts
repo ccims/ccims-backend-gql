@@ -4,7 +4,7 @@ import { DatabaseManager } from "../DatabaseManager";
 
 export class CombineCommand<T, R extends DatabaseCommand<T[]>> extends DatabaseCommand<T[]> {
 
-    private primaryResult?: DatabaseCommand<any>[];
+    private primaryResult: DatabaseCommand<any>[] | undefined;
 
     public constructor(protected readonly commands: R[]) {
         super();

@@ -14,13 +14,13 @@ export class SyncLabel extends SyncNamedNode<Label> {
      */
     private static readonly colorPropertySpecification: SyncPropertySpecification<Color, Label, SyncLabel> = {
         apply: async (item, node) => {
-            node.node.color = item.value;
+            node.node.setColor(item.value, item.atDate ?? new Date());
             return undefined;
         },
         applyHistoric: async () => undefined,
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastEditedAt,
+                lastUpdatedAt: node.node.lastUpdatedAt,
                 currentValue: node.node.color
             };
         }

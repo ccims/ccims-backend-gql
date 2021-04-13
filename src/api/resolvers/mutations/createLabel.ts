@@ -15,7 +15,7 @@ function createLabel(): GraphQLFieldConfig<any, ResolverContext> {
         resolve: async (src, args, context, info) => {
             const input = base.argsCheck(args);
             const name = PreconditionCheck.checkString(input, "name", 256);
-            const description = PreconditionCheck.checkNullableString(input, "description", 65536);
+            const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
             let color: Color | undefined = input.color;
             if (!color || !(color instanceof Color)) {
                 color = new Color("#ffffff");

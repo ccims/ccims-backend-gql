@@ -1,4 +1,3 @@
-import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
@@ -12,12 +11,9 @@ import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
 import { SyncMetadata } from "./SyncMetadata";
 import { LoadComponentPermissionsCommand } from "../database/commands/load/nodes/LoadComponentPermissionsCommand";
@@ -43,7 +39,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
     /**
      * The url for the repository containing the code of the component, optional
      */
-    private _repositoryURL?: string;
+    private _repositoryURL: string | undefined;
 
     /**
      * property for issues which are located on this component
@@ -271,12 +267,13 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      * @param id the id
      * @param name the name of the component
      * @param description the description of the component
+     * @param lastUpdatedAt the date when the description or name was last updated
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, repositoryURL: string | undefined,
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, repositoryURL: string | undefined,
         createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
+        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, lastUpdatedAt, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._repositoryURL = repositoryURL;
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
         this.imsComponentsProperty = new NodeListProperty<IMSComponent, Component>(databaseManager, Component.imsComponentsPropertySpecification, this);
@@ -313,7 +310,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
             throw new Error("the specified reposityURL is too long");
         }
 
-        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, repositoryURL,
+        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, repositoryURL,
             createdBy.id, createdAt, false, createdAt, undefined);
         component.markNew();
         databaseManager.addCachedNode(component);
@@ -324,7 +321,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         return this._repositoryURL;
     }
 
-    public set repositoryURL(value: string | undefined) {
+    public setRepositoryURL(value: string | undefined, atDate: Date) {
         if (value != undefined && value.length > 65536) {
             throw new Error("reposityUrl is too long, max length = 65536");
         }
