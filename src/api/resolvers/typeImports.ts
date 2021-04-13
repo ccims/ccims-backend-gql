@@ -86,6 +86,14 @@ import GraphQLIMSComponent from "./types/nodes/GraphQLIMSComponent";
 import GraphQLIMSComponentEdge from "./types/edges/GraphQLIMSComponentEdge";
 import GraphQLIMSComponentFilter from "./types/filters/GraphQLIMSComponentFilter";
 import GraphQLIMSComponentPage from "./types/pages/GraphQLIMSComponentPage";
+import GraphQLArtifact from "./types/nodes/GraphQLArtifact";
+import GraphQLArtifactEdge from "./types/edges/GraphQLArtifactEdge";
+import GraphQLArtifactFilter from "./types/filters/GraphQLArtifactFilter";
+import GraphQLArtifactPage from "./types/pages/GraphQLArtifactPage";
+import GraphQLNonFunctionalConstraint from "./types/nodes/GraphQLNonFunctionalConstraint";
+import GraphQLNonFunctionalConstraintEdge from "./types/edges/GraphQLNonFunctionalConstraintEdge";
+import GraphQLNonFunctionalConstraintFilter from "./types/filters/GraphQLNonFunctionalConstraintFilter";
+import GraphQLNonFunctionalConstraintPage from "./types/pages/GraphQLNonFunctionalConstraintPage";
 
 export default [
     GraphQLIMSType,
@@ -175,5 +183,13 @@ export default [
     GraphQLIMSComponent,
     GraphQLIMSComponentEdge,
     GraphQLIMSComponentFilter,
-    GraphQLIMSComponentPage
+    GraphQLIMSComponentPage,
+    GraphQLArtifact,
+    GraphQLArtifactEdge,
+    GraphQLArtifactFilter,
+    GraphQLArtifactPage,
+    GraphQLNonFunctionalConstraint,
+    GraphQLNonFunctionalConstraintEdge,
+    GraphQLNonFunctionalConstraintFilter,
+    GraphQLNonFunctionalConstraintPage
 ];
