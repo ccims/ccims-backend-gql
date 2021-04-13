@@ -1,10 +1,8 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { SuperCall } from "typescript";
 import { ComponentInterface, ComponentInterfaceTableSpecification } from "../../../../nodes/ComponentInterface";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNamedNodesCommand } from "./LoadNamedNodeCommand";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary, createStringListFilter } from "./RelationFilter";
 
@@ -48,7 +46,8 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
      * @returns the parsed componentInterface
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ComponentInterface {
-        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.host_component_id, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.last_updated_at, resultRow.host_component_id, 
+            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
