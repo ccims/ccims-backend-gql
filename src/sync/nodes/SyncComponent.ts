@@ -5,6 +5,8 @@ import { Component } from "../../common/nodes/Component";
 import { ComponentInterface } from "../../common/nodes/ComponentInterface";
 import { Issue } from "../../common/nodes/Issue";
 import { Label } from "../../common/nodes/Label";
+import { SyncProperty } from "../properties/SyncProperty";
+import { SyncPropertySpecification } from "../properties/SyncPropertySpecification";
 import { SyncNodeProvider } from "../providers/SyncNodeProvider";
 import { SyncNodeProviderSpecification } from "../providers/SyncNodeProviderSpecification";
 import { SyncComponentInterface } from "./SyncComponentInterface";
@@ -18,9 +20,31 @@ import { SyncNamedNode } from "./SyncNamedNode";
 export class SyncComponent extends SyncNamedNode<Component> {
 
     /**
+     * Specification for the repositoryURLProperty
+     */
+     private static readonly repositoryURLPropertySpecification: SyncPropertySpecification<string, Component, SyncComponent> = {
+        apply: async (item, node) => {
+            node.node.setRepositoryURL(item.value, item.atDate ?? new Date());
+            return undefined;
+        },
+        applyHistoric: async () => undefined,
+        getCurrentStatus: async node => {
+            return {
+                lastUpdatedAt: node.lastUpdatedAt,
+                currentValue: node.node.description
+            };
+        }
+    }
+
+    /**
+     * Property to update the repositoryURL of the Component
+     */
+    public readonly repositoryURLProperty: SyncProperty<string, Component, SyncComponent>;
+
+    /**
      * Specification for the issuesProvider
      */
-      private static readonly issuesProviderSpecification: SyncNodeProviderSpecification<Issue, SyncIssue, LoadIssuesCommand> = {
+    private static readonly issuesProviderSpecification: SyncNodeProviderSpecification<Issue, SyncIssue, LoadIssuesCommand> = {
         createWrapper: issue => new SyncIssue(issue),
         createCommand: modifiedSince => {
             const command = new LoadIssuesCommand(true);
@@ -56,7 +80,7 @@ export class SyncComponent extends SyncNamedNode<Component> {
     /**
      * Specification for the componentinterfacesProvider
      */
-     private static readonly componentinterfacesProviderSpecification: SyncNodeProviderSpecification<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand> = {
+    private static readonly componentInterfacesProviderSpecification: SyncNodeProviderSpecification<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand> = {
         createWrapper: componentinterface => new SyncComponentInterface(componentinterface),
         createCommand: modifiedSince => {
             const command = new LoadComponentInterfacesCommand(true);
@@ -68,7 +92,7 @@ export class SyncComponent extends SyncNamedNode<Component> {
     /**
      * componentinterfaces property
      */
-    public readonly componentinterfacesProvider: SyncNodeProvider<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand>;
+    public readonly componentInterfacesProvider: SyncNodeProvider<ComponentInterface, SyncComponentInterface, LoadComponentInterfacesCommand>;
 
     /**
      * Creates a new SyncComponent based on the provided component
@@ -77,8 +101,9 @@ export class SyncComponent extends SyncNamedNode<Component> {
     public constructor(node: Component) {
         super(node);
 
+        this.repositoryURLProperty = this.registerSyncModifiable(new SyncProperty(SyncComponent.repositoryURLPropertySpecification, this));
         this.issuesProvider = this.registerSyncModifiable(new SyncNodeProvider(SyncComponent.issuesProviderSpecification, node.issuesProperty));
         this.labelsProvider = this.registerSyncModifiable(new SyncNodeProvider(SyncComponent.labelsProviderSpecification, node.labelsProperty));
-        this.componentinterfacesProvider = this.registerSyncModifiable(new SyncNodeProvider(SyncComponent.componentinterfacesProviderSpecification, node.consumedInterfacesProperty));
+        this.componentInterfacesProvider = this.registerSyncModifiable(new SyncNodeProvider(SyncComponent.componentInterfacesProviderSpecification, node.consumedInterfacesProperty));
     }
 }

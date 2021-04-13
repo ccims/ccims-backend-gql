@@ -130,7 +130,7 @@ export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> 
      * Async getter function for the bodyProperty but rendered out to html returning the rendered version of the markdown
      * @returns A promise of the body __html__ of this issue
      */
-     public async bodyRendered(): Promise<string> {
+    public async bodyRendered(): Promise<string> {
         return mdRenderer.render(await this.body);
     }
 
@@ -155,7 +155,7 @@ export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> 
      * For all immutable SyncNodes, this is just the creation data
      * all other SyncNodes have to overwrite this to implement correct functionality
      */
-     public get lastUpdatedAt(): Date {
+    public get lastUpdatedAt(): Date {
         return this.lastEditedAt;
     }
 }

@@ -21,7 +21,7 @@ export class SortedNodeListProperty<T extends CCIMSNode, V extends CCIMSNode> ex
      * @param node the node proviced to all generators as last parameter
      * @param comparator the comparison function for the elements order
      */
-     public constructor(databaseManager: DatabaseManager, specification: NodeListPropertySpecification<T, V>, node: V, private readonly comparator: (a: T, b: T) => number) {
+    public constructor(databaseManager: DatabaseManager, specification: NodeListPropertySpecification<T, V>, node: V, private readonly comparator: (a: T, b: T) => number) {
         super(databaseManager, specification, node);
     }
 

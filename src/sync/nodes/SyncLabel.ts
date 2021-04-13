@@ -20,7 +20,7 @@ export class SyncLabel extends SyncNamedNode<Label> {
         applyHistoric: async () => undefined,
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastUpdatedAt,
+                lastUpdatedAt: node.lastUpdatedAt,
                 currentValue: node.node.color
             };
         }

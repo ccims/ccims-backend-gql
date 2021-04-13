@@ -14,7 +14,7 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
     /**
      * Select only nodes when their repositoryURL matches this _POSIX_ RegEx
      */
-     public repositoryURL: string | undefined;
+    public repositoryURL: string | undefined;
 
     /**
      * load the components which are registered on any of the projects
