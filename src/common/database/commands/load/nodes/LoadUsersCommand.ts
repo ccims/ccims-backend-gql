@@ -1,5 +1,5 @@
 import { User } from "../../../../nodes/User";
-import { ConditionSpecification } from "../ConditionSpecification";
+import { QueryPart } from "../QueryPart";
 import { LoadMultipleNodeListsCommand } from "./LoadMultipleNodeListsCommand";
 import { createRelationFilterByPrimary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
@@ -72,14 +72,13 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-     protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+     protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.username !== undefined) {
             conditions.conditions.push({
                 text: `main.username ~* $${conditions.i}`,
                 values: [this.username],
-                priority: 5
             });
             conditions.i++;
         }
@@ -88,7 +87,6 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             conditions.conditions.push({
                 text: `main.displayname ~* $${conditions.i}`,
                 values: [this.displayName],
-                priority: 5
             });
             conditions.i++;
         }
@@ -97,7 +95,6 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             conditions.conditions.push({
                 text: `main.email ~* $${conditions.i}`,
                 values: [this.email],
-                priority: 5
             });
             conditions.i++;
         }
@@ -108,12 +105,10 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             for (const conditionSpecification of linkedConditions.conditions) {
                 values.push(...conditionSpecification.values);
             }
-            linkedConditions.conditions.sort((spec1, spec2) => spec1.priority - spec2.priority);
             const linkedConditionsText = linkedConditions.conditions.map(spec => `(${spec.text})`).join(" AND ");
             conditions.conditions.push({
                 text: `main.id = ANY(SELECT id FROM users WHERE ${linkedConditionsText})`,
                 values: values,
-                priority: 1
             });
         } else {
             conditions.conditions.push(...linkedConditions.conditions);
@@ -128,9 +123,9 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
      * @param i the start value index
      * @returns the generated conditions
      */
-    private generateLinkedConditions(i: number): { conditions: ConditionSpecification[], i: number} {
+    private generateLinkedConditions(i: number): { conditions: QueryPart[], i: number} {
         const conditions = {
-            conditions: [] as ConditionSpecification[],
+            conditions: [] as QueryPart[],
             i: i
         };
 

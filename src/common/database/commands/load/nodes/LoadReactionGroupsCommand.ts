@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { ReactionGroup, ReactionGroupTableSpecification } from "../../../../nodes/ReactionGroup";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { createRelationFilterBySecundary, createStringListFilter } from "./RelationFilter";
@@ -57,14 +56,13 @@ export class LoadReactionGroupsCommand extends LoadNodeListCommand<ReactionGroup
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.reaction !== undefined) {
             conditions.conditions.push({
                 text: `main.reaction ~* $${conditions.i}`,
                 values: [this.reaction],
-                priority: 4
             });
             conditions.i++;
         }

@@ -1,7 +1,6 @@
 import { QueryResultRow, QueryResult } from "pg";
 import { ComponentInterface, ComponentInterfaceTableSpecification } from "../../../../nodes/ComponentInterface";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary, createStringListFilter } from "./RelationFilter";
@@ -63,7 +62,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onComponents !== undefined) {
@@ -81,13 +80,11 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
         if (this.onProjects !== undefined) {
             if (this.onProjects.length === 1) {
                 conditions.conditions.push({
-                    priority: 2,
                     text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
                     values: [this.onProjects[0]]
                 });
             } else {
                 conditions.conditions.push({
-                    priority: 2,
                     text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
                     values: [this.onProjects[0]]
                 });

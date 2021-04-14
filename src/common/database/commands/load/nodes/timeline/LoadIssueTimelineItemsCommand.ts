@@ -1,5 +1,4 @@
 import { IssueTimelineItem, IssueTimelineItemType } from "../../../../../nodes/timelineItems/IssueTimelineItem";
-import { ConditionSpecification } from "../../ConditionSpecification";
 import { QueryPart } from "../../QueryPart";
 import { LoadMultipleSyncNodeListsCommand } from "../LoadMultipleSyncNodeListsCommand";
 import { LoadNodeListCommand } from "../LoadNodeListCommand";
@@ -40,16 +39,15 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onIssues !== undefined) {
-            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i));
             conditions.i++;
         }
         if (this.noBody !== undefined) {
             conditions.conditions.push({
-                priority: 10,
                 text: `pg_class.relname != $${conditions.i}`,
                 values: ["body"]
             });
@@ -58,13 +56,11 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
         if (this.types !== undefined) {
             if (this.types.length === 1) {
                 conditions.conditions.push({
-                    priority: 10,
                     text: `pg_class.relname = $${conditions.i}`,
                     values: [this.types[0].tableName]
                 });
             } else {
                 conditions.conditions.push({
-                    priority: 10,
                     text: `pg_class.relname = ANY($${conditions.i})`,
                     values: [this.types.map(type => type.tableName)]
                 });
@@ -81,11 +77,10 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * @param i the next value index
      * @returns the conditions for pagination
      */
-    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions: ConditionSpecification[] = [];
+    protected generatePaginationConditions(i: number): { conditions: QueryPart[], i: number } {
+        const conditions: QueryPart[] = [];
         if (this.afterId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `(main.created_at > (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id > $${i}))`,
                 values: [this.afterId]
             });
@@ -93,7 +88,6 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
         }
         if (this.beforeId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id < $${i}))`,
                 values: [this.beforeId]
             });

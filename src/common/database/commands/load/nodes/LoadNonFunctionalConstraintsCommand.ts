@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { NonFunctionalConstraint, NonFunctionalConstraintTableSpecification } from "../../../../nodes/NonFunctionalConstraint";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { createStringListFilter } from "./RelationFilter";
@@ -62,7 +61,7 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onIssues !== undefined) {
@@ -74,7 +73,6 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
             conditions.conditions.push({
                 text: `is_active=$${conditions.i}`,
                 values: [this.isActive],
-                priority: 2
             });
             conditions.i++;
         }
@@ -83,7 +81,6 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
             conditions.conditions.push({
                 text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
-                priority: 7
             });
             conditions.i++;
         }
@@ -92,7 +89,6 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
             conditions.conditions.push({
                 text: `main.content ~* $${conditions.i}`,
                 values: [this.content],
-                priority: 7
             });
             conditions.i++;
         }

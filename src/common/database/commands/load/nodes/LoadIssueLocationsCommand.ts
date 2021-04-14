@@ -1,5 +1,5 @@
 import { IssueLocation } from "../../../../nodes/IssueLocation";
-import { ConditionSpecification } from "../ConditionSpecification";
+import { QueryPart } from "../QueryPart";
 import { LoadMultipleSyncNodeListsCommand } from "./LoadMultipleSyncNodeListsCommand";
 import { createRelationFilterBySecundary } from "./RelationFilter";
 
@@ -46,7 +46,7 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.hasIssueOnLocation !== undefined) {
@@ -58,7 +58,6 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
             conditions.conditions.push({
                 text: `main.name ~* $${conditions.i}`,
                 values: [this.name],
-                priority: 4
             });
             conditions.i++;
         }
@@ -67,14 +66,12 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
             conditions.conditions.push({
                 text: `main.description ~* $${conditions.i}`,
                 values: [this.description],
-                priority: 5
             });
             conditions.i++;
         }
 
         if (this.lastUpdatedAfter !== undefined) {
             conditions.conditions.push({
-                priority: 5,
                 text: `main.last_updated_at>=$${conditions.i}`,
                 values: [this.lastUpdatedAfter],
             });
@@ -82,7 +79,6 @@ export class LoadIssueLocationsCommand extends LoadMultipleSyncNodeListsCommand<
         }
         if (this.lastUpdatedBefore !== undefined) {
             conditions.conditions.push({
-                priority: 5,
                 text: `main.last_updated_at<=$${conditions.i}`,
                 values: [this.lastUpdatedBefore],
             });

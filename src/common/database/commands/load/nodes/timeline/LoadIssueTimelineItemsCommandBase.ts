@@ -1,5 +1,5 @@
 import { IssueTimelineItem } from "../../../../../nodes/timelineItems/IssueTimelineItem";
-import { ConditionSpecification } from "../../ConditionSpecification";
+import { QueryPart } from "../../QueryPart";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
 import { createStringListFilter } from "../RelationFilter";
 
@@ -14,11 +14,11 @@ export abstract class LoadIssueTimelineItemsCommandBase<T extends IssueTimelineI
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onIssues !== undefined) {
-            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i));
             conditions.i++;
         }
 

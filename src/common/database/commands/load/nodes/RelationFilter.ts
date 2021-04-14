@@ -1,5 +1,5 @@
 import { verifyIsAllowedSqlIdent } from "../../SqlHelperFunctions";
-import { ConditionSpecification } from "../ConditionSpecification";
+import { QueryPart } from "../QueryPart";
 
 /**
  * creates a filter which filters by primary or secundary
@@ -12,20 +12,18 @@ import { ConditionSpecification } from "../ConditionSpecification";
  * @param i the current values index
  * @returns the filter
  */
-function createFilter(tableName: string, primary: string, secundary: string, filterByPrimary: boolean, ids: string[], i: number): ConditionSpecification {
+function createFilter(tableName: string, primary: string, secundary: string, filterByPrimary: boolean, ids: string[], i: number): QueryPart {
     verifyIsAllowedSqlIdent(tableName);
     verifyIsAllowedSqlIdent(primary);
     verifyIsAllowedSqlIdent(secundary);
 
     if (ids.length === 1) {
         return {
-            priority: 2,
             text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary}_id FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}_id=$${i})`,
             values: [ids[0]]
         }
     } else {
         return {
-            priority: 2,
             text: `main.id=ANY(SELECT ${filterByPrimary ? secundary : primary}_id FROM ${tableName} WHERE ${filterByPrimary ? primary : secundary}_id=ANY($${i}))`,
             values: [ids]
         }
@@ -43,7 +41,7 @@ function createFilter(tableName: string, primary: string, secundary: string, fil
  * @param i the current values index
  * @returns the filter
  */
-export function createRelationFilterByPrimary(primary: string, secundary: string, ids: string[], i: number): ConditionSpecification {
+export function createRelationFilterByPrimary(primary: string, secundary: string, ids: string[], i: number): QueryPart {
     return createFilter(`relation_${primary}_${secundary}`, primary, secundary, true, ids, i);
 }
 
@@ -56,7 +54,7 @@ export function createRelationFilterByPrimary(primary: string, secundary: string
  * @param i the current values index
  * @returns the filter
  */
-export function createRelationFilterBySecundary(primary: string, secundary: string, ids: string[], i: number): ConditionSpecification {
+export function createRelationFilterBySecundary(primary: string, secundary: string, ids: string[], i: number): QueryPart {
     return createFilter(`relation_${primary}_${secundary}`, primary, secundary, false, ids, i);
 }
 
@@ -68,17 +66,15 @@ export function createRelationFilterBySecundary(primary: string, secundary: stri
  * @param priority the priority of the parameter, default 2
  * @returns the filter
  */
-export function createStringListFilter(rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
+export function createStringListFilter(rowName: string, ids: string[], i: number): QueryPart {
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length === 1) {
         return {
-            priority,
             text: `main.${rowName}=$${i}`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority,
             text: `main.${rowName}=ANY($${i})`,
             values: [ids]
         };
@@ -94,18 +90,16 @@ export function createStringListFilter(rowName: string, ids: string[], i: number
  * @param priority the priority of the parameter, default 2
  * @returns the filter
  */
-export function createRelationFilterOnMany(tableName: string, rowName: string, ids: string[], i: number, priority: number = 2): ConditionSpecification {
+export function createRelationFilterOnMany(tableName: string, rowName: string, ids: string[], i: number): QueryPart {
     verifyIsAllowedSqlIdent(tableName);
     verifyIsAllowedSqlIdent(rowName);
     if (ids.length === 1) {
         return {
-            priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=$${i})`,
             values: [ids[0]]
         };
     } else {
         return {
-            priority,
             text: `main.id=ANY(SELECT ${rowName} FROM ${tableName} WHERE id=ANY($${i}))`,
             values: [ids]
         };

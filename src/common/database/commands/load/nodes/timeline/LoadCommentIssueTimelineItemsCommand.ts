@@ -1,5 +1,5 @@
 import { CommentIssueTimelineItem } from "../../../../../nodes/timelineItems/CommentIssueTimelineItem";
-import { ConditionSpecification } from "../../ConditionSpecification";
+import { QueryPart } from "../../QueryPart";
 import { createRelationFilterBySecundary } from "../RelationFilter";
 import { LoadIssueTimelineItemsCommand } from "./LoadIssueTimelineItemsCommand";
 
@@ -16,11 +16,10 @@ export class LoadCommentIssueTimelineItemsCommand extends LoadIssueTimelineItems
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         conditions.conditions.push({
-            priority: 2,
             text: `pg_class.relname = ANY($${conditions.i})`,
             values: [["body", "comment"]]
         });

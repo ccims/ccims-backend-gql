@@ -1,7 +1,7 @@
-import { ConditionSpecification } from "../../ConditionSpecification";
 import { LoadIssueTimelineItemsCommandBase } from "./LoadIssueTimelineItemsCommandBase";
 import { createRelationFilterBySecundary } from "../RelationFilter";
 import { CommentIssueTimelineItem } from "../../../../../nodes/timelineItems/CommentIssueTimelineItem";
+import { QueryPart } from "../../QueryPart";
 
 export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends CommentIssueTimelineItem> extends LoadIssueTimelineItemsCommandBase<T> {
     /**
@@ -45,14 +45,13 @@ export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends Comment
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.lastEditedAfter) {
             conditions.conditions.push({
                 text: `main.edited_after >= $${conditions.i}`,
                 values: [this.lastEditedAfter],
-                priority: 4
             });
             conditions.i++;
         }
@@ -61,14 +60,12 @@ export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends Comment
             conditions.conditions.push({
                 text: `main.edited_before <= $${conditions.i}`,
                 values: [this.lastEditedBefore],
-                priority: 4
             });
             conditions.i++;
         }
 
         if (this.body) {
             conditions.conditions.push({
-                priority: 5,
                 text: `main.body ~* $${conditions.i}`,
                 values: [this.body],
             });
@@ -80,13 +77,11 @@ export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends Comment
                 conditions.conditions.push({
                     text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=$${conditions.i})`,
                     values: [this.onComponents[0]],
-                    priority: 6
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY($${conditions.i}))`,
                     values: [this.onComponents],
-                    priority: 6
                 });
             }
             conditions.i++;

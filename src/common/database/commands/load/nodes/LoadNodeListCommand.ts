@@ -1,7 +1,6 @@
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadListCommand } from "../LoadListCommand";
 import { QueryResultRow, QueryResult } from "pg";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
@@ -84,11 +83,11 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = this.countMode ? {conditions: [], i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
-            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i, 1));
+            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i));
             conditions.i++;
         }
 
@@ -101,11 +100,10 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the next value index
      * @returns the conditions for pagination
      */
-    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions: ConditionSpecification[] = [];
+    protected generatePaginationConditions(i: number): { conditions: QueryPart[], i: number } {
+        const conditions: QueryPart[] = [];
         if (this.afterId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `main.id > $${i}`,
                 values: [this.afterId]
             });
@@ -113,7 +111,6 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         }
         if (this.beforeId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `main.id < $${i}`,
                 values: [this.beforeId]
             });

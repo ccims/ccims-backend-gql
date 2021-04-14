@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { ProjectPermission, ProjectPermissionTableSpecification } from "../../../../nodes/ProjectPermission";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadPermissionsCommandBase } from "./LoadPermissionsCommandBase";
 import { createStringListFilter } from "./RelationFilter";
@@ -26,11 +25,11 @@ export class LoadProjectPermissionsCommand extends LoadPermissionsCommandBase<Pr
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.projects !== undefined) {
-            conditions.conditions.push(createStringListFilter("project_id", this.projects, conditions.i, 4));
+            conditions.conditions.push(createStringListFilter("project_id", this.projects, conditions.i));
             conditions.i++;
         }
 

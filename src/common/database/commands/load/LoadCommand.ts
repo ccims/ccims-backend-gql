@@ -1,7 +1,6 @@
 import { DatabaseCommand } from "../../DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
 import { QueryPart } from "./QueryPart";
-import { ConditionSpecification } from "./ConditionSpecification";
 import { DatabaseManager } from "../../DatabaseManager";
 
 /**
@@ -22,11 +21,10 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
         let text: string = queryStart.text;
         const values: any[] = queryStart.values;
 
-        const conditionSpecifications: ConditionSpecification[] = this.generateConditions(values.length + 1).conditions;
+        const conditionSpecifications: QueryPart[] = this.generateConditions(values.length + 1).conditions;
         for (const conditionSpecification of conditionSpecifications) {
             values.push(...conditionSpecification.values);
         }
-        conditionSpecifications.sort((spec1, spec2) => spec1.priority - spec2.priority);
         const conditionsText = conditionSpecifications.map(spec => `(${spec.text})`).join(" AND ");
         if (conditionSpecifications.length > 0) {
             text += ` WHERE ${conditionsText} `;
@@ -70,5 +68,5 @@ export abstract class LoadCommand<T> extends DatabaseCommand<T> {
      * @param i the first index of query parameter to use
      * @result the parameters and a new i
      */
-    protected abstract generateConditions(i: number): { conditions: ConditionSpecification[], i: number }
+    protected abstract generateConditions(i: number): { conditions: QueryPart[], i: number }
 }

@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { Component, ComponentTableSpecification } from "../../../../nodes/Component";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary, createRelationFilterBySecundary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
@@ -82,7 +81,7 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onProjects !== undefined) {
@@ -106,13 +105,11 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
                 conditions.conditions.push({
                     text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=$${conditions.i})`,
                     values: [this.imsTypes[0]],
-                    priority: 6
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.imssystem_id=(SELECT id FROM ims_system WHERE ims_type=ANY($${conditions.i}))`,
                     values: [this.imsTypes],
-                    priority: 6
                 });
             }
             conditions.i++;
@@ -132,7 +129,6 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
             conditions.conditions.push({
                 text: `main.repositoryURL ~* $${conditions.i}`,
                 values: [this.repositoryURL],
-                priority: 7
             });
             conditions.i++;
         }

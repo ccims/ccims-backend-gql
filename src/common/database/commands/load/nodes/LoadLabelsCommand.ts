@@ -2,7 +2,6 @@ import { QueryResult, QueryResultRow } from "pg";
 import { Color } from "../../../../Color";
 import { Label, LabelTableSpecification } from "../../../../nodes/Label";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary } from "./RelationFilter";
@@ -63,7 +62,7 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.colors !== undefined) {
@@ -71,13 +70,11 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
                 conditions.conditions.push({
                     text: `main.color=$${conditions.i}`,
                     values: [this.colors[0]],
-                    priority: 6
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.color=ANY($${conditions.i})`,
                     values: [this.colors],
-                    priority: 6
                 });
             }
             conditions.i++;
@@ -88,13 +85,11 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
                     values: [this.onProjects[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i})))`,
                     values: [this.onProjects],
-                    priority: 5
                 });
             }
             conditions.i++;

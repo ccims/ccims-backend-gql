@@ -2,7 +2,6 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { User } from "../../../../nodes/User";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { createRelationFilterByPrimary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
 /**
@@ -63,14 +62,13 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.username !== undefined) {
             conditions.conditions.push({
                 text: `main.username ~* $${conditions.i}`,
                 values: [this.username],
-                priority: 5
             });
             conditions.i++;
         }
@@ -79,7 +77,6 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
             conditions.conditions.push({
                 text: `main.displayname ~* $${conditions.i}`,
                 values: [this.displayName],
-                priority: 5
             });
             conditions.i++;
         }
@@ -88,7 +85,6 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
             conditions.conditions.push({
                 text: `main.email ~* $${conditions.i}`,
                 values: [this.email],
-                priority: 5
             });
             conditions.i++;
         }

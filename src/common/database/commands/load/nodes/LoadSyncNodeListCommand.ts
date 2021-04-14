@@ -1,7 +1,6 @@
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { SyncNode } from "../../../../nodes/SyncNode";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
@@ -58,11 +57,10 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
         if (!this.loadDeleted) {
             conditions.conditions.push({
-                priority: 3,
                 text: "main.deleted=false",
                 values: []
             });
@@ -73,13 +71,11 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
                 conditions.conditions.push({
                     text: `main.created_by=$${conditions.i}`,
                     values: [this.createdBy[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.created_by=ANY($${conditions.i})`,
                     values: [this.createdBy],
-                    priority: 5
                 });
             }
             conditions.i++;
@@ -89,7 +85,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.created_at >= $${conditions.i}`,
                 values: [this.createdAfter],
-                priority: 4
             });
             conditions.i++;
         }
@@ -98,7 +93,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.created_at <= $${conditions.i}`,
                 values: [this.createdBefore],
-                priority: 4
             });
             conditions.i++;
         }
@@ -107,7 +101,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.last_modified_at >= $${conditions.i}`,
                 values: [this.modifiedSince],
-                priority: 4
             });
             conditions.i++;
         }

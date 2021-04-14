@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { Artifact, ArtifactTableSpecification } from "../../../../nodes/Artifact";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadSyncNodeListCommand } from "./LoadSyncNodeListCommand";
 import { createRelationFilterByPrimary, createStringListFilter } from "./RelationFilter";
@@ -62,7 +61,7 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onComponents !== undefined) {
@@ -80,13 +79,11 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
                     values: [this.onProjects[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i})))`,
                     values: [this.onProjects],
-                    priority: 5
                 });
             }
             conditions.i++;
@@ -96,7 +93,6 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
             conditions.conditions.push({
                 text: `main.name ~* $${conditions.i}`,
                 values: [this.uri],
-                priority: 4
             });
             conditions.i++;
         }
