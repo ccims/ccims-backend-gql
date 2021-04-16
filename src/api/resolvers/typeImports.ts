@@ -94,6 +94,10 @@ import GraphQLNonFunctionalConstraint from "./types/nodes/GraphQLNonFunctionalCo
 import GraphQLNonFunctionalConstraintEdge from "./types/edges/GraphQLNonFunctionalConstraintEdge";
 import GraphQLNonFunctionalConstraintFilter from "./types/filters/GraphQLNonFunctionalConstraintFilter";
 import GraphQLNonFunctionalConstraintPage from "./types/pages/GraphQLNonFunctionalConstraintPage";
+import GraphQLAddedArtifactEvent from "./types/nodes/timelineItems/GraphQLAddedArtifactEvent";
+import GraphQLRemovedArtifactEvent from "./types/nodes/timelineItems/GraphQLRemovedArtifactEvent";
+import GraphQLAddedNonFunctionalConstraintEvent from "./types/nodes/timelineItems/GraphQLAddedNonFunctionalConstraintEvent";
+import GraphQLRemovedNonFunctionalConstraintEvent from "./types/nodes/timelineItems/GraphQLRemovedNonFunctionalConstraintEvent";
 
 export default [
     GraphQLIMSType,
@@ -191,5 +195,9 @@ export default [
     GraphQLNonFunctionalConstraint,
     GraphQLNonFunctionalConstraintEdge,
     GraphQLNonFunctionalConstraintFilter,
-    GraphQLNonFunctionalConstraintPage
+    GraphQLNonFunctionalConstraintPage,
+    GraphQLAddedArtifactEvent,
+    GraphQLRemovedArtifactEvent,
+    GraphQLAddedNonFunctionalConstraintEvent,
+    GraphQLRemovedNonFunctionalConstraintEvent
 ];

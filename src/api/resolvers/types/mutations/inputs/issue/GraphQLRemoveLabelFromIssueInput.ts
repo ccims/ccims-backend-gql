@@ -2,7 +2,7 @@ import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, Gr
 
 const removeLabelFromIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveLabelFromIssueInput",
-    description: "The inputs for the removeFromIssueLabel",
+    description: "The inputs for the removeLabelFromIssue mutation",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,

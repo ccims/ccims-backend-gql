@@ -7,7 +7,7 @@ import PreconditionCheck from "../../utils/PreconditionCheck";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 
 function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateComponentInterfacePayload, GraphQLUpdateComponentInterfaceInput, "Updates the specified componentInterface");
+    const base = baseMutation(GraphQLUpdateComponentInterfacePayload, GraphQLUpdateComponentInterfaceInput, "Updates the specified ComponentInterface. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {

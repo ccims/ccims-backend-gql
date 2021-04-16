@@ -1,8 +1,8 @@
 import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../ResolverContext";
 import baseMutation from "./baseMutation";
-import GraphQLCreateLabelPayload from "../types/mutations/payloads/GraphQLCreateLabelPayload";
-import GraphQLCreateLabelInput from "../types/mutations/inputs/GraphQLCreateLabelInput";
+import GraphQLCreateLabelPayload from "../types/mutations/payloads/label/GraphQLCreateLabelPayload";
+import GraphQLCreateLabelInput from "../types/mutations/inputs/label/GraphQLCreateLabelInput";
 import PreconditionCheck from "../utils/PreconditionCheck";
 import { Color } from "../../../common/Color";
 import { Label } from "../../../common/nodes/Label";

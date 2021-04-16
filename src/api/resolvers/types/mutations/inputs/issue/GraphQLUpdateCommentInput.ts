@@ -2,7 +2,7 @@ import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, Gr
 
 const updateCommentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateCommentInput",
-    description: "The inputs for the updateComment",
+    description: "The inputs for the updateComment, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,

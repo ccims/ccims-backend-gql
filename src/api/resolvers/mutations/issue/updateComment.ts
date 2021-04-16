@@ -7,7 +7,7 @@ import GraphQLUpdateCommentInput from "../../types/mutations/inputs/issue/GraphQ
 import { CommentIssueTimelineItem } from "../../../../common/nodes/timelineItems/CommentIssueTimelineItem";
 
 function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateCommentPayload, GraphQLUpdateCommentInput, "Creates a new comment on an existing issue");
+    const base = baseMutation(GraphQLUpdateCommentPayload, GraphQLUpdateCommentInput, "Updates a Comment. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {

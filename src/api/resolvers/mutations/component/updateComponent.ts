@@ -7,7 +7,7 @@ import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 
 function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a component in the ccims and adds it to the given users");
+    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a Component in the ccims. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {

@@ -2,7 +2,7 @@ import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, Gr
 
 const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateComponentInput",
-    description: "The inputs for the updateComponent mutation",
+    description: "The inputs for the updateComponent mutation, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
