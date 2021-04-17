@@ -30,7 +30,6 @@ function linkIssue(): GraphQLFieldConfig<any, ResolverContext> {
             }
             */
             const event = await issue.addLinkedIssue(issueToLink, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, event, { linkedIssue: issueToLink });
         }
     }

@@ -956,18 +956,18 @@ export class Issue extends SyncNode<Issue> implements Comment {
     }
 
     /**
-     * Add/Assign a nonfunctionalconstraint to this issue
+     * Add/Assign a nonFunctionalConstraint to this issue
      *
-     * @param nonFunctionalConstraint The nonfunctionalconstraint node to be added to the issue
-     * @param atDate The date at which the nonfunctionalconstraint was added
-     * @param asUser The user who added the nonfunctionalconstraint
+     * @param nonFunctionalConstraint The nonFunctionalConstraint node to be added to the issue
+     * @param atDate The date at which the nonFunctionalConstraint was added
+     * @param asUser The user who added the nonFunctionalConstraint
      */
     public async addNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<AddedNonFunctionalConstraintEvent | undefined> {
         if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
             throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
         }
         if (!nonFunctionalConstraint.isActive) {
-            await this.nonFunctionalConstraintsProperty.add(nonFunctionalConstraint);
+            nonFunctionalConstraint.isActive = true;
             const event = await AddedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
             await this.participatedAt(asUser, atDate);
             return event;
@@ -977,18 +977,18 @@ export class Issue extends SyncNode<Issue> implements Comment {
     }
 
     /**
-     * Remove/Unassign a nonfunctionalconstraint from this issue
+     * Remove/Unassign a nonFunctionalConstraint from this issue
      *
-     * @param nonFunctionalConstraint The nonfunctionalconstraint node to be added to the issue
-     * @param atDate The date at which the nonfunctionalconstraint was added
-     * @param asUser The user who added the nonfunctionalconstraint
+     * @param nonFunctionalConstraint The nonFunctionalConstraint node to be added to the issue
+     * @param atDate The date at which the nonFunctionalConstraint was added
+     * @param asUser The user who added the nonFunctionalConstraint
      */
     public async removeNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<RemovedNonFunctionalConstraintEvent | undefined> {
         if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
             throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
         }
         if (nonFunctionalConstraint.isActive) {
-            await this.nonFunctionalConstraintsProperty.remove(nonFunctionalConstraint);
+            nonFunctionalConstraint.isActive = false;
             const event = await RemovedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
             await this.participatedAt(asUser, atDate);
             return event;

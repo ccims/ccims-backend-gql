@@ -8,10 +8,6 @@ const addNonFunctionalConstraintToIssueInputConfig: GraphQLInputObjectTypeConfig
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        issue: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The ID of the issue to which to add the NonFunctionalConstraint"
-        },
         nonFunctionalConstraint: {
             type: GraphQLNonNull(GraphQLID),
             description: "The ID of the NonFunctionalConstraint to be added to the specified issue"

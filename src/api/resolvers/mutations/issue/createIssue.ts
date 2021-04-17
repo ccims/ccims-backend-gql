@@ -19,7 +19,7 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.argsCheck(args);
             const title = PreconditionCheck.checkString(input, "title", 256);
             const body = PreconditionCheck.checkNullableString(input, "body", 65536) ?? "";
-            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "componentIDs", 32));
+            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "components", 32));
             const category = PreconditionCheck.checkNullableEnum<IssueCategory>(input, "category", IssueCategory) ?? IssueCategory.UNCLASSIFIED;
             const labelIds = new Set(PreconditionCheck.checkNullableStringList(input, "labels", 32));
             const assigneeIds = new Set(PreconditionCheck.checkNullableStringList(input, "assignees", 32));
@@ -103,7 +103,6 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             // await issue.setStartDate(startDate, now, me);
             // await issue.setDueDate(dueDate, now, me);
             // await issue.setEstimatedTime(estimatedTime, now, me);
-            await context.dbManager.save();
             return base.createResult(args, { issue });
         }
     };

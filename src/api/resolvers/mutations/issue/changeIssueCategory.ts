@@ -15,7 +15,6 @@ function changeIssueCategory(): GraphQLFieldConfig<any, ResolverContext> {
             const category = PreconditionCheck.checkEnum<IssueCategory>(input, "newCategory", IssueCategory);
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
             const event = await issue.changeCategory(category, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, event, {});
         }
     }

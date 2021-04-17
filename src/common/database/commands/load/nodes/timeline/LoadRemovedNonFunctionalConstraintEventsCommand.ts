@@ -25,7 +25,7 @@ export class LoadRemovedNonFunctionalConstraintEventsCommand extends LoadIssueTi
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): RemovedNonFunctionalConstraintEvent {
         return new RemovedNonFunctionalConstraintEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.nonfunctionalconstraint, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+            resultRow.non_functional_constraint, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

@@ -28,6 +28,10 @@ import removeReactionFromComment from "./mutations/issue/removeReactionFromComme
 import { GraphQLFieldConfigMap } from "graphql";
 import { ResolverContext } from "../ResolverContext";
 import updateComment from "./mutations/issue/updateComment";
+import addArtifactToIssue from "./mutations/issue/addArtifactToIssue";
+import removeArtifactFromIssue from "./mutations/issue/removeArtifactFromIssue";
+import addNonFunctionalConstraintToIssue from "./mutations/issue/addNonFunctionalConstraintToIssue";
+import removeNonFunctionalConstraintFromIssue from "./mutations/issue/removeNonFunctionalConstraintFromIssue";
 
 const issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     createIssue: createIssue(),
@@ -58,5 +62,9 @@ const issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     unmarkIssueAsDuplicate: unmarkIssueAsDuplicate(),
     addReactionToComment: addReactionToComment(),
     removeReactionFromComment: removeReactionFromComment(),
+    addArtifactToIssue: addArtifactToIssue(),
+    removeArtifactFromIssue: removeArtifactFromIssue(),
+    addNonFunctionalConstraintToIssue: addNonFunctionalConstraintToIssue(),
+    removeNonFunctionalConstraintFromIssue: removeNonFunctionalConstraintFromIssue()
 };
 export default issueMutations;

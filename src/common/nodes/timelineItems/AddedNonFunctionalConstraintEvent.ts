@@ -8,15 +8,15 @@ import { User } from "../User";
 import { NonFunctionalConstraintEvent, NonFunctionalConstraintEventTableSpecification } from "./NonFunctionalConstraintEvent";
 
 export const AddedNonFunctionalConstraintEventTableSpecification: NodeTableSpecification<AddedNonFunctionalConstraintEvent>
-    = new NodeTableSpecification("added_nonfunctionalconstraint_event", NonFunctionalConstraintEventTableSpecification);
+    = new NodeTableSpecification("added_non_functional_constraint_event", NonFunctionalConstraintEventTableSpecification);
 
 export class AddedNonFunctionalConstraintEvent extends NonFunctionalConstraintEvent {
 
     public constructor (databaseManager: DatabaseManager, id: string,
-        createdById: string | undefined, createdAt: Date, issueId: string, nonfunctionalconstraintId: string,
+        createdById: string | undefined, createdAt: Date, issueId: string, nonFunctionalConstraintId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.AddedNonFunctionalConstraintEvent, databaseManager, AddedNonFunctionalConstraintEventTableSpecification, id,
-            createdById, createdAt, issueId, nonfunctionalconstraintId, isDeleted, lastModifiedAt, metadata);
+            createdById, createdAt, issueId, nonFunctionalConstraintId, isDeleted, lastModifiedAt, metadata);
     }
 
     /**
@@ -26,17 +26,17 @@ export class AddedNonFunctionalConstraintEvent extends NonFunctionalConstraintEv
      * @param createdBy
      * @param createdAt
      * @param issue
-     * @param nonfunctionalconstraint
+     * @param nonFunctionalConstraint
      */
-    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, nonfunctionalconstraint: NonFunctionalConstraint): Promise<AddedNonFunctionalConstraintEvent> {
-        const event = new AddedNonFunctionalConstraintEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, nonfunctionalconstraint.id, false, new Date());
+    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, nonFunctionalConstraint: NonFunctionalConstraint): Promise<AddedNonFunctionalConstraintEvent> {
+        const event = new AddedNonFunctionalConstraintEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, nonFunctionalConstraint.id, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);
         return event;
     }
 
-    public async nonfunctionalconstraint(): Promise<NonFunctionalConstraint | undefined> {
-        return this.nonfunctionalconstraintProperty.getPublic();
+    public async nonFunctionalConstraint(): Promise<NonFunctionalConstraint | undefined> {
+        return this.nonFunctionalConstraintProperty.getPublic();
     }
 }

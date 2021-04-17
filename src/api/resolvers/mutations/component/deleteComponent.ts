@@ -22,7 +22,6 @@ function deleteComponent(): GraphQLFieldConfig<any, ResolverContext> {
             base.userAllowed(context, permissions => permissions.getComponentPermissions(component.id).componentAdmin);
 
             await component.markDeleted();
-            await context.dbManager.save();
             return base.createResult(args, {  });
         }
     };

@@ -23,7 +23,8 @@ export const ArtifactTableSpecification: NodeTableSpecification<Artifact>
         new RowSpecification("component_id", artifact => artifact.componentProperty.getId()),
         RowSpecification.fromProperty("uri", "uri"),
         RowSpecification.fromProperty("line_range_start", "lineRangeStart"),
-        RowSpecification.fromProperty("line_range_end", "lineRangeEnd"));
+        RowSpecification.fromProperty("line_range_end", "lineRangeEnd"),
+        RowSpecification.fromProperty("last_updated_at", "lastUpdatedAt"));
 
 /**
  * An Artifact is a document on a Component
@@ -45,6 +46,11 @@ export class Artifact extends SyncNode<Artifact> {
      * The end of the line range, must be an integer, optional, inclusive
      */
     private _lineRangeEnd: number | undefined;
+
+    /**
+     * the date when the NamedNode was last updated (name or description changed)
+     */
+    private _lastUpdatedAt: Date;
 
     /**
      * The Component this Artifact is part of
@@ -116,13 +122,14 @@ export class Artifact extends SyncNode<Artifact> {
      * @param isDeleted Weather this label is deleted (needed for sync)
      * @param metadata The metadate of this label for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, componentId: string, uri: string, lineRangeStart: number | undefined, lineRangeEnd: number | undefined,
+    public constructor(databaseManager: DatabaseManager, id: string, componentId: string, uri: string, lineRangeStart: number | undefined, lineRangeEnd: number | undefined, lastUpdatedAt: Date,
         createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.Artifact, databaseManager, ArtifactTableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
 
         this._uri = uri;
         this._lineRangeStart = lineRangeStart;
         this._lineRangeEnd = lineRangeEnd;
+        this._lastUpdatedAt = lastUpdatedAt;
         this.componentProperty = new NullableNodeProperty<Component, Artifact>(databaseManager, Artifact.componentPropertySpecification, this, componentId);
         this.issuesProperty = new NodeListProperty<Issue, Artifact>(databaseManager, Artifact.issuesPropertySpecification, this);
     }
@@ -142,11 +149,11 @@ export class Artifact extends SyncNode<Artifact> {
             throw new Error(`Provided lineRangeEnd is not an integer`);
         }
 
-        const artifact = new Artifact(databaseManager, databaseManager.idGenerator.generateString(), component.id, uri, lineRangeStart, lineRangeEnd,
+        const artifact = new Artifact(databaseManager, databaseManager.idGenerator.generateString(), component.id, uri, lineRangeStart, lineRangeEnd, new Date(),
             createdBy?.id, createdAt, false, new Date());
             artifact.markNew();
         databaseManager.addCachedNode(artifact);
-        //TODO add to component
+        component.artifactsProperty.add(artifact);
         return artifact;
     }
 
@@ -154,11 +161,12 @@ export class Artifact extends SyncNode<Artifact> {
         return this._uri;
     }
 
-    public set uri(value: string) {
+    public setUri(value: string, atDate: Date): void {
         if (value.length > 65536) {
             throw new Error("The provided uri is too long, max = 65536");
         }
         this.markChanged();
+        this.lastUpdatedAt = atDate;
         this._uri = value;
     }
 
@@ -166,11 +174,12 @@ export class Artifact extends SyncNode<Artifact> {
         return this._lineRangeStart;
     }
 
-    public set lineRangeStart(value: number | undefined) {
+    public setLineRangeStart(value: number | undefined, atDate: Date): void {
         if (value != undefined && !Number.isInteger(value)) {
             throw new Error(`Provided lineRangeStart is not an integer`);
         }
         this.markChanged();
+        this.lastUpdatedAt = atDate
         this._lineRangeStart = value;
     }
 
@@ -178,11 +187,31 @@ export class Artifact extends SyncNode<Artifact> {
         return this._lineRangeEnd;
     }
 
-    public set lineRangeEnd(value: number | undefined) {
+    public setLineRangeEnd(value: number | undefined, atDate: Date): void {
         if (value != undefined && !Number.isInteger(value)) {
             throw new Error(`Provided lineRangeEnd is not an integer`);
         }
         this.markChanged();
+        this.lastUpdatedAt = atDate;
         this._lineRangeEnd = value;
+    }
+
+    
+    /**
+     * For all immutable SyncNodes, this is just the creation data
+     * all other SyncNodes have to overwrite this to implement correct functionality
+     */
+    public get lastUpdatedAt(): Date {
+        return this._lastUpdatedAt;
+    }
+
+    /**
+     * Sets lastUpdatedAt if the provided value is greater than the current value
+     */
+    public set lastUpdatedAt(value: Date) {
+        if (this._lastUpdatedAt.getTime() < value.getTime()) {
+            this._lastUpdatedAt = value;
+            this.markChanged();
+        }
     }
 }

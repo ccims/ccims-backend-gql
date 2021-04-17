@@ -1,17 +1,16 @@
 import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
-import GraphQLColor from "../../../../scalars/GraphQLColor";
 
-const updateLabelInputConfig: GraphQLInputObjectTypeConfig = {
-    name: "UpdateLabelInput",
-    description: "The inputs for the updateLabel mutation, updates only the provided fields",
+const updateNonFunctionalConstraintInputConfig: GraphQLInputObjectTypeConfig = {
+    name: "UpdateNonFunctionalConstraintInput",
+    description: "The inputs for the updateNonFunctionalConstraint mutation, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        labelId: {
+        nonFunctionalConstraintId: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The id of the label to update"
+            description: "The id of the NonFunctionalConstraint to update"
         },
         content: {
             type: GraphQLString,
@@ -20,8 +19,8 @@ const updateLabelInputConfig: GraphQLInputObjectTypeConfig = {
         description: {
             type: GraphQLString,
             description: "The description text for the NonFunctionalConstraint.\n\nMax. 65536 characters."
-        },
+        }
     })
 };
-const GraphQLUpdateLabelInput = new GraphQLInputObjectType(updateLabelInputConfig);
-export default GraphQLUpdateLabelInput;
+const GraphQLUpdateNonFunctionalConstraintInput = new GraphQLInputObjectType(updateNonFunctionalConstraintInputConfig);
+export default GraphQLUpdateNonFunctionalConstraintInput;

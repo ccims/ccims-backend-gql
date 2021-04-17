@@ -8,15 +8,15 @@ import { User } from "../User";
 import { NonFunctionalConstraintEvent, NonFunctionalConstraintEventTableSpecification } from "./NonFunctionalConstraintEvent";
 
 export const RemovedNonFunctionalConstraintEventTableSpecification: NodeTableSpecification<RemovedNonFunctionalConstraintEvent>
-    = new NodeTableSpecification("removed_nonfunctionalconstraint_event", NonFunctionalConstraintEventTableSpecification);
+    = new NodeTableSpecification("removed_non_functional_constraint_event", NonFunctionalConstraintEventTableSpecification);
 
 export class RemovedNonFunctionalConstraintEvent extends NonFunctionalConstraintEvent {
 
     public constructor (databaseManager: DatabaseManager, id: string,
-        createdById: string | undefined, createdAt: Date, issueId: string, nonfunctionalconstraintId: string,
+        createdById: string | undefined, createdAt: Date, issueId: string, nonFunctionalConstraintId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.RemovedNonFunctionalConstraintEvent, databaseManager, RemovedNonFunctionalConstraintEventTableSpecification, id,
-            createdById, createdAt, issueId, nonfunctionalconstraintId, isDeleted, lastModifiedAt, metadata);
+            createdById, createdAt, issueId, nonFunctionalConstraintId, isDeleted, lastModifiedAt, metadata);
     }
 
     /**
@@ -26,10 +26,10 @@ export class RemovedNonFunctionalConstraintEvent extends NonFunctionalConstraint
      * @param createdBy
      * @param createdAt
      * @param issue
-     * @param nonfunctionalconstraint
+     * @param nonFunctionalConstraint
      */
-    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, nonfunctionalconstraint: NonFunctionalConstraint): Promise<RemovedNonFunctionalConstraintEvent> {
-        const event = new RemovedNonFunctionalConstraintEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, nonfunctionalconstraint.id, false, new Date());
+    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, nonFunctionalConstraint: NonFunctionalConstraint): Promise<RemovedNonFunctionalConstraintEvent> {
+        const event = new RemovedNonFunctionalConstraintEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, nonFunctionalConstraint.id, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);
@@ -37,6 +37,6 @@ export class RemovedNonFunctionalConstraintEvent extends NonFunctionalConstraint
     }
 
     public async removedNonFunctionalConstraint(): Promise<NonFunctionalConstraint | undefined> {
-        return this.nonfunctionalconstraintProperty.getPublic();
+        return this.nonFunctionalConstraintProperty.getPublic();
     }
 }

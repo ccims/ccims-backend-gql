@@ -8,7 +8,7 @@ const updateComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentinterfaceId: {
+        componentInterfaceId: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the componentinterface to update"
         },

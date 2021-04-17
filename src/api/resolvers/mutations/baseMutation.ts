@@ -41,9 +41,7 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
             }
         },
         createResult: <TReturn extends object>(args: any, returnObject: TReturn) => {
-            if (typeof args.input.clientMutationID !== "string" && typeof args.input.clientMutationID !== "undefined") {
-                throw new Error("The client mutation id must be a string or not set");
-            }
+            //TODO check if save is necessary
             return {
                 ...returnObject,
                 clientMutationID: args.input.clientMutationID
@@ -55,6 +53,9 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
             }
             if (!args.input || typeof args.input !== "object") {
                 throw new Error("The input for the mutation must be set");
+            }
+            if (typeof args.input.clientMutationID !== "string" && typeof args.input.clientMutationID !== "undefined") {
+                throw new Error("The client mutation id must be a string or not set");
             }
             return args.input;
         },

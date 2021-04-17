@@ -18,7 +18,7 @@ export const NonFunctionalConstraintTableSpecification: NodeTableSpecification<N
         new RowSpecification("issue_id", constraint => constraint.issueProperty.getId()),
         RowSpecification.fromProperty("content", "content"),
         RowSpecification.fromProperty("description", "description"),
-        RowSpecification.fromProperty("is_artive", "isActive"));
+        RowSpecification.fromProperty("is_active", "isActive"));
 
 /**
  * A non functional constraint on an issue
@@ -93,7 +93,8 @@ export class NonFunctionalConstraint extends SyncNode<NonFunctionalConstraint> {
      * @param issue
      * @param component
      */
-    public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, content: string, description: string): Promise<NonFunctionalConstraint> {
+    public static async create(databaseManager: DatabaseManager, issue: Issue, content: string, description: string,
+        createdBy: User | undefined, createdAt: Date): Promise<NonFunctionalConstraint> {
         const constraint = new NonFunctionalConstraint(databaseManager, databaseManager.idGenerator.generateString(), issue.id, content, description, true,
             createdBy?.id, createdAt, false, new Date());
         constraint.markNew();
@@ -130,7 +131,7 @@ export class NonFunctionalConstraint extends SyncNode<NonFunctionalConstraint> {
      * Warning: only sets isActive, does not add participant or changes last change
      */
     public set isActive(value: boolean) {
-        this._isActive = this.isActive;
+        this._isActive = value;
         this.markChanged();
     }
 }

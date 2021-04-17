@@ -34,7 +34,6 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
                 project.description = description;
             }
 
-            await context.dbManager.save();
             return base.createResult(args, { project })
         }
     }

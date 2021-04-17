@@ -3,7 +3,6 @@ import { RemovedNonFunctionalConstraintEvent } from "../../../../../common/nodes
 import { ResolverContext } from "../../../../ResolverContext";
 import GraphQLNode from "../../GraphQLNode";
 import GraphQLIssueTimelineItem, { issueTimelineItemFields } from "../GraphQLIssueTimelineItem";
-import GraphQLIssueLocation from "../GraphQLIssueLocation";
 import GraphQLNonFunctionalConstraint from "../GraphQLNonFunctionalConstraint";
 
 const removedNonFunctionalConstraintEventConfig: GraphQLObjectTypeConfig<RemovedNonFunctionalConstraintEvent, ResolverContext> = {

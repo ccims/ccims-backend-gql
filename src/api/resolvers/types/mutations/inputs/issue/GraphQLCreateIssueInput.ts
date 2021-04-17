@@ -19,7 +19,7 @@ const createIssueInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "The body text for the issue as markdown.\n\nThis can be `null` (will result in an empty body). Max. 65536 characters"
         },
-        componentIDs: {
+        components: {
             type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLID))),
             description: "The IDs of the components the issue is mirrored to.\n\nAt least one valid component must be given."
         },

@@ -26,7 +26,6 @@ function removeAssignee(): GraphQLFieldConfig<any, ResolverContext> {
             const user = userCmd.getResult()[0];
 
             const event = await issue.unassignUser(user, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, event, { user });
         }
     }

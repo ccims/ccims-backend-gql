@@ -1,5 +1,4 @@
 import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLInt } from "graphql";
-import GraphQLColor from "../../../../scalars/GraphQLColor";
 
 const updateArtifactInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateArtifactInput",

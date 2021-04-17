@@ -17,7 +17,6 @@ function addIssueComment(): GraphQLFieldConfig<any, ResolverContext> {
             }
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
             const body = await issue.addIssueComment(bodyText, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, body, { comment: body });
         }
     }

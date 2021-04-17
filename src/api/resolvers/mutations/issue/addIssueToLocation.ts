@@ -39,7 +39,6 @@ function addIssueToLocation(): GraphQLFieldConfig<any, ResolverContext> {
             }
             */
             const event = await issue.addToLocation(location, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, event, { location });
         }
     }

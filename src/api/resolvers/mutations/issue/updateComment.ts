@@ -28,7 +28,6 @@ function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
                 || componentIds.map(permissions.getComponentPermissions).some(perm => perm.componentAdmin || perm.moderate));
 
             await comment.setBody(bodyText, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, { comment: comment });
         }
     }

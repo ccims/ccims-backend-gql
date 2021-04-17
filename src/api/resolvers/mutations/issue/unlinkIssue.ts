@@ -30,7 +30,6 @@ function unlinkIssue(): GraphQLFieldConfig<any, ResolverContext> {
             }
             */
             const event = await issue.removeLinkedIssue(issueToUnlink, new Date(), context.user);
-            await context.dbManager.save();
             return base.createResult(args, issue, event, {});
         }
     }

@@ -296,6 +296,7 @@ CREATE TABLE artifact (
     uri varchar(65536) NOT NULL,
     line_range_start int,
     line_range_end int,
+    last_updated_at timestamp NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
