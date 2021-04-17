@@ -60,8 +60,6 @@ import { RemovedNonFunctionalConstraintEvent } from "./timelineItems/RemovedNonF
 import { Comment } from "./Comment";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
-import { EstimatedTimeChangedEvent } from "./timelineItems/EstimatedTimeChangedEvent";
-
 
 /**
  * a table specification for an Issue

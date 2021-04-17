@@ -31,7 +31,7 @@ function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> 
 
             if (await project.componentsProperty.hasId(componentId)) {
                 await project.componentsProperty.remove(component);
-                return base.createResult(args, { project, component });
+                return base.createResult(args, context, { project, component });
             } else {
                 throw new Error("The specified component is not on the specified project");
             }

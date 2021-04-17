@@ -31,10 +31,10 @@ function addComponentToProject(): GraphQLFieldConfig<any, ResolverContext> {
 
             if (!(await project.componentsProperty.hasId(componentId))) {
                 await project.componentsProperty.add(component);
-                return base.createResult(args, { project, component });
+                return base.createResult(args, context, { project, component });
             } else {
                 log(5, `tried to add component ${componentId} which was already on project ${projectId}`);
-                return base.createResult(args, { });
+                return base.createResult(args, context, { });
             }
 
         }

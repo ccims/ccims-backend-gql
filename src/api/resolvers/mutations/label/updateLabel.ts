@@ -39,7 +39,7 @@ function updateLabel(): GraphQLFieldConfig<any, ResolverContext> {
                 label.setColor(color, new Date());
             }
 
-            return base.createResult(args, { label:label });
+            return base.createResult(args, context, { label:label });
         }
     };
 }

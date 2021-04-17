@@ -120,7 +120,7 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             await issue.changeStartDate(startDate, now, me);
             await issue.changeDueDate(dueDate, now, me);
             //await issue.changeEstimatedTime(estimatedTime, now, me); TODO when implemented
-            return base.createResult(args, { issue });
+            return base.createResult(args, context, { issue });
         }
     };
 }

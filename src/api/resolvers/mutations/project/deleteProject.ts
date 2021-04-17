@@ -25,7 +25,7 @@ function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
             base.userAllowed(context, permissions => permissions.globalPermissions.addRemoveProjects);
 
             await project.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

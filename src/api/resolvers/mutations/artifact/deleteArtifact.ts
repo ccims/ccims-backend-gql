@@ -22,7 +22,7 @@ function deleteArtifact(): GraphQLFieldConfig<any, ResolverContext> {
             //TODO permissions
 
             await artifact.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

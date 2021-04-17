@@ -24,7 +24,7 @@ function addArtifactToIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The artifact you are tying to assign is not on at least one of the components the issue is on");
             }
             const event = await issue.addArtifact(artifact, new Date(), context.user);
-            return base.createResult(args, issue, event, { artifact });
+            return base.createResult(args, context, issue, event, { artifact });
         }
     }
 }

@@ -31,7 +31,7 @@ function updateNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContex
                 await nonFunctionalConstraint.setDescription(description, new Date());
             }
 
-            return base.createResult(args, { nonFunctionalConstraint: nonFunctionalConstraint });
+            return base.createResult(args, context, { nonFunctionalConstraint: nonFunctionalConstraint });
         }
     };
 }

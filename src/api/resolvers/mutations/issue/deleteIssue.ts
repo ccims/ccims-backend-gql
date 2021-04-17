@@ -22,7 +22,7 @@ function deleteIssue(): GraphQLFieldConfig<any, ResolverContext> {
             //TODO permissions
 
             await issue.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

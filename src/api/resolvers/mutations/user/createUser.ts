@@ -18,7 +18,7 @@ function createUser(): GraphQLFieldConfig<any, ResolverContext> {
             const email = PreconditionCheck.checkNullableString(input, "email", 320);
             
             const user = await CCIMSUser.create(context.dbManager, username, displayName, password, email);
-            return base.createResult(args, { user });
+            return base.createResult(args, context, { user });
         }
     };
 }

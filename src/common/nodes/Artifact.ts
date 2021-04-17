@@ -153,7 +153,7 @@ export class Artifact extends SyncNode<Artifact> {
             createdBy?.id, createdAt, false, new Date());
             artifact.markNew();
         databaseManager.addCachedNode(artifact);
-        component.artifactsProperty.add(artifact);
+        await component.artifactsProperty.add(artifact);
         return artifact;
     }
 

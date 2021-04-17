@@ -8,7 +8,7 @@ type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
      * @param args The arguments passed to the resolve function
      * @param returnObject The object to be returned where to add the clientMutationID
      */
-    createResult: <TReturn extends object>(args: any, returnObject: TReturn) => typeof returnObject & { clientMutationID: string | undefined };
+    createResult: <TReturn extends object>(args: any, context: ResolverContext, returnObject: TReturn) => Promise<typeof returnObject & { clientMutationID: string | undefined }>;
     /**
      * Checks the given args weather they and the `input` property on them are valid objects
      * @param args The arguments as given by the resolve function to be checked
@@ -40,8 +40,8 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
                 description: "The data for the mutation"
             }
         },
-        createResult: <TReturn extends object>(args: any, returnObject: TReturn) => {
-            //TODO check if save is necessary
+        createResult: async <TReturn extends object>(args: any, context: ResolverContext, returnObject: TReturn) => {
+            await context.dbManager.save();
             return {
                 ...returnObject,
                 clientMutationID: args.input.clientMutationID

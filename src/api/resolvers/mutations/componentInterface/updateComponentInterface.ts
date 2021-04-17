@@ -31,7 +31,7 @@ function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
                 componentInterface.setDescription(description, new Date());
             }
 
-            return base.createResult(args, { componentInterface })
+            return base.createResult(args, context, { componentInterface });
         }
     }
 }

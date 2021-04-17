@@ -31,10 +31,10 @@ function addConsumedComponentInterface(): GraphQLFieldConfig<any, ResolverContex
 
             if (!(await component.consumedInterfacesProperty.hasId(interfaceId))) {
                 await component.consumedInterfacesProperty.add(componentInterface);
-                return base.createResult(args, { component:component, interface:componentInterface });
+                return base.createResult(args, context, { component:component, interface:componentInterface });
             } else {
                 log(5, `tried to add componentInterface ${interfaceId} which was already on component ${componentId}`);
-                return base.createResult(args, { });
+                return base.createResult(args, context, { });
             }
 
         }

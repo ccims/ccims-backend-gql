@@ -24,7 +24,7 @@ function addLabelToIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The label you are tying to assign is not on at least one of the components the issue is on");
             }
             const event = await issue.addLabel(label, new Date(), context.user);
-            return base.createResult(args, issue, event, { label });
+            return base.createResult(args, context, issue, event, { label });
         }
     }
 }

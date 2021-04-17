@@ -30,7 +30,7 @@ function removeConsumedComponentInterface(): GraphQLFieldConfig<any, ResolverCon
 
             if (await component.consumedInterfacesProperty.hasId(interfaceId)) {
                 await component.consumedInterfacesProperty.remove(componentInterface);
-                return base.createResult(args, { component:component, interface:componentInterface });
+                return base.createResult(args, context, { component:component, interface:componentInterface });
             } else {
                 throw new Error("The specified component does not consume the specified interface")
             }

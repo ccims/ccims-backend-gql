@@ -21,7 +21,7 @@ function removeNonFunctionalConstraintFromIssue(): GraphQLFieldConfig<any, Resol
             const issue = await nonFunctionalConstraint.issue();
             
             const event = await issue.removeNonFunctionalConstraint(nonFunctionalConstraint, new Date(), context.user);
-            return base.createResult(args, issue, event, { nonFunctionalConstraint });
+            return base.createResult(args, context, issue, event, { nonFunctionalConstraint });
         }
     }
 }

@@ -22,7 +22,7 @@ function deleteLabel(): GraphQLFieldConfig<any, ResolverContext> {
             //TODO permissions
 
             await label.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

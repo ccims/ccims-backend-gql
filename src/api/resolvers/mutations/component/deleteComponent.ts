@@ -22,7 +22,7 @@ function deleteComponent(): GraphQLFieldConfig<any, ResolverContext> {
             base.userAllowed(context, permissions => permissions.getComponentPermissions(component.id).componentAdmin);
 
             await component.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

@@ -30,7 +30,7 @@ function removeLabelFromComponent(): GraphQLFieldConfig<any, ResolverContext> {
 
             if (await component.labelsProperty.hasId(labelId)) {
                 await component.labelsProperty.remove(label);
-                return base.createResult(args, { component, label });
+                return base.createResult(args, context, { component, label });
             } else {
                 throw new Error("The specified label is not on the specified component");
             }

@@ -35,7 +35,7 @@ function updateArtifact(): GraphQLFieldConfig<any, ResolverContext> {
                 artifact.setLineRangeStart(lineRangeEnd === null ? undefined : lineRangeEnd, new Date());
             }
 
-            return base.createResult(args, { artifact: artifact });
+            return base.createResult(args, context, { artifact: artifact });
         }
     };
 }

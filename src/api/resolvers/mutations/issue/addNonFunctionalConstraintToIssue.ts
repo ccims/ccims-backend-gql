@@ -21,7 +21,7 @@ function addNonFunctionalConstraintToIssue(): GraphQLFieldConfig<any, ResolverCo
 
             const issue = await nonFunctionalConstraint.issue();
             const event = await issue.addNonFunctionalConstraint(nonFunctionalConstraint, new Date(), context.user);
-            return base.createResult(args, issue, event, { nonFunctionalConstraint });
+            return base.createResult(args, context, issue, event, { nonFunctionalConstraint });
         }
     }
 }

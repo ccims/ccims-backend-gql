@@ -31,7 +31,7 @@ function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const syncAdapter = Adapters.adapterByTag(ims.type);
             const imsComponent = await syncAdapter.linkComponentToIMS(component, ims, apiIMSData);
             
-            return base.createResult(args, { imsComponent });
+            return base.createResult(args, context, { imsComponent });
         }
     };
 }

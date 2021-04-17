@@ -26,7 +26,7 @@ function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
             // TODO permissions
 
             await comment.setBody(bodyText, new Date(), context.user);
-            return base.createResult(args, { comment: comment });
+            return base.createResult(args, context, { comment: comment });
         }
     }
 }

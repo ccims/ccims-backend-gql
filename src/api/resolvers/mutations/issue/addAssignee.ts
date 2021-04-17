@@ -26,7 +26,7 @@ function addAssignee(): GraphQLFieldConfig<any, ResolverContext> {
             const user = userCmd.getResult()[0];
 
             const event = await issue.assignUser(user, new Date(), context.user);
-            return base.createResult(args, issue, event, { assignee: user });
+            return base.createResult(args, context, issue, event, { assignee: user });
         }
     }
 }

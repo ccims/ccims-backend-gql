@@ -15,7 +15,7 @@ function changeIssueDueDate(): GraphQLFieldConfig<any, ResolverContext> {
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
             const event = await issue.changeDueDate(dueDate, new Date(), context.user);
             
-            return base.createResult(args, issue, event, {});
+            return base.createResult(args, context, issue, event, {});
         }
     }
 }

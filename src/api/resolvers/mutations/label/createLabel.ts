@@ -42,7 +42,7 @@ function createLabel(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             const label = await Label.create(context.dbManager, name, color, context.user, new Date(), description, componentCmd.getResult());
-            return base.createResult(args, { label });
+            return base.createResult(args, context, { label });
         }
     }
 }

@@ -34,7 +34,7 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
                 project.description = description;
             }
 
-            return base.createResult(args, { project })
+            return base.createResult(args, context, { project });
         }
     }
 }

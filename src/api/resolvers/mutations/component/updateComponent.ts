@@ -35,7 +35,7 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 component.setRepositoryURL(repositoryURL, new Date());
             }
 
-            return base.createResult(args, { component:component });
+            return base.createResult(args, context, { component:component });
         }
     };
 }

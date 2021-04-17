@@ -22,7 +22,7 @@ function deleteNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContex
             //TODO permissions
 
             await nonFunctionalConstraint.markDeleted();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

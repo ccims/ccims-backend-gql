@@ -21,7 +21,7 @@ function removeLabelFromIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
             
             const event = await issue.removeLabel(label, new Date(), context.user);
-            return base.createResult(args, issue, event, { label });
+            return base.createResult(args, context, issue, event, { label });
         }
     }
 }

@@ -32,10 +32,10 @@ function addLabelToComponent(): GraphQLFieldConfig<any, ResolverContext> {
 
             if (!(await label.componentsProperty.hasId(componentId))) {
                 await label.componentsProperty.add(component);
-                return base.createResult(args, { label:label, component:component });
+                return base.createResult(args, context, { label:label, component:component });
             } else {
                 log(5, `tried to add label ${labelId} which was already on component ${componentId}`);
-                return base.createResult(args, { });
+                return base.createResult(args, context, { });
             }
 
         }

@@ -28,7 +28,7 @@ function createComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
 
             const componentInterface = await ComponentInterface.create(context.dbManager, name, description, component, context.user, new Date());
 
-            return base.createResult(args, { componentInterface })
+            return base.createResult(args, context, { componentInterface });
         }
     };
 }

@@ -26,7 +26,7 @@ function createArtifact(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             const artifact = await Artifact.create(context.dbManager, component, uri, lineRangeStart, lineRangeEnd, context.user, new Date());
-            return base.createResult(args, { artifact });
+            return base.createResult(args, context, { artifact });
         }
     }
 }

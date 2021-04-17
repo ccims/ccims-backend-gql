@@ -64,7 +64,7 @@ function createComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 await component.consumedInterfacesProperty.addAll(interfacesCmd?.getResult());
             }
             // owner.permissions.setComponentPermissions(component.id, new ComponentPermission(true, true, true, true, true));
-            return base.createResult(args, { component });
+            return base.createResult(args, context, { component });
         }
     };
 }

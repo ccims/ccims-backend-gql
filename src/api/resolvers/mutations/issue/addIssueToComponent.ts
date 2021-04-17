@@ -27,7 +27,7 @@ function addIssueToComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
             */
             const event = await issue.addToComponent(component, new Date(), context.user);
-            return base.createResult(args, issue, event, { component });
+            return base.createResult(args, context, issue, event, { component });
         }
     }
 }

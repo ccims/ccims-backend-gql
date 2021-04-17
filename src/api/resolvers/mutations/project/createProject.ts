@@ -43,7 +43,7 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
                 await project.componentsProperty.addAll(components);
             }
             // owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
-            return base.createResult(args, { project });
+            return base.createResult(args, context, { project });
         }
     }
 }
