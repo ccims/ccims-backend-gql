@@ -1,9 +1,11 @@
 import crypto from "crypto";
+import { QueryConfig, QueryResult } from "pg";
 import { config } from "../../config/Config";
 import { log } from "../../log";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadCCIMSUsersCommand } from "../database/commands/load/nodes/LoadCCIMSUsersCommand";
 import { LoadPermissionsCommand } from "../database/commands/load/nodes/LoadPermissionsCommand";
+import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { BasePermission } from "./BasePermission";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
@@ -119,19 +121,15 @@ export class CCIMSUser extends User {
      * @param databaseManager The database manager to use for checking
      * @param username The username to be checked
      */
-    public static async usernameAvailable(databaseManager: DatabaseManager, username: string): Promise<boolean> {
+     public static async usernameAvailable(databaseManager: DatabaseManager, username: string): Promise<boolean> {
         if (username.length === 0) {
             throw new Error("The username can't be empty")
         }
-        if (username.trim().toLowerCase() === "root" || username.trim().toLowerCase() === "deleted_user") {
-            return true;
-        }
-        const checkCmd = new LoadCCIMSUsersCommand();
-        checkCmd.username = "^" + username + "$";
-        checkCmd.countMode = true;
+
+        const checkCmd = new UsernameAvailableCommand(username);
         databaseManager.addCommand(checkCmd);
         await databaseManager.executePendingCommands();
-        return checkCmd.count === 0;
+        return checkCmd.getResult();
     }
 
 
@@ -206,6 +204,33 @@ export class CCIMSUser extends User {
             await super.markDeleted();
             await this.permissionsProperty.clear();
         }
+    }
+
+}
+
+/**
+ * Command to check if a specific content issue pair is available
+ */
+ class UsernameAvailableCommand extends DatabaseCommand<boolean> {
+
+    /**
+     * Creates a new UsernameAvailableCommand
+     * @param username the username to check
+     */
+    public constructor(private readonly username: string) {
+        super();
+    }
+
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return {
+            text: "SELECT id FROM ccims_user WHERE username=$1",
+            values: [this.username]
+        };
+    }
+
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rowCount < 1;
+        return [];
     }
 
 }
