@@ -40,6 +40,11 @@
             ],
             "title": "Number of reaction users",
             "description": "The number of users to return for a reaction group before slicing"
+        },
+        "createAllUsersAsGlobalAdmin": {
+            "type": "boolean",
+            "title": "Create all users as admin",
+            "description": "If set to `true`, all created users have the globalAdmin permission. Can be used to basically disable the permission system."
         }
     },
     "additionalProperties": false,

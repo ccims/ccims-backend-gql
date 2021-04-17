@@ -39,7 +39,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
         this.currentCommand = undefined;
     }
 
-    protected abstract async ensureLoadedInternal(): Promise<void>;
+    protected abstract ensureLoadedInternal(): Promise<void>;
 
     public async markDeleted(): Promise<void> {
         await this.ensureLoaded();

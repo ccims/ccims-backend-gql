@@ -4,6 +4,8 @@ import PreconditionCheck from "../../resolvers/utils/PreconditionCheck";
 import GraphQLRegisterUserPayload from "../types/mutations/payloads/GraphQLRegisterUserPayload";
 import GraphQLRegisterUserInput from "../types/mutations/inputs/GraphQLRegisterUserInput";
 import { User } from "../../../common/nodes/User";
+import { APIConfig } from "../../../config/APIConfig";
+import { config } from "../../../config/Config";
 
 function registerUser(): GraphQLFieldConfig<any, ResolverContext> {
     return {
@@ -28,6 +30,13 @@ function registerUser(): GraphQLFieldConfig<any, ResolverContext> {
             const password = PreconditionCheck.checkString(input, "password");
             const email = PreconditionCheck.checkNullableString(input, "email", 320);
             const user = await User.create(context.dbManager, username, displayName, password, email);
+            if (config.api.createAllUsersAsGlobalAdmin) {
+                user.permissions.globalPermissions = {
+                    addRemoveComponents: true,
+                    addRemoveProjects: true,
+                    globalAdmin: true
+                };
+            }
             await context.dbManager.save();
             return { userId: user.id };
         }

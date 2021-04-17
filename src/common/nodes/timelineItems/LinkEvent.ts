@@ -56,5 +56,8 @@ export class LinkEvent extends IssueTimelineItem {
         return event;
     }
 
+    public async linkedIssue(): Promise<Issue> {
+        return this.linkedIssueProperty.get();
+    }
 
 }

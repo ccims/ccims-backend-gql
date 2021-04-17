@@ -7,6 +7,7 @@ export class APIConfig {
     public readonly debugNoLogin: boolean;
     public readonly schemaLocation: string;
     public readonly numReactionUsers: number;
+    public readonly createAllUsersAsGlobalAdmin: boolean;
 
     public constructor(filePath: string) {
         let file: any | undefined;
@@ -48,6 +49,11 @@ export class APIConfig {
             this.numReactionUsers = file.numReactionUsers;
         } else {
             this.numReactionUsers = 5;
+        }
+        if (typeof file?.createAllUsersAsGlobalAdmin === "boolean") {
+            this.createAllUsersAsGlobalAdmin = file.createAllUsersAsGlobalAdmin;
+        } else {
+            this.createAllUsersAsGlobalAdmin = false
         }
     }
 }

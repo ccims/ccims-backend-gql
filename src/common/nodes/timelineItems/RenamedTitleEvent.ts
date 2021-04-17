@@ -1,13 +1,15 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
-import { NodeTableSpecification } from "../NodeTableSpecification";
+import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadataMap } from "../SyncNode";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const RenamedTitleEventTableSpecification: NodeTableSpecification<RenamedTitleEvent>
-    = new NodeTableSpecification("issue_timeline_renamed_title_event", IssueTimelineItemTableSpecification);
+    = new NodeTableSpecification<RenamedTitleEvent>("issue_timeline_renamed_title_event", IssueTimelineItemTableSpecification,
+    RowSpecification.fromProperty("old_title", "oldTitle"),
+    RowSpecification.fromProperty("new_title", "newTitle"));
 
 export class RenamedTitleEvent extends IssueTimelineItem {
 
