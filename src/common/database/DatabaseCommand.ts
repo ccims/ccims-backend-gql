@@ -48,7 +48,7 @@ export abstract class DatabaseCommand<T> {
      * @returns the result
      */
     public getResult(): T {
-        if (!this.result) {
+        if (this.result === undefined) {
             throw new Error("no result currently set");
         }
         return this.result;

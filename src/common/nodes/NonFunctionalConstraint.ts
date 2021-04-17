@@ -1,5 +1,7 @@
+import { QueryConfig, QueryResult } from "pg";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Issue } from "./Issue";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
@@ -95,11 +97,27 @@ export class NonFunctionalConstraint extends SyncNode<NonFunctionalConstraint> {
      */
     public static async create(databaseManager: DatabaseManager, issue: Issue, content: string, description: string,
         createdBy: User | undefined, createdAt: Date): Promise<NonFunctionalConstraint> {
+        if (!(await NonFunctionalConstraint.contentAvailable(databaseManager, issue, content))) {
+            throw new Error(`There is already a NonFunctionalConstraint with content ${content} on ${issue.id}`);
+        }
         const constraint = new NonFunctionalConstraint(databaseManager, databaseManager.idGenerator.generateString(), issue.id, content, description, true,
             createdBy?.id, createdAt, false, new Date());
         constraint.markNew();
         databaseManager.addCachedNode(constraint);
         return constraint;
+    }
+
+    /**
+     * Checks if the content issue pair is still available
+     * @param databaseManager DatabaseManager used to perform the command
+     * @param issue the issue on which the NonFunctionalConstraint will be created
+     * @param content the content of the NonFunctionalConstraint which should be created
+     */
+    public static async contentAvailable(databaseManager: DatabaseManager, issue: Issue, content: string): Promise<boolean> {
+        const command = new ContentAvailableCommand(issue.id, content);
+        databaseManager.addCommand(command);
+        await databaseManager.executePendingCommands();
+        return command.getResult();
     }
 
 
@@ -134,4 +152,32 @@ export class NonFunctionalConstraint extends SyncNode<NonFunctionalConstraint> {
         this._isActive = value;
         this.markChanged();
     }
+}
+
+/**
+ * Command to check if a specific content issue pair is available
+ */
+class ContentAvailableCommand extends DatabaseCommand<boolean> {
+
+    /**
+     * Creates a new ContentAvailableCommand
+     * @param issueId the id of the Issue to check
+     * @param content the content to check if it is available
+     */
+    public constructor(private readonly issueId: string, private readonly content: string) {
+        super();
+    }
+
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return {
+            text: "SELECT id from non_functional_constraint WHERE issue_id=$1 AND content=$2",
+            values: [this.issueId, this.content]
+        };
+    }
+
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rowCount < 1;
+        return [];
+    }
+
 }

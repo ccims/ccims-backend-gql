@@ -26,7 +26,6 @@ function createNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContex
 
             const nonFunctionalConstraint = await NonFunctionalConstraint.create(context.dbManager, issue, content, description, context.user, new Date());
             nonFunctionalConstraint.isActive = false;
-            console.log(nonFunctionalConstraint);
             const event = await issue.addNonFunctionalConstraint(nonFunctionalConstraint, nonFunctionalConstraint.createdAt, context.user);
             return base.createResult(args, context, { nonFunctionalConstraint: nonFunctionalConstraint, addedEvent: event });
         }
