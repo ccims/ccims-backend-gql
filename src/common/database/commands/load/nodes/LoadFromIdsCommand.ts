@@ -78,7 +78,7 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["labelled_event", (loadDeleted) => new LoadLabelledEventCommand(loadDeleted)],
     ["unlabelled_event", (loadDeleted) => new LoadUnlabelledEventCommand(loadDeleted)],
     ["start_date_changed_event", (loadDeleted) => new LoadStartDateChangedEventsCommand(loadDeleted)],
-    ["issue_timneline_due_date_changed_event", (loadDeleted) => new LoadDueDateChangedEventsCommand(loadDeleted)],
+    ["due_date_changed_event", (loadDeleted) => new LoadDueDateChangedEventsCommand(loadDeleted)],
     ["marked_as_duplicate_event", (loadDeleted) => new LoadMarkedAsDuplicateEventsCommand(loadDeleted)],
     ["unmarked_as_duplicate_event", (loadDeleted) => new LoadUnmarkedAsDuplicateEventsCommand(loadDeleted)],
     ["closed_event", (loadDeleted) => new LoadClosedEventsCommand(loadDeleted)],

@@ -75,12 +75,12 @@ export abstract class LoadCommentIssueTimelineItemsCommandBase<T extends Comment
         if (this.onComponents) {
             if (this.onComponents.length === 1) {
                 conditions.conditions.push({
-                    text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=$${conditions.i})`,
+                    text: `main.issue_id=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=$${conditions.i})`,
                     values: [this.onComponents[0]],
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.issue=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY($${conditions.i}))`,
+                    text: `main.issue_id=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY($${conditions.i}))`,
                     values: [this.onComponents],
                 });
             }

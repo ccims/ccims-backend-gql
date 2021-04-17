@@ -12,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const LinkEventTableSpecification: NodeTableSpecification<LinkEvent>
     = new NodeTableSpecification<LinkEvent>("link_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("linked_issue", linkEvent => linkEvent.linkedIssueProperty.getId()));
+    new RowSpecification("linked_issue_id", linkEvent => linkEvent.linkedIssueProperty.getId()));
 
 export class LinkEvent extends IssueTimelineItem {
 
@@ -25,7 +25,7 @@ export class LinkEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue", new LoadIssuesCommand(true)),
+            linkEvent => new GetWithReloadCommand(linkEvent, "linked_issue_id", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

@@ -12,7 +12,7 @@ function updateArtifact(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const artifactId = PreconditionCheck.checkString(input, "artifactId", 32);
+            const artifactId = PreconditionCheck.checkString(input, "artifact", 32);
 
             const uri = PreconditionCheck.checkNullableString(input, "uri", 65536);
             const lineRangeStart = PreconditionCheck.checkNullableInteger(input, "lineRangeStart");

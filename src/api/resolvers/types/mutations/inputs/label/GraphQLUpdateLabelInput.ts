@@ -9,7 +9,7 @@ const updateLabelInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        labelId: {
+        label: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the label to update"
         },

@@ -8,7 +8,7 @@ const deleteNonFunctionalConstraintInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        nonFunctionalConstraintId: {
+        nonFunctionalConstraint: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the NonFunctionalConstraint to delete"
         }

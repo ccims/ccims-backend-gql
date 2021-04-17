@@ -13,8 +13,8 @@ function removeLabelFromComponent(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
-            const labelId = PreconditionCheck.checkString(input, "labelId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
+            const labelId = PreconditionCheck.checkString(input, "label", 32);
 
             //TODO permissions
 

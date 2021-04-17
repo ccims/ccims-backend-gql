@@ -4,18 +4,18 @@ import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { log } from "../../../../log";
 import GraphQLAddConsumedInterfacePayload from "../../types/mutations/payloads/component/GraphQLAddConsumedInterfacePayload";
-import GraphQLAddConsumedInterfaceInput from "../../types/mutations/inputs/component/GraphQLAddConsumedInterfaceInput";
+import GraphQLAddConsumedInterfaceInput from "../../types/mutations/inputs/component/GraphQLAddConsumedComponentInterfaceInput";
 import { Component } from "../../../../common/nodes/Component";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 
-function addConsumedInterface(): GraphQLFieldConfig<any, ResolverContext> {
+function addConsumedComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLAddConsumedInterfacePayload, GraphQLAddConsumedInterfaceInput, "Adds the specified component to the project if it is not already on the project");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
-            const interfaceId = PreconditionCheck.checkString(input, "interfaceId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
+            const interfaceId = PreconditionCheck.checkString(input, "componentInterface", 32);
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
 
@@ -40,4 +40,4 @@ function addConsumedInterface(): GraphQLFieldConfig<any, ResolverContext> {
         }
     };
 }
-export default addConsumedInterface;
+export default addConsumedComponentInterface;

@@ -4,7 +4,7 @@ import GraphQLUpdateNonFunctionalConstraintPayload from "../../types/mutations/p
 import { NonFunctionalConstraint } from "../../../../common/nodes/NonFunctionalConstraint";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import GraphQLUpdateNonFunctionalConstraintInput from "../../types/mutations/inputs/nonFunctionalConstraint/GraphQLUpdateNonFunctionalConstraint";
+import GraphQLUpdateNonFunctionalConstraintInput from "../../types/mutations/inputs/nonFunctionalConstraint/GraphQLUpdateNonFunctionalConstraintInput";
 
 function updateNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLUpdateNonFunctionalConstraintPayload, GraphQLUpdateNonFunctionalConstraintInput, "Updates a NonFunctionalConstraint in the ccims. Fields which are not provided are not updated.");
@@ -12,7 +12,7 @@ function updateNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContex
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "NonFunctionalConstraintId", 32);
+            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "nonFunctionalConstraint", 32);
 
             const content = PreconditionCheck.checkNullableString(input, "content", 65536);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536); 

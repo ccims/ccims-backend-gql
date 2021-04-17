@@ -12,7 +12,7 @@ function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const projectId = PreconditionCheck.checkString(input, "projectId", 32);
+            const projectId = PreconditionCheck.checkString(input, "project", 32);
 
             const projectCommand = new LoadProjectsCommand();
             projectCommand.ids = [projectId];

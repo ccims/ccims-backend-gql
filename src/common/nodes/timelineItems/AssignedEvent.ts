@@ -12,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const AssignedEventTableSpecification: NodeTableSpecification<AssignedEvent>
     = new NodeTableSpecification<AssignedEvent>("assigned_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("assignee", assignedEvent => assignedEvent.assigneeProperty.getId()));
+    new RowSpecification("assignee_id", assignedEvent => assignedEvent.assigneeProperty.getId()));
 
 export class AssignedEvent extends IssueTimelineItem {
 
@@ -25,7 +25,7 @@ export class AssignedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee", new LoadUsersCommand()),
+            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee_id", new LoadUsersCommand()),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

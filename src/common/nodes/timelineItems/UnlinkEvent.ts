@@ -12,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const UnlinkEventTableSpecification: NodeTableSpecification<UnlinkEvent>
     = new NodeTableSpecification<UnlinkEvent>("unlink_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("linked_issue_to_remove", linkEvent => linkEvent.unlinkedIssueProperty.getId()));
+    new RowSpecification("linked_issue_to_remove_id", linkEvent => linkEvent.unlinkedIssueProperty.getId()));
 
 export class UnlinkEvent extends IssueTimelineItem {
 
@@ -25,7 +25,7 @@ export class UnlinkEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove", new LoadIssuesCommand(true)),
+            unlinkEvent => new GetWithReloadCommand(unlinkEvent, "linked_issue_to_remove_id", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

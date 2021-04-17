@@ -20,7 +20,7 @@ import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersComma
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("deleted", "isDeleted"),
-        new RowSpecification("created_by", (syncNode => syncNode.createdByProperty.getId())),
+        new RowSpecification("created_by_id", (syncNode => syncNode.createdByProperty.getId())),
         RowSpecification.fromProperty("created_at", "createdAt")
     );
 
@@ -52,7 +52,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 command.ids = [id];
                 return command;
             },
-            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand()),
+            syncNode => new GetWithReloadCommand(syncNode, "created_by_id", new LoadUsersCommand()),
         );
 
     /**

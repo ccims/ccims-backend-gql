@@ -12,7 +12,7 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);  

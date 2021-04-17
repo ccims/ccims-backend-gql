@@ -24,8 +24,8 @@ export class LoadAddedNonFunctionalConstraintEventsCommand extends LoadIssueTime
      * @returns the parsed AddedNonFunctionalConstraintEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): AddedNonFunctionalConstraintEvent {
-        return new AddedNonFunctionalConstraintEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.non_functional_constraint, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+        return new AddedNonFunctionalConstraintEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.non_functional_constraint_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

@@ -65,7 +65,7 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Component {
         return new Component(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.last_updated_at, resultRow.repository_url, 
-            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

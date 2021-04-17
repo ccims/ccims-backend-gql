@@ -46,7 +46,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ComponentInterface {
         return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.last_updated_at, resultRow.host_component_id, 
-            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

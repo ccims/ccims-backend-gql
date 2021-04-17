@@ -12,7 +12,7 @@ function deleteNonFunctionalConstraint(): GraphQLFieldConfig<any, ResolverContex
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "NonFunctionalConstraintId", 32);
+            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "nonFunctionalConstraint", 32);
 
             const nonFunctionalConstraint = await context.dbManager.getNode(nonFunctionalConstraintId);
             if (NonFunctionalConstraint === undefined || !(nonFunctionalConstraint instanceof NonFunctionalConstraint)) {

@@ -11,7 +11,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const NonFunctionalConstraintEventTableSpecification: NodeTableSpecification<NonFunctionalConstraintEvent>
     = new NodeTableSpecification<NonFunctionalConstraintEvent>("issue_timeline_item", IssueTimelineItemTableSpecification,
-    new RowSpecification("non_functional_constraint", nonFunctionalConstraintEvent => nonFunctionalConstraintEvent.nonFunctionalConstraintProperty.getId()));
+    new RowSpecification("non_functional_constraint_id", nonFunctionalConstraintEvent => nonFunctionalConstraintEvent.nonFunctionalConstraintProperty.getId()));
 
 export abstract class NonFunctionalConstraintEvent<T extends NonFunctionalConstraintEvent = any> extends IssueTimelineItem<T> {
     public readonly nonFunctionalConstraintProperty: NullableNodeProperty<NonFunctionalConstraint, NonFunctionalConstraintEvent>;
@@ -23,7 +23,7 @@ export abstract class NonFunctionalConstraintEvent<T extends NonFunctionalConstr
                 command.ids = [id];
                 return command;
             },
-            nonFunctionalConstraintEvent => new GetWithReloadCommand(nonFunctionalConstraintEvent, "nonFunctionalConstraint", new LoadNonFunctionalConstraintsCommand(true)),
+            nonFunctionalConstraintEvent => new GetWithReloadCommand(nonFunctionalConstraintEvent, "non_functional_constraint_id", new LoadNonFunctionalConstraintsCommand(true)),
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

@@ -12,7 +12,7 @@ CREATE TABLE sync_node (
     LIKE node INCLUDING DEFAULTS,
     deleted bool NOT NULL DEFAULT false,
     created_at timestamp NOT NULL,
-    created_by id NOT NULL,
+    created_by_id id NOT NULL,
     last_modified_at timestamp NOT NULL DEFAULT now()
 );
 

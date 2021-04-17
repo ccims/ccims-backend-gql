@@ -197,12 +197,12 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Issue {
         let body = databaseManager.getCachedNode(resultRow.body_id) as Body | undefined;
         if (body === undefined) {
-            body = new Body(databaseManager, resultRow.body_id, resultRow.body_created_by, resultRow.body_created_at, resultRow.body_issue,
+            body = new Body(databaseManager, resultRow.body_id, resultRow.body_created_by_id, resultRow.body_created_at, resultRow.body_issue,
                 resultRow.body_body, resultRow.body_last_edited_by, resultRow.body_last_edited_at, resultRow.body_initial_title, resultRow.body_deleted,
                 resultRow.body_last_modified_at, resultRow.body_metadata);
             databaseManager.addCachedNode(body);
         }
-        return new Issue(databaseManager, body, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.title, resultRow.is_open, resultRow.is_duplicate,
+        return new Issue(databaseManager, body, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.title, resultRow.is_open, resultRow.is_duplicate,
             resultRow.category, resultRow.start_date, resultRow.due_date, resultRow.estimated_time, resultRow.spent_time, resultRow.last_updated_at,
             resultRow.body_id, resultRow.priority, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }

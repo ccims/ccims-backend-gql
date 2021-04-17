@@ -60,6 +60,7 @@ import { RemovedNonFunctionalConstraintEvent } from "./timelineItems/RemovedNonF
 import { Comment } from "./Comment";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
+import { EstimatedTimeChangedEvent } from "./timelineItems/EstimatedTimeChangedEvent";
 
 
 /**
@@ -159,7 +160,7 @@ export class Issue extends SyncNode<Issue> implements Comment {
      * specification for timelineProperty
      */
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
-        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
+        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue_id"),
             (ids, issue) => {
                 const command = new LoadIssueTimelineItemsCommand(true);
                 command.ids = ids;

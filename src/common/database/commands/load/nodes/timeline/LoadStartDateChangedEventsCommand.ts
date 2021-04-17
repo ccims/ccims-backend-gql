@@ -24,7 +24,7 @@ export class LoadStartDateChangedEventsCommand extends LoadIssueTimelineItemsCom
      * @returns the parsed StartDateChangedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): StartDateChangedEvent {
-        return new StartDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
+        return new StartDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
            resultRow.old_start_date, resultRow.new_start_date, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 

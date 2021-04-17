@@ -11,7 +11,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const ArtifactEventTableSpecification: NodeTableSpecification<ArtifactEvent>
     = new NodeTableSpecification<ArtifactEvent>("issue_timeline_item", IssueTimelineItemTableSpecification,
-    new RowSpecification("artifact", artifactEvent => artifactEvent.artifactProperty.getId()));
+    new RowSpecification("artifact_id", artifactEvent => artifactEvent.artifactProperty.getId()));
 
 export abstract class ArtifactEvent<T extends ArtifactEvent = any> extends IssueTimelineItem<T> {
     public readonly artifactProperty: NullableNodeProperty<Artifact, ArtifactEvent>;
@@ -23,7 +23,7 @@ export abstract class ArtifactEvent<T extends ArtifactEvent = any> extends Issue
                 command.ids = [id];
                 return command;
             },
-            artifactEvent => new GetWithReloadCommand(artifactEvent, "artifact", new LoadArtifactsCommand(true)),
+            artifactEvent => new GetWithReloadCommand(artifactEvent, "artifact_id", new LoadArtifactsCommand(true)),
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

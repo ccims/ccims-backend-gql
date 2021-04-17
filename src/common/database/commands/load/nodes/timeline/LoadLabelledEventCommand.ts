@@ -25,7 +25,7 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
      * @returns the parsed LabelledEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): LabelledEvent {
-        return new LabelledEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue, resultRow.label, resultRow.deleted,
+        return new LabelledEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id, resultRow.label_id, resultRow.deleted,
             resultRow.last_modified_at, resultRow.metadata);
     }
 

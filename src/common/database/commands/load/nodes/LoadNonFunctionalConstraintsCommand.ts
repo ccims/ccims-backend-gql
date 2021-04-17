@@ -46,7 +46,7 @@ export class LoadNonFunctionalConstraintsCommand extends LoadSyncNodeListCommand
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): NonFunctionalConstraint {
         return new NonFunctionalConstraint(databaseManager, resultRow.id, resultRow.issue_id, resultRow.content, resultRow.description, resultRow.is_active,
-            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

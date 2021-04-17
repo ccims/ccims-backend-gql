@@ -8,7 +8,7 @@ const deleteComponentInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to delete"
         }

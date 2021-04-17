@@ -15,7 +15,7 @@ import { SyncNode, SyncNodeTableSpecification } from "../SyncNode";
  */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
     = new NodeTableSpecification<IssueTimelineItem>("issue_timeline_item", SyncNodeTableSpecification,
-        new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
+        new RowSpecification("issue_id", timelineItem => timelineItem.issueProperty.getId()));
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {
 
@@ -34,7 +34,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand(true)),
+            timelineItem => new GetWithReloadCommand(timelineItem, "issue_id", new LoadIssuesCommand(true)),
             (issue, timelineItem) => issue.timelineProperty
         );
 

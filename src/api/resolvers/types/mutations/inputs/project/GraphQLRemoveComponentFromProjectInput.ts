@@ -8,11 +8,11 @@ const removeComponentFromProjectInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        projectId: {
+        project: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the project from which to remove the component"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to remove from the project"
         }

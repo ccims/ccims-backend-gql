@@ -2,7 +2,7 @@ import { GetWithReloadCommand } from "../../database/commands/GetWithReloadComma
 import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
-import { NodeTableSpecification } from "../NodeTableSpecification";
+import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
@@ -11,7 +11,8 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const DeletedIssueCommentTableSpecification: NodeTableSpecification<DeletedIssueComment>
-    = new NodeTableSpecification<DeletedIssueComment>("deleted_issue_comment", IssueTimelineItemTableSpecification);
+    = new NodeTableSpecification<DeletedIssueComment>("deleted_issue_comment", IssueTimelineItemTableSpecification,
+    new RowSpecification("deleted_by_id", deletedIssueComment => deletedIssueComment.deletedByProperty.getId()));
 
 export class DeletedIssueComment extends IssueTimelineItem {
 
@@ -26,7 +27,7 @@ export class DeletedIssueComment extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            deletedByProperty => new GetWithReloadCommand(deletedByProperty, "deleted_by", new LoadUsersCommand()),
+            deletedByProperty => new GetWithReloadCommand(deletedByProperty, "deleted_by_id", new LoadUsersCommand()),
         );
 
 

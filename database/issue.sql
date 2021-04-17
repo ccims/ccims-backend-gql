@@ -63,7 +63,7 @@ CREATE TABLE relation_comment_edited_by (
 
 CREATE TABLE issue_timeline_item (
     LIKE sync_node INCLUDING DEFAULTS,
-    issue id NOT NULL,
+    issue_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
@@ -71,45 +71,45 @@ CREATE TABLE referenced_by_other_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     source text NOT NULL,
     source_url text NOT NULL,
-    component id NOT NULL,
+    component_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE referenced_by_issue_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    mentioned_at_issue id NOT NULL,
-    mentioned_in_comment id NOT NULL,
+    mentioned_at_issue_id id NOT NULL,
+    mentioned_in_comment_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE was_linked_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    linked_by id NOT NULL,
+    linked_by_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE was_unlinked_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    unlinked_by id NOT NULL,
+    unlinked_by_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE link_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    linked_issue id NOT NULL,
+    linked_issue_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE unlink_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    linked_issue_to_remove id NOT NULL,
+    linked_issue_to_remove_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE comment (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     last_edited_at timestamp NOT NULL,
-    last_edited_by id NOT NULL,
+    last_edited_by_id id NOT NULL,
     body varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
@@ -122,19 +122,19 @@ CREATE TABLE body (
 
 CREATE TABLE deleted_comment (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    deleted_by id NOT NULL,
+    deleted_by_id id NOT NULL,
     deleted_at timestamp NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE labelled_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    label id NOT NULL
+    label_id id NOT NULL
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE unlabelled_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    label id NOT NULL,
+    label_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -175,7 +175,7 @@ CREATE TABLE estimated_time_changed_event (
 
 CREATE TABLE added_to_location_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    location id NOT NULL,
+    location_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -186,7 +186,7 @@ CREATE TABLE removed_from_location_event (
 
 CREATE TABLE added_to_component_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    component id NOT NULL,
+    component_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -197,7 +197,7 @@ CREATE TABLE removed_from_component_event (
 
 CREATE TABLE added_artifact_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    artifact id NOT NULL,
+    artifact_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -208,7 +208,7 @@ CREATE TABLE removed_artifact_event (
 
 CREATE TABLE added_non_functional_constraint_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    non_functional_constraint id NOT NULL,
+    non_functional_constraint_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
@@ -219,31 +219,31 @@ CREATE TABLE removed_non_functional_constraint_event (
 
 CREATE TABLE pinned_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    component id NOT NULL,
+    component_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE unpinned_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    component id NOT NULL,
+    component_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE assigned_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    assignee id NOT NULL,
+    assignee_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE unassigned_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    removed_assignee id NOT NULL,
+    removed_assignee_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 
 CREATE TABLE marked_as_duplicate_event (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
-    original_issue id NOT NULL,
+    original_issue_id id NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);
 

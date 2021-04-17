@@ -12,7 +12,7 @@ function addNonFunctionalConstraintToIssue(): GraphQLFieldConfig<any, ResolverCo
         ...base,
         resolve: async (src, args, context, info) => {
             const { cmd, input } = base.initTimelineMutation(args, context);
-            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "NonFunctionalConstraint", 32);
+            const nonFunctionalConstraintId = PreconditionCheck.checkString(input, "nonFunctionalConstraint", 32);
             
             const nonFunctionalConstraint = await context.dbManager.getNode(nonFunctionalConstraintId);
             if (nonFunctionalConstraint === undefined || !(nonFunctionalConstraint instanceof NonFunctionalConstraint)) {

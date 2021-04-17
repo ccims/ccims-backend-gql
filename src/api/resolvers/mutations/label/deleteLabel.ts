@@ -12,7 +12,7 @@ function deleteLabel(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const labelId = PreconditionCheck.checkString(input, "labelId", 32);
+            const labelId = PreconditionCheck.checkString(input, "label", 32);
 
             const label = await context.dbManager.getNode(labelId);
             if (label === undefined || !(label instanceof Label)) {

@@ -3,18 +3,18 @@ import { ResolverContext } from "../../../ResolverContext";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import GraphQLRemoveConsumedInterfacePayload from "../../types/mutations/payloads/component/GraphQLRemoveConsumedInterfacePayload";
-import GraphQLRemoveConsumedInterfaceInput from "../../types/mutations/inputs/component/GraphQLRemoveConsumedInterfaceInput";
+import GraphQLRemoveConsumedInterfaceInput from "../../types/mutations/inputs/component/GraphQLRemoveConsumedComponentInterfaceInput";
 import { Component } from "../../../../common/nodes/Component";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 
-function removeConsumedInterface(): GraphQLFieldConfig<any, ResolverContext> {
+function removeConsumedComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLRemoveConsumedInterfacePayload, GraphQLRemoveConsumedInterfaceInput, "Removes the specified component to the project if it is not already on the project");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
-            const interfaceId = PreconditionCheck.checkString(input, "interfaceId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
+            const interfaceId = PreconditionCheck.checkString(input, "componentInterface", 32);
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
 
@@ -38,4 +38,4 @@ function removeConsumedInterface(): GraphQLFieldConfig<any, ResolverContext> {
         }
     };
 }
-export default removeConsumedInterface;
+export default removeConsumedComponentInterface;

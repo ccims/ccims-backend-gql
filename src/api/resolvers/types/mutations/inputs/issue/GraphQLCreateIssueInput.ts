@@ -39,6 +39,10 @@ const createIssueInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "A list of IDs of issue locations to add the issue to.\n\nIf `null`, the issue will not be assigned to any locations"
         },
+        artifacts: {
+            type: GraphQLList(GraphQLNonNull(GraphQLID)),
+            description: "A list of IDs of Artifacts to add to the issue to.\n\n If `null`, none will be added."
+        },
         startDate: {
             type: GraphQLDate,
             description: "The start date to be set for the issue.\n\nIf `null`, none will be set"
@@ -50,7 +54,7 @@ const createIssueInputConfig: GraphQLInputObjectTypeConfig = {
         estimatedTime: {
             type: GraphQLTimeSpan,
             description: "The estimated time to be set for the issue.\n\nIf `null`, none will be set"
-        },
+        }
     })
 };
 const GraphQLCreateIssueInput = new GraphQLInputObjectType(createIssueInputConfig);

@@ -12,7 +12,7 @@ function deleteArtifact(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const artifactId = PreconditionCheck.checkString(input, "artifactId", 32);
+            const artifactId = PreconditionCheck.checkString(input, "artifact", 32);
 
             const artifact = await context.dbManager.getNode(artifactId);
             if (artifact === undefined || !(artifact instanceof Artifact)) {

@@ -45,7 +45,7 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Artifact {
         return new Artifact(databaseManager, resultRow.id, resultRow.component_id, resultRow.uri, resultRow.line_range_start, resultRow.line_range_end, resultRow.last_updated_at,
-            resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

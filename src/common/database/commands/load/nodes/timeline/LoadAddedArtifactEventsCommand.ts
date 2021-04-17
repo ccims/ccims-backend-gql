@@ -24,8 +24,8 @@ export class LoadAddedArtifactEventsCommand extends LoadIssueTimelineItemsComman
      * @returns the parsed AddedArtifactEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): AddedArtifactEvent {
-        return new AddedArtifactEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.artifact, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+        return new AddedArtifactEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.artifact_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

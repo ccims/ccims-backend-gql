@@ -27,7 +27,7 @@ export const CommentIssueTimelineItemTableSpecification: NodeTableSpecification<
     = new NodeTableSpecification<CommentIssueTimelineItem>("issue_timeline_item", IssueTimelineItemTableSpecification,
         RowSpecification.fromProperty("body", "body"),
         RowSpecification.fromProperty("last_edited_at", "lastEditedAt"),
-        new RowSpecification("last_edited_by", comment => comment.lastEditedByProperty.getId()));
+        new RowSpecification("last_edited_by_id", comment => comment.lastEditedByProperty.getId()));
 
 export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> extends IssueTimelineItem<T> implements Comment<T> {
 
@@ -60,7 +60,7 @@ export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> 
                 command.ids = [id];
                 return command;
             },
-            comment => new GetWithReloadCommand(comment, "last_edited_by", new LoadUsersCommand()),
+            comment => new GetWithReloadCommand(comment, "last_edited_by_id", new LoadUsersCommand()),
         );
 
     private _lastEditedAt: Date;

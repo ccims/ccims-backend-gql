@@ -69,12 +69,12 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         if (this.createdBy !== undefined) {
             if (this.createdBy.length === 1) {
                 conditions.conditions.push({
-                    text: `main.created_by=$${conditions.i}`,
+                    text: `main.created_by_id=$${conditions.i}`,
                     values: [this.createdBy[0]],
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.created_by=ANY($${conditions.i})`,
+                    text: `main.created_by_id=ANY($${conditions.i})`,
                     values: [this.createdBy],
                 });
             }

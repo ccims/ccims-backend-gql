@@ -13,7 +13,7 @@ function updateLabel(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, permissions => true);
-            const labelId = PreconditionCheck.checkString(input, "labelId", 32);
+            const labelId = PreconditionCheck.checkString(input, "label", 32);
 
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);

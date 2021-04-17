@@ -13,7 +13,7 @@ import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 
 export const UnlabelledEventTableSpecification: NodeTableSpecification<UnlabelledEvent>
     = new NodeTableSpecification<UnlabelledEvent>("unlabelled_event", IssueTimelineItemTableSpecification,
-        new RowSpecification("label", labelledEvent => labelledEvent.labelProperty.getId()));
+        new RowSpecification("label_id", labelledEvent => labelledEvent.labelProperty.getId()));
 
 export class UnlabelledEvent extends IssueTimelineItem {
 
@@ -26,7 +26,7 @@ export class UnlabelledEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand(true)),
+            labelledEvent => new GetWithReloadCommand(labelledEvent, "label_id", new LoadLabelsCommand(true)),
         );
 
     public constructor(databaseManager: DatabaseManager, id: string,

@@ -8,7 +8,7 @@ const updateArtifactInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        artifactId: {
+        artifact: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the artifact to update"
         },

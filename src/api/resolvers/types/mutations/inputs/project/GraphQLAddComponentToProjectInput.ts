@@ -8,11 +8,11 @@ const addComponentToProjectInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        projectId: {
+        project: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the project to which to add the component"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to add to the project"
         }
