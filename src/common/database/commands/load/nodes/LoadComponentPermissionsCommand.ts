@@ -1,7 +1,6 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { ComponentPermission, ComponentPermissionTableSpecification } from "../../../../nodes/ComponentPermission";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadPermissionsCommandBase } from "./LoadPermissionsCommandBase";
 import { createStringListFilter } from "./RelationFilter";
@@ -11,7 +10,7 @@ export class LoadComponentPermissionsCommand extends LoadPermissionsCommandBase<
     /**
      * Only selects ComponentPermissions which apply to at least of of the provided components
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * Creates a new LoadComponentPermissionsCommand
@@ -26,11 +25,11 @@ export class LoadComponentPermissionsCommand extends LoadPermissionsCommandBase<
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.components !== undefined) {
-            conditions.conditions.push(createStringListFilter("component_id", this.components, conditions.i, 4));
+            conditions.conditions.push(createStringListFilter("component_id", this.components, conditions.i));
             conditions.i++;
         }
 

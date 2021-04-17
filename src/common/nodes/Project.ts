@@ -6,62 +6,31 @@ import { DatabaseCommand } from "../database/DatabaseCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
 import { Issue } from "./Issue";
-import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
+import { NodeTableSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
 import { ComponentInterface } from "./ComponentInterface";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
-import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
-import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NullableNodeProperty } from "./properties/NullableNodeProperty";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { LoadProjectPermissionsCommand } from "../database/commands/load/nodes/LoadProjectPermissionsCommand";
 import { ProjectPermission } from "./ProjectPermission";
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 
 /**
  * the specification of the table which contains projects
  */
 export const ProjectTableSpecification: NodeTableSpecification<Project>
-    = new NodeTableSpecification<Project>("project", NamedNodeTableSpecification,
-        new RowSpecification("owner_user_id", component => component.ownerProperty.getId()));
+    = new NodeTableSpecification<Project>("project", NamedNodeTableSpecification);
 
 
 /**
  * A project
  */
 export class Project extends NamedNode<Project> {
-
-    /**
-     * the owner property which contains the owner of this node
-     */
-    public readonly ownerProperty: NullableNodeProperty<User, Project>;
-
-    /**
-     * specification of the ownerProperty
-     */
-    private static readonly ownerPropertySpecification: NodePropertySpecification<User, Project>
-        = new NodePropertySpecification<User, Project>(
-            (id, node) => {
-                const command = new LoadUsersCommand();
-                command.ids = [id];
-                return command;
-            },
-            node => new GetWithReloadCommand(node, "owner_user_id", new LoadUsersCommand()),
-            (user, node) => user.ownedProjectsProperty
-        );
-
-    /**
-     * Async getter funtion for the ownerProperty
-     * @returns A promise of the user owning this node
-     */
-    public async owner(): Promise<User | undefined> {
-        return this.ownerProperty.getPublic();
-    }
 
     /**
      * property with the components on this project
@@ -115,6 +84,7 @@ export class Project extends NamedNode<Project> {
      * property with all interfaces
      * do NOT add an interfaces via this property
      * do NOT remove an interface via this property
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly interfacesProperty: NodeListProperty<ComponentInterface, Project>;
 
@@ -139,11 +109,12 @@ export class Project extends NamedNode<Project> {
     /**
      * Property of all labels that are available on this project (all labels on all components on this project)
      * IT IS __NOT__ POSSIBLE TO ADD A LABEL TO A PROJECT VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly labelsProperty: NodeListProperty<Label, Project>;
 
     /**
-     * Specification for the labelsProperty loading all ids of labels and the corresponding labels
+     * Specification for the labelsProperty
      */
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Project> =
         NodeListPropertySpecification.loadDynamic<Label, Project>(
@@ -160,6 +131,31 @@ export class Project extends NamedNode<Project> {
             }
         )
             .notifyChanged((label, project) => label.projectsProperty)
+            .noSave();
+
+    /**
+     * Property of all Artifacts that are available on this project (all Artifacts on all components on this project)
+     * IT IS __NOT__ POSSIBLE TO ADD AN ARTIFACT TO A PROJECT VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Project>;
+
+    /**
+     * Specification for the artifactsProperty
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Project> =
+        NodeListPropertySpecification.loadDynamic<Artifact, Project>(
+            project => new LoadArtifactsIdsCommand(project.id),
+            (ids, project) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command
+            },
+            (project) => {
+                const command = new LoadArtifactsCommand(true);
+                command.onProjects = [project.id];
+                return command;
+            })
             .noSave();
 
     
@@ -196,15 +192,14 @@ export class Project extends NamedNode<Project> {
      * @param id the id
      * @param name the name of the component
      * @param description the description of the component
-     * @param ownerId the id of the owner of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string) {
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string) {
         super(NodeType.Project, databaseManager, ProjectTableSpecification, id, name, description);
-        this.ownerProperty = new NullableNodeProperty<User, Project>(databaseManager, Project.ownerPropertySpecification, this, ownerId);
         this.componentsProperty = new NodeListProperty<Component, Project>(databaseManager, Project.componentsPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Project>(databaseManager, Project.interfacesPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Project>(databaseManager, Project.issuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Project>(databaseManager, Project.labelsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Project>(databaseManager, Project.artifactsPropertySpecification, this);
         this.permissionsProperty = new NodeListProperty<ProjectPermission, Project>(databaseManager, Project.permissionsPropertySpecification, this);
     }
 
@@ -212,9 +207,8 @@ export class Project extends NamedNode<Project> {
      * creates a new project with the specified name, description, owner and a new id
      * @param name the name of the project, must be shorter than 257 chars
      * @param description the description of the project, must be shorter than 65537 chars
-     * @param owner the owner of the project
      */
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Project> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string): Promise<Project> {
         if (name.length > 256) {
             throw new Error("The specified name is too long");
         }
@@ -222,10 +216,9 @@ export class Project extends NamedNode<Project> {
             throw new Error("The specified description is too long");
         }
 
-        const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
+        const project = new Project(databaseManager, databaseManager.idGenerator.generateString(), name, description);
         project.markNew();
         databaseManager.addCachedNode(project);
-        await owner.ownedProjectsProperty.add(project);
         return project;
     }
 
@@ -236,7 +229,6 @@ export class Project extends NamedNode<Project> {
     public async markDeleted(): Promise<void> {
         if (!this.isDeleted) {
             await super.markDeleted();
-            await this.ownerProperty.markDeleted();
             await this.componentsProperty.clear();
             await this.issuesProperty.clear();
             await this.labelsProperty.clear();
@@ -313,7 +305,40 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
         this.result = result.rows.map(row => row.label_id);
         return [];
     }
+}
 
+/**
+ * command to laod all ids of Artifacts on a project
+ */
+ class LoadArtifactsIdsCommand extends DatabaseCommand<string[]> {
+
+    /**
+     * creates a new LoadArtifactsIdsCommand
+     * @param projectId the id of the project
+     */
+    public constructor(private readonly projectId: string) {
+        super();
+    }
+
+    /**
+     * generates the query config
+     */
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return {
+            text: "SELECT DISTINCT ON(artifact_id) id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            values: [this.projectId]
+        }
+    }
+
+    /**
+     * called when the query is finished
+     * @param databaseManager the databaseManager
+     * @param result the query result
+     */
+    public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
+        this.result = result.rows.map(row => row.artifact_id);
+        return [];
+    }
 }
 
 /**

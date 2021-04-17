@@ -20,7 +20,7 @@ import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersComma
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("deleted", "isDeleted"),
-        new RowSpecification("created_by", (syncNode => syncNode.createdByProperty.getId())),
+        new RowSpecification("created_by_id", (syncNode => syncNode.createdByProperty.getId())),
         RowSpecification.fromProperty("created_at", "createdAt")
     );
 
@@ -34,7 +34,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * the DatabaseManager decides which metadata id is loaded
      * if undefined, the metadata is not loaded or not present
      */
-    private _metadata?: SyncMetadata;
+    private _metadata: SyncMetadata | undefined;
 
     private _metadataChanged: boolean = false;
 
@@ -52,7 +52,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 command.ids = [id];
                 return command;
             },
-            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand()),
+            syncNode => new GetWithReloadCommand(syncNode, "created_by_id", new LoadUsersCommand()),
         );
 
     /**
@@ -142,6 +142,9 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
         }
     }
 
+    /**
+     * The date when the SyncNode was created
+     */
     public get createdAt(): Date {
         return this._createdAt;
     }
@@ -150,7 +153,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * For all immutable SyncNodes, this is just the creation data
      * all other SyncNodes have to overwrite this to implement correct functionality
      */
-    public get lastEditedAt(): Date {
+    public get lastUpdatedAt(): Date {
         return this._createdAt;
     }
 

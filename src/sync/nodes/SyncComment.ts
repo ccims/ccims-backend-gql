@@ -1,4 +1,4 @@
-import { Comment } from "../../common/nodes/timelineItems/Comment";
+import { CommentIssueTimelineItem } from "../../common/nodes/timelineItems/CommentIssueTimelineItem";
 import { SyncProperty } from "../properties/SyncProperty";
 import { SyncPropertySpecification } from "../properties/SyncPropertySpecification";
 import { SyncNodeWrapper } from "./SyncNodeWrapper";
@@ -6,12 +6,12 @@ import { SyncNodeWrapper } from "./SyncNodeWrapper";
 /**
  * Sync wrapper for Comments
  */
-export class SyncComment<T extends Comment> extends SyncNodeWrapper<T> {
+export class SyncComment<T extends CommentIssueTimelineItem> extends SyncNodeWrapper<T> {
 
     /**
      * Specification for the body property
      */
-    private static readonly bodyPropertySpecification: SyncPropertySpecification<string, Comment, SyncComment<Comment>> = {
+    private static readonly bodyPropertySpecification: SyncPropertySpecification<string, CommentIssueTimelineItem, SyncComment<CommentIssueTimelineItem>> = {
         apply: async (item, node) => {
             await node.node.setBody(item.value, item.atDate ?? new Date(), item.asUser);
             return undefined;
@@ -22,7 +22,7 @@ export class SyncComment<T extends Comment> extends SyncNodeWrapper<T> {
         },
         getCurrentStatus: async node => {
             return {
-                lastUpdatedAt: node.node.lastEditedAt,
+                lastUpdatedAt: node.node.lastUpdatedAt,
                 currentValue: node.node.body
             };
         }
@@ -31,7 +31,7 @@ export class SyncComment<T extends Comment> extends SyncNodeWrapper<T> {
     /**
      * Property to update the body of the comment
      */
-    public readonly bodyProperty: SyncProperty<string, Comment, SyncComment<Comment>>;
+    public readonly bodyProperty: SyncProperty<string, CommentIssueTimelineItem, SyncComment<CommentIssueTimelineItem>>;
 
     /**
      * Creates a new SyncComment based on the provided T

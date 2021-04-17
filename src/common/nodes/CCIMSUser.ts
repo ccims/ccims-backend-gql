@@ -139,7 +139,7 @@ export class CCIMSUser extends User {
      * The password of the user in hased format
      * The database allows 200 characters max.
      */
-     public set passwordHash(value: string) {
+    public set passwordHash(value: string) {
         if (value.length > 200) {
             throw new Error("The given password hash is too long");
         }

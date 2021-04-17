@@ -24,8 +24,8 @@ export class LoadUnassignedEventsCommand extends LoadIssueTimelineItemsCommandBa
      * @returns the parsed UnassignedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnassignedEvent {
-        return new UnassignedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.removedAssignee, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+        return new UnassignedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.removed_assignee_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**

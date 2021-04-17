@@ -1,0 +1,7 @@
+node_modules
+database
+schema
+scripts
+test
+testData
+config

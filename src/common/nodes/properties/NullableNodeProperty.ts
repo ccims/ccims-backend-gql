@@ -1,14 +1,11 @@
 import { CCIMSNode } from "../CCIMSNode";
-import { Property } from "./Property";
-import { Saveable } from "../Saveable";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
-import { log } from "../../../log";
 
-/**
- * @see NodeProperty, but supports undefined for the other node
- */
+
+
+
 export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
@@ -18,7 +15,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * if present, the id of the other node
      */
-    private _id?: string;
+    private _id: string | undefined;
 
     /**
      * creates a new nullable node property with the provided specification

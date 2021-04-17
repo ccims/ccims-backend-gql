@@ -1,5 +1,4 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInputObjectTypeExtensions, GraphQLInputObjectTypeConfig } from "graphql";
-import { ResolverContext } from "../../../ResolverContext";
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInputObjectTypeConfig } from "graphql";
 
 const reactionGroupFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ReactionGroupFilter",

@@ -5,10 +5,10 @@ import { UserPermissions } from "../../../utils/UserPermissions";
 type baseMutationType = GraphQLFieldConfig<any, ResolverContext> & {
     /**
      * Creates adds the clientMutationID to the return object
-     * @param args The arguments passed to the reslve fuction
+     * @param args The arguments passed to the resolve function
      * @param returnObject The object to be returned where to add the clientMutationID
      */
-    createResult: <TReturn extends object>(args: any, returnObject: TReturn) => typeof returnObject & { clientMutationID: string | undefined };
+    createResult: <TReturn extends object>(args: any, context: ResolverContext, returnObject: TReturn) => Promise<typeof returnObject & { clientMutationID: string | undefined }>;
     /**
      * Checks the given args weather they and the `input` property on them are valid objects
      * @param args The arguments as given by the resolve function to be checked
@@ -40,10 +40,8 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
                 description: "The data for the mutation"
             }
         },
-        createResult: <TReturn extends object>(args: any, returnObject: TReturn) => {
-            if (typeof args.input.clientMutationID !== "string" && typeof args.input.clientMutationID !== "undefined") {
-                throw new Error("The client mutation id must be a string or not set");
-            }
+        createResult: async <TReturn extends object>(args: any, context: ResolverContext, returnObject: TReturn) => {
+            await context.dbManager.save();
             return {
                 ...returnObject,
                 clientMutationID: args.input.clientMutationID
@@ -55,6 +53,9 @@ function baseMutation(payload: GraphQLObjectType, input: GraphQLInputObjectType,
             }
             if (!args.input || typeof args.input !== "object") {
                 throw new Error("The input for the mutation must be set");
+            }
+            if (typeof args.input.clientMutationID !== "string" && typeof args.input.clientMutationID !== "undefined") {
+                throw new Error("The client mutation id must be a string or not set");
             }
             return args.input;
         },

@@ -1,6 +1,6 @@
 import * as core from "express-serve-static-core";
-import { Client, Pool } from "pg";
-import { ResolverContext, ResolverContextOptional } from "./ResolverContext";
+import { Pool } from "pg";
+import { ResolverContextOptional } from "./ResolverContext";
 import { DatabaseManager } from "../common/database/DatabaseManager";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 

@@ -4,7 +4,6 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
@@ -13,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const AssignedEventTableSpecification: NodeTableSpecification<AssignedEvent>
     = new NodeTableSpecification<AssignedEvent>("assigned_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("assignee", assignedEvent => assignedEvent.assigneeProperty.getId()));
+    new RowSpecification("assignee_id", assignedEvent => assignedEvent.assigneeProperty.getId()));
 
 export class AssignedEvent extends IssueTimelineItem {
 
@@ -26,7 +25,7 @@ export class AssignedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee", new LoadUsersCommand()),
+            assignedEvent => new GetWithReloadCommand(assignedEvent, "assignee_id", new LoadUsersCommand()),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

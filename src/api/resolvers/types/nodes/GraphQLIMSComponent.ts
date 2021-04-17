@@ -1,6 +1,7 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLID, GraphQLNonNull } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { IMSComponent } from "../../../../common/nodes/IMSComponent";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLNode from "../GraphQLNode";
+import GraphQLNode, { nodeFields } from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import GraphQLIMS from "./GraphQLIMS";
 
@@ -9,10 +10,7 @@ const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     description: "An component on an ims. For example a single GitHub repository",
     interfaces: () => ([GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique ID of this IMS"
-        },
+        ...nodeFields<IMSComponent>("IMSComponent"),
         ims: {
             type: GraphQLIMS,
             description: "The IMS which is linked to the Component"

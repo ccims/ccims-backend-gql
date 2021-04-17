@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateProjectInput",
@@ -8,7 +8,7 @@ const updateProjectInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        projectId: {
+        project: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the project to update"
         },

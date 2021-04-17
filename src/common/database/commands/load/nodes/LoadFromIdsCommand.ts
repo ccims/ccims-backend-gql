@@ -37,7 +37,13 @@ import { LoadIMSUsersCommand } from "./LoadIMSUsersCommand";
 import { LoadGlobalPermissionsCommand } from "./LoadGlobalPermissionsCommand";
 import { LoadProjectPermissionsCommand } from "./LoadProjectPermissionsCommand";
 import { LoadComponentPermissionsCommand } from "./LoadComponentPermissionsCommand";
-import { LoadReactionsCommand } from "./LoadReactionsCommand";
+import { LoadNonFunctionalConstraintsCommand } from "./LoadNonFunctionalConstraintsCommand";
+import { LoadArtifactsCommand } from "./LoadArtifactsCommand";
+import { LoadAddedNonFunctionalConstraintEventsCommand } from "./timeline/LoadAddedNonFunctionalConstraintEventsCommand";
+import { LoadRemovedNonFunctionalConstraintEventsCommand } from "./timeline/LoadRemovedNonFunctionalConstraintEventsCommand";
+import { LoadAddedArtifactEventsCommand } from "./timeline/LoadAddedArtifactEventsCommand";
+import { LoadRemovedArtifactEventsCommand } from "./timeline/LoadRemovedArtifactEventsCommand";
+import { LoadReactionGroupsCommand } from "./LoadReactionGroupsCommand";
 
 /**
  * map with method to create command for each table name
@@ -72,14 +78,21 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["labelled_event", (loadDeleted) => new LoadLabelledEventCommand(loadDeleted)],
     ["unlabelled_event", (loadDeleted) => new LoadUnlabelledEventCommand(loadDeleted)],
     ["start_date_changed_event", (loadDeleted) => new LoadStartDateChangedEventsCommand(loadDeleted)],
-    ["issue_timneline_due_date_changed_event", (loadDeleted) => new LoadDueDateChangedEventsCommand(loadDeleted)],
+    ["due_date_changed_event", (loadDeleted) => new LoadDueDateChangedEventsCommand(loadDeleted)],
     ["marked_as_duplicate_event", (loadDeleted) => new LoadMarkedAsDuplicateEventsCommand(loadDeleted)],
     ["unmarked_as_duplicate_event", (loadDeleted) => new LoadUnmarkedAsDuplicateEventsCommand(loadDeleted)],
     ["closed_event", (loadDeleted) => new LoadClosedEventsCommand(loadDeleted)],
     ["reopened_event", (loadDeleted) => new LoadReopenedEventsCommand(loadDeleted)],
     ["priority_changed_event", (loadDeleted) => new LoadPriorityChangedEventsCommand(loadDeleted)],
     ["added_to_location_event", (loadDeleted) => new LoadAddedToLocationEventsCommand(loadDeleted)],
-    ["removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)]
+    ["removed_from_location_event", (loadDeleted) => new LoadRemovedFromLocationEventsCommand(loadDeleted)],
+    ["non_functional_constraint", (loadDeleted) => new LoadNonFunctionalConstraintsCommand(loadDeleted)],
+    ["artifact", (loadDeleted) => new LoadArtifactsCommand(loadDeleted)],
+    ["added_non_functional_constraint_event", (loadDeleted) => new LoadAddedNonFunctionalConstraintEventsCommand(loadDeleted)],
+    ["removed_non_functional_constraint_event", (loadDeleted) => new LoadRemovedNonFunctionalConstraintEventsCommand(loadDeleted)],
+    ["added_artifact_event", (loadDeleted) => new LoadAddedArtifactEventsCommand(loadDeleted)],
+    ["removed_artifact_event", (loadDeleted) => new LoadRemovedArtifactEventsCommand(loadDeleted)],
+    ["reaction_group", () => new LoadReactionGroupsCommand()]
 ]);
 
 /**

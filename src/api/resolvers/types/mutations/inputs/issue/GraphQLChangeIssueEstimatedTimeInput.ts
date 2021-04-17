@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 import GraphQLTimeSpan from "../../../../scalars/GraphQLTimeSpan";
 
 const changeIssueEstimatedTimeInputConfig: GraphQLInputObjectTypeConfig = {

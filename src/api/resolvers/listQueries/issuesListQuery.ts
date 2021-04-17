@@ -1,13 +1,12 @@
-import { GraphQLFieldConfig, GraphQLString, GraphQLInt, GraphQLResolveInfo } from "graphql";
+import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import GraphQLIssueFilter from "../types/filters/GraphQLIssueFilter";
 import GraphQLIssuePage from "../types/pages/GraphQLIssuePage";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
-import { NodeListProperty } from "../../../common/nodes/properties/NodeListProperty";
 import { Issue } from "../../../common/nodes/Issue";
 import { ResolverContext } from "../../ResolverContext";
-import syncNodeListQuery from "./syncNodeListQuery";
 import { LoadIssuesCommand } from "../../../common/database/commands/load/nodes/LoadIssuesCommand";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
+import commentsListQuery from "./commentsListQuery";
 
 /**
  * Creates a interfaces query GraphQLFieldConfig including a resolver using the property provided by the property provider or the database manager in the context
@@ -20,7 +19,7 @@ function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Is
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = syncNodeListQuery<TSource, Issue>(GraphQLIssuePage, GraphQLIssueFilter, description, "issues", propertyProvider);
+    const baseQuery = commentsListQuery<TSource, Issue>(GraphQLIssuePage, GraphQLIssueFilter, description, "comments", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
@@ -28,13 +27,9 @@ function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Is
             baseQuery.addParams(cmd, args);
             cmd.title = args.filterBy?.title;
             cmd.onComponents = args.filterBy?.component;
-            cmd.body = args.filterBy?.body;
             cmd.fullSearch = args.filterBy?.fullSearch;
-            cmd.editedBy = args.filterBy?.editedBy;
-            cmd.lastEditedAfter = args.filterBy?.editedAfter;
-            cmd.lastEditedBefore = args.filterBy?.editedBefore;
-            cmd.updatedAfter = args.filterBy?.updatedAfter;
-            cmd.updatedBefore = args.filterBy?.updatedBefore;
+            cmd.lastUpdatedAfter = args.filterBy?.lastUpdatedAfter;
+            cmd.lastUpdatedBefore = args.filterBy?.lastUpdatedBefore;
             cmd.isOpen = args.filterBy?.isOpen;
             cmd.isDuplicate = args.filterBy?.isDuplicate;
             cmd.ofCategory = args.filterBy?.category;
@@ -42,12 +37,10 @@ function issuesListQuery<TSource extends CCIMSNode, TProperty extends Partial<Is
             cmd.linkedByAnyIssues = args.filterBy?.isLinkedByIssues;
             cmd.linksToIssues = args.filterBy?.linkedIssues;
             cmd.linkedByIssues = args.filterBy?.linkedByIssues;
-            cmd.reactions = args.filterBy?.reactions;
             cmd.userAssigned = args.filterBy?.assignees;
             cmd.labels = args.filterBy?.labels;
             cmd.userParticipated = args.filterBy?.participants;
             cmd.onLocations = args.filterBy?.locations;
-            cmd.currentUserCanEdit = args.filterBy?.currentUserCanEdit;
             cmd.currentUserCanComment = args.filterBy?.currentUserCanComment;
             cmd.startDateAfter = args.filterBy?.startDateAfter;
             cmd.startDateBefore = args.filterBy?.startDateBefore;

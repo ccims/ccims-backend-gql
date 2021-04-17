@@ -1,8 +1,8 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const removeLabelFromIssueInputConfig: GraphQLInputObjectTypeConfig = {
     name: "RemoveLabelFromIssueInput",
-    description: "The inputs for the removeFromIssueLabel",
+    description: "The inputs for the removeLabelFromIssue mutation",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,

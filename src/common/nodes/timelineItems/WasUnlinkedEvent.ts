@@ -4,7 +4,6 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
@@ -13,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const WasUnlinkedEventTableSpecification: NodeTableSpecification<WasUnlinkedEvent>
     = new NodeTableSpecification<WasUnlinkedEvent>("was_unlinked_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("unlinked_by", wasLinkedEvent => wasLinkedEvent.unlinkedByIssueProperty.getId()));
+    new RowSpecification("unlinked_by_id", wasLinkedEvent => wasLinkedEvent.unlinkedByIssueProperty.getId()));
 
 export class WasUnlinkedEvent extends IssueTimelineItem {
 
@@ -26,7 +25,7 @@ export class WasUnlinkedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by", new LoadIssuesCommand(true)),
+            wasUnlinkedEvent => new GetWithReloadCommand(wasUnlinkedEvent, "unlinked_by_id", new LoadIssuesCommand(true)),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

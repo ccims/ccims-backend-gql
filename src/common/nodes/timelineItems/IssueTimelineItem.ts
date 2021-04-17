@@ -15,7 +15,7 @@ import { SyncNode, SyncNodeTableSpecification } from "../SyncNode";
  */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
     = new NodeTableSpecification<IssueTimelineItem>("issue_timeline_item", SyncNodeTableSpecification,
-        new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
+        new RowSpecification("issue_id", timelineItem => timelineItem.issueProperty.getId()));
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {
 
@@ -34,7 +34,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand(true)),
+            timelineItem => new GetWithReloadCommand(timelineItem, "issue_id", new LoadIssuesCommand(true)),
             (issue, timelineItem) => issue.timelineProperty
         );
 
@@ -79,8 +79,8 @@ export class IssueTimelineItemType {
     public static UNLINK_EVENT = new IssueTimelineItemType("unlinkEvent");
     public static WAS_LINKED_EVENT = new IssueTimelineItemType("wasLinkedEvent");
     public static WAS_UNLINKED_EVENT = new IssueTimelineItemType("wasUnlinkedEvent");
-    public static LABELLED_EVENT = new IssueTimelineItemType("labledEvent");
-    public static UNLABELLED_EVENT = new IssueTimelineItemType("unlabledEvent");
+    public static LABELLED_EVENT = new IssueTimelineItemType("labelledEvent");
+    public static UNLABELLED_EVENT = new IssueTimelineItemType("unlabelledEvent");
     public static PINNED_EVENT = new IssueTimelineItemType("pinnedEvent");
     public static UNPINNED_EVENT = new IssueTimelineItemType("unpinnedEvent");
     public static RENAMED_TITLE_EVENT = new IssueTimelineItemType("renamedTitleEvent");
@@ -99,4 +99,8 @@ export class IssueTimelineItemType {
     public static UNMARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("unmarkedAsDuplicateEvent");
     public static ADDED_TO_COMPONENT_EVENT = new IssueTimelineItemType("addedToComponentEvent");
     public static REMOVED_FROM_COMPONENT_EVENT = new IssueTimelineItemType("removedFromComponentEvent");
+    public static ADDED_ARTIFACT_EVENT = new IssueTimelineItemType("addedArtifactEvent");
+    public static REMOVED_ARTIFACT_EVENT = new IssueTimelineItemType("removedArtifactEvent");
+    public static ADDED_NON_FUNCTIONAL_CONSTRAINT = new IssueTimelineItemType("addedNonFunctionalConstraint");
+    public static REMOVED_NON_FUNCTIONAL_CONSTRAINT_EVENT = new IssueTimelineItemType("removedNonFunctionalConstraint");
 }

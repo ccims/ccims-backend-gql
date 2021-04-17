@@ -4,7 +4,6 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Component } from "../Component";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
@@ -12,7 +11,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const ComponentEventTableSpecification: NodeTableSpecification<ComponentEvent>
     = new NodeTableSpecification<ComponentEvent>("issue_timeline_item", IssueTimelineItemTableSpecification,
-    new RowSpecification("component", componentEvent => componentEvent.componentProperty.getId()));
+    new RowSpecification("component_id", componentEvent => componentEvent.componentProperty.getId()));
 
 export abstract class ComponentEvent<T extends ComponentEvent = any> extends IssueTimelineItem<T> {
     public readonly componentProperty: NullableNodeProperty<Component, ComponentEvent>;
@@ -24,7 +23,7 @@ export abstract class ComponentEvent<T extends ComponentEvent = any> extends Iss
                 command.ids = [id];
                 return command;
             },
-            componentEvent => new GetWithReloadCommand(componentEvent, "component", new LoadComponentsCommand(true)),
+            componentEvent => new GetWithReloadCommand(componentEvent, "component_id", new LoadComponentsCommand(true)),
         );
 
     public constructor (type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,

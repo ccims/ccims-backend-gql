@@ -2,12 +2,10 @@ import { Pool } from "pg";
 import { LoadSyncLookupTableEntryCommand } from "../common/database/commands/load/LoadSyncLookupTableEntryCommand";
 import { SetSyncLookupTableEntryCommand } from "../common/database/commands/save/SetSyncLookupTableEntryCommand";
 import { DatabaseManager } from "../common/database/DatabaseManager";
-import { Component } from "../common/nodes/Component";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { SyncComponent } from "./nodes/SyncComponent";
 import { SyncAdapter } from "./adapter/SyncAdapter";
 import { SyncModifiableContainer } from "./SyncModifiableContainer";
-import { IMSSystem } from "../common/nodes/IMSSystem";
 import { IMSComponent } from "../common/nodes/IMSComponent";
 
 /**
@@ -24,13 +22,13 @@ export class SyncManager extends SyncModifiableContainer {
      * The component which is currently synced
      * This is lazy-loaded
      */
-    private _component?: SyncComponent;
+    private _component: SyncComponent | undefined;
 
     /**
      * The IMSComponent which is currently synced
      * This is lazy-loaded
      */
-    private _imsComponent?: IMSComponent;
+    private _imsComponent: IMSComponent | undefined;
 
     /**
      * The DatabaseManager used to load nodes and execute commands

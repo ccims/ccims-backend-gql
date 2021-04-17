@@ -17,7 +17,7 @@ export abstract class Property<T extends CCIMSNode, V extends CCIMSNode> extends
     /**
      * the current executed command
      */
-    protected currentCommand?: Promise<any>;
+    protected currentCommand: Promise<any> | undefined;
 
     /**
      * the specification of the property

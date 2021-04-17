@@ -9,7 +9,7 @@ export class SyncModifiableContainer implements SyncModifiable {
     /**
      * Array with all SyncModifiables
      */
-     private readonly _syncModifiables: SyncModifiable[] = [];
+    private readonly _syncModifiables: SyncModifiable[] = [];
 
     /**
      * Registers a sync modifiable

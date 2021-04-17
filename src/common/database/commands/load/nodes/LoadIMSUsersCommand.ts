@@ -1,6 +1,5 @@
 import { QueryResultRow, QueryResult } from "pg";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadUsersCommandBase } from "./LoadUsersCommandBase";
 import { createStringListFilter } from "./RelationFilter";
@@ -12,9 +11,9 @@ import { IMSUser, IMSUserTableSpecification } from "../../../../nodes/IMSUser";
 export class LoadIMSUsersCommand extends LoadUsersCommandBase<IMSUser> {
 
     /**
-     * select onlsy IMSUsers that have one of the specified issues
+     * select only IMSUsers that have one of the specified issues
      */
-    public imsSystems?: string[];
+    public imsSystems: string[] | undefined;
 
     /**
      * creates a new LoadUsersCommand
@@ -45,11 +44,11 @@ export class LoadIMSUsersCommand extends LoadUsersCommandBase<IMSUser> {
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.imsSystems !== undefined) {
-            conditions.conditions.push(createStringListFilter("ims_id", this.imsSystems, conditions.i, 3));
+            conditions.conditions.push(createStringListFilter("ims_id", this.imsSystems, conditions.i));
             conditions.i++;
         }
 

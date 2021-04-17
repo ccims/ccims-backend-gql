@@ -1,13 +1,11 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import { LoadReactionGroupsCommand } from "../database/commands/load/nodes/LoadReactionGroupsCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
-import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
+import { LoadCommentIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadCommentIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
-import { Component } from "./Component";
 import { Issue } from "./Issue";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
@@ -15,8 +13,8 @@ import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { Comment } from "./timelineItems/Comment"
-import { Project } from "./Project";
+import { ReactionGroup } from "./ReactionGroup";
+import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
 
 /**
  * specification of a table which can contain users
@@ -83,19 +81,19 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    private _username?: string;
+    private _username: string;
 
     /**
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    private _displayName?: string;
+    private _displayName: string;
 
     /**
      * The mail address of the user used for contacting him (e.g. notifications)
      * This isn't required and can be undefined
      */
-    private _email?: string;
+    private _email: string | undefined;
 
 
     /**
@@ -137,17 +135,24 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             .notifyChanged((issue, user) => issue.participantsProperty)
             .noSave();
 
-    public readonly commentsProperty: NodeListProperty<Comment, User>;
+    /**
+     * Property with all comments this user edited
+     */
+    public readonly commentsProperty: NodeListProperty<CommentIssueTimelineItem, User>;
 
-    public static readonly commentsPropertySpecification: NodeListPropertySpecification<Comment, User>
-        = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "edited_by"),
+    /**
+     * Specification for commentsProperty
+     */
+    public static readonly commentsPropertySpecification: NodeListPropertySpecification<CommentIssueTimelineItem, User>
+        = NodeListPropertySpecification.loadDynamic<CommentIssueTimelineItem, User>(
+            LoadRelationCommand.fromSecundary("comment", "edited_by"),
             (ids, user) => {
-                const command = new LoadCommentsCommand(true);
+                const command = new LoadCommentIssueTimelineItemsCommand(true);
                 command.ids = ids;
                 return command;
             },
             user => {
-                const command = new LoadCommentsCommand(true);
+                const command = new LoadCommentIssueTimelineItemsCommand(true);
                 command.editedBy = [user.id];
                 return command;
             })
@@ -155,51 +160,27 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             .noSave();
 
     /**
-     * components owned by this user
+     * Property with all reactions this user ever made
      */
-    public readonly ownedComponentsProperty: NodeListProperty<Component, User>;
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, User>;
 
     /**
-     * specification for ownedComponentsProperty
+     * specification for reactionsProperty
      */
-    public static readonly ownedComponentsPropertySpecification: NodeListPropertySpecification<Component, User>
-        = NodeListPropertySpecification.loadDynamic<Component, User>(
-            LoadRelationCommand.fromManySide("component", "owner_user_id"),
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, User>
+        = NodeListPropertySpecification.loadDynamic<ReactionGroup, User>(
+            LoadRelationCommand.fromSecundary("reaction_group", "user"),
             (ids, user) => {
-                const command = new LoadComponentsCommand(true);
+                const command = new LoadReactionGroupsCommand();
                 command.ids = ids;
                 return command;
             },
             user => {
-                const command = new LoadComponentsCommand(true);
-                command.ownedBy = [user.id];
-                return command;
+                const command = new LoadReactionGroupsCommand();
+                command.users = [user.id];
+                return command
             })
-            .notifyChanged((component, user) => component.ownerProperty)
-            .noSave();
-
-    /**
-     * projects owned by this user
-     */
-    public readonly ownedProjectsProperty: NodeListProperty<Project, User>;
-
-    /**
-     * specification for ownedProjectsProperty
-     */
-    public static readonly ownedProjectsPropertySpecification: NodeListPropertySpecification<Project, User>
-        = NodeListPropertySpecification.loadDynamic<Project, User>(
-            LoadRelationCommand.fromManySide("project", "owner_user_id"),
-            (ids, user) => {
-                const command = new LoadProjectsCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadProjectsCommand();
-                command.ownedBy = [user.id]
-                return command;
-            })
-            .notifyChanged((project, user) => project.ownerProperty)
+            .notifyChanged((reactionGroup, user) => reactionGroup.usersProperty)
             .noSave();
 
     /**
@@ -215,7 +196,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, linkedUserId: string, username?: string, displayName?: string, email?: string) {
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, email?: string) {
         super(type, databaseManager, UserTableSpecification, id);
         this._username = username;
         this._displayName = displayName;
@@ -224,9 +205,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         this.linkedByUsersProperty = new NodeListProperty<User, User>(databaseManager, User.linkedByUsersPropertySpecification, this);
         this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
         this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
-        this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
-        this.ownedComponentsProperty = new NodeListProperty<Component, User>(databaseManager, User.ownedComponentsPropertySpecification, this);
-        this.ownedProjectsProperty = new NodeListProperty<Project, User>(databaseManager, User.ownedProjectsPropertySpecification, this);
+        this.commentsProperty = new NodeListProperty<CommentIssueTimelineItem, User>(databaseManager, User.commentsPropertySpecification, this);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, User>(databaseManager, User.reactionsPropertySpecification, this);
     }
 
 
@@ -234,7 +214,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    public get username(): string | undefined {
+    public get username(): string {
         return this._username;
     }
 
@@ -242,7 +222,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The username used to login, a system wide unique string with
      * Max. 100 characters
      */
-    public set username(value: string |undefined) {
+    public set username(value: string) {
         if (value !== undefined && value.length > 100) {
             throw new Error("The given username is too long");
         }
@@ -254,7 +234,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    public get displayName(): string | undefined {
+    public get displayName(): string {
         return this._displayName;
     }
 
@@ -262,7 +242,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * The string which is displayed for a user in the GUI for other users (not necessarily unique)
      * Max. 200 caracters
      */
-    public set displayName(value: string | undefined) {
+    public set displayName(value: string) {
         if (value !== undefined && value.length > 100) {
             throw new Error("The given display name is too long");
         }
@@ -299,9 +279,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
             await super.markDeleted();
             await this.commentsProperty.clear();
             await this.linkedUserProperty.markDeleted();
-            await this.ownedProjectsProperty.clear();
             await this.linkedByUsersProperty.clear();
-            await this.ownedComponentsProperty.clear();
             await this.assignedToIssuesProperty.clear();
             await this.participantOfIssuesProperty.clear();
         }

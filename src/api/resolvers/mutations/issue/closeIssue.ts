@@ -12,8 +12,7 @@ function closeIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const { input, cmd } = base.initTimelineMutation(args, context);
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
             const event = await issue.close(new Date(), context.user);
-            await context.dbManager.save();
-            return base.createResult(args, issue, event, {});
+            return base.createResult(args, context, issue, event, {});
         }
     }
 }

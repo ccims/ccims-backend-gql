@@ -1,5 +1,4 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { Component } from "../Component";
 import { Issue } from "../Issue";
 import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";

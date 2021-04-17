@@ -1,14 +1,14 @@
-import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateComponentInput",
-    description: "The inputs for the updateComponent mutation",
+    description: "The inputs for the updateComponent mutation, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to update"
         },
@@ -18,7 +18,11 @@ const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         description: {
             type: GraphQLString,
-            description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters. `null` equivalent to \"\""
+            description: "A textual description (of the function) of this component.\n\nMax. 65536 characters."
+        },
+        repositoryURL: {
+            type: GraphQLString,
+            description: "The URL where the code repository of this component is located\n\nMax. 65536 characters"
         }
     })
 };

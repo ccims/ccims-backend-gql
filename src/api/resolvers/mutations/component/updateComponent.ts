@@ -7,15 +7,16 @@ import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 
 function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a component in the ccims and adds it to the given users");
+    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a Component in the ccims. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
-            const description = PreconditionCheck.checkNullableString(input, "description", 65536);            
+            const description = PreconditionCheck.checkNullableString(input, "description", 65536);  
+            const repositoryURL = PreconditionCheck.checkNullableString(input, "repositoryURL", 65536);                      
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
 
@@ -25,14 +26,16 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             if (name !== undefined) {
-                component.name = name;
+                component.setName(name, new Date());
             }
             if (description !== undefined) {
-                component.description = description;
+                component.setDescription(description, new Date());
+            }
+            if (repositoryURL !== undefined) {
+                component.setRepositoryURL(repositoryURL, new Date());
             }
 
-            await context.dbManager.save();
-            return base.createResult(args, { component:component });
+            return base.createResult(args, context, { component:component });
         }
     };
 }

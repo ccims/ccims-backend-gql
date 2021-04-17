@@ -12,7 +12,7 @@ export class LoadAuthorizablesCommand extends CombineCommand<CCIMSUser | Role, L
     /**
      * list of ids
      */
-    private _ids?: string[];
+    private _ids: string[] | undefined;
 
     /**
      * Creates a new LoadAuthorizablesCommand

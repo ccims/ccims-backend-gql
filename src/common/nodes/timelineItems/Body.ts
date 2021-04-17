@@ -2,17 +2,17 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadata } from "../SyncMetadata";
-import { Comment, CommentTableSpecification } from "./Comment";
+import { CommentIssueTimelineItem, CommentIssueTimelineItemTableSpecification } from "./CommentIssueTimelineItem";
 
 /**
  * a table specification for a Body
  * does not specifiy the metadata, because this is up to the save method
  */
 export const BodyTableSpecification: NodeTableSpecification<Body>
-    = new NodeTableSpecification<Body>("body", CommentTableSpecification,
+    = new NodeTableSpecification<Body>("body", CommentIssueTimelineItemTableSpecification,
         RowSpecification.fromProperty("initial_title", "initialTitle"));
 
-export class Body extends Comment<Body> {
+export class Body extends CommentIssueTimelineItem<Body> {
 
     private readonly _initialTitle: string;
 

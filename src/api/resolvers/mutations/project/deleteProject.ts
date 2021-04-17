@@ -12,7 +12,7 @@ function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const projectId = PreconditionCheck.checkString(input, "projectId", 32);
+            const projectId = PreconditionCheck.checkString(input, "project", 32);
 
             const projectCommand = new LoadProjectsCommand();
             projectCommand.ids = [projectId];
@@ -22,11 +22,10 @@ function deleteProject(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id was no valid project id");
             }
             const project = projectCommand.getResult()[0];
-            base.userAllowed(context, permissions => permissions.globalPermissions.addRemoveProjects || context.user.id === project.ownerProperty.getId());
+            base.userAllowed(context, permissions => permissions.globalPermissions.addRemoveProjects);
 
             await project.markDeleted();
-            await context.dbManager.save();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

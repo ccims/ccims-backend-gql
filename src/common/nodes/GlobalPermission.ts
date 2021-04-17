@@ -26,12 +26,12 @@ export class GlobalPermission extends BasePermission<GlobalPermission> {
     /**
      * `true`, iff a user is allowed to create and delete a component
      */
-     private _createDeleteComponents: boolean = false;
+    private _createDeleteComponents: boolean = false;
 
     /**
      * `true` iff the user is a global admin (ALL Permissions; use this VERY carefully)
      */
-     private _globalAdmin: boolean = false;
+    private _globalAdmin: boolean = false;
 
 
     /**

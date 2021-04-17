@@ -12,7 +12,7 @@ function deleteComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const componentInterfaceId = PreconditionCheck.checkString(input, "componentInterfaceId", 32);
+            const componentInterfaceId = PreconditionCheck.checkString(input, "componentInterface", 32);
 
             const componentInterface = await context.dbManager.getNode(componentInterfaceId);
             if (componentInterface === undefined || !(componentInterface instanceof ComponentInterface)) {
@@ -22,8 +22,7 @@ function deleteComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentInterface.componentProperty.getId()).componentAdmin);
 
             await componentInterface.markDeleted();
-            await context.dbManager.save();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

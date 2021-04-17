@@ -21,8 +21,7 @@ function createIMS(): GraphQLFieldConfig<any, ResolverContext> {
 
             const ims = IMSSystem.create(context.dbManager, imsType, imsData);
             
-            await context.dbManager.save();
-            return base.createResult(args, { ims });
+            return base.createResult(args, context, { ims });
         }
     };
 }

@@ -3,7 +3,6 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
@@ -14,7 +13,7 @@ import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 
 export const LabelledEventTableSpecification: NodeTableSpecification<LabelledEvent>
     = new NodeTableSpecification<LabelledEvent>("labelled_event", IssueTimelineItemTableSpecification,
-        new RowSpecification("label", labelledEvent => labelledEvent.labelProperty.getId()));
+        new RowSpecification("label_id", labelledEvent => labelledEvent.labelProperty.getId()));
 
 export class LabelledEvent extends IssueTimelineItem {
 
@@ -27,13 +26,13 @@ export class LabelledEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand(true)),
+            labelledEvent => new GetWithReloadCommand(labelledEvent, "label_id", new LoadLabelsCommand(true)),
         );
 
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, labelId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.AssignedEvent, databaseManager, LabelledEventTableSpecification, id,
+        super(NodeType.LabelledEvent, databaseManager, LabelledEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this.labelProperty = new NullableNodeProperty<Label, LabelledEvent>(databaseManager, LabelledEvent.labelPropertySpecification, this, labelId);

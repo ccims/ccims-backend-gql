@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateComponentInterfaceInput",
@@ -8,7 +8,7 @@ const updateComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentinterfaceId: {
+        componentInterface: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the componentinterface to update"
         },

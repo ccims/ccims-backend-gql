@@ -1,7 +1,6 @@
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { SyncNode } from "../../../../nodes/SyncNode";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
@@ -19,22 +18,22 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
     /**
      * Select only sync nodes that were created by one of the users with the given IDs
      */
-    public createdBy?: string[];
+    public createdBy: string[] | undefined;
 
     /**
      * Select only sync nodes created after the given Date __(inclusive)__
      */
-    public createdAfter?: Date;
+    public createdAfter: Date | undefined;
 
     /**
      * Select only sync nodes created before the given Date __(inclusive)__
      */
-    public createdBefore?: Date;
+    public createdBefore: Date | undefined;
 
     /**
      * Selects only sync nodes which were modified after the given Date __(inclusive)__
      */
-    public modifiedSince?: Date;
+    public modifiedSince: Date | undefined;
 
     protected constructor(rows: RowSpecification<T>[], loadDeleted: boolean = false) {
         super(rows);
@@ -43,6 +42,7 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
     /**
      * gets a string with all rows that should be selected
+     * Also selects last_modified_at (not in rows because this is not saved) and metadata (not on main)
      */
     protected rows(databaseManager: DatabaseManager): string {
         if (!this.countMode) {
@@ -57,11 +57,10 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
         if (!this.loadDeleted) {
             conditions.conditions.push({
-                priority: 3,
                 text: "main.deleted=false",
                 values: []
             });
@@ -70,15 +69,13 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         if (this.createdBy !== undefined) {
             if (this.createdBy.length === 1) {
                 conditions.conditions.push({
-                    text: `main.created_by=$${conditions.i}`,
+                    text: `main.created_by_id=$${conditions.i}`,
                     values: [this.createdBy[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.created_by=ANY($${conditions.i})`,
+                    text: `main.created_by_id=ANY($${conditions.i})`,
                     values: [this.createdBy],
-                    priority: 5
                 });
             }
             conditions.i++;
@@ -88,7 +85,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.created_at >= $${conditions.i}`,
                 values: [this.createdAfter],
-                priority: 4
             });
             conditions.i++;
         }
@@ -97,7 +93,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.created_at <= $${conditions.i}`,
                 values: [this.createdBefore],
-                priority: 4
             });
             conditions.i++;
         }
@@ -106,7 +101,6 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
             conditions.conditions.push({
                 text: `main.last_modified_at >= $${conditions.i}`,
                 values: [this.modifiedSince],
-                priority: 4
             });
             conditions.i++;
         }

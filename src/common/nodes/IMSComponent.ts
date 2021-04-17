@@ -1,7 +1,5 @@
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
-import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
-import { LoadIMSUsersCommand } from "../database/commands/load/nodes/LoadIMSUsersCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Component } from "./Component";
@@ -9,7 +7,6 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { NodeType } from "./NodeType";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
-import { Adapters } from "../../sync/adapter/SyncAdapters";
 import { IMSSystem } from "./IMSSystem";
 import { LoadIMSSystemsCommand } from "../database/commands/load/nodes/LoadIMSSystemsCommand";
 import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
@@ -113,7 +110,7 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
      * creates a new ImsComponent with the specififed imsType, endpoint and IMSData
      */
     public static async create(databaseManager: DatabaseManager, component: Component, imsSystem: IMSSystem, imsData: IMSComponentData): Promise<IMSComponent> {
-        if (IMSComponent.imsComponentAlreadyExists(databaseManager, component, imsSystem)) {
+        if (await IMSComponent.imsComponentAlreadyExists(databaseManager, component, imsSystem)) {
             throw new Error("An IMSComponent with the specified IMS and Component already exists");
         }
 
@@ -133,7 +130,7 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
         loadImsComponentCommand.imsSystems = [imsSystem.id];
         loadImsComponentCommand.components = [component.id];
         databaseManager.addCommand(loadImsComponentCommand);
-        databaseManager.executePendingCommands();
+        await databaseManager.executePendingCommands();
         return loadImsComponentCommand.getResult().length > 0;
     }
 
@@ -159,6 +156,6 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
 /**
  * interface for IMSData
  */
- export interface IMSComponentData {
+export interface IMSComponentData {
 
 }

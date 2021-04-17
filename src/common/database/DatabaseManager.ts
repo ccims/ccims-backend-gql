@@ -44,7 +44,7 @@ export class DatabaseManager {
      * the id used to load metadata
      * This is normally a IMSComponent id
      */
-    private readonly _metadataId?: string;
+    private readonly _metadataId: string | undefined;
 
     /**
      * creates a new DatabaseManager with the specified id generator

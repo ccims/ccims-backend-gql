@@ -2,7 +2,6 @@ import { QueryResult, QueryResultRow } from "pg";
 import { Color } from "../../../../Color";
 import { Label, LabelTableSpecification } from "../../../../nodes/Label";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary } from "./RelationFilter";
@@ -15,22 +14,22 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     /**
      * Select only components which have one of the specified colors
      */
-    public colors?: Color[];
+    public colors: Color[] | undefined;
 
     /**
      * Select only labels that are on components assigned to at least one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
 
     /**
      * Select only labels that are on one of these components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * Select only labels that are assigned to one of these issues
      */
-    public assignedToIssues?: string[];
+    public assignedToIssues: string[] | undefined;
 
     /**
      * creates a new LoadLabelsCommand
@@ -40,13 +39,14 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
     }
 
     /**
-     * parses a component
+     * parses a Label
      * @param resultRow  the row to parse
      * @param result  the complete QueryResult for additional properties like fields
-     * @returns the parsed component
+     * @returns the parsed Label
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Label {
-        return new Label(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.color, resultRow.created_by, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
+        return new Label(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.last_updated_at, resultRow.color, 
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
@@ -62,7 +62,7 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.colors !== undefined) {
@@ -70,13 +70,11 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
                 conditions.conditions.push({
                     text: `main.color=$${conditions.i}`,
                     values: [this.colors[0]],
-                    priority: 6
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.color=ANY($${conditions.i})`,
                     values: [this.colors],
-                    priority: 6
                 });
             }
             conditions.i++;
@@ -87,13 +85,11 @@ export class LoadLabelsCommand extends LoadNamedSyncNodesCommand<Label> {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
                     values: [this.onProjects[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT label_id FROM relation_component_label WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i})))`,
                     values: [this.onProjects],
-                    priority: 5
                 });
             }
             conditions.i++;

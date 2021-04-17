@@ -91,9 +91,10 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
      * @param isDeleted Weather this ComponentInterface is deleted (needed for sync)
      * @param metadata The metadate of this labComponentInterfaceel for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, componentId: string, 
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description, lastUpdatedAt, 
+            createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
         this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
@@ -108,7 +109,7 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
             throw new Error("The specified description is too long");
         }
 
-        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, component.id, 
+        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, component.id, 
             createdBy.id, createdAt, false, createdAt, undefined);
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);

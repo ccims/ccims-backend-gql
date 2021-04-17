@@ -1,7 +1,6 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { PropertySpecification } from "./PropertySpecification";
-import { Saveable } from "../Saveable";
 import { Property } from "./Property";
 
 /**
@@ -14,7 +13,7 @@ export abstract class NodePropertyBase<T extends CCIMSNode, V extends CCIMSNode>
     /**
      * the other node if already loaded
      */
-    protected _element?: T;
+    protected _element: T | undefined;
 
 
     /**

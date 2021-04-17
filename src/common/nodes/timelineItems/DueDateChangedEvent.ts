@@ -13,9 +13,9 @@ export const DueDateChangedEventTableSpecification: NodeTableSpecification<DueDa
 
 export class DueDateChangedEvent extends IssueTimelineItem {
 
-    private _oldDueDate?: Date;
+    private _oldDueDate: Date | undefined;
 
-    private _newDueDate?: Date;
+    private _newDueDate: Date | undefined;
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldDueDate: Date | undefined, newDueDate: Date | undefined,

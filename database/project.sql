@@ -1,21 +1,20 @@
 CREATE TABLE project
 (
-    name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL,
-    description character varying(65536) NOT NULL,
+    name varchar(256) NOT NULL,
+    description varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE issue_location (
-    LIKE sync_node INCLUDING DEFAULTS,
-    name character varying(256) NOT NULL,
-    description character varying(65536) NOT NULL,
+    LIKE named_sync_node INCLUDING DEFAULTS,
+    name varchar(256) NOT NULL,
+    description varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE component
 (
-    owner_user_id id NOT NULL,
+    repository_url varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_location);
 

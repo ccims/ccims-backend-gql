@@ -2,8 +2,6 @@ import { GraphQLFieldConfig } from "graphql";
 import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { Component } from "../../../../common/nodes/Component";
 import { Project } from "../../../../common/nodes/Project";
-import { User } from "../../../../common/nodes/User";
-import { ProjectPermission } from "../../../../utils/UserPermissions";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLCreateProjectInput from "../../types/mutations/inputs/project/GraphQLCreateProjectInput";
 import GraphQLCreateProjectPayload from "../../types/mutations/payloads/project/GraphQLCreateProjectPayload";
@@ -19,7 +17,6 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveProjects);
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
-            const ownerUserId = PreconditionCheck.checkString(input, "owner", 32);
             const componentIds = new Set(PreconditionCheck.checkNullableStringList(input, "components", 32));
             /*
             if ((componentIds.size > 0) && !(ownerUserId === context.user.id || context.user.permissions.globalPermissions.globalAdmin)) {
@@ -40,17 +37,13 @@ function createProject(): GraphQLFieldConfig<any, ResolverContext> {
                     throw new Error(`All ids given for the component input must be valid component ids`);
                 }
             }
-            const owner = await context.dbManager.getNode(ownerUserId);
-            if (!owner || !(owner instanceof User)) {
-                throw new Error("The owner id must be a valid user id");
-            }
-            const project = await Project.create(context.dbManager, name, description, owner);
+            
+            const project = await Project.create(context.dbManager, name, description);
             if (components && components.length >= 1) {
                 await project.componentsProperty.addAll(components);
             }
             // owner.permissions.setProjectPermissions(project.id, new ProjectPermission(true, true));
-            await context.dbManager.save();
-            return base.createResult(args, { project });
+            return base.createResult(args, context, { project });
         }
     }
 }

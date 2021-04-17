@@ -24,7 +24,7 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
      * @returns the parsed PriorityChangedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): PriorityChangedEvent {
-        return new PriorityChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
+        return new PriorityChangedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
            resultRow.old_priority, resultRow.new_priority, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 

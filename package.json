@@ -12,7 +12,9 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
-        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+        "lint": "eslint . --ext .ts",
+        "lint:quiet": "eslint . --ext .ts --quiet"
     },
     "repository": {
         "type": "git",
@@ -47,7 +49,10 @@
         "ts-jest": "^26.3.0"
     },
     "devDependencies": {
-        "tslint": "^6.1.3",
+        "@typescript-eslint/eslint-plugin": "^4.22.0",
+        "@typescript-eslint/parser": "^4.22.0",
+        "eslint": "^7.24.0",
+        "eslint-plugin-unused-imports": "^1.1.1",
         "typescript": "^4.0.3"
     }
 }

@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 import GraphQLJSON from "../../../../scalars/GraphQLJSON";
 
 const createIMSComponentInputConfig: GraphQLInputObjectTypeConfig = {

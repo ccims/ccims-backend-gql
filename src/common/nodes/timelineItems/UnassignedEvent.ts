@@ -4,7 +4,6 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
 import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 import { SyncMetadata } from "../SyncMetadata";
@@ -13,7 +12,7 @@ import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueT
 
 export const UnassignedEventTableSpecification: NodeTableSpecification<UnassignedEvent>
     = new NodeTableSpecification<UnassignedEvent>("unassigned_event", IssueTimelineItemTableSpecification,
-    new RowSpecification("removed_assignee", unassignedEvent => unassignedEvent.removedAssigneeProperty.getId()));
+    new RowSpecification("removed_assignee_id", unassignedEvent => unassignedEvent.removedAssigneeProperty.getId()));
 
 export class UnassignedEvent extends IssueTimelineItem {
 
@@ -26,7 +25,7 @@ export class UnassignedEvent extends IssueTimelineItem {
                 command.ids = [id];
                 return command;
             },
-            unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removedAssignee", new LoadUsersCommand()),
+            unassignedEvent => new GetWithReloadCommand(unassignedEvent, "removed_assignee_id", new LoadUsersCommand()),
         );
 
     public constructor (databaseManager: DatabaseManager, id: string,

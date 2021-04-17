@@ -39,8 +39,7 @@ function removeIssueFromLocation(): GraphQLFieldConfig<any, ResolverContext> {
             }
             */
             const event = await issue.removeFromLocation(location, new Date(), context.user);
-            await context.dbManager.save();
-            return base.createResult(args, issue, event, { location });
+            return base.createResult(args, context, issue, event, { location });
         }
     }
 }

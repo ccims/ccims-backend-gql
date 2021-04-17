@@ -1,12 +1,10 @@
 import { log } from "../../log";
-import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssueLocationsCommand } from "../database/commands/load/nodes/LoadIssueLocationsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { LoadBodiesCommand } from "../database/commands/load/nodes/timeline/LoadBodiesCommand";
 import { LoadIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
@@ -17,8 +15,6 @@ import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecificati
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { NodeProperty } from "./properties/NodeProperty";
-import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { ReactionGroup } from "./ReactionGroup";
 import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 import { AddedToComponentEvent } from "./timelineItems/AddedToComponentEvent";
@@ -39,8 +35,6 @@ import { UnlinkEvent } from "./timelineItems/UnlinkEvent";
 import { UnpinnedEvent } from "./timelineItems/UnpinnedEvent";
 import { WasLinkedEvent } from "./timelineItems/WasLinkedEvent";
 import { User } from "./User";
-import MarkdownIt from "markdown-it";
-import { config } from "../../config/Config";
 import { LabelledEvent } from "./timelineItems/LabelledEvent";
 import { UnlabelledEvent } from "./timelineItems/UnlabelledEvent";
 import { StartDateChangedEvent } from "./timelineItems/StartDateChangedEvent";
@@ -55,8 +49,17 @@ import { SortedNodeListProperty } from "./properties/SortedNodeListProperty";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { IssuePriority } from "./enums/IssuePriority";
 import { IssueCategory } from "./enums/IssueCategory";
-const mdRenderer = new MarkdownIt(config.markdown);
-
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
+import { NonFunctionalConstraint } from "./NonFunctionalConstraint";
+import { LoadNonFunctionalConstraintsCommand } from "../database/commands/load/nodes/LoadNonFunctionalConstraintsCommand";
+import { AddedArtifactEvent } from "./timelineItems/AddedArtifactEvent";
+import { RemovedArtifactEvent } from "./timelineItems/RemovedArtifactEvent";
+import { AddedNonFunctionalConstraintEvent } from "./timelineItems/AddedNonFunctionalConstraintEvent";
+import { RemovedNonFunctionalConstraintEvent } from "./timelineItems/RemovedNonFunctionalConstraintEvent";
+import { Comment } from "./Comment";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
+import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
 
 /**
  * a table specification for an Issue
@@ -72,70 +75,90 @@ export const IssueTableSpecification: NodeTableSpecification<Issue>
         RowSpecification.fromProperty("due_date", "dueDate"),
         RowSpecification.fromProperty("estimated_time", "estimatedTime"),
         RowSpecification.fromProperty("spent_time", "spentTime"),
-        RowSpecification.fromProperty("updated_at", "updatedAt"),
+        RowSpecification.fromProperty("last_updated_at", "lastUpdatedAt"),
         RowSpecification.fromProperty("priority", "priority"),
-        new RowSpecification("body_id", issue => issue.bodyProperty.getId()));
+        new RowSpecification("body_id", issue => issue.bodyTimelineItem.id));
 
 
 /**
  * An issue
  */
-export class Issue extends SyncNode<Issue> {
+export class Issue extends SyncNode<Issue> implements Comment {
 
+    /**
+     * the current title of the issue
+     */
     private _title: string;
 
+    /**
+     * true if this Issue is currently open
+     */
     private _isOpen: boolean;
 
+    /**
+     * true if this Issue has been marked as duplicate
+     */
     private _isDuplicate: boolean;
 
+    /**
+     * the category of this Issue
+     */
     private _category: IssueCategory;
 
+    /**
+     * the priority of this Issue
+     */
     private _priority: IssuePriority;
 
-    private _startDate?: Date;
-
-    private _dueDate?: Date;
-
-    private _estimatedTime?: number;
-
-    private _spentTime?: number;
-
-    private _updatedAt: Date;
-
-    public readonly bodyProperty: NodeProperty<Body, Issue>;
-
-    private static readonly bodyPropertySpecification: NodePropertySpecification<Body, Issue>
-        = new NodePropertySpecification<Body, Issue>(
-            (id, timelineItem) => {
-                const command = new LoadBodiesCommand(true);
-                command.ids = [id];
-                return command;
-            },
-            timelineItem => new GetWithReloadCommand(timelineItem, "body_id", new LoadBodiesCommand(true)),
-            // no notifier because this is never allowed to change
-        );
+    /**
+     * the startDate of this Issue
+     */
+    private _startDate: Date | undefined;
 
     /**
-     * Async getter function for the bodyProperty returning only the body __text__
-     * @returns A promise of the body __text__ of this issue
+     * the dueDate of this Issue
      */
-    public async body(): Promise<string> {
-        return (await this.bodyProperty.getPublic()).body
+    private _dueDate: Date | undefined;
+
+    /**
+     * the estimated timespan of this Issue
+     */
+    private _estimatedTime: number | undefined;
+
+    /**
+     * the spent timespan of this Issue
+     */
+    private _spentTime: number | undefined;
+
+    /**
+     * the date when this Issue was last updated
+     * this includes any added or changed IssueTimelineItems
+     */
+    private _lastUpdatedAt: Date;
+
+    /**
+     * the Body of this Issue
+     */
+    private readonly _body: Body; 
+
+    /**
+     * Gets the Body TimelineItem
+     * Should only be used for internal purposes
+     */
+    get bodyTimelineItem(): Body {
+        return this._body;
     }
 
     /**
-     * Async getter function for the bodyProperty but rendered out to html returning the rendered version of the markdown
-     * @returns A promise of the body __html__ of this issue
+     * property with all IssueTimelineItems
      */
-    public async bodyRendered(): Promise<string> {
-        return mdRenderer.render(await this.body());
-    }
-
-
     public readonly timelineProperty: SortedNodeListProperty<IssueTimelineItem, Issue>;
 
+    /**
+     * specification for timelineProperty
+     */
     private static readonly timelinePropertySpecification: NodeListPropertySpecification<IssueTimelineItem, Issue>
-        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue"),
+        = NodeListPropertySpecification.loadDynamic<IssueTimelineItem, Issue>(LoadRelationCommand.fromManySide("issue_timeline_item", "issue_id"),
             (ids, issue) => {
                 const command = new LoadIssueTimelineItemsCommand(true);
                 command.ids = ids;
@@ -149,8 +172,14 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
             .noSave();
 
+    /**
+     * property with all participants of the Issue
+     */
     public readonly participantsProperty: NodeListProperty<User, Issue>;
 
+    /**
+     * specification for participantsProperty
+     */
     private static readonly participantsPropertySpecification: NodeListPropertySpecification<User, Issue>
         = NodeListPropertySpecification.loadDynamic<User, Issue>(LoadRelationCommand.fromPrimary("issue", "participant"),
             (ids, issue) => {
@@ -160,7 +189,7 @@ export class Issue extends SyncNode<Issue> {
             },
             issue => {
                 const command = new LoadUsersCommand();
-                command.participantOfIssue = [issue.id];
+                command.participantOfIssues = [issue.id];
                 return command;
             })
             .notifyChanged((user, issue) => user.participantOfIssuesProperty)
@@ -316,10 +345,106 @@ export class Issue extends SyncNode<Issue> {
             .notifyChanged((label, issue) => label.issuesProperty)
             .saveOnPrimary("issue", "label");
 
-    public readonly reactionsProperty: NodeListProperty<ReactionGroup, Issue>;
+    /**
+     * Property conaining all Artifacts currently assigned to this issue
+     * do NOT assign an Artifact to an issue via this property
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Issue>;
 
-    // TODO
-    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, Issue> = undefined as any;
+    /**
+     * Specification for the artifactsProperty property
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Issue>
+        = NodeListPropertySpecification.loadDynamic<Artifact, Issue>(LoadRelationCommand.fromPrimary("issue", "artifact"),
+            (ids, issue) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadArtifactsCommand(true);
+                command.assignedToIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((artifact, issue) => artifact.issuesProperty)
+            .saveOnPrimary("issue", "artifact");
+
+    /**
+     * property with all NonFunctionalConstraints
+     */
+    public readonly nonFunctionalConstraintsProperty: NodeListProperty<NonFunctionalConstraint, Issue>;
+
+    /**
+     * specification for nonFunctionalConstraintsProperty
+     */
+    private static readonly nonFunctionalConstraintsPropertySpecification: NodeListPropertySpecification<NonFunctionalConstraint, Issue>
+        = NodeListPropertySpecification.loadDynamic<NonFunctionalConstraint, Issue>(LoadRelationCommand.fromManySide("non_functional_constraint", "issue_id"),
+            (ids, issue) => {
+                const command = new LoadNonFunctionalConstraintsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            issue => {
+                const command = new LoadNonFunctionalConstraintsCommand(true);
+                command.onIssues = [issue.id];
+                return command;
+            })
+            .notifyChanged((timelineItem, issue) => timelineItem.issueProperty)
+            .noSave();
+
+
+    //#region Comment properties and functions
+
+    /**
+     * @see {@link Body.body}
+     */
+    public get body(): string {
+        return this._body.body;
+    }
+
+    /**
+     * @see {@link Body.setBody}
+     */
+    public async setBody(value: string, atDate: Date, asUser?: User): Promise<void> {
+        await this._body.setBody(value, atDate, asUser);
+    }
+
+    /**
+     * @see {@link Body.bodyRendered}
+     */
+    public async bodyRendered(): Promise<string> {
+        return this._body.bodyRendered();
+    }
+
+    /**
+     * @see {@link Body.reactionsProperty}
+     */
+    public get reactionsProperty(): NodeListProperty<ReactionGroup, CommentIssueTimelineItem> {
+        return this._body.reactionsProperty;
+    }
+
+    /**
+     * @see {@link Body.editedByProperty}
+     */
+    public get editedByProperty(): NodeListProperty<User, CommentIssueTimelineItem> {
+        return this._body.editedByProperty;
+    }
+
+    /**
+     * @see {@link Body.lastEditedByProperty}
+     */
+    public get lastEditedByProperty(): NullableNodeProperty<User, CommentIssueTimelineItem> {
+        return this._body.lastEditedByProperty;
+    }
+
+    /**
+     * @see {@link Body.lastEditedAt}
+     */
+    public get lastEditedAt(): Date {
+        return this._body.lastEditedAt;
+    }
+
+    //#endregion
 
     /**
      * abstract constructor for extending classes
@@ -330,7 +455,7 @@ export class Issue extends SyncNode<Issue> {
      * @param lastChangedAt the Date where this node was last changed
      * @param metadata metadata for the sync
      */
-    public constructor(databaseManager: DatabaseManager, id: string,
+    public constructor(databaseManager: DatabaseManager, body: Body, id: string,
         createdById: string | undefined, createdAt: Date, title: string, isOpen: boolean, isDuplicate: boolean, category: IssueCategory,
         startDate: Date | undefined, dueDate: Date | undefined, estimatedTime: number | undefined, spentTime: number | undefined, updateAt: Date, bodyId: string, priority: IssuePriority,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
@@ -344,11 +469,11 @@ export class Issue extends SyncNode<Issue> {
         this._dueDate = dueDate;
         this._estimatedTime = estimatedTime;
         this._spentTime = spentTime;
-        this._updatedAt = updateAt;
+        this._lastUpdatedAt = updateAt;
         this._priority = priority;
-        this.bodyProperty = new NodeProperty<Body, Issue>(databaseManager, Issue.bodyPropertySpecification, this, bodyId);
+        this._body = body;
         this.timelineProperty = new SortedNodeListProperty<IssueTimelineItem, Issue>(databaseManager, Issue.timelinePropertySpecification, this, 
-            (a, b) => b.lastEditedAt.getTime() - a.lastEditedAt.getTime());
+            (a, b) => b.lastUpdatedAt.getTime() - a.lastUpdatedAt.getTime());
         this.participantsProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.participantsPropertySpecification, this);
         this.assigneesProperty = new NodeListProperty<User, Issue>(databaseManager, Issue.assigneesPropertySpecification, this);
         this.locationsProperty = new NodeListProperty<IssueLocation, Issue>(databaseManager, Issue.locationsPropertySpecification, this);
@@ -357,21 +482,22 @@ export class Issue extends SyncNode<Issue> {
         this.linksToIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linksToIssuesPropertySpecification, this);
         this.linkedByIssuesProperty = new NodeListProperty<Issue, Issue>(databaseManager, Issue.linkedByIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Issue>(databaseManager, Issue.labelsPropertySpecification, this);
-        this.reactionsProperty = new NodeListProperty<ReactionGroup, Issue>(databaseManager, Issue.reactionsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Issue>(databaseManager, Issue.artifactsPropertySpecification, this);
+        this.nonFunctionalConstraintsProperty = new NodeListProperty<NonFunctionalConstraint, Issue>(databaseManager, Issue.nonFunctionalConstraintsPropertySpecification, this);
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, title: string, body: string): Promise<Issue> {
         const issueId = databaseManager.idGenerator.generateString();
         const bodyId = databaseManager.idGenerator.generateString();
 
-        const issue = new Issue(databaseManager, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
-            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false, new Date());
-        issue.markNew();
-        databaseManager.addCachedNode(issue);
-
         const timelineBody = new Body(databaseManager, bodyId, createdBy?.id, createdAt, issueId, body, createdBy?.id, createdAt, title, false, new Date());
         timelineBody.markNew();
         databaseManager.addCachedNode(timelineBody);
+
+        const issue = new Issue(databaseManager, timelineBody, issueId, createdBy?.id, createdAt, title, true, false, IssueCategory.UNCLASSIFIED, undefined, undefined,
+            undefined, undefined, createdAt, bodyId, IssuePriority.DEFAULT, false, new Date());
+        issue.markNew();
+        databaseManager.addCachedNode(issue);
 
         if (createdBy) {
             await timelineBody.editedByProperty.add(createdBy);
@@ -793,6 +919,84 @@ export class Issue extends SyncNode<Issue> {
     }
 
     /**
+     * Add/Assign a artifact to this issue
+     *
+     * @param artifact The artifact node to be added to the issue
+     * @param atDate The date at which the artifact was added
+     * @param asUser The user who added the artifact
+     */
+    public async addArtifact(artifact: Artifact, atDate: Date, asUser?: User): Promise<AddedArtifactEvent | undefined> {
+        if (!(await this.artifactsProperty.hasId(artifact.id))) {
+            await this.artifactsProperty.add(artifact);
+            const event = await AddedArtifactEvent.create(this._databaseManager, asUser, atDate, this, artifact);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Remove/Unassign a artifact from this issue
+     *
+     * @param artifact The artifact node to be added to the issue
+     * @param atDate The date at which the artifact was added
+     * @param asUser The user who added the artifact
+     */
+    public async removeArtifact(artifact: Artifact, atDate: Date, asUser?: User): Promise<RemovedArtifactEvent | undefined> {
+        if (await this.artifactsProperty.hasId(artifact.id)) {
+            await this.artifactsProperty.remove(artifact);
+            const event = await RemovedArtifactEvent.create(this._databaseManager, asUser, atDate, this, artifact);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The given artifact is currently not assigned to this issue");
+        }
+    }
+
+    /**
+     * Add/Assign a nonFunctionalConstraint to this issue
+     *
+     * @param nonFunctionalConstraint The nonFunctionalConstraint node to be added to the issue
+     * @param atDate The date at which the nonFunctionalConstraint was added
+     * @param asUser The user who added the nonFunctionalConstraint
+     */
+    public async addNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<AddedNonFunctionalConstraintEvent | undefined> {
+        if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
+            throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
+        }
+        if (!nonFunctionalConstraint.isActive) {
+            nonFunctionalConstraint.isActive = true;
+            const event = await AddedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Remove/Unassign a nonFunctionalConstraint from this issue
+     *
+     * @param nonFunctionalConstraint The nonFunctionalConstraint node to be added to the issue
+     * @param atDate The date at which the nonFunctionalConstraint was added
+     * @param asUser The user who added the nonFunctionalConstraint
+     */
+    public async removeNonFunctionalConstraint(nonFunctionalConstraint: NonFunctionalConstraint, atDate: Date, asUser?: User): Promise<RemovedNonFunctionalConstraintEvent | undefined> {
+        if (nonFunctionalConstraint.issueProperty.getId() !== this.id) {
+            throw new Error("the specified NonFunctionalConstraint is not part of this Issue");
+        }
+        if (nonFunctionalConstraint.isActive) {
+            nonFunctionalConstraint.isActive = false;
+            const event = await RemovedNonFunctionalConstraintEvent.create(this._databaseManager, asUser, atDate, this, nonFunctionalConstraint);
+            await this.participatedAt(asUser, atDate);
+            return event;
+        } else {
+            throw new Error("The given NonFunctionalConstraint is currently not assigned to this issue");
+        }
+    }
+
+    /**
      * adds a user as assignee to this issue, if not already
      * @param assignee the user to assign
      * @param atDate
@@ -903,29 +1107,29 @@ export class Issue extends SyncNode<Issue> {
     }
 
 
-    public get updatedAt(): Date {
-        return this._updatedAt;
+    public get lastUpdatedAt(): Date {
+        return this._lastUpdatedAt;
     }
 
     /**
      * sets updateAt if the provided date is newer
      */
-    public set updatedAt(value: Date) {
-        if (this._updatedAt < value) {
-            this._updatedAt = value;
+    public set lastUpdatedAt(value: Date) {
+        if (this._lastUpdatedAt < value) {
+            this._lastUpdatedAt = value;
             this.markChanged();
         }
     }
 
     /**
-     * Adds a participant to the participants if provided and sets updatedAt
+     * Adds a participant to the participants if provided and sets lastUpdatedAt
      * if the provided Date is newer
      * @param participant the participant
      * @param atDate the date at which the participatin occurred
      */
     public async participatedAt(participant?: User, atDate?: Date): Promise<void> {
-        if (atDate && this.updatedAt.getTime() < atDate.getTime()) {
-            this.updatedAt = atDate;
+        if (atDate && this.lastUpdatedAt.getTime() < atDate.getTime()) {
+            this.lastUpdatedAt = atDate;
         }
         if (participant) {
             await this.participantsProperty.add(participant);

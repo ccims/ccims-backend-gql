@@ -12,7 +12,7 @@ function deleteComponent(): GraphQLFieldConfig<any, ResolverContext> {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             const component = await context.dbManager.getNode(componentId);
             if (component === undefined || !(component instanceof Component)) {
@@ -22,8 +22,7 @@ function deleteComponent(): GraphQLFieldConfig<any, ResolverContext> {
             base.userAllowed(context, permissions => permissions.getComponentPermissions(component.id).componentAdmin);
 
             await component.markDeleted();
-            await context.dbManager.save();
-            return base.createResult(args, {  });
+            return base.createResult(args, context, {  });
         }
     };
 }

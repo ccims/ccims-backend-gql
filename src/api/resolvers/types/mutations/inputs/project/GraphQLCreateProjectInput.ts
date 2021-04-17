@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
 
 const createProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateProjectInput",
@@ -19,10 +19,6 @@ const createProjectInputConfig: GraphQLInputObjectTypeConfig = {
         components: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),
             description: "The list of components for the project to be initialized with.\n\nIf `null`, the peoject will contain no components (However, they can be added later)"
-        },
-        owner: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The owner user of this component. This user will be able to administrate the component"
         }
     })
 };

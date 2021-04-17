@@ -1,5 +1,4 @@
 import { GraphQLFieldConfig } from "graphql";
-import { LoadIMSUsersCommand } from "../../../../common/database/commands/load/nodes/LoadIMSUsersCommand";
 import { CCIMSUser } from "../../../../common/nodes/CCIMSUser";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import { Adapters } from "../../../../sync/adapter/SyncAdapters";
@@ -32,7 +31,7 @@ function linkUserToIMS(): GraphQLFieldConfig<any, ResolverContext> {
             const syncAdapter = Adapters.adapterByTag(ims.type);
             const imsUser = await syncAdapter.linkUserToIMS(user, ims, apiIMSData);
             
-            return base.createResult(args, { imsUser });
+            return base.createResult(args, context, { imsUser });
         }
     }
 }

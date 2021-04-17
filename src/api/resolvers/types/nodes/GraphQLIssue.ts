@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Component } from "../../../../common/nodes/Component";
 import { Issue } from "../../../../common/nodes/Issue";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
@@ -13,54 +13,30 @@ import componentsListQuery from "../../listQueries/componentsListQuery";
 import issueCommentsListQuery from "../../listQueries/issueCommentsListQuery";
 import issuesListQuery from "../../listQueries/issuesListQuery";
 import labelsListQuery from "../../listQueries/labelsListQuery";
-import locationsListQuery from "../../listQueries/locationsListQuery";
 import reactionsListQuery from "../../listQueries/reactionsListQuery";
-import timelineItemsListQuery from "../../listQueries/timelineListQuery";
+import timelineItemsListQuery from "../../listQueries/timelineItemsListQuery";
 import usersListQuery from "../../listQueries/usersListQuery";
 import GraphQLDate from "../../scalars/GraphQLDate";
 import GraphQLTimeSpan from "../../scalars/GraphQLTimeSpan";
 import GraphQLNode from "../GraphQLNode";
-import GraphQLComment from "./GraphQLComment";
-import GraphQLUser from "./GraphQLUser";
+import GraphQLComment, { commentFields } from "./GraphQLComment";
+import issueLocationsListQuery from "../../listQueries/issueLocationsListQuery";
+import artifactsListQuery from "../../listQueries/artifactsListQuery";
+import { Artifact } from "../../../../common/nodes/Artifact";
+import nonFunctionalConstraintsListQuery from "../../listQueries/nonFunctionalConstraintsListQuery";
+import { NonFunctionalConstraint } from "../../../../common/nodes/NonFunctionalConstraint";
 
 const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
     name: "Issue",
     description: "A cross component issue within ccims which links multiple issues from single ims",
     interfaces: () => ([GraphQLComment, GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this issue"
-        },
+        ...commentFields<Issue>("Issue"),
         title: {
             type: GraphQLNonNull(GraphQLString),
             description: "The title to display for this issue.\n\nNot unique; Max. 256 characters"
         },
-        body: {
-            type: GraphQLString,
-            description: "The body text of the issue.\nMarkdown supported.\n\nMax. 65536 characters"
-        },
-        bodyRendered: {
-            type: GraphQLString,
-            description: "The body text of the issue rendered to html"
-        },
-        createdBy: {
-            type: GraphQLUser,
-            description: "The user who originally created the issue (in ccims or any ims)"
-        },
-        editedBy: {
-            type: GraphQLList(GraphQLNonNull(GraphQLUser)),
-            description: "A list of all people who edited the root of this issue (body and title)"
-        },
-        createdAt: {
-            type: GraphQLNonNull(GraphQLDate),
-            description: "The date the issue was first created on"
-        },
-        lastEditedAt: {
-            type: GraphQLDate,
-            description: "Date when the core issue(title, body etc.) was last changed (comments and other events DO NOT count)"
-        },
-        updatedAt: {
+        lastUpdatedAt: {
             type: GraphQLDate,
             description: "Date when any update / activity was made to any part of the issue (__including__ title, commens, reactions)"
         },
@@ -75,10 +51,6 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         category: {
             type: GraphQLNonNull(GraphQLIssueCategory),
             description: "The ccims-issue-category the issue belongs to.\n\nThis can be one of BUG,FEATURE_REQUEST or UNCLASSIFIED"
-        },
-        currentUserCanEdit: {
-            type: GraphQLNonNull(GraphQLBoolean),
-            description: "`true` iff the user authenticated by the given JWT is permitted to edit this issue.\n\nThis only refers to editing the core issue (title, body, etc.)"
         },
         currentUserCanComment: {
             type: GraphQLNonNull(GraphQLBoolean),
@@ -114,8 +86,11 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
         pinnedOn: componentsListQuery<Issue, Component>("All components where this issue has been pinned, matching the given filter.\n" +
             "If no filter is given, all components will be returned", issue => issue.pinnedOnProperty),
         timeline: timelineItemsListQuery<Issue, IssueTimelineItem>("All timeline events for this issue in chonological order from oldest to newest, matching (if given) `filterBy`", issue => issue.timelineProperty),
-        locations: locationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty),
-        components: componentsListQuery<Issue, Component>("All components this issue is on", issue => issue.componentsProperty)
+        locations: issueLocationsListQuery<Issue, IssueLocation>("All issue locations this issue is assigned to, matching (if given) `filterBy`", issue => issue.locationsProperty),
+        components: componentsListQuery<Issue, Component>("All components this issue is on", issue => issue.componentsProperty),
+        artifacts: artifactsListQuery<Issue, Artifact>("All Artifacts that are currently assigned to this Issue, matching (if given) `filterBy", issue => issue.artifactsProperty),
+        nonFunctionalConstraints: nonFunctionalConstraintsListQuery<Issue, NonFunctionalConstraint>("All NonFunctionalConstraints on this Issue, matching (if given) `filterBy.\n" +
+            "WARNING: if filterBy.isActive is not set, ALL NonFunctionalConstraints are returned")
     })
 };
 const GraphQLIssue = new GraphQLObjectType(issueConfig);

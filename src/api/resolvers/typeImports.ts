@@ -1,3 +1,5 @@
+import GraphQLIssueTimelineItem from "./types/nodes/GraphQLIssueTimelineItem";
+import GraphQLIssueComment from "./types/nodes/timelineItems/GraphQLIssueComment";
 import GraphQLCCIMSUser from "./types/nodes/GraphQLCCIMSUser";
 import GraphQLIMSUser from "./types/nodes/GraphQLIMSUser";
 import GraphQLIMSType from "./enums/GraphQLIMSType";
@@ -46,7 +48,6 @@ import GraphQLComponent from "./types/nodes/GraphQLComponent";
 import GraphQLComponentInterface from "./types/nodes/GraphQLComponentInterface";
 import GraphQLIssue from "./types/nodes/GraphQLIssue";
 import GraphQLIssueLocation from "./types/nodes/GraphQLIssueLocation";
-import GraphQLIssueTimelineItem from "./types/nodes/GraphQLIssueTimelineItem";
 import GraphQLLabel from "./types/nodes/GraphQLLabel";
 import GraphQLReactionGroup from "./types/nodes/GraphQLReactionGroup";
 import GraphQLProject from "./types/nodes/GraphQLProject";
@@ -60,7 +61,6 @@ import GraphQLDueDateChangedEvent from "./types/nodes/timelineItems/GraphQLDueDa
 import GraphQLDeletedIssueComment from "./types/nodes/timelineItems/GraphQLDeletedIssueComment";
 import GraphQLEstimatedTimeChangedEvent from "./types/nodes/timelineItems/GraphQLEstimatedTimeChangedEvent";
 import GraphQLLabelledEvent from "./types/nodes/timelineItems/GraphQLLabelledEvent";
-import GraphQLIssueComment from "./types/nodes/timelineItems/GraphQLIssueComment";
 import GraphQLMarkedAsDuplicateEvent from "./types/nodes/timelineItems/GraphQLMarkedAsDuplicateEvent";
 import GraphQLLinkEvent from "./types/nodes/timelineItems/GraphQLLinkEvent";
 import GraphQLPinnedEvent from "./types/nodes/timelineItems/GraphQLPinnedEvent";
@@ -86,6 +86,18 @@ import GraphQLIMSComponent from "./types/nodes/GraphQLIMSComponent";
 import GraphQLIMSComponentEdge from "./types/edges/GraphQLIMSComponentEdge";
 import GraphQLIMSComponentFilter from "./types/filters/GraphQLIMSComponentFilter";
 import GraphQLIMSComponentPage from "./types/pages/GraphQLIMSComponentPage";
+import GraphQLArtifact from "./types/nodes/GraphQLArtifact";
+import GraphQLArtifactEdge from "./types/edges/GraphQLArtifactEdge";
+import GraphQLArtifactFilter from "./types/filters/GraphQLArtifactFilter";
+import GraphQLArtifactPage from "./types/pages/GraphQLArtifactPage";
+import GraphQLNonFunctionalConstraint from "./types/nodes/GraphQLNonFunctionalConstraint";
+import GraphQLNonFunctionalConstraintEdge from "./types/edges/GraphQLNonFunctionalConstraintEdge";
+import GraphQLNonFunctionalConstraintFilter from "./types/filters/GraphQLNonFunctionalConstraintFilter";
+import GraphQLNonFunctionalConstraintPage from "./types/pages/GraphQLNonFunctionalConstraintPage";
+import GraphQLAddedArtifactEvent from "./types/nodes/timelineItems/GraphQLAddedArtifactEvent";
+import GraphQLRemovedArtifactEvent from "./types/nodes/timelineItems/GraphQLRemovedArtifactEvent";
+import GraphQLAddedNonFunctionalConstraintEvent from "./types/nodes/timelineItems/GraphQLAddedNonFunctionalConstraintEvent";
+import GraphQLRemovedNonFunctionalConstraintEvent from "./types/nodes/timelineItems/GraphQLRemovedNonFunctionalConstraintEvent";
 
 export default [
     GraphQLIMSType,
@@ -175,5 +187,17 @@ export default [
     GraphQLIMSComponent,
     GraphQLIMSComponentEdge,
     GraphQLIMSComponentFilter,
-    GraphQLIMSComponentPage
+    GraphQLIMSComponentPage,
+    GraphQLArtifact,
+    GraphQLArtifactEdge,
+    GraphQLArtifactFilter,
+    GraphQLArtifactPage,
+    GraphQLNonFunctionalConstraint,
+    GraphQLNonFunctionalConstraintEdge,
+    GraphQLNonFunctionalConstraintFilter,
+    GraphQLNonFunctionalConstraintPage,
+    GraphQLAddedArtifactEvent,
+    GraphQLRemovedArtifactEvent,
+    GraphQLAddedNonFunctionalConstraintEvent,
+    GraphQLRemovedNonFunctionalConstraintEvent
 ];

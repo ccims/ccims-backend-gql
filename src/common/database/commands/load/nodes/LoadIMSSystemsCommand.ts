@@ -2,7 +2,6 @@ import { QueryResultRow, QueryResult } from "pg";
 import { Adapters } from "../../../../../sync/adapter/SyncAdapters";
 import { IMSSystem, IMSSystemTableSpecification } from "../../../../nodes/IMSSystem";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
@@ -15,12 +14,12 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
     /**
      * Selects only IMSSystems which are indirectly linked to at least one of the specified components (via any IMSComponent)
      */
-    public components?: string[];
+    public components: string[] | undefined;
 
     /**
      * Selects only IMSSystems which are linked to at least one of the specified IMSComponents
      */
-    public imsComponents?: string[];
+    public imsComponents: string[] | undefined;
 
     /**
      * creates a new LoadImsSystemsCommand
@@ -52,7 +51,7 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
      * @param i the first index of query parameter to use
      * @returns the conditions
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.components !== undefined) {
@@ -60,20 +59,18 @@ export class LoadIMSSystemsCommand extends LoadNodeListCommand<IMSSystem> {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT ims_system_id FROM ims_component WHERE component_id=$${conditions.i})`,
                     values: [this.components[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
                     text: `main.id=ANY(SELECT ims_system_id FROM ims_component WHERE component_id=ANY($${conditions.i}))`,
                     values: [this.components],
-                    priority: 5
                 });
             }
             conditions.i++;
         }
 
         if (this.imsComponents !== undefined) {
-            conditions.conditions.push(createRelationFilterOnMany("ims_component", "ims_system_id", this.imsComponents, conditions.i, 3));
+            conditions.conditions.push(createRelationFilterOnMany("ims_component", "ims_system_id", this.imsComponents, conditions.i));
             conditions.i++;
         }
 

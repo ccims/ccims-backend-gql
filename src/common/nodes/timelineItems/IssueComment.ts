@@ -4,20 +4,20 @@ import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
-import { Comment, CommentTableSpecification } from "./Comment";
+import { CommentIssueTimelineItem, CommentIssueTimelineItemTableSpecification } from "./CommentIssueTimelineItem";
 
 /**
  * a table specification for an IssueComment
  * does not specifiy the metadata, because this is up to the save method
  */
 export const IssueCommentTableSpecification: NodeTableSpecification<IssueComment>
-   = new NodeTableSpecification<IssueComment>("comment", CommentTableSpecification);
+   = new NodeTableSpecification<IssueComment>("comment", CommentIssueTimelineItemTableSpecification);
 
-export class IssueComment extends Comment<IssueComment> {
+export class IssueComment extends CommentIssueTimelineItem<IssueComment> {
 
     /**
-     * abstract constructor for extending classes
-     * this has no static constructor because it is created with the static constructor of Issue
+     * Creates a new IssueComment
+     * DO NOT USE TO CREATE NEW ISSUE_COMMENT
      * @param type the type of this node
      * @param databaseManager the databaseManager
      * @param tableSpecification the specification of the table which contains this node

@@ -2,7 +2,7 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { ResolverContext, ResolverContextOptional } from "../ResolverContext";
+import { ResolverContextOptional } from "../ResolverContext";
 import { LoadCCIMSUsersCommand } from "../../common/database/commands/load/nodes/LoadCCIMSUsersCommand";
 
 /**

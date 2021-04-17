@@ -1,5 +1,5 @@
 import { BasePermission } from "../../../../nodes/BasePermission";
-import { ConditionSpecification } from "../ConditionSpecification";
+import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { createStringListFilter } from "./RelationFilter";
 
@@ -11,7 +11,7 @@ export abstract class LoadPermissionsCommandBase<T extends BasePermission> exten
     /**
      * Only selects permissions which authorize at least one of the provided authorizables
      */
-    public authorizables?: string[];
+    public authorizables: string[] | undefined;
 
 
     /**
@@ -20,11 +20,11 @@ export abstract class LoadPermissionsCommandBase<T extends BasePermission> exten
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.authorizables !== undefined) {
-            conditions.conditions.push(createStringListFilter("authorizable_id", this.authorizables, conditions.i, 4));
+            conditions.conditions.push(createStringListFilter("authorizable_id", this.authorizables, conditions.i));
             conditions.i++;
         }
 

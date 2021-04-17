@@ -1,8 +1,8 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateCommentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateCommentInput",
-    description: "The inputs for the updateComment",
+    description: "The inputs for the updateComment, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
@@ -10,7 +10,7 @@ const updateCommentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         comment: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The ID of the comment to update"
+            description: "The ID of the comment to update. May be an Issue or an IssueComment"
         },
         body: {
             type: GraphQLNonNull(GraphQLString),

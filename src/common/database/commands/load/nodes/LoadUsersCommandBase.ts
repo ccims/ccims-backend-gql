@@ -2,7 +2,6 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
 import { User } from "../../../../nodes/User";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { createRelationFilterByPrimary, createRelationFilterOnMany, createStringListFilter } from "./RelationFilter";
 
 /**
@@ -13,42 +12,42 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
     /**
      * select only users that have a username that matches the given posix RegEx
      */
-    public username?: string;
+    public username: string | undefined;
 
     /**
      * select only users that have a display name that matches the given posix RegEx
      */
-    public displayName?: string;
+    public displayName: string | undefined;
 
     /**
      * select only users that have an email that matches the given posix RegEx
      */
-    public email?: string;
+    public email: string | undefined;
 
     /**
      * select only users that are assigned to one of the given issues
      */
-    public assignedToIssues?: string[];
+    public assignedToIssues: string[] | undefined;
 
     /**
      * select only users that are a participant of one ofthe given issues
      */
-    public participantOfIssue?: string[];
+    public participantOfIssues: string[] | undefined;
 
     /**
      * select only users that created/edited at least one of the given comments
      */
-    public editedComments?: string[];
+    public editedComments: string[] | undefined;
 
     /**
      * selects only users that are linked by at least one of the given users
      */
-    public linkedByUsers?: string[];
+    public linkedByUsers: string[] | undefined;
 
     /**
      * selects only users that link to at least one of the given
      */
-    public linksToUsers?: string[];
+    public linksToUsers: string[] | undefined;
 
     
     /**
@@ -63,14 +62,13 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.username !== undefined) {
             conditions.conditions.push({
                 text: `main.username ~* $${conditions.i}`,
                 values: [this.username],
-                priority: 5
             });
             conditions.i++;
         }
@@ -79,7 +77,6 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
             conditions.conditions.push({
                 text: `main.displayname ~* $${conditions.i}`,
                 values: [this.displayName],
-                priority: 5
             });
             conditions.i++;
         }
@@ -88,7 +85,6 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
             conditions.conditions.push({
                 text: `main.email ~* $${conditions.i}`,
                 values: [this.email],
-                priority: 5
             });
             conditions.i++;
         }
@@ -98,8 +94,8 @@ export abstract class LoadUsersCommandBase<T extends User> extends LoadNodeListC
             conditions.i++;
         }
 
-        if (this.participantOfIssue !== undefined) {
-            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssue, conditions.i));
+        if (this.participantOfIssues !== undefined) {
+            conditions.conditions.push(createRelationFilterByPrimary("issue", "participant", this.participantOfIssues, conditions.i));
             conditions.i++;
         }
 

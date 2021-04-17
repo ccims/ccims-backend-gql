@@ -10,6 +10,7 @@ import { LoadLabelsCommand } from "../../../../common/database/commands/load/nod
 import { LoadIssueLocationsCommand } from "../../../../common/database/commands/load/nodes/LoadIssueLocationsCommand";
 import { LoadUsersCommand } from "../../../../common/database/commands/load/nodes/LoadUsersCommand";
 import { IssueCategory } from "../../../../common/nodes/enums/IssueCategory";
+import { LoadArtifactsCommand } from "../../../../common/database/commands/load/nodes/LoadArtifactsCommand";
 
 function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLCreateIssuePayload, GraphQLCreateIssueInput, "Creates a new issue");
@@ -19,11 +20,12 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.argsCheck(args);
             const title = PreconditionCheck.checkString(input, "title", 256);
             const body = PreconditionCheck.checkNullableString(input, "body", 65536) ?? "";
-            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "componentIDs", 32));
+            const componentIDs = new Set(PreconditionCheck.checkStringList(input, "components", 32));
             const category = PreconditionCheck.checkNullableEnum<IssueCategory>(input, "category", IssueCategory) ?? IssueCategory.UNCLASSIFIED;
             const labelIds = new Set(PreconditionCheck.checkNullableStringList(input, "labels", 32));
             const assigneeIds = new Set(PreconditionCheck.checkNullableStringList(input, "assignees", 32));
             const locationIds = new Set(PreconditionCheck.checkNullableStringList(input, "locations", 32));
+            const artifactIds = new Set(PreconditionCheck.checkStringList(input, "artifacts", 32));
             const startDate = PreconditionCheck.checkNullableDate(input, "startDate");
             const dueDate = PreconditionCheck.checkNullableDate(input, "dueDate");
             const estimatedTime = PreconditionCheck.checkNullableTimespan(input, "estimatedTime");
@@ -63,6 +65,13 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 context.dbManager.addCommand(locationsCmd);
             }
 
+            let artifactsCmd: LoadArtifactsCommand | undefined;
+            if (artifactIds.size > 0) {
+                artifactsCmd = new LoadArtifactsCommand();
+                artifactsCmd.ids = Array.from(artifactIds);
+                context.dbManager.addCommand(artifactsCmd);
+            }
+
             await context.dbManager.executePendingCommands();
 
             const components = componentCmd.getResult();
@@ -85,6 +94,11 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("Not all the location ids given were valid issue location ids");
             }
 
+            const artifacts = artifactsCmd?.getResult();
+            if (artifactsCmd && artifactsCmd.getResult().length !== artifactIds.size) {
+                throw new Error("Not all the Artifact ids given were valid Artifact ids");
+            }
+
             const now = new Date();
             const me = context.user;
             const issue = await Issue.create(context.dbManager, me, now, title, body);
@@ -99,12 +113,14 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             if (locations && locations.length > 0) {
                 await Promise.all(locations.map(location => issue.addToLocation(location, now, me)));
             }
-            // TODO: Uncomment once time tracking functionality is implemenmted in issue
-            // await issue.setStartDate(startDate, now, me);
-            // await issue.setDueDate(dueDate, now, me);
-            // await issue.setEstimatedTime(estimatedTime, now, me);
-            await context.dbManager.save();
-            return base.createResult(args, { issue });
+            if (artifacts && artifacts.length > 0) {
+                await Promise.all(artifacts.map(artifact => issue.addArtifact(artifact, now, me)));
+            }
+
+            await issue.changeStartDate(startDate, now, me);
+            await issue.changeDueDate(dueDate, now, me);
+            //await issue.changeEstimatedTime(estimatedTime, now, me); TODO when implemented
+            return base.createResult(args, context, { issue });
         }
     };
 }

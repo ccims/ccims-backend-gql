@@ -39,9 +39,15 @@ export enum NodeType {
     RemovedFromComponentEvent = "RemovedFromComponentEvent",
     MarkedAsDuplicateEvent = "MarkedAsDuplicateEvent",
     UnmarkedAsDuplicateEvent = "UnmarkedAsDuplicateEvent",
+    AddedArtifactEvent = "AddedArtifactEvent",
+    RemovedArtifactEvent = "RemovedArtifactEvent",
+    AddedNonFunctionalConstraintEvent = "AddedNonFunctionalConstraintEvent",
+    RemovedNonFunctionalConstraintEvent = "RemovedNonFunctionalConstraintEvent",
     ReactionGroup = "ReactionGroup",
     Label = "Label",
     IMSSystem = "IMSSystem",
     IMSComponent = "IMSComponent",
-    Body = "Body"
+    Body = "Body",
+    Artifact = "Artifact",
+    NonFunctionalConstraint = "NonFunctionalConstraint"
 }
