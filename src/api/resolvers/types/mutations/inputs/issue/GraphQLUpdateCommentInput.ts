@@ -10,7 +10,7 @@ const updateCommentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         comment: {
             type: GraphQLNonNull(GraphQLID),
-            description: "The ID of the comment to update"
+            description: "The ID of the comment to update. May be an Issue or an IssueComment"
         },
         body: {
             type: GraphQLNonNull(GraphQLString),

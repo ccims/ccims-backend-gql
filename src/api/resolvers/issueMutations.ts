@@ -32,9 +32,11 @@ import addArtifactToIssue from "./mutations/issue/addArtifactToIssue";
 import removeArtifactFromIssue from "./mutations/issue/removeArtifactFromIssue";
 import addNonFunctionalConstraintToIssue from "./mutations/issue/addNonFunctionalConstraintToIssue";
 import removeNonFunctionalConstraintFromIssue from "./mutations/issue/removeNonFunctionalConstraintFromIssue";
+import deleteIssue from "./mutations/issue/deleteIssue";
 
 const issueMutations: GraphQLFieldConfigMap<any, ResolverContext> = {
     createIssue: createIssue(),
+    deleteIssue: deleteIssue(),
     addIssueComment: addIssueComment(),
     updateComment: updateComment(),
     deleteIssueComment: deleteIssueComment(),

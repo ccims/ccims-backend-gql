@@ -4,7 +4,8 @@ import PreconditionCheck from "../../utils/PreconditionCheck";
 import baseMutation from "../baseMutation";
 import GraphQLUpdateCommentPayload from "../../types/mutations/payloads/issue/GraphQLUpdateCommentMutation";
 import GraphQLUpdateCommentInput from "../../types/mutations/inputs/issue/GraphQLUpdateCommentInput";
-import { CommentIssueTimelineItem } from "../../../../common/nodes/timelineItems/CommentIssueTimelineItem";
+import { IssueComment } from "../../../../common/nodes/timelineItems/IssueComment";
+import { Issue } from "../../../../common/nodes/Issue";
 
 function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLUpdateCommentPayload, GraphQLUpdateCommentInput, "Updates a Comment. Fields which are not provided are not updated.");
@@ -18,14 +19,11 @@ function updateComment(): GraphQLFieldConfig<any, ResolverContext> {
             }
             
             const comment = await context.dbManager.getNode(input.comment);
-            if (comment === undefined || !(comment instanceof CommentIssueTimelineItem)) {
+            if (comment === undefined || !(comment instanceof IssueComment || comment instanceof Issue)) {
                 throw new Error("The given comment id is not a valid comment id");
             }
 
-            const componentIds = await (await comment.issue()).componentsProperty.getIds();
-
-            base.userAllowed(context, permissions => comment.createdByProperty.getId() == context.user.id 
-                || componentIds.map(permissions.getComponentPermissions).some(perm => perm.componentAdmin || perm.moderate));
+            // TODO permissions
 
             await comment.setBody(bodyText, new Date(), context.user);
             return base.createResult(args, { comment: comment });
