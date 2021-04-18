@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
@@ -12,6 +12,11 @@ const componentInterfaceConfig: GraphQLObjectTypeConfig<ComponentInterface, Reso
     interfaces: () => ([GraphQLNode, GraphQLIssueLocation]),
     fields: () => ({
         ...issueLocationFields<ComponentInterface>("ComponentInterface"),
+        type: {
+            type: GraphQLString,
+            description: "The type of the ComponentInterface",
+            resolve: componentInterface => componentInterface.interfaceType
+        },
         component: {
             type: GraphQLComponent,
             description: "The parent component of this interface which offers it, null if deleted"

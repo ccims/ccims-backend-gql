@@ -14,6 +14,7 @@ function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.initMutation(args, context, perm => true);
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);
+            const type = PreconditionCheck.checkNullableString(input, "type", 65536);
             const componentInterfaceId = PreconditionCheck.checkString(input, "componentInterface", 32);
 
             const componentInterface = await context.dbManager.getNode(componentInterfaceId);
@@ -29,6 +30,9 @@ function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
             }
             if (description !== undefined) {
                 componentInterface.setDescription(description, new Date());
+            }
+            if (type !== undefined) {
+                componentInterface.setInterfaceType(type, new Date());
             }
 
             return base.createResult(args, context, { componentInterface });

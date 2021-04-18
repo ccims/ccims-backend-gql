@@ -16,6 +16,10 @@ const createComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "The description of the componentInterface\n\nMax. 65536 characters"
         },
+        type: {
+            type: GraphQLString,
+            description: "The type of the ComponentInterface\n\nMax. 65536 characters"
+        },
         component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component on which the created interface should be"

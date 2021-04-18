@@ -48,7 +48,9 @@ CREATE TABLE relation_component_label
 
 CREATE TABLE component_interface
 (
-    host_component_id id NOT NULL
+    host_component_id id NOT NULL,
+    interface_type varchar(65536) NOT NULL,
+    PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
 CREATE TABLE relation_issue_location_issue

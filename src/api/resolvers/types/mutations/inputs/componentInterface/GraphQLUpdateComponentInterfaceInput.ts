@@ -19,6 +19,10 @@ const updateComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
         description: {
             type: GraphQLString,
             description: "The description of the componentinterface\n\nMax. 65536 characters"
+        },
+        type: {
+            type: GraphQLString,
+            description: "The type of the ComponentInterface\n\nMax. 65536 characters"
         }
     })
 };

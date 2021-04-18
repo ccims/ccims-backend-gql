@@ -27,6 +27,7 @@ function componentInterfacesListQuery<TSource extends CCIMSNode, TProperty exten
             baseQuery.addParams(cmd, args);
             cmd.onComponents = args.filterBy?.component;
             cmd.consumedByComponent = args.filterBy?.consumedBy;
+            cmd.interfaceType = args.filterBy?.type;
             return baseQuery.createResult(src, context, cmd);
         }
     };

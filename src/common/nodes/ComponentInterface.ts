@@ -20,12 +20,19 @@ import { User } from "./User";
  */
 export const ComponentInterfaceTableSpecification: NodeTableSpecification<ComponentInterface>
     = new NodeTableSpecification<ComponentInterface>("component_interface", NamedSyncNodeTableSpecification,
+        RowSpecification.fromProperty("interface_type", "interfaceType"),
         new RowSpecification("host_component_id", componentInterface => componentInterface.componentProperty.getId()));
 
 /**
  * a component can have interfaces, which can be locations for issues
  */
 export class ComponentInterface extends NamedSyncNode<ComponentInterface> implements IssueLocation {
+
+    /**
+     * the type of the ComponentInterface
+     * for example REST over HTTP
+     */
+    private _interfaceType: string; 
 
     /**
      * property for issues which are located on this component
@@ -91,16 +98,17 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
      * @param isDeleted Weather this ComponentInterface is deleted (needed for sync)
      * @param metadata The metadate of this labComponentInterfaceel for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, componentId: string, 
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, interfaceType: string, lastUpdatedAt: Date, componentId: string, 
         createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description, lastUpdatedAt, 
             createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
         this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
+        this._interfaceType = interfaceType;
     }
 
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, component: Component, 
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, interfaceType: string, component: Component, 
         createdBy: User, createdAt: Date): Promise<ComponentInterface> {
         if (name.length > 256) {
             throw new Error("The specified name is too long");
@@ -108,8 +116,11 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
         if (description.length > 65536) {
             throw new Error("The specified description is too long");
         }
+        if (interfaceType.length > 65536) {
+            throw new Error("The specified type is too long");
+        }
 
-        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, component.id, 
+        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, interfaceType, createdAt, component.id, 
             createdBy.id, createdAt, false, createdAt, undefined);
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);
@@ -118,6 +129,25 @@ export class ComponentInterface extends NamedSyncNode<ComponentInterface> implem
             await project.interfacesProperty.add(componentInterface);
         }));
         return componentInterface;
+    }
+
+    /**
+     * gets the interfaceType
+     */
+    public get interfaceType(): string {
+        return this._interfaceType;
+    }
+
+    /**
+     * sets the interfaceType, which must be shorter than 655537 chars
+     */
+    public setInterfaceType(value: string, atDate: Date): void {
+        if (value.length > 65536) {
+            throw new Error("The specified type is too long");
+        }
+        this.markChanged();
+        this.lastUpdatedAt = atDate;
+        this._interfaceType = value;
     }
 
 }

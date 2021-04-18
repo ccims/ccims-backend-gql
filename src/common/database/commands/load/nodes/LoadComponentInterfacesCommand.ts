@@ -25,11 +25,15 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
      */
     public hasIssueOnLocation: string[] | undefined;
 
-    
     /**
      * Select only component interfaces which are on any component on one of these projects
      */
     public onProjects: string[] | undefined;
+
+    /**
+     * Select only ComponentInterfaces when their interfaceType matches this _POSIX_ RegEx
+     */
+    public interfaceType: string | undefined;
 
     /**
      * creates a new LoadComponentInterfacesCommand
@@ -45,7 +49,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
      * @returns the parsed componentInterface
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ComponentInterface {
-        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.last_updated_at, resultRow.host_component_id, 
+        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.interface_type, resultRow.last_updated_at, resultRow.host_component_id, 
             resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
@@ -89,6 +93,13 @@ export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<Co
                     values: [this.onProjects[0]]
                 });
             }
+            conditions.i++;
+        }
+        if (this.interfaceType !== undefined) {
+            conditions.conditions.push({
+                text: `main.interface_type ~* $${conditions.i}`,
+                values: [this.interfaceType],
+            });
             conditions.i++;
         }
 
