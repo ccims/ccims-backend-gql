@@ -4,6 +4,6 @@ import GraphQLLabel from "../nodes/GraphQLLabel";
 import GraphQLLabelEdge from "../edges/GraphQLLabelEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const LabelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLLabel, () => GraphQLLabelEdge, "Label");
-const GraphQLLabelPage = new GraphQLObjectType(LabelPageConfig);
+const labelPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLLabel, () => GraphQLLabelEdge, "Label");
+const GraphQLLabelPage = new GraphQLObjectType(labelPageConfig);
 export default GraphQLLabelPage;

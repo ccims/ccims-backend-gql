@@ -3,6 +3,6 @@ import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const IssueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIssueTimelineItem, "IssueTimelineItem");
-const GraphQLIssueTimelineItemEdge = new GraphQLObjectType(IssueTimelineItemEdgeConfig);
+const issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIssueTimelineItem, "IssueTimelineItem");
+const GraphQLIssueTimelineItemEdge = new GraphQLObjectType(issueTimelineItemEdgeConfig);
 export default GraphQLIssueTimelineItemEdge;

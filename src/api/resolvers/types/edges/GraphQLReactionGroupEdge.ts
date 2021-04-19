@@ -3,6 +3,6 @@ import GraphQLReactionGroup from "../nodes/GraphQLReactionGroup";
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const ReactionGroupEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLReactionGroup, "ReactionGroup");
-const GraphQLReactionGroupEdge = new GraphQLObjectType(ReactionGroupEdgeConfig);
+const reactionGroupEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLReactionGroup, "ReactionGroup");
+const GraphQLReactionGroupEdge = new GraphQLObjectType(reactionGroupEdgeConfig);
 export default GraphQLReactionGroupEdge;

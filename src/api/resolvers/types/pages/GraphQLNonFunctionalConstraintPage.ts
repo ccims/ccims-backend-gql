@@ -4,6 +4,6 @@ import GraphQLNonFunctionalConstraint from "../nodes/GraphQLNonFunctionalConstra
 import GraphQLNonFunctionalConstraintEdge from "../edges/GraphQLNonFunctionalConstraintEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const NonFunctionalConstraintPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLNonFunctionalConstraint, () => GraphQLNonFunctionalConstraintEdge, "NonFunctionalConstraint");
-const GraphQLNonFunctionalConstraintPage = new GraphQLObjectType(NonFunctionalConstraintPageConfig);
+const nonFunctionalConstraintPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLNonFunctionalConstraint, () => GraphQLNonFunctionalConstraintEdge, "NonFunctionalConstraint");
+const GraphQLNonFunctionalConstraintPage = new GraphQLObjectType(nonFunctionalConstraintPageConfig);
 export default GraphQLNonFunctionalConstraintPage;

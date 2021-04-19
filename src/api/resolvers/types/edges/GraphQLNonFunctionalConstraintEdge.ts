@@ -3,6 +3,6 @@ import GraphQLNonFunctionalConstraint from "../nodes/GraphQLNonFunctionalConstra
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const NonFunctionalConstraintEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLNonFunctionalConstraint, "NonFunctionalConstraint");
-const GraphQLNonFunctionalConstraintEdge = new GraphQLObjectType(NonFunctionalConstraintEdgeConfig);
+const nonFunctionalConstraintEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLNonFunctionalConstraint, "NonFunctionalConstraint");
+const GraphQLNonFunctionalConstraintEdge = new GraphQLObjectType(nonFunctionalConstraintEdgeConfig);
 export default GraphQLNonFunctionalConstraintEdge;

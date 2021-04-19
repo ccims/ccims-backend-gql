@@ -3,6 +3,6 @@ import GraphQLUser from "../nodes/GraphQLUser";
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const UserEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLUser, "User");
-const GraphQLUserEdge = new GraphQLObjectType(UserEdgeConfig);
+const userEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLUser, "User");
+const GraphQLUserEdge = new GraphQLObjectType(userEdgeConfig);
 export default GraphQLUserEdge;

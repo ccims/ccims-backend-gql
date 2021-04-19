@@ -4,6 +4,6 @@ import GraphQLIssueComment from "../nodes/timelineItems/GraphQLIssueComment";
 import GraphQLIssueCommentEdge from "../edges/GraphQLIssueCommentEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const IssueCommentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIssueComment, () => GraphQLIssueCommentEdge, "IssueComment");
-const GraphQLIssueCommentPage = new GraphQLObjectType(IssueCommentPageConfig);
+const issueCommentPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIssueComment, () => GraphQLIssueCommentEdge, "IssueComment");
+const GraphQLIssueCommentPage = new GraphQLObjectType(issueCommentPageConfig);
 export default GraphQLIssueCommentPage;

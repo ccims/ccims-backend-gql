@@ -4,6 +4,6 @@ import GraphQLIMS from "../nodes/GraphQLIMS";
 import GraphQLIMSEdge from "../edges/GraphQLIMSEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const IMSPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIMS, () => GraphQLIMSEdge, "IMS");
-const GraphQLIMSPage = new GraphQLObjectType(IMSPageConfig);
+const imsPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIMS, () => GraphQLIMSEdge, "IMS");
+const GraphQLIMSPage = new GraphQLObjectType(imsPageConfig);
 export default GraphQLIMSPage;

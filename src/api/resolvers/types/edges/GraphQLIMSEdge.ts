@@ -3,6 +3,6 @@ import GraphQLIMS from "../nodes/GraphQLIMS";
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const IMSEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIMS, "IMS");
-const GraphQLIMSEdge = new GraphQLObjectType(IMSEdgeConfig);
+const imsEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIMS, "IMS");
+const GraphQLIMSEdge = new GraphQLObjectType(imsEdgeConfig);
 export default GraphQLIMSEdge;

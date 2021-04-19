@@ -4,6 +4,6 @@ import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import GraphQLIssueTimelineItemEdge from "../edges/GraphQLIssueTimelineItemEdge";
 import { ResolverContext } from "../../../ResolverContext";
 
-const IssueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIssueTimelineItem, () => GraphQLIssueTimelineItemEdge, "IssueTimelineItem");
-const GraphQLIssueTimelineItemPage = new GraphQLObjectType(IssueTimelineItemPageConfig);
+const issueTimelineItemPageConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createPageConfig(() => GraphQLIssueTimelineItem, () => GraphQLIssueTimelineItemEdge, "IssueTimelineItem");
+const GraphQLIssueTimelineItemPage = new GraphQLObjectType(issueTimelineItemPageConfig);
 export default GraphQLIssueTimelineItemPage;

@@ -3,6 +3,6 @@ import GraphQLIssueLocation from "../nodes/GraphQLIssueLocation";
 import { ResolverContext } from "../../../ResolverContext";
 import { createEdge } from "./createEdge";
 
-const IssueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIssueLocation, "IssueLocation");
-const GraphQLIssueLocationEdge = new GraphQLObjectType(IssueLocationEdgeConfig);
+const issueLocationEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIssueLocation, "IssueLocation");
+const GraphQLIssueLocationEdge = new GraphQLObjectType(issueLocationEdgeConfig);
 export default GraphQLIssueLocationEdge;
