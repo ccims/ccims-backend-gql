@@ -4,8 +4,8 @@ import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { IMSComponent } from "../../../common/nodes/IMSComponent";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
 import { ResolverContext } from "../../ResolverContext";
-import GraphQLImsFilter from "../types/filters/GraphQLIMSFilter";
-import GraphQLImsPage from "../types/pages/GraphQLIMSPage";
+import GraphQLIMSComponentFilter from "../types/filters/GraphQLIMSComponentFilter";
+import GraphQLIMSComponentPage from "../types/pages/GraphQLIMSComponentPage";
 import nodeListQuery from "./nodeListQuery";
 
 /**
@@ -19,7 +19,7 @@ function imsComponentsListQuery<TSource extends CCIMSNode, TProperty extends Par
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<CCIMSNode & TProperty>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = nodeListQuery<TSource, IMSComponent>(GraphQLImsPage, GraphQLImsFilter, description, "IMSComponents", propertyProvider);
+    const baseQuery = nodeListQuery<TSource, IMSComponent>(GraphQLIMSComponentPage, GraphQLIMSComponentFilter, description, "IMSComponents", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {

@@ -31,7 +31,7 @@ const componentConfig: GraphQLObjectTypeConfig<Component, ResolverContext> = {
         interfaces: componentInterfacesListQuery<Component, ComponentInterface>("Requests component interfaces which this component offers", component => component.interfacesProperty),
         consumedInterfaces: componentInterfacesListQuery<Component, ComponentInterface>("Requests component interfaces that are used/consumed by this component", component => component.consumedInterfacesProperty),
         labels: labelsListQuery<Component, Label>("All labels which are available on this component, matching (if given) `filterBy`", component => component.labelsProperty),
-        imsComponents: imsComponentsListQuery<Component, IMSComponent>("All IMS which this component is synced to, matching (if given) `filterBy`", component => component.imsComponentsProperty),
+        imsComponents: imsComponentsListQuery<Component, IMSComponent>("All IMSComponents which this component is synced to, matching (if given) `filterBy`", component => component.imsComponentsProperty),
         artifacts: artifactsListQuery<Component, Artifact>("All Artifacts on this Component, matching (if given) `filterBy`", component => component.artifactsProperty)
     })
 };
