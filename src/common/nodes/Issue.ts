@@ -632,7 +632,6 @@ export class Issue extends SyncNode<Issue> implements Comment {
     public async addToComponent(component: Component, atDate: Date, asUser?: User): Promise<AddedToComponentEvent | undefined> {
         if (!(await this.componentsProperty.hasId(component.id))) {
             const event = await this.addToComponentInternal(component, atDate, asUser);
-            await this.addToLocationInternal(component, atDate, asUser);
             return event;
         } else {
             return undefined;
