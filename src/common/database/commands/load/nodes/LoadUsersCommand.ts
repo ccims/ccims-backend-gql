@@ -100,20 +100,22 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
         }
 
         const linkedConditions = this.generateLinkedConditions(conditions.i);
-        if (this.loadLinkedUsers) {
-            const values = [];
-            for (const conditionSpecification of linkedConditions.conditions) {
-                values.push(...conditionSpecification.values);
+        if (linkedConditions.conditions.length > 0) {
+            if (this.loadLinkedUsers) {
+                const values = [];
+                for (const conditionSpecification of linkedConditions.conditions) {
+                    values.push(...conditionSpecification.values);
+                }
+                const linkedConditionsText = linkedConditions.conditions.map(spec => `(${spec.text})`).join(" AND ");
+                conditions.conditions.push({
+                    text: `main.id = ANY(SELECT id FROM users WHERE ${linkedConditionsText})`,
+                    values: values,
+                });
+            } else {
+                conditions.conditions.push(...linkedConditions.conditions);
             }
-            const linkedConditionsText = linkedConditions.conditions.map(spec => `(${spec.text})`).join(" AND ");
-            conditions.conditions.push({
-                text: `main.id = ANY(SELECT id FROM users WHERE ${linkedConditionsText})`,
-                values: values,
-            });
-        } else {
-            conditions.conditions.push(...linkedConditions.conditions);
+            conditions.i = linkedConditions.i;
         }
-        conditions.i = linkedConditions.i;
 
         return conditions;
     }
