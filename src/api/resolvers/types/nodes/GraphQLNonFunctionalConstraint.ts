@@ -1,15 +1,16 @@
 import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { NonFunctionalConstraint } from "../../../../common/nodes/NonFunctionalConstraint";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLNode, { nodeFields } from "../GraphQLNode";
+import GraphQLNode from "../GraphQLNode";
 import GraphQLIssue from "./GraphQLIssue";
+import { syncNodeFields } from "./syncNodeFields";
 
 const nonFunctionalConstraintConfig: GraphQLObjectTypeConfig<NonFunctionalConstraint, ResolverContext> = {
     name: "NonFunctionalConstraint",
     description: "A non functional constraint assignable to a specific issue. A NonFunctionalConstraint is per-issue",
     interfaces: () => ([GraphQLNode]),
     fields: () => ({
-        ...nodeFields<NonFunctionalConstraint>("NonFunctionalConstraint"),
+        ...syncNodeFields<NonFunctionalConstraint>("NonFunctionalConstraint"),
         content: {
             type: GraphQLNonNull(GraphQLString),
             description: "The content of the constraint, defines the constraint"
