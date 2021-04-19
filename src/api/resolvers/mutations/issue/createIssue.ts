@@ -25,7 +25,7 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
             const labelIds = new Set(PreconditionCheck.checkNullableStringList(input, "labels", 32));
             const assigneeIds = new Set(PreconditionCheck.checkNullableStringList(input, "assignees", 32));
             const locationIds = new Set(PreconditionCheck.checkNullableStringList(input, "locations", 32));
-            const artifactIds = new Set(PreconditionCheck.checkStringList(input, "artifacts", 32));
+            const artifactIds = new Set(PreconditionCheck.checkNullableStringList(input, "artifacts", 32));
             const startDate = PreconditionCheck.checkNullableDate(input, "startDate");
             const dueDate = PreconditionCheck.checkNullableDate(input, "dueDate");
             const estimatedTime = PreconditionCheck.checkNullableTimespan(input, "estimatedTime");
