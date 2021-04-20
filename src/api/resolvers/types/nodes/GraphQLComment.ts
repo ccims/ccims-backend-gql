@@ -18,11 +18,11 @@ export function commentFields<T extends Comment>(name: string, namePlural: strin
     return {
         ...syncNodeFields<T>(name, namePlural),
         body: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: `The body text of the ${name}.\nMarkdown supported.\n\nMax. 65536 characters`
         },
         bodyRendered: {
-            type: GraphQLString,
+            type: GraphQLNonNull(GraphQLString),
             description: `The body text of the ${name} rendered to html`
         },
         currentUserCanEdit: {
@@ -30,7 +30,7 @@ export function commentFields<T extends Comment>(name: string, namePlural: strin
             description: `\`true\` iff the User authenticated by the given JWT is permitted to edit this ${name}.\n\nThis only refers to editing the core comment (title, body, etc.)`
         },
         lastEditedAt: {
-            type: GraphQLDate,
+            type: GraphQLNonNull(GraphQLDate),
             description: `Date when the ${name}'s body was last edited`
         },
         editedBy: usersListQuery<T, User>(`All Users who edited this ${name} (body and/or title)`, comment => comment.editedByProperty),

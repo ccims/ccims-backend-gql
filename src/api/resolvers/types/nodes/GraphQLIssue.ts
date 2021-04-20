@@ -37,7 +37,7 @@ const issueConfig: GraphQLObjectTypeConfig<Issue, ResolverContext> = {
             description: "The title to display for this issue.\n\nNot unique; Max. 256 characters"
         },
         lastUpdatedAt: {
-            type: GraphQLDate,
+            type: GraphQLNonNull(GraphQLDate),
             description: "Date when any update / activity was made to any part of the issue (__including__ title, commens, reactions)"
         },
         isOpen: {

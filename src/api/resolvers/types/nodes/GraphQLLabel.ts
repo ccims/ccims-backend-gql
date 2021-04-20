@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLColor from "../../scalars/GraphQLColor";
 import projectsListQuery from "../../listQueries/projectsListQuery";
@@ -16,7 +16,7 @@ const labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     fields: () => ({
         ...namedSyncNodeFields<Label>("Label"),
         color: {
-            type: GraphQLColor,
+            type: GraphQLNonNull(GraphQLColor),
             description: "The color of the label in the GUI"
         },
         components: componentsListQuery<Label, Component>("The components this label is available on", label => label.componentsProperty),

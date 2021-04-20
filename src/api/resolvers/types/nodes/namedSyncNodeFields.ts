@@ -22,7 +22,7 @@ export function namedSyncNodeFields<T extends NamedSyncNode>(name: string, nameP
             description: `A textual description (of the function) of this ${name}.\n\nMax. 65536 characters`
         },
         lastUpdatedAt: {
-            type: GraphQLDate,
+            type: GraphQLNonNull(GraphQLDate),
             description: `Date when the name, description or any other field directly on ${name} was last updated`
         }
     };

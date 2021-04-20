@@ -131,7 +131,7 @@ export class CommentIssueTimelineItem<T extends CommentIssueTimelineItem = any> 
      * @returns A promise of the body __html__ of this issue
      */
     public async bodyRendered(): Promise<string> {
-        return mdRenderer.render(await this.body);
+        return mdRenderer.render(this.body);
     }
 
     /**

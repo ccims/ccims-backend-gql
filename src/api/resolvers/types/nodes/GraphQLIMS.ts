@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import GraphQLNode, { nodeFields } from "../GraphQLNode";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
@@ -15,7 +15,7 @@ const imsConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         ...nodeFields<IMSSystem>("IMS"),
         imsType: {
-            type: GraphQLIMSType,
+            type: GraphQLNonNull(GraphQLIMSType),
             description: "The type/system this IMS is an instance of"
         },
         users: imsUsersListQuery<IMSSystem, IMSUser>("All IMSUsers with this IMS", ims => ims.usersProperty),
