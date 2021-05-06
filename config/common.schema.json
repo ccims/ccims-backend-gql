@@ -13,7 +13,7 @@
         "passwordSecret": {
             "type": "string",
             "title": "Password hashing secret",
-            "description": "The secret to be used for hashing the password into the database"
+            "description": "The secret to be used for hashing the password into the database. WARNING: random secret is used if not provided: this results in broken passwords after restart"
         },
         "passwordAlgorithm": {
             "type": "string",

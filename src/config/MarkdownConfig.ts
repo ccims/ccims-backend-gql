@@ -11,7 +11,7 @@ export class MarkdownConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            console.log(3, `${filePath} file for Mardown config not found. Using defaults.`);
+            console.log(`${filePath} file for Mardown config not found. Using defaults.`);
         }
         if (typeof file?.html === "boolean") {
             this.html = file.html;

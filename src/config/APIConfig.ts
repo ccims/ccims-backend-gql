@@ -14,7 +14,7 @@ export class APIConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            console.log(3, `${filePath} file for the API config not found. Using defaults`);
+            console.log(`${filePath} file for the API config not found. Using defaults`);
         }
         if (typeof file?.hostIface === "string") {
             this.hostIface = file.hostIface;

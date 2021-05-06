@@ -11,7 +11,7 @@ export class CommonConfig {
         try {
             file = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
         } catch (e) {
-            console.log(3, `${filePath} file for the common config not found. Using defaults`);
+            console.log(`${filePath} file for the common config not found. Using defaults`);
         }
         if (typeof file?.logLevel === "number") {
             this.logLevel = file.logLevel;
@@ -21,6 +21,7 @@ export class CommonConfig {
         if (typeof file?.passwordSecret === "string") {
             this.passwordSecret = file.passwordSecret;
         } else {
+            console.warn("WARNING: using random default for passwordSecret. This results in invalid passwords after server restart!");
             this.passwordSecret = "";
             const length = (Math.random() * 85) + 15;
             for (let i = 0; i < length; i++) {
