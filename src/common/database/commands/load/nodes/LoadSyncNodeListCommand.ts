@@ -1,5 +1,7 @@
+import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
 import { SyncNode } from "../../../../nodes/SyncNode";
-import { ConditionSpecification } from "../ConditionSpecification";
+import { DatabaseManager } from "../../../DatabaseManager";
+import { QueryPart } from "../QueryPart";
 import { LoadNodeListCommand } from "./LoadNodeListCommand";
 
 /**
@@ -7,34 +9,47 @@ import { LoadNodeListCommand } from "./LoadNodeListCommand";
  * @param T the type of SyncNode to load
  */
 export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNodeListCommand<T> {
+    
     /**
-     * if true, metadata is loaded
+     * If true also loads nodes which are marked as deleted
      */
-    public loadWithMetadata: boolean = false;
-
     public loadDeleted: boolean = false;
 
     /**
      * Select only sync nodes that were created by one of the users with the given IDs
      */
-    public createdBy?: string[];
+    public createdBy: string[] | undefined;
 
     /**
      * Select only sync nodes created after the given Date __(inclusive)__
      */
-    public createdAfter?: Date;
+    public createdAfter: Date | undefined;
 
     /**
      * Select only sync nodes created before the given Date __(inclusive)__
      */
-    public createdBefore?: Date;
+    public createdBefore: Date | undefined;
 
+    /**
+     * Selects only sync nodes which were modified after the given Date __(inclusive)__
+     */
+    public modifiedSince: Date | undefined;
+
+    protected constructor(rows: RowSpecification<T>[], loadDeleted: boolean = false) {
+        super(rows);
+        this.loadDeleted = loadDeleted;
+    }
 
     /**
      * gets a string with all rows that should be selected
+     * Also selects last_modified_at (not in rows because this is not saved) and metadata (not on main)
      */
-    protected get rows(): string {
-        return this.loadWithMetadata ? super.rows + ", metadata" : super.rows;
+    protected rows(databaseManager: DatabaseManager): string {
+        if (!this.countMode) {
+            return super.rows(databaseManager) + (databaseManager.metadataId !== undefined ? ", main.last_modified_at, metadata.metadata" : ", main.last_modified_at");
+        } else {
+            return super.rows(databaseManager);
+        }
     }
 
     /**
@@ -42,11 +57,10 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
         if (!this.loadDeleted) {
             conditions.conditions.push({
-                priority: 3,
                 text: "main.deleted=false",
                 values: []
             });
@@ -55,15 +69,13 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
         if (this.createdBy !== undefined) {
             if (this.createdBy.length === 1) {
                 conditions.conditions.push({
-                    text: `main.created_by=$${conditions.i}`,
+                    text: `main.created_by_id=$${conditions.i}`,
                     values: [this.createdBy[0]],
-                    priority: 5
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.created_by=ANY($${conditions.i})`,
+                    text: `main.created_by_id=ANY($${conditions.i})`,
                     values: [this.createdBy],
-                    priority: 5
                 });
             }
             conditions.i++;
@@ -71,21 +83,51 @@ export abstract class LoadSyncNodeListCommand<T extends SyncNode> extends LoadNo
 
         if (this.createdAfter !== undefined) {
             conditions.conditions.push({
-                text: `main.created_after >= $${conditions.i}`,
+                text: `main.created_at >= $${conditions.i}`,
                 values: [this.createdAfter],
-                priority: 4
             });
             conditions.i++;
         }
 
         if (this.createdBefore !== undefined) {
             conditions.conditions.push({
-                text: `main.created_before <= $${conditions.i}`,
+                text: `main.created_at <= $${conditions.i}`,
                 values: [this.createdBefore],
-                priority: 4
+            });
+            conditions.i++;
+        }
+
+        if (this.modifiedSince !== undefined) {
+            conditions.conditions.push({
+                text: `main.last_modified_at >= $${conditions.i}`,
+                values: [this.modifiedSince],
             });
             conditions.i++;
         }
         return conditions;
+    }
+
+    /**
+     * Generates a default query start QueryPart from a tablename and the databaseManager
+     * Can be overwritten to implement node specific behaviour
+     * Uses main as default alias for the table that is queried
+     * If a metadataId is set, metadata is queried, metadata is the table name
+     * WARNING: only use constants for tableName!
+     * @param tableName the name of the table to query from
+     * @param databaseManager the database manager
+     */
+    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
+        const metadataId = databaseManager.metadataId;
+        if (metadataId === undefined) {
+            return {
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main `,
+                values: []
+            }
+        } else {
+            return {
+                text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main LEFT JOIN metadata ON (main.id = metadata.node_id AND metadata.id = $1) `,
+                values: [metadataId]
+            }
+        }
     }
 }

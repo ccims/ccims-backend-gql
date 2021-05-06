@@ -1,39 +1,45 @@
-import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadComponentInterfacesCommand } from "../database/commands/load/nodes/LoadComponentInterfacesCommand";
-import { LoadImsSystemsCommand } from "../database/commands/load/nodes/LoadImsSystemsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { ComponentInterface } from "./ComponentInterface";
-import { ImsSystem } from "./ImsSystem";
 import { Issue } from "./Issue";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
-import { NamedOwnedNode, NamedOwnedNodeTableSpecification } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { Label } from "./Label";
 import { LoadLabelsCommand } from "../database/commands/load/nodes/LoadLabelsCommand";
-import { log } from "../../log";
+import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { LoadComponentPermissionsCommand } from "../database/commands/load/nodes/LoadComponentPermissionsCommand";
+import { ComponentPermission } from "./ComponentPermission";
+import { LoadIMSComponentsCommand } from "../database/commands/load/nodes/LoadIMSComponentsCommand";
+import { IMSComponent } from "./IMSComponent";
+import { Artifact } from "./Artifact";
+import { LoadArtifactsCommand } from "../database/commands/load/nodes/LoadArtifactsCommand";
 
 /**
  * the specification of the table which contains components
  */
 export const ComponentTableSpecification: NodeTableSpecification<Component>
-    = new NodeTableSpecification<Component>("component", NamedOwnedNodeTableSpecification,
-        new RowSpecification("ims_system_id", component => component.imsSystemProperty.getId()));
+    = new NodeTableSpecification<Component>("component", NamedSyncNodeTableSpecification,
+        RowSpecification.fromProperty("repository_url", "repositoryURL"));
 
 /**
  * A component known to ccims.
  * component can have issues and can be assigned to multiple projects. (NOTE: One IMS per component)
  */
-export class Component extends NamedOwnedNode implements IssueLocation {
+export class Component extends NamedSyncNode<Component> implements IssueLocation {
+
+    /**
+     * The url for the repository containing the code of the component, optional
+     */
+    private _repositoryURL: string | undefined;
 
     /**
      * property for issues which are located on this component
@@ -49,7 +55,8 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * specification of the projectsProperty
      */
     private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, Component>
-        = NodeListPropertySpecification.loadDynamic<Project, Component>(LoadRelationCommand.fromSecundary("project", "component"),
+        = NodeListPropertySpecification.loadDynamic<Project, Component>(
+            LoadRelationCommand.fromSecundary("project", "component"),
             (ids, component) => {
                 const command = new LoadProjectsCommand();
                 command.ids = ids;
@@ -64,34 +71,28 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             .noSave();
 
     /**
-     * property for the imsSystem of this component
+     * list of all IMSComponent with this Component
      */
-    public readonly imsSystemProperty: NullableNodeProperty<ImsSystem, Component>;
+    public readonly imsComponentsProperty: NodeListProperty<IMSComponent, Component>;
 
     /**
-     * specification of the imsSystemProperty
+     * specification for imsComponentsProperty 
      */
-    private static readonly imsSystemPropertySpecification: NodePropertySpecification<ImsSystem, Component>
-        = new NodePropertySpecification<ImsSystem, Component>(
-            (id, component) => {
-                const command = new LoadImsSystemsCommand();
-                command.ids = [id];
+    private static readonly imsComponentsPropertySpecification: NodeListPropertySpecification<IMSComponent, Component>
+        = NodeListPropertySpecification.loadDynamic<IMSComponent, Component>(
+            LoadRelationCommand.fromManySide("ims_user", "ims_system_id"),
+            (ids, ims) => {
+                const command = new LoadIMSComponentsCommand();
+                command.ids = ids;
                 return command;
             },
-            component => {
-                return new GetWithReloadCommand(component, "ims_system_id", new LoadImsSystemsCommand());
-            },
-            undefined,
-            (imsSystem, component) => imsSystem.componentProperty
-        );
-
-    /**
-     * Async getter function for the ims of this component
-     * @returns A promise of a ims that belongs to this component or `undefined`
-     */
-    public async ims(): Promise<ImsSystem | undefined> {
-        return this.imsSystemProperty.get();
-    }
+            ims => {
+                const command = new LoadIMSComponentsCommand();
+                command.imsSystems = [ims.id];
+                return command
+            })
+            .notifyChanged((user, ims) => user.imsSystemProperty)
+            .noSave();
 
     /**
      * property with all issues
@@ -103,14 +104,15 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * specification of the issuesProperty
      */
     private static readonly issuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
-        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(
+            LoadRelationCommand.fromPrimary("component", "issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
@@ -127,14 +129,15 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * specification of the pinnedIssuesProperty
      */
     private static readonly pinnedIssuesPropertySpecification: NodeListPropertySpecification<Issue, Component>
-        = NodeListPropertySpecification.loadDynamic<Issue, Component>(LoadRelationCommand.fromPrimary("component", "pinned_issue"),
+        = NodeListPropertySpecification.loadDynamic<Issue, Component>(
+            LoadRelationCommand.fromPrimary("component", "pinned_issue"),
             (ids, component) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
@@ -147,14 +150,15 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     public readonly interfacesProperty: NodeListProperty<ComponentInterface, Component>;
 
     private static readonly interfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
-        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
+        = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(
+            LoadRelationCommand.fromManySide("component_interface", "host_component_id"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
@@ -172,12 +176,12 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<ComponentInterface, Component>
         = NodeListPropertySpecification.loadDynamic<ComponentInterface, Component>(LoadRelationCommand.fromPrimary("component", "consumed_component_interface"),
             (ids, component) => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.ids = ids;
                 return command;
             },
             component => {
-                const command = new LoadComponentInterfacesCommand();
+                const command = new LoadComponentInterfacesCommand(true);
                 command.consumedByComponent = [component.id];
                 return command;
             })
@@ -185,7 +189,7 @@ export class Component extends NamedOwnedNode implements IssueLocation {
             .saveOnPrimary("component", "consumed_component_interface");
 
     /**
-     * Property of all labels on thic component
+     * Property of all labels on this component
      */
     public readonly labelsProperty: NodeListProperty<Label, Component>;
 
@@ -195,17 +199,65 @@ export class Component extends NamedOwnedNode implements IssueLocation {
     private static readonly labelsPropertySpecification: NodeListPropertySpecification<Label, Component> =
         NodeListPropertySpecification.loadDynamic<Label, Component>(LoadRelationCommand.fromPrimary("component", "label"),
             (ids, component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = ids;
                 return command;
             },
             (component) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.onComponents = [component.id];
                 return command;
             })
             .notifyChanged((label, component) => label.componentsProperty)
             .saveOnPrimary("component", "label");
+
+    /**
+     * Property of all Artifacts on this component
+     */
+    public readonly artifactsProperty: NodeListProperty<Artifact, Component>;
+
+    /**
+     * Specification for the artifactsProperty
+     */
+    private static readonly artifactsPropertySpecification: NodeListPropertySpecification<Artifact, Component> = 
+        NodeListPropertySpecification.loadDynamic<Artifact, Component>(LoadRelationCommand.fromManySide("artifact", "component_id"),
+            (ids, component) => {
+                const command = new LoadArtifactsCommand(true);
+                command.ids = ids;
+                return command;
+            },
+            (component) => {
+                const command = new LoadArtifactsCommand(true);
+                command.onComponents = [component.id];
+                return command;
+            })
+            .notifyChanged((artifact, component) => artifact.componentProperty)
+            .noSave();
+
+    /**
+     * property with all permissions which affect this component
+     */
+    public readonly permissionsProperty: NodeListProperty<ComponentPermission, Component>;
+
+    /**
+     * specification for permissionsProperty
+     */
+    private static readonly permissionsPropertySpecification: NodeListPropertySpecification<ComponentPermission, Component>
+        = NodeListPropertySpecification.loadDynamic<ComponentPermission, Component>(
+            LoadRelationCommand.fromManySide("component_permission", "component_id"),
+            (ids, node) => {
+                const command = new LoadComponentPermissionsCommand();
+                command.ids = ids;
+                return command;
+            },
+            node => {
+                const command = new LoadComponentPermissionsCommand();
+                command.components = [node.id];
+                return command;
+            }
+        )
+        .notifyChanged((permission, node) => permission.componentProperty)
+        .noSave();
 
 
     /**
@@ -215,19 +267,24 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param id the id
      * @param name the name of the component
      * @param description the description of the component
+     * @param lastUpdatedAt the date when the description or name was last updated
      * @param ownerId the id of the owner of the component
      * @param imsSystemId the id of the ims of the component
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, ownerId: string, imsSystemId?: string) {
-        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, ownerId);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, repositoryURL: string | undefined,
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Component, databaseManager, ComponentTableSpecification, id, name, description, lastUpdatedAt, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
+        this._repositoryURL = repositoryURL;
         this.projectsProperty = new NodeListProperty<Project, Component>(databaseManager, Component.projectsPropertySpecification, this);
-        this.imsSystemProperty = new NullableNodeProperty<ImsSystem, Component>(databaseManager, Component.imsSystemPropertySpecification, this, imsSystemId);
+        this.imsComponentsProperty = new NodeListProperty<IMSComponent, Component>(databaseManager, Component.imsComponentsPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
         this.issuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.issuesPropertySpecification, this);
         this.interfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.interfacesPropertySpecification, this);
         this.consumedInterfacesProperty = new NodeListProperty<ComponentInterface, Component>(databaseManager, Component.consumedInterfacesPropertySpecification, this);
         this.pinnedIssuesProperty = new NodeListProperty<Issue, Component>(databaseManager, Component.pinnedIssuesPropertySpecification, this);
         this.labelsProperty = new NodeListProperty<Label, Component>(databaseManager, Component.labelsPropertySpecification, this);
+        this.artifactsProperty = new NodeListProperty<Artifact, Component>(databaseManager, Component.artifactsPropertySpecification, this);
+        this.permissionsProperty = new NodeListProperty<ComponentPermission, Component>(databaseManager, Component.permissionsPropertySpecification, this);
     }
 
     /**
@@ -236,55 +293,39 @@ export class Component extends NamedOwnedNode implements IssueLocation {
      * @param databaseManager
      * @param name the name of the component, must be shorter than 257 chars
      * @param description the description of the component, must be shorter than 65537 chars
-     * @param owner the owner of the component
+     * @param repositoryURL the url where to find the code repository, must be shorter than 65537 chars
      * @param imsType the type of the associated imsSystem
      * @param endpoint the endpoint of the associated imsSystemn
      * @param connectionData the connectionData of the associated imsSystem
      */
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, owner: User): Promise<Component> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, repositoryURL: string | undefined,
+        createdBy: User, createdAt: Date): Promise<Component> {
         if (name.length > 256) {
             throw new Error("the specified name is too long");
         }
         if (description.length > 65536) {
             throw new Error("the specified description is too long");
         }
+        if (repositoryURL != undefined && repositoryURL.length > 65536) {
+            throw new Error("the specified reposityURL is too long");
+        }
 
-        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, owner.id);
+        const component = new Component(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, repositoryURL,
+            createdBy.id, createdAt, false, createdAt, undefined);
         component.markNew();
         databaseManager.addCachedNode(component);
-        await owner.ownedNodesProperty.add(component);
         return component;
     }
 
-    /**
-     * marks this node as deleted
-     * this also marks this node as changed
-     */
-    public async markDeleted(): Promise<void> {
-        if(!this.isDeleted) {
-            await super.markDeleted();
-            await Promise.all((await this.interfacesProperty.getElements()).map(componentInterface => componentInterface.markDeleted()));
-            await this.pinnedIssuesProperty.clear();
-            await this.labelsProperty.clear();
-            await this.consumedInterfacesProperty.clear();
-            const imsSystem = await this.ims();
-            await this.imsSystemProperty.set(undefined);
-            if (imsSystem) {
-                await imsSystem.markDeleted();
-            }
-            await this.issuesOnLocationProperty.clear();
-            const issues = await this.issuesProperty.getElements();
-            await Promise.all(issues.map(async issue => {
-                if ((await issue.componentsProperty.getIds()).length === 1) {
-                    await issue.markDeleted();
-                } else {
-                    try {
-                        await issue.removeFromComponent(this, new Date());
-                    } catch {
-                        log(2, `could not remove issue ${issue.id} from component ${this.id}`);
-                    }
-                }
-            }));
+    public get repositoryURL(): string | undefined {
+        return this._repositoryURL;
+    }
+
+    public setRepositoryURL(value: string | undefined, atDate: Date) {
+        if (value != undefined && value.length > 65536) {
+            throw new Error("reposityUrl is too long, max length = 65536");
         }
+        this.markChanged();
+        this._repositoryURL = value;
     }
 }

@@ -2,7 +2,6 @@ import { QueryConfig, QueryResult } from "pg";
 import { CCIMSNode } from "../../nodes/CCIMSNode";
 import { DatabaseCommand } from "../DatabaseCommand";
 import { DatabaseManager } from "../DatabaseManager";
-import { LoadNodeListCommand } from "./load/nodes/LoadNodeListCommand";
 import { verifyIsAllowedSqlIdent } from "./SqlHelperFunctions";
 
 /**
@@ -18,7 +17,7 @@ export class GetWithReloadCommand<T extends CCIMSNode> extends DatabaseCommand<T
      * @param loadCommand the command to load the new element with the new id
      *      warning: this is modified
      */
-    public constructor(private readonly node: CCIMSNode, private readonly rowName: string, private readonly loadCommand: LoadNodeListCommand<T>) {
+    public constructor(private readonly node: CCIMSNode, private readonly rowName: string, private readonly loadCommand: DatabaseCommand<T[]> & { ids?: string[] }) {
         super();
         verifyIsAllowedSqlIdent(this.node._tableSpecification.tableName);
         verifyIsAllowedSqlIdent(rowName);
@@ -27,7 +26,7 @@ export class GetWithReloadCommand<T extends CCIMSNode> extends DatabaseCommand<T
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: `SELECT ${this.rowName} FROM ${this.node._tableSpecification.tableName} WHERE id=$1`,
             values: [this.node.id]

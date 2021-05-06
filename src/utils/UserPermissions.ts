@@ -110,7 +110,7 @@ export class UserPermissions {
      * @param projectId The ID of the project fo which to set the permissions
      * @param permissions The new Project permissions to be set
      */
-    public setProjectPermissions(projectId: string, permissions: ProjectPermission) {
+    public setProjectPermissions(projectId: string, permissions: ProjectPermission): void {
         if (!this._user) {
             throw new Error("These permissons aren't assigned to any user!");
         }
@@ -125,7 +125,7 @@ export class UserPermissions {
      * If no user was set yet, this will fail
      * @param projectId The ID of the project on which to unset all the permissions of the user
      */
-    public removeProjectPermissions(projectId: string) {
+    public removeProjectPermissions(projectId: string): void {
         if (!this._user) {
             throw new Error("These permissons aren't assigned to any user!");
         }
@@ -151,7 +151,7 @@ export class UserPermissions {
      * @param componentId The ID of the component fo which to set the permissions
      * @param permissions The new Component permissions to be set
      */
-    public setComponentPermissions(componentId: string, permissions: ComponentPermission) {
+    public setComponentPermissions(componentId: string, permissions: ComponentPermission): void {
         if (!this._user) {
             throw new Error("These permissons aren't assigned to any user!");
         }
@@ -166,7 +166,7 @@ export class UserPermissions {
      * If no user was set yet, this will fail
      * @param componentId The ID of the component on which to unset all the permissions of the user
      */
-    public removeComponentPermissions(componentId: string) {
+    public removeComponentPermissions(componentId: string): void {
         if (!this._user) {
             throw new Error("These permissons aren't assigned to any user!");
         }

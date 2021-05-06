@@ -33,12 +33,13 @@ function removeIssueFromLocation(): GraphQLFieldConfig<any, ResolverContext> {
                 log(2, "A issue location was returned that is neiter a Component nor a ComponentInterface");
                 throw new Error("An internal server error occured");
             }
+            /*
             if (!context.user.permissions.getComponentPermissions(componentId).editIssueLocation && !context.user.permissions.globalPermissions.globalAdmin) {
                 throw new Error("You are not permitted to remove issues to from locations on the component the specified location belongs to")
             }
+            */
             const event = await issue.removeFromLocation(location, new Date(), context.user);
-            await context.dbManager.save();
-            return base.createResult(args, issue, event, { location });
+            return base.createResult(args, context, issue, event, { location });
         }
     }
 }

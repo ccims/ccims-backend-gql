@@ -105,6 +105,6 @@ function nodeListQuery<TSource extends CCIMSNode, TNode extends CCIMSNode>(
             return new Page(cmd.hasNext, cmd.hasPrevious, result, cmd, context.dbManager);
         }
     };
-};
+}
 
 export default nodeListQuery;

@@ -12,8 +12,8 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(WasUnlinkedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(WasUnlinkedEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadWasUnlinkedEventsCommand extends LoadIssueTimelineItemsCommandB
      * @returns the parsed AddedToComponentEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): WasUnlinkedEvent {
-        return new WasUnlinkedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.unlinked_by, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new WasUnlinkedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.unlinked_by_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_was_unlinked_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("was_unlinked_event", databaseManager);
     }
 
 }

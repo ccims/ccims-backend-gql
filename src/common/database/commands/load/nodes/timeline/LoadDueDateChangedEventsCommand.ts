@@ -12,8 +12,8 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(DueDateChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(DueDateChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadDueDateChangedEventsCommand extends LoadIssueTimelineItemsComma
      * @returns the parsed DueDateChangedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): DueDateChangedEvent {
-        return new DueDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new DueDateChangedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+           resultRow.old_due_date, resultRow.new_due_date, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the due of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_due_date_changed_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("due_date_changed_event", databaseManager);
     }
 
 }

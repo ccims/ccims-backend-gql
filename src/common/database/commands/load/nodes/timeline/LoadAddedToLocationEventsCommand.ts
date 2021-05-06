@@ -12,8 +12,8 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
     /**
      * creates a new AddedToLocationEventsCommand
      */
-    public constructor() {
-        super(AddedToLocationEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(AddedToLocationEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadAddedToLocationEventsCommand extends LoadIssueTimelineItemsComm
      * @returns the parsed AddedToLocationEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): AddedToLocationEvent {
-        return new AddedToLocationEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.location, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new AddedToLocationEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.location_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_added_to_location_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("added_to_location_event", databaseManager);
     }
 
 }

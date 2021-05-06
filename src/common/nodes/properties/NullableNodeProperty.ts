@@ -1,14 +1,11 @@
 import { CCIMSNode } from "../CCIMSNode";
-import { Property } from "./Property";
-import { Saveable } from "../Saveable";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodePropertyBase } from "./NodePropertyBase";
-import { log } from "../../../log";
 
-/**
- * @see NodeProperty, but supports undefined for the other node
- */
+
+
+
 export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends NodePropertyBase<T, V> {
 
     /**
@@ -18,7 +15,7 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     /**
      * if present, the id of the other node
      */
-    private _id?: string;
+    private _id: string | undefined;
 
     /**
      * creates a new nullable node property with the provided specification
@@ -46,6 +43,18 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
     public async get(): Promise<T | undefined> {
         await this.ensureLoaded();
         return this._element;
+    }
+
+    /**
+     * get the current element if it is not deleted, otherwise undefined
+     */
+    public async getPublic(): Promise<T | undefined> {
+        await this.ensureLoaded();
+        if (this._element?.isDeleted) {
+            return undefined;
+        } else {
+            return this._element;
+        }
     }
 
     /**
@@ -93,17 +102,6 @@ export class NullableNodeProperty<T extends CCIMSNode, V extends CCIMSNode> exte
                 if (reloadResult) {
                     this._id = reloadResult.id;
                     this._element = reloadResult;
-                    await this.notifyAdded(this._element, false);
-                } else if (this._specification.deletedId) {
-                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
-                    this._databaseManager.addCommand(loadDeletedCommand);
-                    await this._databaseManager.executePendingCommands();
-                    if (loadDeletedCommand.getResult().length === 0) {
-                        log(2, "error: deleted command does not exist");
-                        throw new Error("Internal server error");
-                    }
-                    this._id = this._specification.deletedId;
-                    this._element = loadDeletedCommand.getResult()[0];
                     await this.notifyAdded(this._element, false);
                 } else {
                     this._element = undefined;

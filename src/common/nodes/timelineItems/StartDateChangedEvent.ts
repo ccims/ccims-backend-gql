@@ -2,33 +2,33 @@ import { DatabaseManager } from "../../database/DatabaseManager";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const StartDateChangedEventTableSpecification: NodeTableSpecification<StartDateChangedEvent>
-    = new NodeTableSpecification<StartDateChangedEvent>("issue_timeline_start_date_changed_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<StartDateChangedEvent>("start_date_changed_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_start_date", "oldStartDate"),
     RowSpecification.fromProperty("new_start_date", "newStartDate"));
 
 export class StartDateChangedEvent extends IssueTimelineItem {
 
-    private _oldStartDate?: Date;
+    private _oldStartDate: Date | undefined;
 
-    private _newStartDate?: Date;
+    private _newStartDate: Date | undefined;
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldStartDate: Date | undefined, newStartDate: Date | undefined,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.StartDateChangedEvent, databaseManager, StartDateChangedEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this._oldStartDate = oldStartDate;
         this._newStartDate = newStartDate;
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, oldStartDate?: Date, newStartDate?: Date): Promise<StartDateChangedEvent> {
-        const event = new StartDateChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldStartDate, newStartDate, false);
+        const event = new StartDateChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldStartDate, newStartDate, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);

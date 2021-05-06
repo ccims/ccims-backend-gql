@@ -12,8 +12,8 @@ export class LoadReopenedEventsCommand extends LoadIssueTimelineItemsCommandBase
     /**
      * creates a new LoadReopenedEventsCommand
      */
-    public constructor() {
-        super(ReopenedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ReopenedEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadReopenedEventsCommand extends LoadIssueTimelineItemsCommandBase
      * @returns the parsed ReopenedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ReopenedEvent {
-        return new ReopenedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new ReopenedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_reopened_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("reopened_event", databaseManager);
     }
 
 }

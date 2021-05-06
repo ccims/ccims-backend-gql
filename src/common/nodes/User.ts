@@ -1,24 +1,20 @@
-import crypto from "crypto";
-import { config } from "../../config/Config";
-import { log } from "../../log";
-import { UserPermissions } from "../../utils/UserPermissions";
-import { CombineCommand } from "../database/commands/CombineCommand";
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
-import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
-import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
+import { LoadReactionGroupsCommand } from "../database/commands/load/nodes/LoadReactionGroupsCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
-import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
+import { LoadCommentIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadCommentIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Issue } from "./Issue";
-import { NamedOwnedNode } from "./NamedOwnedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { Comment } from "./timelineItems/Comment"
+import { NodeProperty } from "./properties/NodeProperty";
+import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { ReactionGroup } from "./ReactionGroup";
+import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
 
 /**
  * specification of a table which can contain users
@@ -27,9 +23,8 @@ export const UserTableSpecification: NodeTableSpecification<User>
     = new NodeTableSpecification<User>("users", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("username", "username"),
         RowSpecification.fromProperty("displayname", "displayName"),
-        RowSpecification.fromProperty("pw_hash", "passwordHash"),
         RowSpecification.fromProperty("email", "email"),
-        new RowSpecification<User>("permissions", (user) => user.permissions.toDatabase()));
+        new RowSpecification("linked_user_id", user => user.linkedUserProperty.getId()));
 
 /**
  * A user is a CCIMSNode to represent a user (account) of the ccims with a username, password, email etc.
@@ -37,6 +32,50 @@ export const UserTableSpecification: NodeTableSpecification<User>
  * @param T the type of this User
  */
 export class User<T extends User = any> extends CCIMSNode<T> {
+
+    /**
+     * the linked user (might be the same user)
+     */
+    public readonly linkedUserProperty: NodeProperty<User, User>;
+
+    /**
+     * specification for linkedUserProperty
+     */
+    private static readonly linkedUserPropertySpecification: NodePropertySpecification<User, User>
+        = new NodePropertySpecification<User, User>(
+            (id, node) => {
+                const command = new LoadUsersCommand();
+                command.ids = [id];
+                return command;
+            },
+            node => new GetWithReloadCommand(node, "linked_user_id", new LoadUsersCommand()),
+            (user, node) => user.linkedByUsersProperty
+        );
+
+    /**
+     * list property with all users that link this user
+     */
+    public readonly linkedByUsersProperty: NodeListProperty<User, User>;
+
+    /**
+     * specification for linkedByUsersProperty
+     */
+    private static readonly linkedByUsersPropertySpecification: NodeListPropertySpecification<User, User>
+            = NodeListPropertySpecification.loadDynamic<User, User>(
+            LoadRelationCommand.fromManySide("users", "linked_user_id"),
+            (ids, user) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            user => {
+                const command = new LoadUsersCommand();
+                command.linksToUsers = [user.id];
+                return command;
+            })
+            .notifyChanged((linkedUser, user) => linkedUser.linkedUserProperty)
+            .noSave();
+
 
     /**
      * The username used to login, a system wide unique string with
@@ -51,41 +90,10 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     private _displayName: string;
 
     /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    private _passwordHash: string;
-
-    /**
      * The mail address of the user used for contacting him (e.g. notifications)
      * This isn't required and can be undefined
      */
     private _email: string | undefined;
-
-    private _permissions: UserPermissions;
-
-    /**
-     * Property containing all projects this user is a part of
-     */
-    public readonly projectsProperty: NodeListProperty<Project, User>;
-
-    /**
-     * specification of the projectsProperty
-     */
-    private static readonly projectsPropertySpecification: NodeListPropertySpecification<Project, User>
-        = NodeListPropertySpecification.loadDynamic<Project, User>(LoadRelationCommand.fromPrimary("user", "project"),
-            (ids, user) => {
-                const command = new LoadProjectsCommand();
-                command.ids = ids;
-                return command;
-            },
-            user => {
-                const command = new LoadProjectsCommand();
-                command.users = [user.id];
-                return command;
-            })
-            .notifyChanged((project, component) => project.usersProperty)
-            .saveOnPrimary("user", "project");
 
 
     /**
@@ -94,14 +102,15 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public readonly assignedToIssuesProperty: NodeListProperty<Issue, User>;
 
     public static readonly assignedToIssuesPropertySpecification: NodeListPropertySpecification<Issue, User>
-        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "assignee"),
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(
+            LoadRelationCommand.fromSecundary("issue", "assignee"),
             (ids, user) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
                 return command;
             },
             user => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.userAssigned = [user.id];
                 return command;
             })
@@ -111,58 +120,67 @@ export class User<T extends User = any> extends CCIMSNode<T> {
     public readonly participantOfIssuesProperty: NodeListProperty<Issue, User>;
 
     public static readonly participantOfPropertySpecification: NodeListPropertySpecification<Issue, User>
-        = NodeListPropertySpecification.loadDynamic<Issue, User>(LoadRelationCommand.fromSecundary("issue", "participant"),
+        = NodeListPropertySpecification.loadDynamic<Issue, User>(
+            LoadRelationCommand.fromSecundary("issue", "participant"),
             (ids, user) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
                 return command;
             },
             user => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.userParticipated = [user.id];
                 return command;
             })
             .notifyChanged((issue, user) => issue.participantsProperty)
             .noSave();
 
-    public readonly commentsProperty: NodeListProperty<Comment, User>;
+    /**
+     * Property with all comments this user edited
+     */
+    public readonly commentsProperty: NodeListProperty<CommentIssueTimelineItem, User>;
 
-    public static readonly commentsPropertySpecification: NodeListPropertySpecification<Comment, User>
-        = NodeListPropertySpecification.loadDynamic<Comment, User>(LoadRelationCommand.fromSecundary("comment", "edited_by"),
+    /**
+     * Specification for commentsProperty
+     */
+    public static readonly commentsPropertySpecification: NodeListPropertySpecification<CommentIssueTimelineItem, User>
+        = NodeListPropertySpecification.loadDynamic<CommentIssueTimelineItem, User>(
+            LoadRelationCommand.fromSecundary("comment", "edited_by"),
             (ids, user) => {
-                const command = new LoadCommentsCommand();
+                const command = new LoadCommentIssueTimelineItemsCommand(true);
                 command.ids = ids;
                 return command;
             },
             user => {
-                const command = new LoadCommentsCommand();
+                const command = new LoadCommentIssueTimelineItemsCommand(true);
                 command.editedBy = [user.id];
                 return command;
             })
             .notifyChanged((comment, user) => comment.editedByProperty)
             .noSave();
 
-    public readonly ownedNodesProperty: NodeListProperty<NamedOwnedNode, User>;
+    /**
+     * Property with all reactions this user ever made
+     */
+    public readonly reactionsProperty: NodeListProperty<ReactionGroup, User>;
 
-    public static readonly ownedNodesPropertySpecification: NodeListPropertySpecification<NamedOwnedNode, User>
-        = NodeListPropertySpecification.loadDynamic<NamedOwnedNode, User>(
-            user => new CombineCommand<string>([LoadRelationCommand.fromManySideBase("project", "owner_user_id", user),
-            LoadRelationCommand.fromManySideBase("component", "owner_user_id", user)]),
+    /**
+     * specification for reactionsProperty
+     */
+    private static readonly reactionsPropertySpecification: NodeListPropertySpecification<ReactionGroup, User>
+        = NodeListPropertySpecification.loadDynamic<ReactionGroup, User>(
+            LoadRelationCommand.fromSecundary("reaction_group", "user"),
             (ids, user) => {
-                const command1 = new LoadComponentsCommand();
-                command1.ids = ids;
-                const command2 = new LoadProjectsCommand();
-                command2.ids = ids;
-                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+                const command = new LoadReactionGroupsCommand();
+                command.ids = ids;
+                return command;
             },
             user => {
-                const command1 = new LoadComponentsCommand();
-                command1.ownedBy = [user.id]
-                const command2 = new LoadProjectsCommand();
-                command2.ownedBy = [user.id];
-                return new CombineCommand<NamedOwnedNode>([command1, command2]);
+                const command = new LoadReactionGroupsCommand();
+                command.users = [user.id];
+                return command
             })
-            .notifyChanged((namedOwnedNode, user) => namedOwnedNode.ownerProperty)
+            .notifyChanged((reactionGroup, user) => reactionGroup.usersProperty)
             .noSave();
 
     /**
@@ -174,72 +192,23 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param databaseManager the databaseManager
      * @param tableSpecification teh table specification
      * @param id the id of the NamedNode
+     * @param linkedUserId the id of the linked user
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, id: string, username: string, displayName: string, passwordHash: string, permissions: UserPermissions, email?: string) {
-        super(NodeType.User, databaseManager, UserTableSpecification, id);
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, email?: string) {
+        super(type, databaseManager, UserTableSpecification, id);
         this._username = username;
         this._displayName = displayName;
-        this._passwordHash = passwordHash;
         this._email = email;
-        permissions.user = this;
-        this._permissions = permissions;
-        this.projectsProperty = new NodeListProperty<Project, User>(databaseManager, User.projectsPropertySpecification, this);
+        this.linkedUserProperty = new NodeProperty<User, User>(databaseManager, User.linkedUserPropertySpecification, this, linkedUserId);
+        this.linkedByUsersProperty = new NodeListProperty<User, User>(databaseManager, User.linkedByUsersPropertySpecification, this);
         this.assignedToIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.assignedToIssuesPropertySpecification, this);
         this.participantOfIssuesProperty = new NodeListProperty<Issue, User>(databaseManager, User.participantOfPropertySpecification, this);
-        this.commentsProperty = new NodeListProperty<Comment, User>(databaseManager, User.commentsPropertySpecification, this);
-        this.ownedNodesProperty = new NodeListProperty<NamedOwnedNode, User>(databaseManager, User.ownedNodesPropertySpecification, this);
+        this.commentsProperty = new NodeListProperty<CommentIssueTimelineItem, User>(databaseManager, User.commentsPropertySpecification, this);
+        this.reactionsProperty = new NodeListProperty<ReactionGroup, User>(databaseManager, User.reactionsPropertySpecification, this);
     }
 
-    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): Promise<User> {
-        if (username.length === 0) {
-            throw new Error("The username can't be empty");
-        }
-        if (username.length > 100) {
-            throw new Error("The given username is too long");
-        }
-        if (username.trim().toLowerCase() === "root") {
-            throw new Error("The username can't be 'root'");
-        }
-        if (displayName.length > 200) {
-            throw new Error("the given display name is too long");
-        }
-        if (email && email.length > 320) {
-            throw new Error("The given email is too long");
-        }
-        if (!(await User.usernameAvailable(databaseManager, username))) {
-            throw new Error("The username is already taken");
-        }
-
-        const passwordHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-
-        const user = new User(databaseManager, databaseManager.idGenerator.generateString(), username, displayName, passwordHash, new UserPermissions(), email);
-        user.markNew();
-        databaseManager.addCachedNode(user);
-        return user;
-    }
-
-    /**
-     * Checks wether the given userame is still available (not used by another user)
-     *
-     * @param databaseManager The database manager to use for checking
-     * @param username The username to be checked
-     */
-    public static async usernameAvailable(databaseManager: DatabaseManager, username: string) {
-        if (username.length === 0) {
-            throw new Error("The username can't be empty")
-        }
-        if (username.trim().toLowerCase() === "root" || username.trim().toLowerCase() === "deleted_user") {
-            return true;
-        }
-        const checkCmd = new LoadUsersCommand();
-        checkCmd.username = "^" + username + "$";
-        checkCmd.countMode = true;
-        databaseManager.addCommand(checkCmd);
-        await databaseManager.executePendingCommands();
-        return checkCmd.count === 0;
-    }
 
     /**
      * The username used to login, a system wide unique string with
@@ -254,7 +223,7 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * Max. 100 characters
      */
     public set username(value: string) {
-        if (value.length > 100) {
+        if (value !== undefined && value.length > 100) {
             throw new Error("The given username is too long");
         }
         this.markChanged();
@@ -274,45 +243,11 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * Max. 200 caracters
      */
     public set displayName(value: string) {
-        if (value.length > 100) {
+        if (value !== undefined && value.length > 100) {
             throw new Error("The given display name is too long");
         }
         this.markChanged();
         this._displayName = value;
-    }
-
-    /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    public set passwordHash(value: string) {
-        if (value.length > 200) {
-            throw new Error("The given password hash is too long");
-        }
-        this.markChanged();
-        this._passwordHash = value;
-    }
-
-    /**
-     * The password of the user in hased format
-     * The database allows 200 characters max.
-     */
-    public get passwordHash(): string {
-        return this._passwordHash;
-    }
-
-    public verifyPasswordAndRehash(password: string): boolean {
-        const [oldAlgorithm, oldHash] = this._passwordHash.split(";");
-        const inputHash = crypto.createHmac(oldAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-        if (inputHash !== oldHash) {
-            return false;
-        }
-        if (oldAlgorithm.trim().toLowerCase() !== config.common.passwordAlgorithm.trim().toLowerCase()) {
-            log(6, "Rehashed user password for " + this._username);
-            const newHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
-            this.passwordHash = newHash;
-        }
-        return true;
     }
 
     /**
@@ -339,14 +274,15 @@ export class User<T extends User = any> extends CCIMSNode<T> {
         }
     }
 
-    /**
-     * The permissions the user is allowed to do
-     * To change, call the setters on the returned object
-     */
-    public get permissions(): UserPermissions {
-        return this._permissions;
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            await this.commentsProperty.clear();
+            await this.linkedUserProperty.markDeleted();
+            await this.linkedByUsersProperty.clear();
+            await this.assignedToIssuesProperty.clear();
+            await this.participantOfIssuesProperty.clear();
+        }
     }
-
-
 
 }

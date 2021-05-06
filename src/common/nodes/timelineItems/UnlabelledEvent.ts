@@ -1,44 +1,41 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
-import { LoadUsersCommand } from "../../database/commands/load/nodes/LoadUsersCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { DeletedNodes } from "../DeletedNodes";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 import { LoadLabelsCommand } from "../../database/commands/load/nodes/LoadLabelsCommand";
 import { Label } from "../Label";
+import { NullableNodeProperty } from "../properties/NullableNodeProperty";
 
 export const UnlabelledEventTableSpecification: NodeTableSpecification<UnlabelledEvent>
-    = new NodeTableSpecification<UnlabelledEvent>("issue_timeline_unlabelled_event", IssueTimelineItemTableSpecification,
-        new RowSpecification("label", labelledEvent => labelledEvent.labelProperty.getId()));
+    = new NodeTableSpecification<UnlabelledEvent>("unlabelled_event", IssueTimelineItemTableSpecification,
+        new RowSpecification("label_id", labelledEvent => labelledEvent.labelProperty.getId()));
 
 export class UnlabelledEvent extends IssueTimelineItem {
 
-    public readonly labelProperty: NodeProperty<Label, UnlabelledEvent>;
+    public readonly labelProperty: NullableNodeProperty<Label, UnlabelledEvent>;
 
     private static readonly labelPropertySpecification: NodePropertySpecification<Label, UnlabelledEvent>
         = new NodePropertySpecification<Label, UnlabelledEvent>(
             (id, labelledEvent) => {
-                const command = new LoadLabelsCommand();
+                const command = new LoadLabelsCommand(true);
                 command.ids = [id];
                 return command;
             },
-            labelledEvent => new GetWithReloadCommand(labelledEvent, "label", new LoadLabelsCommand()),
-            DeletedNodes.Label
+            labelledEvent => new GetWithReloadCommand(labelledEvent, "label_id", new LoadLabelsCommand(true)),
         );
 
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, labelId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.AssignedEvent, databaseManager, UnlabelledEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
-        this.labelProperty = new NodeProperty<Label, UnlabelledEvent>(databaseManager, UnlabelledEvent.labelPropertySpecification, this, labelId);
+        this.labelProperty = new NullableNodeProperty<Label, UnlabelledEvent>(databaseManager, UnlabelledEvent.labelPropertySpecification, this, labelId);
     }
 
     /**
@@ -51,14 +48,14 @@ export class UnlabelledEvent extends IssueTimelineItem {
      * @param component
      */
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, label: Label): Promise<UnlabelledEvent> {
-        const event = new UnlabelledEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, label.id, false);
+        const event = new UnlabelledEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, label.id, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);
         return event;
     }
 
-    public async removedLabel(): Promise<Label> {
-        return this.labelProperty.get();
+    public async removedLabel(): Promise<Label | undefined> {
+        return this.labelProperty.getPublic();
     }
 }

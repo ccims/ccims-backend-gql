@@ -1,4 +1,4 @@
-import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString, GraphQLID } from "graphql";
+import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLID } from "graphql";
 import { ResolverContext } from "../../../../ResolverContext";
 
 const registerUserPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {

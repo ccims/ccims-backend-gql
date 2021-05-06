@@ -13,8 +13,8 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
     /**
      * creates a new LoadLabelledEventCommand
      */
-    public constructor() {
-        super(LabelledEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LabelledEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -25,18 +25,15 @@ export class LoadLabelledEventCommand extends LoadIssueTimelineItemsCommandBase<
      * @returns the parsed LabelledEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): LabelledEvent {
-        return new LabelledEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue, resultRow.label, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new LabelledEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id, resultRow.label_id, resultRow.deleted,
+            resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_labelled_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("labelled_event", databaseManager);
     }
 
 }

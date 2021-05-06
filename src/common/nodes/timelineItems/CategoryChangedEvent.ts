@@ -1,13 +1,14 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { Issue, IssueCategory } from "../Issue";
+import { IssueCategory } from "../enums/IssueCategory";
+import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const CategoryChangedEventTableSpecification: NodeTableSpecification<CategoryChangedEvent>
-    = new NodeTableSpecification<CategoryChangedEvent>("issue_timeline_category_changed_event", IssueTimelineItemTableSpecification,
+    = new NodeTableSpecification<CategoryChangedEvent>("category_changed_event", IssueTimelineItemTableSpecification,
     RowSpecification.fromProperty("old_category", "oldCategory"),
     RowSpecification.fromProperty("new_category", "newCategory"));
 
@@ -19,16 +20,16 @@ export class CategoryChangedEvent extends IssueTimelineItem {
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, oldCategory: IssueCategory, newCategory: IssueCategory,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.CategoryChangedEvent, databaseManager, CategoryChangedEventTableSpecification, id,
-            createdById, createdAt, issueId, isDeleted, metadata);
+            createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this._oldCategory = oldCategory;
         this._newCategory = newCategory;
     }
 
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, oldCategory: IssueCategory, newCategory: IssueCategory): Promise<CategoryChangedEvent> {
-        const event = new CategoryChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldCategory, newCategory, false);
+        const event = new CategoryChangedEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, oldCategory, newCategory, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);

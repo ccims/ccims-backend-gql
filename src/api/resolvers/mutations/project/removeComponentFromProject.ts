@@ -2,10 +2,10 @@ import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { LoadProjectsCommand } from "../../../../common/database/commands/load/nodes/LoadProjectsCommand";
-import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import GraphQLRemoveComponentFromProjectPayload from "../../types/mutations/payloads/project/GraphQLRemoveComponentFromProjectPayload";
 import GraphQLRemoveComponentFromProjectInput from "../../types/mutations/inputs/project/GraphQLRemoveComponentFromProjectInput";
+import { Project } from "../../../../common/nodes/Project";
+import { Component } from "../../../../common/nodes/Component";
 
 function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> {
     const base = baseMutation(GraphQLRemoveComponentFromProjectPayload, GraphQLRemoveComponentFromProjectInput, "Removes the specified component from the project if it is on the project");
@@ -13,33 +13,25 @@ function removeComponentFromProject(): GraphQLFieldConfig<any, ResolverContext> 
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
-            const projectId = PreconditionCheck.checkString(input, "projectId", 32);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
+            const projectId = PreconditionCheck.checkString(input, "project", 32);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).addRemoveComponents);
 
-            const projectCommand = new LoadProjectsCommand();
-            projectCommand.ids = [projectId];
-            context.dbManager.addCommand(projectCommand);
-            await context.dbManager.executePendingCommands();
-            if (projectCommand.getResult().length !== 1) {
-                throw new Error("The given id was no valid project id");
-            }
-            const project = projectCommand.getResult()[0];
 
-            const componentCommand = new LoadComponentsCommand();
-            componentCommand.ids = [componentId];
-            context.dbManager.addCommand(componentCommand);
-            await context.dbManager.executePendingCommands();
-            if (componentCommand.getResult().length !== 1) {
-                throw new Error ("The given id was no valid component id");
+            const project = await context.dbManager.getNode(projectId);
+            if (project === undefined || !(project instanceof Project)) {
+                throw new Error("The given project id is not a valid project id");
             }
-            const component = componentCommand.getResult()[0];
+
+            const component = await context.dbManager.getNode(componentId);
+            if (component === undefined || !(component instanceof Component)) {
+                throw new Error("The given component id is not a valid component id");
+            }
 
             if (await project.componentsProperty.hasId(componentId)) {
                 await project.componentsProperty.remove(component);
-                await context.dbManager.save();
-                return base.createResult(args, { project, component });
+                return base.createResult(args, context, { project, component });
             } else {
                 throw new Error("The specified component is not on the specified project");
             }

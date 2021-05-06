@@ -1,13 +1,13 @@
 import { GetWithReloadCommand } from "../../database/commands/GetWithReloadCommand";
 import { LoadIssuesCommand } from "../../database/commands/load/nodes/LoadIssuesCommand";
 import { DatabaseManager } from "../../database/DatabaseManager";
-import { ImsType } from "../ImsSystem";
 import { Issue } from "../Issue";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
 import { NodeProperty } from "../properties/NodeProperty";
 import { NodePropertySpecification } from "../properties/NodePropertySpecification";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
+import { SyncNode, SyncNodeTableSpecification } from "../SyncNode";
 
 /**
  * a table specification for a IssueTimelineItem
@@ -15,7 +15,7 @@ import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "../SyncNo
  */
 export const IssueTimelineItemTableSpecification: NodeTableSpecification<IssueTimelineItem>
     = new NodeTableSpecification<IssueTimelineItem>("issue_timeline_item", SyncNodeTableSpecification,
-        new RowSpecification("issue", timelineItem => timelineItem.issueProperty.getId()));
+        new RowSpecification("issue_id", timelineItem => timelineItem.issueProperty.getId()));
 
 export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNode<T> {
 
@@ -30,12 +30,11 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
     private static readonly issuePropertySpecification: NodePropertySpecification<Issue, IssueTimelineItem>
         = new NodePropertySpecification<Issue, IssueTimelineItem>(
             (id, timelineItem) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = [id];
                 return command;
             },
-            timelineItem => new GetWithReloadCommand(timelineItem, "issue", new LoadIssuesCommand()),
-            undefined,
+            timelineItem => new GetWithReloadCommand(timelineItem, "issue_id", new LoadIssuesCommand(true)),
             (issue, timelineItem) => issue.timelineProperty
         );
 
@@ -44,7 +43,7 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
      * @returns A promise of the issue this timeline item belongs to
      */
     public async issue(): Promise<Issue> {
-        return this.issueProperty.get();
+        return this.issueProperty.getPublic();
     }
 
 
@@ -59,8 +58,8 @@ export class IssueTimelineItem<T extends IssueTimelineItem = any> extends SyncNo
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.issueProperty = new NodeProperty<Issue, IssueTimelineItem>(databaseManager, IssueTimelineItem.issuePropertySpecification, this, issueId);
     }
 }
@@ -71,33 +70,37 @@ export class IssueTimelineItemType {
 
     }
 
-    public static ISSUE_COMMENT = new IssueTimelineItemType("issue_timeline_comment");
-    public static BODY = new IssueTimelineItemType("issue_timeline_body");
-    public static DELETED_ISSUE_COMMENT = new IssueTimelineItemType("issue_timeline_deletedComment");
-    public static REFERENCED_BY_OTHER_EVENT = new IssueTimelineItemType("issue_timeline_referencedByOtherEvent");
-    public static REFERENCED_BY_ISSUE_EVENT = new IssueTimelineItemType("issue_timeline_referencedByIssueEvent");
-    public static LINK_EVENT = new IssueTimelineItemType("issue_timeline_linkEvent");
-    public static UNLINK_EVENT = new IssueTimelineItemType("issue_timeline_unlinkEvent");
-    public static WAS_LINKED_EVENT = new IssueTimelineItemType("issue_timeline_wasLinkedEvent");
-    public static WAS_UNLINKED_EVENT = new IssueTimelineItemType("issue_timeline_wasUnlinkedEvent");
-    public static LABELLED_EVENT = new IssueTimelineItemType("issue_timeline_labledEvent");
-    public static UNLABELLED_EVENT = new IssueTimelineItemType("issue_timeline_unlabledEvent");
-    public static PINNED_EVENT = new IssueTimelineItemType("issue_timeline_pinnedEvent");
-    public static UNPINNED_EVENT = new IssueTimelineItemType("issue_timeline_unpinnedEvent");
-    public static RENAMED_TITLE_EVENT = new IssueTimelineItemType("issue_timeline_renamedTitleEvent");
-    public static CATEGORY_CHANGED_EVENT = new IssueTimelineItemType("issue_timeline_categoryChangedEvent");
-    public static ASSIGNED_EVENT = new IssueTimelineItemType("issue_timeline_assignedEvent");
-    public static UNASSIGNED_EVENT = new IssueTimelineItemType("issue_timeline_unassignedEvent");
-    public static CLOSED_EVENT = new IssueTimelineItemType("issue_timeline_closedEvent");
-    public static REOPENED_EVENT = new IssueTimelineItemType("issue_timeline_reopenedEvent");
-    public static PRIORITY_CHANGED_EVENT = new IssueTimelineItemType("issue_timeline_priorityChangedEvent");
-    public static START_DATE_CHANGED_EVENT = new IssueTimelineItemType("issue_timeline_startDateChangedEvent");
-    public static DUE_DATE_CHANGED_EVENT = new IssueTimelineItemType("issue_timeline_dueDateChangedEvent");
-    public static ESTIMATED_TIME_CHANGED_EVENT = new IssueTimelineItemType("issue_timeline_estimatedTimeChangedEvent");
-    public static ADDED_LOCATION_EVENT = new IssueTimelineItemType("issue_timeline_addedToLocationEvent");
-    public static REMOVED_LOCATION_EVENT = new IssueTimelineItemType("issue_timeline_removedFromLocationEvent");
-    public static MARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("issue_timeline_markedAsDuplicateEvent");
-    public static UNMARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("issue_timeline_unmarkedAsDuplicateEvent");
-    public static ADDED_TO_COMPONENT_EVENT = new IssueTimelineItemType("issue_timeline_addedToComponentEvent");
-    public static REMOVED_FROM_COMPONENT_EVENT = new IssueTimelineItemType("issue_timeline_removedFromComponentEvent");
+    public static ISSUE_COMMENT = new IssueTimelineItemType("comment");
+    public static BODY = new IssueTimelineItemType("body");
+    public static DELETED_ISSUE_COMMENT = new IssueTimelineItemType("deletedComment");
+    public static REFERENCED_BY_OTHER_EVENT = new IssueTimelineItemType("referencedByOtherEvent");
+    public static REFERENCED_BY_ISSUE_EVENT = new IssueTimelineItemType("referencedByIssueEvent");
+    public static LINK_EVENT = new IssueTimelineItemType("linkEvent");
+    public static UNLINK_EVENT = new IssueTimelineItemType("unlinkEvent");
+    public static WAS_LINKED_EVENT = new IssueTimelineItemType("wasLinkedEvent");
+    public static WAS_UNLINKED_EVENT = new IssueTimelineItemType("wasUnlinkedEvent");
+    public static LABELLED_EVENT = new IssueTimelineItemType("labelledEvent");
+    public static UNLABELLED_EVENT = new IssueTimelineItemType("unlabelledEvent");
+    public static PINNED_EVENT = new IssueTimelineItemType("pinnedEvent");
+    public static UNPINNED_EVENT = new IssueTimelineItemType("unpinnedEvent");
+    public static RENAMED_TITLE_EVENT = new IssueTimelineItemType("renamedTitleEvent");
+    public static CATEGORY_CHANGED_EVENT = new IssueTimelineItemType("categoryChangedEvent");
+    public static ASSIGNED_EVENT = new IssueTimelineItemType("assignedEvent");
+    public static UNASSIGNED_EVENT = new IssueTimelineItemType("unassignedEvent");
+    public static CLOSED_EVENT = new IssueTimelineItemType("closedEvent");
+    public static REOPENED_EVENT = new IssueTimelineItemType("reopenedEvent");
+    public static PRIORITY_CHANGED_EVENT = new IssueTimelineItemType("priorityChangedEvent");
+    public static START_DATE_CHANGED_EVENT = new IssueTimelineItemType("startDateChangedEvent");
+    public static DUE_DATE_CHANGED_EVENT = new IssueTimelineItemType("dueDateChangedEvent");
+    public static ESTIMATED_TIME_CHANGED_EVENT = new IssueTimelineItemType("estimatedTimeChangedEvent");
+    public static ADDED_LOCATION_EVENT = new IssueTimelineItemType("addedToLocationEvent");
+    public static REMOVED_LOCATION_EVENT = new IssueTimelineItemType("removedFromLocationEvent");
+    public static MARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("markedAsDuplicateEvent");
+    public static UNMARKED_AS_DUPLICATE_EVENT = new IssueTimelineItemType("unmarkedAsDuplicateEvent");
+    public static ADDED_TO_COMPONENT_EVENT = new IssueTimelineItemType("addedToComponentEvent");
+    public static REMOVED_FROM_COMPONENT_EVENT = new IssueTimelineItemType("removedFromComponentEvent");
+    public static ADDED_ARTIFACT_EVENT = new IssueTimelineItemType("addedArtifactEvent");
+    public static REMOVED_ARTIFACT_EVENT = new IssueTimelineItemType("removedArtifactEvent");
+    public static ADDED_NON_FUNCTIONAL_CONSTRAINT = new IssueTimelineItemType("addedNonFunctionalConstraint");
+    public static REMOVED_NON_FUNCTIONAL_CONSTRAINT_EVENT = new IssueTimelineItemType("removedNonFunctionalConstraint");
 }

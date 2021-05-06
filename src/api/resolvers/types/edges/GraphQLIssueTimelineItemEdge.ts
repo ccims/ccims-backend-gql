@@ -1,20 +1,8 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLIssueTimelineItem from "../nodes/GraphQLIssueTimelineItem";
 import { ResolverContext } from "../../../ResolverContext";
+import { createEdge } from "./createEdge";
 
-const issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
-    name: "IssueTimelineItemEdge",
-    description: "An edge for an IssueTimelineItemPage to link a cursor to an element",
-    fields: () => ({
-        node: {
-            type: GraphQLIssueTimelineItem,
-            description: "The issue timeline item linked to by this edge"
-        },
-        cursor: {
-            type: GraphQLNonNull(GraphQLString),
-            description: "The cursor for use in the pagination"
-        }
-    })
-};
+const issueTimelineItemEdgeConfig: GraphQLObjectTypeConfig<any, ResolverContext> = createEdge(() => GraphQLIssueTimelineItem, "IssueTimelineItem");
 const GraphQLIssueTimelineItemEdge = new GraphQLObjectType(issueTimelineItemEdgeConfig);
 export default GraphQLIssueTimelineItemEdge;

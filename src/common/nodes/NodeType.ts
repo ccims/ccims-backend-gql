@@ -2,7 +2,11 @@
  * enum with types for nodes
  */
 export enum NodeType {
-    User = "User",
+    CCIMSUser = "CCIMSUser",
+    IMSUser = "IMSUser",
+    GlobalPermission = "GlobalPermission",
+    ProjectPermission = "ProjectPermission",
+    ComponentPermission = "ComponentPermission",
     Project = "Project",
     Component = "Component",
     ComponentInterface = "ComponentInterface",
@@ -35,8 +39,15 @@ export enum NodeType {
     RemovedFromComponentEvent = "RemovedFromComponentEvent",
     MarkedAsDuplicateEvent = "MarkedAsDuplicateEvent",
     UnmarkedAsDuplicateEvent = "UnmarkedAsDuplicateEvent",
+    AddedArtifactEvent = "AddedArtifactEvent",
+    RemovedArtifactEvent = "RemovedArtifactEvent",
+    AddedNonFunctionalConstraintEvent = "AddedNonFunctionalConstraintEvent",
+    RemovedNonFunctionalConstraintEvent = "RemovedNonFunctionalConstraintEvent",
     ReactionGroup = "ReactionGroup",
     Label = "Label",
-    ImsSystem = "ImsSystem",
-    Body = "Body"
+    IMSSystem = "IMSSystem",
+    IMSComponent = "IMSComponent",
+    Body = "Body",
+    Artifact = "Artifact",
+    NonFunctionalConstraint = "NonFunctionalConstraint"
 }

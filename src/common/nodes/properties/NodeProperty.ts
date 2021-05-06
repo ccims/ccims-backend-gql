@@ -1,6 +1,5 @@
 import { CCIMSNode } from "../CCIMSNode";
 import { NodePropertyBase } from "./NodePropertyBase";
-import { Property } from "./Property";
 import { NodePropertySpecification } from "./NodePropertySpecification";
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { log } from "../../../log";
@@ -51,6 +50,19 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
     }
 
     /**
+     * get the current element if existing
+     */
+    public async getPublic(): Promise<T> {
+        await this.ensureLoaded();
+        if (this._element?.isDeleted) {
+            log(3, "element deleted");
+            throw new Error("element deleted");
+        } else {
+            return this._element as T;
+        }
+    }
+
+    /**
      * sets  the element of this property
      * @param value the element to set, this might be undefined
      */
@@ -86,20 +98,8 @@ export class NodeProperty<T extends CCIMSNode, V extends CCIMSNode> extends Node
                     this._id = reloadResult.id;
                     this._element = reloadResult;
                     await this.notifyAdded(this._element, false);
-                } else if (this._specification.deletedId) {
-                    const loadDeletedCommand = this._specification.loadFromId(this._specification.deletedId, this._node);
-                    this._databaseManager.addCommand(loadDeletedCommand);
-                    await this._databaseManager.executePendingCommands();
-                    if (loadDeletedCommand.getResult().length === 0) {
-                        log(2, "error: deleted command does not exist");
-                        throw new Error("Internal server error");
-                    }
-                    this._id = this._specification.deletedId;
-                    this._element = loadDeletedCommand.getResult()[0];
-                    await this.notifyAdded(this._element, false);
                 } else {
-                    log(3, `self destruct ${this._node.id}`);
-                    await this._node.markDeleted();
+                    log(3, `referenced node deleted ${this._node.id}`);
                     throw new Error("Internal server error");
                 }
             }

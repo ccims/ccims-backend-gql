@@ -1,7 +1,8 @@
 import { DatabaseManager } from "../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { SyncNode, SyncNodeTableSpecification } from "./SyncNode";
 
 /**
  * specification of a table which can contain NamedSyncNodes
@@ -9,7 +10,8 @@ import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNod
 export const NamedSyncNodeTableSpecification: NodeTableSpecification<NamedSyncNode>
     = new NodeTableSpecification<NamedSyncNode>("node", SyncNodeTableSpecification,
         RowSpecification.fromProperty("name", "name"),
-        RowSpecification.fromProperty("description", "description"));
+        RowSpecification.fromProperty("description", "description"),
+        RowSpecification.fromProperty("last_updated_at", "lastUpdatedAt"));
 
 /**
  * a namedSyncNode is a CCIMSNode with a name and a description
@@ -27,6 +29,11 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
     private _description: string;
 
     /**
+     * the date when the NamedNode was last updated (name or description changed)
+     */
+    private _lastUpdatedAt: Date;
+
+    /**
      * abstract constructor for subclasses
      * @param type the type
      * @param databaseManager the databaseManager
@@ -35,11 +42,12 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, metadata);
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, name: string, description: string, lastUpdatedAt: Date,
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(type, databaseManager, tableSpecification, id, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._name = name;
         this._description = description;
+        this._lastUpdatedAt = lastUpdatedAt;
     }
 
     public get name(): string {
@@ -49,11 +57,12 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
     /**
      * sets the name, which must shorter than 257 chars
      */
-    public set name(value: string) {
+    public setName(value: string, atDate: Date) {
         if (value.length > 256) {
             throw new Error("the specified name is too long");
         }
         this.markChanged();
+        this.lastUpdatedAt = atDate;
         this._name = value;
     }
 
@@ -64,11 +73,30 @@ export class NamedSyncNode<T extends NamedSyncNode = any> extends SyncNode<T> {
     /**
      * sets the name, which must shorter than 65537 chars
      */
-    public set description(value: string) {
+    public setDescription(value: string, atDate: Date) {
         if (value.length > 65536) {
             throw new Error("the specified description is too long");
         }
         this.markChanged();
+        this.lastUpdatedAt = atDate;
         this._description = value;
+    }
+
+    /**
+     * For all immutable SyncNodes, this is just the creation data
+     * all other SyncNodes have to overwrite this to implement correct functionality
+     */
+    public get lastUpdatedAt(): Date {
+        return this._lastUpdatedAt;
+    }
+
+    /**
+     * Sets lastUpdatedAt if the provided value is greater than the current value
+     */
+    public set lastUpdatedAt(value: Date) {
+        if (this._lastUpdatedAt.getTime() < value.getTime()) {
+            this._lastUpdatedAt = value;
+            this.markChanged();
+        }
     }
 }

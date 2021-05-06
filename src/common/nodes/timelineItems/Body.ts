@@ -1,18 +1,18 @@
 import { DatabaseManager } from "../../database/DatabaseManager";
 import { NodeTableSpecification, RowSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
-import { Comment, CommentTableSpecification } from "./Comment";
+import { SyncMetadata } from "../SyncMetadata";
+import { CommentIssueTimelineItem, CommentIssueTimelineItemTableSpecification } from "./CommentIssueTimelineItem";
 
 /**
  * a table specification for a Body
  * does not specifiy the metadata, because this is up to the save method
  */
 export const BodyTableSpecification: NodeTableSpecification<Body>
-    = new NodeTableSpecification<Body>("issue_timeline_body", CommentTableSpecification,
+    = new NodeTableSpecification<Body>("body", CommentIssueTimelineItemTableSpecification,
         RowSpecification.fromProperty("initial_title", "initialTitle"));
 
-export class Body extends Comment<Body> {
+export class Body extends CommentIssueTimelineItem<Body> {
 
     private readonly _initialTitle: string;
 
@@ -28,8 +28,8 @@ export class Body extends Comment<Body> {
      */
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, body: string, lastEditedById: string | undefined, lastEditedAt: Date, initialTitle: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.Body, databaseManager, BodyTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, metadata);
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Body, databaseManager, BodyTableSpecification, id, createdById, createdAt, issueId, body, lastEditedById, lastEditedAt, isDeleted, lastModifiedAt, metadata);
         this._initialTitle = initialTitle;
     }
 

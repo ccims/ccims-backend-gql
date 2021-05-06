@@ -2,16 +2,16 @@ import { QueryConfig, QueryResult } from "pg";
 import { DatabaseCommand } from "../DatabaseCommand";
 import { DatabaseManager } from "../DatabaseManager";
 
-export class CombineCommand<T> extends DatabaseCommand<T[]> {
+export class CombineCommand<T, R extends DatabaseCommand<T[]>> extends DatabaseCommand<T[]> {
 
-    private primaryResult?: DatabaseCommand<any>[];
+    private primaryResult: DatabaseCommand<any>[] | undefined;
 
-    public constructor(private readonly commands: DatabaseCommand<T[]>[]) {
+    public constructor(protected readonly commands: R[]) {
         super();
     }
 
-    public getQueryConfig(): QueryConfig<any[]> {
-        return this.commands[0].getQueryConfig();
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
+        return this.commands[0].getQueryConfig(databaseManager);
     }
 
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {

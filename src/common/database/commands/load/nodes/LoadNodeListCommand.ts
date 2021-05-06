@@ -1,7 +1,6 @@
 import { CCIMSNode } from "../../../../nodes/CCIMSNode";
 import { LoadListCommand } from "../LoadListCommand";
 import { QueryResultRow, QueryResult } from "pg";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { DatabaseManager } from "../../../DatabaseManager";
 import { QueryPart } from "../QueryPart";
 import { RowSpecification } from "../../../../nodes/NodeTableSpecification";
@@ -29,17 +28,17 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * limit the amount of results
      */
-    public limit?: number;
+    public limit: number | undefined;
 
     /**
      * returns only elements after elements with the specified id (exclusive)
      */
-    public afterId?: string;
+    public afterId: string | undefined;
 
     /**
      * returns only elements before elements with the specified id (exclusive)
      */
-    public beforeId?: string;
+    public beforeId: string | undefined;
 
     /**
      * if true, the pagination is not applied an the rows are just counted
@@ -49,7 +48,7 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
     /**
      * when countMode and the command was executed, count is the amount of the amount of results
      */
-    public count?: number;
+    public count: number | undefined;
 
     /**
      * true if forwards paginating and there are more results
@@ -68,13 +67,13 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
 
     protected constructor(rows: RowSpecification<T>[]) {
         super();
-        this._rows = rows.map(row => row.rowName).join(", ");
+        this._rows = rows.map(row => `main.${row.rowName}`).join(", ");
     }
 
     /**
      * @return a string with all rows that should be selected separated by ,
      */
-    protected get rows(): string {
+    protected rows(databaseManager: DatabaseManager): string {
         return this.countMode ? "Count(*)" : this._rows;
     }
 
@@ -84,11 +83,11 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = this.countMode ? {conditions: [], i} : this.generatePaginationConditions(i);
 
         if (this.ids) {
-            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i, 1));
+            conditions.conditions.push(createStringListFilter("id", this.ids, conditions.i));
             conditions.i++;
         }
 
@@ -101,11 +100,10 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
      * @param i the next value index
      * @returns the conditions for pagination
      */
-    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions: ConditionSpecification[] = [];
+    protected generatePaginationConditions(i: number): { conditions: QueryPart[], i: number } {
+        const conditions: QueryPart[] = [];
         if (this.afterId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `main.id > $${i}`,
                 values: [this.afterId]
             });
@@ -113,7 +111,6 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
         }
         if (this.beforeId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `main.id < $${i}`,
                 values: [this.beforeId]
             });
@@ -200,6 +197,21 @@ export abstract class LoadNodeListCommand<T extends CCIMSNode> extends LoadListC
                 text: ";",
                 values: []
             }
+        }
+    }
+
+    /**
+     * Generates a default query start QueryPart from a tablename and the databaseManager
+     * Can be overwritten to implement node specific behaviour
+     * Uses main as default alias for the table that is queried
+     * WARNING: only use constants for tableName!
+     * @param tableName the name of the table to query from
+     * @param databaseManager the database manager
+     */
+    protected generateQueryStartFromTableName(tableName: string, databaseManager: DatabaseManager): QueryPart {
+        return {
+            text: `SELECT ${this.rows(databaseManager)} FROM ${tableName} main `,
+            values: []
         }
     }
 

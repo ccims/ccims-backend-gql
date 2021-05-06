@@ -1,13 +1,13 @@
 import { CCIMSNode } from "../nodes/CCIMSNode";
 import { DatabaseCommand } from "./DatabaseCommand";
-import { Client, ClientBase, Pool } from "pg";
+import { ClientBase, Pool } from "pg";
 import { log } from "../../log";
 import { SnowflakeGenerator } from "../../utils/Snowflake";
 import { LoadMultipleNodeListsCommand } from "./commands/load/nodes/LoadMultipleNodeListsCommand";
 import { setTypeParser } from "pg-types"
-import { IssueCategory, IssuePriority } from "../nodes/Issue";
-import { ImsType } from "../nodes/ImsSystem";
 import { Saveable } from "../nodes/Saveable";
+import { IssueCategory } from "../nodes/enums/IssueCategory";
+import { IssuePriority } from "../nodes/enums/IssuePriority";
 
 /**
  * Adds database support, also has an IdGenerator
@@ -41,13 +41,29 @@ export class DatabaseManager {
     private readonly pool: Pool;
 
     /**
+     * the id used to load metadata
+     * This is normally a IMSComponent id
+     */
+    private readonly _metadataId: string | undefined;
+
+    /**
      * creates a new DatabaseManager with the specified id generator
      * normally, there should only be one DatabaseManager
      * @param idGenerator the idGenerator to generate new ids
+     * @param pool the pool used for sql queries
+     * @param metadataId if provided, the id that should be used to get metadata by any NodeQuery that supports loading metadata
      */
-    public constructor(idGenerator: SnowflakeGenerator, pool: Pool) {
+    public constructor(idGenerator: SnowflakeGenerator, pool: Pool, metadataId?: string) {
         this.idGenerator = idGenerator;
-        this.pool = pool
+        this.pool = pool;
+        this._metadataId = metadataId;
+    }
+
+    /**
+     * Gets the current metadata id used to get metadata
+     */
+    public get metadataId(): string | undefined {
+        return this._metadataId;
     }
 
     /**
@@ -122,7 +138,7 @@ export class DatabaseManager {
      * @param command the command to execute
      */
     private async executeCommand(command: DatabaseCommand<any>, client: ClientBase): Promise<void> {
-        const commandConfig = command.getQueryConfig();
+        const commandConfig = command.getQueryConfig(this);
         log(8, commandConfig);
         let result;
         result = await client.query(commandConfig);
@@ -167,8 +183,6 @@ export class DatabaseManager {
 export async function initTypeParsers(client: ClientBase): Promise<void> {
     const issueCategoryOid = (await client.query("SELECT 'issue_category'::regtype::oid;")).rows[0].oid;
     const priorityOid = (await client.query("SELECT 'priority'::regtype::oid;")).rows[0].oid;
-    const imsTypeOid = (await client.query("SELECT 'ims_type'::regtype::oid;")).rows[0].oid;
     setTypeParser(issueCategoryOid, value => IssueCategory[value as keyof typeof IssueCategory]);
     setTypeParser(priorityOid, value => IssuePriority[value as keyof typeof IssuePriority]);
-    setTypeParser(imsTypeOid, value => ImsType[value as keyof typeof ImsType]);
 }

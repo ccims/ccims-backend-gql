@@ -12,8 +12,8 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(BodyTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(BodyTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,16 @@ export class LoadBodiesCommand extends LoadIssueTimelineItemsCommandBase<Body> {
      * @returns the parsed Body
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): Body {
-        return new Body(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
+        return new Body(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
             resultRow.body, resultRow.last_edited_by, resultRow.last_edited_at, resultRow.initial_title, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+            resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_body main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("body", databaseManager);
     }
 
 }

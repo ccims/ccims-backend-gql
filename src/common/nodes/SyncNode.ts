@@ -9,10 +9,9 @@ import { UpdateNodeCommand } from "../database/commands/save/UpdateNodeCommand";
 import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { User } from "./User";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
-import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
-import { Issue } from "./Issue";
-import { DeletedNodes } from "./DeletedNodes";
+import { SetMetadataCommand } from "../database/commands/save/SetMetadataCommand";
+import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
 
 /**
  * a table specification for a sync node
@@ -21,7 +20,7 @@ import { DeletedNodes } from "./DeletedNodes";
 export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
     = new NodeTableSpecification<SyncNode>("syncNode", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("deleted", "isDeleted"),
-        new RowSpecification("created_by", (syncNode => syncNode.createdByProperty.getId())),
+        new RowSpecification("created_by_id", (syncNode => syncNode.createdByProperty.getId())),
         RowSpecification.fromProperty("created_at", "createdAt")
     );
 
@@ -31,10 +30,15 @@ export const SyncNodeTableSpecification: NodeTableSpecification<SyncNode>
  */
 export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
     /**
-     * map with metadata
-     * if undefined, the metadata is just not loaded, it may be present in the database
+     * the loaded metadata
+     * the DatabaseManager decides which metadata id is loaded
+     * if undefined, the metadata is not loaded or not present
      */
-    private _metadata: Map<string, SyncMetadata> | undefined;
+    private _metadata: SyncMetadata | undefined;
+
+    private _metadataChanged: boolean = false;
+
+    private readonly _lastModifiedAt: Date;
 
     public createdByProperty: NullableNodeProperty<User, SyncNode>;
 
@@ -48,8 +52,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
                 command.ids = [id];
                 return command;
             },
-            syncNode => new GetWithReloadCommand(syncNode, "created_by", new LoadUsersCommand()),
-            DeletedNodes.User
+            syncNode => new GetWithReloadCommand(syncNode, "created_by_id", new LoadUsersCommand()),
         );
 
     /**
@@ -57,7 +60,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * @returns A promise of a user or `undefined` who created this sync node
      */
     public async createdBy(): Promise<User | undefined> {
-        return this.createdByProperty.get()
+        return this.createdByProperty.getPublic()
     }
 
     private readonly _createdAt: Date;
@@ -73,11 +76,10 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      */
     protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string,
         createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(type, databaseManager, tableSpecification, id);
-        if (metadata) {
-            this._metadata = new Map(metadata.entries);
-        }
+        this._metadata = metadata
+        this._lastModifiedAt = lastModifiedAt;
         this._isDeleted = isDeleted;
         this._createdAt = createdAt;
         this.createdByProperty = new NullableNodeProperty<User, SyncNode>(databaseManager, SyncNode.createdByPropertySpecification, this, createdById);
@@ -92,41 +94,38 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
 
     /**
      * Gets the metadata based on the specified id
-     * @param id the id to look for metadata
+     * If metadata is changed, setMetadata must be called
      * @returns the found SyncMetadata or undefined, if no metadata was found for the specified IMSSystem id
      * @throws error if this node was created without metadata
      */
-    public getMetadata(id: string): SyncMetadata | undefined {
-        if (!this._metadata) {
+    public get metadata(): SyncMetadata | undefined {
+        if (this._databaseManager.metadataId === undefined) {
             throw new Error("this SyncNode was loaded without metadata");
         }
-        return this._metadata.get(id);
+        return this._metadata;
     }
 
     /**
      * Adds / replaces the metadata for metadata.id
+     * Note: has to be called if changes should be saved
      * @param metadata the metadata to set
      * @throws error if this node was created without metadata
      */
-    public setMetadata(metadata: SyncMetadata): void {
-        if (!this._metadata) {
+    public set metadata(metadata: SyncMetadata | undefined) {
+        if (this._databaseManager.metadataId === undefined) {
             throw new Error("this SyncNode was loaded without metadata");
         }
         this.markChanged();
-        this._metadata.set(metadata.id, metadata);
+        this._metadataChanged = true;
+        this._metadata = metadata;
     }
 
     /**
-     * Removes the metadata associated with id
-     * @param id  the id of the IMSSystem of which metadata should be removed
-     * @throws error if this node was created without metadata
+     * Get when the node was last modified
+     * this value is not saved and maintained by the database
      */
-    public removeMetadata(id: string): void {
-        if (!this._metadata) {
-            throw new Error("this SyncNode was loaded without metadata");
-        }
-        this.markChanged();
-        this._metadata.delete(id);
+    public get lastModifiedAt(): Date {
+        return this._lastModifiedAt;
     }
 
     /**
@@ -135,24 +134,27 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * adds the metadata
      */
     protected getSaveCommandsInternal(): DatabaseCommand<any> | undefined {
+        const metadataCommand = this._metadataChanged ? [new SetMetadataCommand(this.id, this._databaseManager.metadataId!, this._metadata)] : [];
         if (this.isNew) {
-            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => { entries: [...node._metadata ?? []] })]);
-        } else if (this._metadata) {
-            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, [...this._tableSpecification.rows, new RowSpecification("metadata", node => { entries: [...node._metadata ?? []] })]);
+            return new AddNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows, ...metadataCommand);
         } else {
-            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows);
+            return new UpdateNodeCommand(this as any as T, this._tableSpecification.tableName, this._tableSpecification.rows, ...metadataCommand);
         }
     }
 
+    /**
+     * The date when the SyncNode was created
+     */
     public get createdAt(): Date {
         return this._createdAt;
     }
 
-}
+    /**
+     * For all immutable SyncNodes, this is just the creation data
+     * all other SyncNodes have to overwrite this to implement correct functionality
+     */
+    public get lastUpdatedAt(): Date {
+        return this._createdAt;
+    }
 
-/**
- * interface for the json format of the metadata
- */
-export interface SyncMetadataMap {
-    entries: [string, SyncMetadata][]
 }

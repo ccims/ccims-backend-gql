@@ -1,4 +1,4 @@
-import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLID, GraphQLInputObjectType } from "graphql";
+import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectType } from "graphql";
 
 const deleteComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "DeleteComponentInput",
@@ -8,7 +8,7 @@ const deleteComponentInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to delete"
         }

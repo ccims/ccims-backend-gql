@@ -14,7 +14,7 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveProjects);
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);
-            const projectId = PreconditionCheck.checkString(input, "projectId", 32);
+            const projectId = PreconditionCheck.checkString(input, "project", 32);
 
             base.userAllowed(context, permissions => permissions.getProjectPermissions(projectId).projectAdmin);
 
@@ -34,8 +34,7 @@ function updateProject(): GraphQLFieldConfig<any, ResolverContext> {
                 project.description = description;
             }
 
-            await context.dbManager.save();
-            return base.createResult(args, { project })
+            return base.createResult(args, context, { project });
         }
     }
 }

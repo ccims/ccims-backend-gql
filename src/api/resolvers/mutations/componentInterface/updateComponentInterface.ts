@@ -7,14 +7,15 @@ import PreconditionCheck from "../../utils/PreconditionCheck";
 import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
 
 function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateComponentInterfacePayload, GraphQLUpdateComponentInterfaceInput, "Updates the specified componentInterface");
+    const base = baseMutation(GraphQLUpdateComponentInterfacePayload, GraphQLUpdateComponentInterfaceInput, "Updates the specified ComponentInterface. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => true);
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536);
-            const componentInterfaceId = PreconditionCheck.checkString(input, "componentInterfaceId", 32);
+            const type = PreconditionCheck.checkNullableString(input, "type", 65536);
+            const componentInterfaceId = PreconditionCheck.checkString(input, "componentInterface", 32);
 
             const componentInterface = await context.dbManager.getNode(componentInterfaceId);
             if (componentInterface === undefined || !(componentInterface instanceof ComponentInterface)) {
@@ -25,14 +26,16 @@ function updateComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
 
             
             if (name !== undefined) {
-                componentInterface.name = name;
+                componentInterface.setName(name, new Date());
             }
             if (description !== undefined) {
-                componentInterface.description = description;
+                componentInterface.setDescription(description, new Date());
+            }
+            if (type !== undefined) {
+                componentInterface.setInterfaceType(type, new Date());
             }
 
-            await context.dbManager.save();
-            return base.createResult(args, { componentInterface })
+            return base.createResult(args, context, { componentInterface });
         }
     }
 }

@@ -1,15 +1,15 @@
 import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
 import { Issue } from "./Issue";
-import { NamedNode } from "./NamedNode";
+import { NamedSyncNode } from "./NamedSyncNode";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
 
 /**
  * interface which specifies what a IssueLocation is (a named node with the issuesOnLocationProperty)
  */
-export interface IssueLocation<T extends IssueLocation = any> extends NamedNode<T> {
-    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>;
+export interface IssueLocation<T extends IssueLocation = any> extends NamedSyncNode<T> {
+    issuesOnLocationProperty: NodeListProperty<Issue, IssueLocation>
 }
 
 /**
@@ -18,12 +18,12 @@ export interface IssueLocation<T extends IssueLocation = any> extends NamedNode<
 export const issuesOnLocationPropertySpecification: NodeListPropertySpecification<Issue, IssueLocation>
     = NodeListPropertySpecification.loadDynamic<Issue, IssueLocation>(LoadRelationCommand.fromPrimary("issue_location", "issue"),
     (ids, issueLocation) => {
-        const command = new LoadIssuesCommand();
+        const command = new LoadIssuesCommand(true);
         command.ids = ids;
         return command;
     },
     issueLocation => {
-        const command = new LoadIssuesCommand();
+        const command = new LoadIssuesCommand(true);
         command.onLocations = [issueLocation.id];
         return command;
     })

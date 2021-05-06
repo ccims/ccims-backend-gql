@@ -17,6 +17,7 @@ function createComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
 
             const name = PreconditionCheck.checkString(input, "name", 256);
             const description = PreconditionCheck.checkNullableString(input, "description", 65536) ?? "";
+            const type = PreconditionCheck.checkNullableString(input, "type", 65536) ?? "";
             const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
@@ -26,10 +27,9 @@ function createComponentInterface(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The specified component id is not the id of a valid component");
             }
 
-            const componentInterface = await ComponentInterface.create(context.dbManager, name, description, component);
+            const componentInterface = await ComponentInterface.create(context.dbManager, name, description, type, component, context.user, new Date());
 
-            await context.dbManager.save();
-            return base.createResult(args, { componentInterface })
+            return base.createResult(args, context, { componentInterface });
         }
     };
 }

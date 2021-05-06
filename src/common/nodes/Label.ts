@@ -8,7 +8,7 @@ import { NodeType } from "./NodeType";
 import { Project } from "./Project";
 import { NodeListProperty } from "./properties/NodeListProperty";
 import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
-import { SyncMetadataMap } from "./SyncNode";
+import { SyncMetadata } from "./SyncMetadata";
 import { LoadProjectsCommand } from "../database/commands/load/nodes/LoadProjectsCommand";
 import { DatabaseCommand } from "../database/DatabaseCommand";
 import { QueryConfig, QueryResult } from "pg";
@@ -21,7 +21,7 @@ import { User } from "./User";
  * specification of a table which can contain labels
  */
 export const LabelTableSpecification: NodeTableSpecification<Label>
-    = new NodeTableSpecification<Label>("issue_label", NamedSyncNodeTableSpecification,
+    = new NodeTableSpecification<Label>("label", NamedSyncNodeTableSpecification,
         new RowSpecification<Label>("color", (label) => label.color.toString()));
 
 /**
@@ -43,15 +43,16 @@ export class Label extends NamedSyncNode {
      * @param id The unique id of this node
      * @param name The display name for this label. Max. 256 characters
      * @param description The description for this label. Max 25536 charactes
+     * @param lastUpdatedAt the date when the description or name was last updated
      * @param color The color in which to show the label
      * @param createdById The creator users ID
      * @param createdAt The date the label was created
      * @param isDeleted Weather this label is deleted (needed for sync)
      * @param metadata The metadate of this label for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, color: Color, createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, createdById, createdAt, isDeleted, metadata);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, lastUpdatedAt: Date, color: Color, 
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.Label, databaseManager, LabelTableSpecification, id, name, description, lastUpdatedAt, createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this._color = color;
         this.projectsProperty = new NodeListProperty<Project, Label>(databaseManager, Label.projectsPropertySpecifiaction, this);
         this.componentsProperty = new NodeListProperty<Component, Label>(databaseManager, Label.componentsPropertySpecifiaction, this);
@@ -69,7 +70,7 @@ export class Label extends NamedSyncNode {
      * @param description The labels description
      * @param components A list of component ID to which the label is added immediately after creation
      */
-    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User, createdAt: Date, description?: string, components?: Component[]) {
+    public static async create(databaseManager: DatabaseManager, name: string, color: Color, createdBy: User | undefined, createdAt: Date, description: string, components?: Component[]) {
         if (name.length > 256) {
             throw new Error("The given name is too long");
         }
@@ -80,13 +81,13 @@ export class Label extends NamedSyncNode {
             throw new Error("The color can't be undefined or null");
         }
 
-        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description || "", color, createdBy.id, createdAt, false, undefined);
+        const label = new Label(databaseManager, databaseManager.idGenerator.generateString(), name, description, createdAt, color, createdBy?.id, createdAt, false, new Date());
         label.markNew();
         databaseManager.addCachedNode(label);
         if (components && components.length >= 1) {
             await Promise.all(components.map(async component => {
                 await label.componentsProperty.add(component);
-                await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+                await Promise.all((await component.projectsProperty.getPublicElements()).map(async project => {
                     await project.labelsProperty.add(label);
                 }));
             }));
@@ -104,10 +105,11 @@ export class Label extends NamedSyncNode {
     /**
      * The color in which to show the label
      */
-    public set color(color: Color) {
+    public setColor(color: Color, atDate: Date) {
         if (color === undefined || color === null) {
             throw new Error("The color can't be null or undefined");
         }
+        this.lastUpdatedAt = atDate;
         this._color = color;
         this.markChanged();
     }
@@ -124,12 +126,12 @@ export class Label extends NamedSyncNode {
         NodeListPropertySpecification.loadDynamic<Component, Label>(
             LoadRelationCommand.fromSecundary("component", "label"),
             (ids, label) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
                 return command;
             },
             (label) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.labels = [label.id];
                 return command;
             }
@@ -140,6 +142,7 @@ export class Label extends NamedSyncNode {
     /**
      * A property of projects on which this label is available on (on components assigned to the project)
      * IT IS __NOT__ POSSIBLE TO ADD A PROJECT TO A LABEL VIA THIS PROPERTY
+     * IT IS NOT AUTOMATICALLY UPDATED
      */
     public readonly projectsProperty: NodeListProperty<Project, Label>;
 
@@ -177,16 +180,15 @@ export class Label extends NamedSyncNode {
         NodeListPropertySpecification.loadDynamic<Issue, Label>(
             LoadRelationCommand.fromSecundary("issue", "label"),
             (ids, label) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.ids = ids;
                 return command;
             },
             (label) => {
-                const command = new LoadIssuesCommand();
+                const command = new LoadIssuesCommand(true);
                 command.labels = [label.id];
                 return command;
-            }
-        )
+            })
             .notifyChanged((issue, label) => issue.labelsProperty)
             .noSave();
 
@@ -208,7 +210,7 @@ class LoadProjectIdsCommand extends DatabaseCommand<string[]> {
     /**
      * generates the query config
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
             text: "SELECT DISTINCT ON(project_id) project_id FROM relation_project_component WHERE component_id=ANY(SELECT component_id FROM relation_component_label WHERE label_id=$1);",
             values: [this.labelId]

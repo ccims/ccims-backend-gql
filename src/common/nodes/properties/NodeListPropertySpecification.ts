@@ -78,7 +78,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
  */
  class NodeListPropertySpecificationBuilder<T extends CCIMSNode, V extends CCIMSNode> {
 
-    private notifiers: ((element: T, node: V) => Property<V, T>)[] = [];
+    private notifiers: ((element: T, node: V) => Property<V, any>)[] = [];
 
     /**
      * creates a new NodesPropertySpecificationBuilder
@@ -102,7 +102,7 @@ export class NodeListPropertySpecification<T extends CCIMSNode, V extends CCIMSN
      * adds a notify callback when a change on this property occures
      * @param toNotify generates the property to notify out of element
      */
-    public notifyChanged(toNotify: (element: T, node: V) => Property<V, T>): NodeListPropertySpecificationBuilder<T, V> {
+    public notifyChanged(toNotify: (element: T, node: V) => Property<any, T>): NodeListPropertySpecificationBuilder<T, V> {
         this.notifiers.push(toNotify);
         return this;
     }

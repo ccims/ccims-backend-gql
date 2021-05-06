@@ -2,8 +2,8 @@ import * as core from "express-serve-static-core";
 import { config } from "../../config/Config";
 import jwt from "jsonwebtoken";
 import { log } from "../../log";
-import { ResolverContext, ResolverContextOptional } from "../ResolverContext";
-import { LoadUsersCommand } from "../../common/database/commands/load/nodes/LoadUsersCommand";
+import { ResolverContextOptional } from "../ResolverContext";
+import { LoadCCIMSUsersCommand } from "../../common/database/commands/load/nodes/LoadCCIMSUsersCommand";
 
 /**
  * Express middleware for verifying a JWT given by the client
@@ -76,7 +76,7 @@ class JWTVerifier {
     public async handle(req: ResolverContextOptional, res: core.Response, next: core.NextFunction) {
         if (config.api.debugNoLogin) {
             if (req.dbManager) {
-                const cmd = new LoadUsersCommand();
+                const cmd = new LoadCCIMSUsersCommand();
                 cmd.ids = ["0"];
                 req.dbManager.addCommand(cmd);
                 await req.dbManager.executePendingCommands();
@@ -103,7 +103,7 @@ class JWTVerifier {
                     if (JWTPayload.checkJWTPayload(checkedPayload)) {
                         log(7, checkedPayload);
                         const userId = checkedPayload.sub;
-                        const cmd = new LoadUsersCommand();
+                        const cmd = new LoadCCIMSUsersCommand();
                         cmd.ids = [userId];
                         req.dbManager?.addCommand(cmd);
                         await req.dbManager?.executePendingCommands();

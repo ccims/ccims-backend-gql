@@ -1,14 +1,18 @@
-import { config } from "../../config/Config";
-import { LoadIssuesCommand } from "../database/commands/load/nodes/LoadIssuesCommand";
+import { GetWithReloadCommand } from "../database/commands/GetWithReloadCommand";
+import { LoadRelationCommand } from "../database/commands/load/LoadRelationCommand";
 import { LoadUsersCommand } from "../database/commands/load/nodes/LoadUsersCommand";
-import { LoadCommentsCommand } from "../database/commands/load/nodes/timeline/LoadCommentsCommand";
+import { LoadCommentIssueTimelineItemsCommand } from "../database/commands/load/nodes/timeline/LoadCommentIssueTimelineItemsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
+import { CCIMSNode, CCIMSNodeTableSpecification } from "./CCIMSNode";
 import { Issue } from "./Issue";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
-import { SyncMetadataMap, SyncNode, SyncNodeTableSpecification } from "./SyncNode";
+import { NodeListProperty } from "./properties/NodeListProperty";
+import { NodeListPropertySpecification } from "./properties/NodeListPropertySpecification";
+import { NodePropertySpecification } from "./properties/NodePropertySpecification";
+import { NullableNodeProperty } from "./properties/NullableNodeProperty";
 import { Body } from "./timelineItems/Body";
-import { Comment } from "./timelineItems/Comment";
+import { CommentIssueTimelineItem } from "./timelineItems/CommentIssueTimelineItem";
 import { IssueComment } from "./timelineItems/IssueComment";
 import { User } from "./User";
 
@@ -16,40 +20,73 @@ import { User } from "./User";
  * The table specification for ReactionGroup
  */
 export const ReactionGroupTableSpecification: NodeTableSpecification<ReactionGroup> =
-    new NodeTableSpecification<ReactionGroup>("issue_reactiongroup", SyncNodeTableSpecification,
-        RowSpecification.fromProperty("origin", "originCommentId"),
+    new NodeTableSpecification<ReactionGroup>("reaction_group", CCIMSNodeTableSpecification,
         RowSpecification.fromProperty("reaction", "reaction"),
-        RowSpecification.fromProperty("users", "userIds"));
+        );
 
 /**
  * Represents a group of users who reacted with the same reaction to a specific comment
  */
-export class ReactionGroup extends SyncNode {
+export class ReactionGroup extends CCIMSNode {
 
     /**
-     * The id of the origin comment of this reaction group
+     * Property with the comment which has this ReactionGroup
+     * Warning: this is an IssueComment or a Body
+     * this does NOT redirect to the Issue in case of Body!
      */
-    private _originComment: string;
+    public readonly commentProperty: NullableNodeProperty<CommentIssueTimelineItem, ReactionGroup>;
 
     /**
-     * The name of the reaction of this group
+     * specification for commentProperty
      */
-    private _reactionName: string;
+    private static readonly commentPropertySpecification: NodePropertySpecification<CommentIssueTimelineItem, ReactionGroup>
+        = new NodePropertySpecification<CommentIssueTimelineItem, ReactionGroup>(
+            (id, reactionGroup) => {
+                const command = new LoadCommentIssueTimelineItemsCommand(true);
+                command.ids = [id];
+                return command;
+            },
+            reactionGroup => new GetWithReloadCommand(reactionGroup, "comment_id", new LoadCommentIssueTimelineItemsCommand(true))
+            //no update, because cannot be changed
+        );
 
     /**
-     * All user ids of users who reacted to the origin with the reaction
+     * Property with all users who added this reaction
      */
-    private _users: Set<string>;
+    public readonly usersProperty: NodeListProperty<User, ReactionGroup>;
+
+    /**
+     * specification for usersProperty
+     */
+    private static readonly usersPropertySpecification: NodeListPropertySpecification<User, ReactionGroup>
+        = NodeListPropertySpecification.loadDynamic<User, ReactionGroup>(
+            LoadRelationCommand.fromPrimary("reaction_group", "user"),
+            (ids, reactionGroup) => {
+                const command = new LoadUsersCommand();
+                command.ids = ids;
+                return command;
+            },
+            reactionGroup => {
+                const command = new LoadUsersCommand();
+                command.reactions = [reactionGroup.id];
+                return command;
+            })
+            .notifyChanged((user, reactionGroup) => user.reactionsProperty)
+            .saveOnPrimary("reaction_group", "user");
+
+    /**
+     * The reaction of this group
+     */
+    private _reaction: string;
 
     /**
      * Create a `ReactionGroup` object for an existing reaction group in the database
      */
-    public constructor(databaseManager: DatabaseManager, id: string, originComment: string, reactionName: string, users: string[], createdById: string | undefined, createdAt: Date,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
-        super(NodeType.ReactionGroup, databaseManager, ReactionGroupTableSpecification, id, createdById, createdAt, isDeleted, metadata);
-        this._originComment = originComment;
-        this._reactionName = reactionName;
-        this._users = new Set(users);
+    public constructor(databaseManager: DatabaseManager, id: string, commentId: string, reaction: string) {
+        super(NodeType.ReactionGroup, databaseManager, ReactionGroupTableSpecification, id);
+        this._reaction = reaction;
+        this.commentProperty = new NullableNodeProperty<CommentIssueTimelineItem, ReactionGroup>(databaseManager, ReactionGroup.commentPropertySpecification, this, commentId);
+        this.usersProperty = new NodeListProperty<User, ReactionGroup>(databaseManager, ReactionGroup.usersPropertySpecification, this);
     }
 
     /**
@@ -59,169 +96,31 @@ export class ReactionGroup extends SyncNode {
      * @param originComment The comment for which this reaction group is
      * @param reactionName The name of the reaction
      * @param users All users that wil be added to the reaction group after initialization
-     * @param createdById The creator user id of the creator of the reaction group
-     * @param createdAt The date the group was created
      */
-    public static create(databaseManager: DatabaseManager, originComment: string, reactionName: string, users: string[], createdById: string | undefined, createdAt: Date) {
+    public static create(databaseManager: DatabaseManager, originComment: string, reactionName: string, users: string[]) {
         if (!originComment || !reactionName || !users) {
             throw new Error("Illegal reaction group creation parameters");
         }
-        const group = new ReactionGroup(databaseManager, databaseManager.idGenerator.generateString(), originComment, reactionName, users, createdById, createdAt, false, undefined);
-    }
-
-    /**
-     * The id of the origin comment of this reaction group
-     */
-    public get originCommentId(): string {
-        return this._originComment;
-    }
-
-    /**
-     * Sets a new origin for the reaction group
-     *
-     * @param id The id of the issue or issue comment to be set as new origin
-     */
-    public async setOriginCommentId(id: string) {
-        if (!id) {
-            throw new Error("The comment id must be set");
-        }
-        const commentCmd = new LoadCommentsCommand();
-        commentCmd.ids = [id];
-        this._databaseManager.addCommand(commentCmd);
-        await this._databaseManager.executePendingCommands();
-        let result = commentCmd.getResult();
-        if (!result || result.length !== 1) {
-            const issueCmd = new LoadIssuesCommand();
-            issueCmd.ids = [id];
-            this._databaseManager.addCommand(commentCmd);
-            await this._databaseManager.executePendingCommands();
-            result = commentCmd.getResult();
-        }
-        if (!result || result.length !== 1) {
-            throw new Error("The give id didn't belong to either an issue or a comment");
-        }
-        await this.setOriginComment(result[0])
-    }
-
-    /**
-     * Sets a new origin for the reaction group
-     *
-     * @param comment The issue comment or issue to be set as origin of the reaction group
-     */
-    public async setOriginComment(comment: IssueComment | Issue) {
-        if (!comment) {
-            throw new Error("The comment can't be undefined");
-        }
-        let commentObj: Comment;
-        if (comment instanceof Issue) {
-            commentObj = await comment.bodyProperty.get();
-        } else if (comment instanceof IssueComment) {
-            commentObj = comment;
-        } else {
-            throw new Error("Only a comment or an issue can be set as origin for a reaction group");
-        }
-        this.markChanged();
-        this._originComment = commentObj.id;
+        const group = new ReactionGroup(databaseManager, databaseManager.idGenerator.generateString(), originComment, reactionName);
     }
 
     /**
      * The issue comment or issue this reaction group belongs to
      */
-    public async originComment(): Promise<IssueComment | Issue> {
-        const cmd = new LoadCommentsCommand();
-        cmd.ids = [this._originComment];
-        this._databaseManager.addCommand(cmd);
-        await this._databaseManager.executePendingCommands();
-        const result = cmd.getResult();
-        if (!result || result.length !== 1) {
-            throw new Error("The currently set origin id is no valid comment/issue");
-        }
-        if (result[0] instanceof IssueComment) {
-            return result[0];
-        } else if (result[0] instanceof Body) {
-            return result[0].issue();
+    public async comment(): Promise<IssueComment | Issue | undefined> {
+        const commentTimelineItem =  await this.commentProperty.get();
+        if (commentTimelineItem?.type === NodeType.Body) {
+            return (commentTimelineItem as Body).issue();
         } else {
-            throw new Error("The currently set origin id is no valid comment/issue");
+            return commentTimelineItem;
         }
     }
 
     /**
-     * The reaction name of this reaction group
+     * Returns the reaction this ReactionGroup represents
      */
     public get reaction(): string {
-        return this._reactionName;
-    }
-
-    /**
-     * The reaction name of this reaction group
-     */
-    public set reaction(reaction: string) {
-        if (!reaction || reaction.length <= 0) {
-            throw new Error("The reaction name can't be empty or undefined");
-        }
-        if (reaction !== this._reactionName) {
-            this.markChanged();
-            this._reactionName = reaction;
-        }
-    }
-
-    /**
-     * Returns the ids of all reacting users
-     */
-    public get userIds(): string[] {
-        return Array.from(this._users);
-    }
-
-    /**
-     * Add a new user who reacted in this group
-     *
-     * @param user The user to be added as new user reacting
-     */
-    public addUser(user: User) {
-        if (!user) {
-            throw new Error("User to add can't be undefined");
-        }
-        if (!this._users.has(user.id)) {
-            this.markChanged();
-            this._users.add(user.id);
-        }
-    }
-
-    /**
-     * Remove the given user from this reaction group
-     *
-     * @param user The user to be removed from the list of users who reacted
-     */
-    public removeUser(user: User) {
-        if (!user) {
-            throw new Error("User to remove can't be undefined");
-        }
-        if (this._users.has(user.id)) {
-            this.markChanged();
-            this._users.delete(user.id);
-        }
-    }
-
-    /**
-     * Async getter function for the users who are part of this reaction group
-     *
-     * __NOTE__: This will potentially only return a subset of users (as many as specified in `config.api.numReactionUsers`)
-     * For the total count please use the `totalUserCount` function
-     */
-    public async users(): Promise<User[]> {
-        const usersToReturn = this.userIds.slice(0, config.api.numReactionUsers);
-        const cmd = new LoadUsersCommand();
-        cmd.ids = usersToReturn;
-        this._databaseManager.addCommand(cmd);
-        await this._databaseManager.executePendingCommands();
-        return cmd.getResult();
-    }
-
-    /**
-     * Returns the total number of users who reacted
-     */
-    public get totalUserCount(): number {
-        return this._users.size;
+        return this._reaction;
     }
 
 }

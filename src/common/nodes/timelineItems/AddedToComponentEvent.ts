@@ -3,20 +3,20 @@ import { Component } from "../Component";
 import { Issue } from "../Issue";
 import { NodeTableSpecification } from "../NodeTableSpecification";
 import { NodeType } from "../NodeType";
-import { SyncMetadataMap } from "../SyncNode";
+import { SyncMetadata } from "../SyncMetadata";
 import { User } from "../User";
 import { ComponentEvent, ComponentEventTableSpecification } from "./ComponentEvent";
 
 export const AddedToComponentEventTableSpecification: NodeTableSpecification<AddedToComponentEvent>
-    = new NodeTableSpecification("issue_timeline_added_to_component_event", ComponentEventTableSpecification);
+    = new NodeTableSpecification("added_to_component_event", ComponentEventTableSpecification);
 
 export class AddedToComponentEvent extends ComponentEvent {
 
     public constructor (databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, componentId: string,
-        isDeleted: boolean, metadata?: SyncMetadataMap) {
+        isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
         super(NodeType.AddedToComponentEvent, databaseManager, AddedToComponentEventTableSpecification, id,
-            createdById, createdAt, issueId, componentId, isDeleted, metadata);
+            createdById, createdAt, issueId, componentId, isDeleted, lastModifiedAt, metadata);
     }
 
     /**
@@ -29,14 +29,14 @@ export class AddedToComponentEvent extends ComponentEvent {
      * @param component
      */
     public static async create(databaseManager: DatabaseManager, createdBy: User | undefined, createdAt: Date, issue: Issue, component: Component): Promise<AddedToComponentEvent> {
-        const event = new AddedToComponentEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, component.id, false);
+        const event = new AddedToComponentEvent(databaseManager, databaseManager.idGenerator.generateString(), createdBy?.id, createdAt, issue.id, component.id, false, new Date());
         event.markNew();
         databaseManager.addCachedNode(event);
         await issue.timelineProperty.add(event);
         return event;
     }
 
-    public async component(): Promise<Component> {
-        return this.componentProperty.get();
+    public async component(): Promise<Component | undefined> {
+        return this.componentProperty.getPublic();
     }
 }

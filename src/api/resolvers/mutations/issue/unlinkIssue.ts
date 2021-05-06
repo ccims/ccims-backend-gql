@@ -21,15 +21,16 @@ function unlinkIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The given id for the issue to unlink TO was no valid issue id");
             }
             const issueToUnlink = issueToUnlinkCmd.getResult()[0];
+            /*
             if (!context.user.permissions.globalPermissions.globalAdmin && !(await issue.componentsProperty.getIds()).some(id => {
                 const perm = context.user.permissions.getComponentPermissions(id);
                 return perm.componentAdmin || perm.linkIssues
             })) {
                 throw new Error("You must be allowed to unlink issues on at least on of the components the issue is on");
             }
+            */
             const event = await issue.removeLinkedIssue(issueToUnlink, new Date(), context.user);
-            await context.dbManager.save();
-            return base.createResult(args, issue, event, {});
+            return base.createResult(args, context, issue, event, {});
         }
     }
 }

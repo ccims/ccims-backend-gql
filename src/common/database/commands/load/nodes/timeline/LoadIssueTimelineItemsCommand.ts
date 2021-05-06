@@ -1,17 +1,16 @@
 import { IssueTimelineItem, IssueTimelineItemType } from "../../../../../nodes/timelineItems/IssueTimelineItem";
-import { ConditionSpecification } from "../../ConditionSpecification";
 import { QueryPart } from "../../QueryPart";
-import { LoadMultipleNodeListsCommand } from "../LoadMultipleNodeListsCommand";
+import { LoadMultipleSyncNodeListsCommand } from "../LoadMultipleSyncNodeListsCommand";
 import { LoadNodeListCommand } from "../LoadNodeListCommand";
 import { LoadSyncNodeListCommand } from "../LoadSyncNodeListCommand";
 import { createStringListFilter } from "../RelationFilter";
 
-export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTimelineItem> extends LoadMultipleNodeListsCommand<T> {
+export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTimelineItem> extends LoadMultipleSyncNodeListsCommand<T> {
 
     /**
      * filter for timelineItems that are on any of the issues
      */
-    public onIssues?: string[];
+    public onIssues: string[] | undefined;
 
     /**
      * if true, no body
@@ -21,23 +20,17 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
     /**
      * filters for IssueTimelineItems of the specified types
      */
-    public types?: IssueTimelineItemType[];
+    public types: IssueTimelineItemType[] | undefined;
 
     /**
      * creates a new
      */
-    public constructor() {
-        super("issue_timeline_item");
+    public constructor(loadDeleted: boolean = false) {
+        super("issue_timeline_item", loadDeleted);
     }
-    public loadWithMetadata: boolean = false;
-    public loadDeleted: boolean = false;
-    public createdBy?: string[];
-    public createdAfter?: Date;
-    public createdBefore?: Date;
 
     protected getLoadCommand(tableName: string): LoadNodeListCommand<T> {
         const command = super.getLoadCommand(tableName) as LoadSyncNodeListCommand<T>;
-        command.loadWithMetadata = true;
         return command;
     }
 
@@ -46,44 +39,33 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * can be overwritten to add other conditions, calling the super function is recommended
      * @param i the first index of query parameter to use
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onIssues !== undefined) {
-            conditions.conditions.push(createStringListFilter("issue", this.onIssues, i, 4));
+            conditions.conditions.push(createStringListFilter("issue_id", this.onIssues, i));
             conditions.i++;
         }
         if (this.noBody !== undefined) {
             conditions.conditions.push({
-                priority: 10,
                 text: `pg_class.relname != $${conditions.i}`,
-                values: ["issue_timeline_body"]
+                values: ["body"]
             });
             conditions.i++;
         }
         if (this.types !== undefined) {
             if (this.types.length === 1) {
                 conditions.conditions.push({
-                    priority: 10,
                     text: `pg_class.relname = $${conditions.i}`,
                     values: [this.types[0].tableName]
                 });
             } else {
                 conditions.conditions.push({
-                    priority: 10,
                     text: `pg_class.relname = ANY($${conditions.i})`,
                     values: [this.types.map(type => type.tableName)]
                 });
             }
             conditions.i++;
-        }
-
-        if (!this.loadDeleted) {
-            conditions.conditions.push({
-                priority: 3,
-                text: "main.deleted=false",
-                values: []
-            });
         }
 
         return conditions;
@@ -95,11 +77,10 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
      * @param i the next value index
      * @returns the conditions for pagination
      */
-    protected generatePaginationConditions(i: number): { conditions: ConditionSpecification[], i: number } {
-        const conditions: ConditionSpecification[] = [];
+    protected generatePaginationConditions(i: number): { conditions: QueryPart[], i: number } {
+        const conditions: QueryPart[] = [];
         if (this.afterId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `(main.created_at > (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id > $${i}))`,
                 values: [this.afterId]
             });
@@ -107,7 +88,6 @@ export class LoadIssueTimelineItemsCommand<T extends IssueTimelineItem = IssueTi
         }
         if (this.beforeId !== undefined) {
             conditions.push({
-                priority: 2,
                 text: `(main.created_at < (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) OR ((main.created_at = (SELECT created_at FROM ${this.tableName} WHERE id=$${i})) AND (main.id < $${i}))`,
                 values: [this.beforeId]
             });

@@ -1,3 +1,4 @@
+import ccimsSchema from "./resolvers/CCIMSSchema";
 import express from "express";
 import * as core from "express-serve-static-core";
 import { config } from "../config/Config";
@@ -6,11 +7,10 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { jwtVerifier } from "./auth/JWTVerifier";
 import { graphqlHandler } from "./GraphQLHandler";
-import { Client, Pool } from "pg";
+import { Pool } from "pg";
 import { SnowflakeGenerator } from "../utils/Snowflake";
 import { dbManagerInjector } from "./DBManagerInjector";
 import { log } from "../log";
-import ccimsSchema from "./resolvers/CCIMSSchema";
 import publicScimsSchema from "./publicResolvers/PublicCCIMSSchema";
 
 

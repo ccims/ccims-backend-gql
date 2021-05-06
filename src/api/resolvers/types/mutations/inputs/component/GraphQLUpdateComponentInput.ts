@@ -1,16 +1,14 @@
-import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from "graphql";
-import GraphQLIMSType from "../../../../enums/GraphQLIMSType";
-import GraphQLJSON from "../../../../scalars/GraphQLJSON";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
     name: "UpdateComponentInput",
-    description: "The inputs for the updateComponent mutation",
+    description: "The inputs for the updateComponent mutation, updates only the provided fields",
     fields: () => ({
         clientMutationID: {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        componentId: {
+        component: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the component to update"
         },
@@ -20,32 +18,11 @@ const updateComponentInputConfig: GraphQLInputObjectTypeConfig = {
         },
         description: {
             type: GraphQLString,
-            description: "A textual description (of the fuction) of this component.\n\nMax. 65536 characters. `null` equivalent to \"\""
+            description: "A textual description (of the function) of this component.\n\nMax. 65536 characters."
         },
-        imsType: {
-            type: GraphQLIMSType,
-            description: "The type/system the IMS of this component is an instance of"
-        },
-        endpoint: {
+        repositoryURL: {
             type: GraphQLString,
-            description: `The endpoint where to reach the IMS of this component instance.
-
-In the most cases this will be a URL in the form of
-\`\`\`
-https://example.com/api/[API_KEY]
-\`\`\`
-where strings in [] can be replaced by the IMS extension with values needed
-(either dynamid, like the API key of a user or static, like values from the config).
-See the documentation for the IMS extions for information which keys are expected.
-
-In rare cases depending on the IMS type this might be empty or not a URL`
-        },
-        connectionData: {
-            type: GraphQLJSON,
-            description: `Data needed for the connection to the IMS API.
-
-See the documentation for the IMS extions for information which keys are expected.
-This must be a valid JSON-string`
+            description: "The URL where the code repository of this component is located\n\nMax. 65536 characters"
         }
     })
 };

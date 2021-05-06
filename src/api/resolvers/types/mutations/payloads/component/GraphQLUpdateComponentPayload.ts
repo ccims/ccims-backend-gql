@@ -1,7 +1,6 @@
 import { GraphQLObjectTypeConfig, GraphQLObjectType, GraphQLString } from "graphql";
 import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLComponent from "../../../nodes/GraphQLComponent";
-import GraphQLIMS from "../../../nodes/GraphQLIMS";
 
 const updateComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "UpdateComponentPayload",
@@ -14,10 +13,6 @@ const updateComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext
         component: {
             type: GraphQLComponent,
             description: "The component updated by this mutation"
-        },
-        ims: {
-            type: GraphQLIMS,
-            description: "The IMS of the component updated by this mutation"
         }
     })
 };

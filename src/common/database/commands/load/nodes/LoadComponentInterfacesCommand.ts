@@ -1,43 +1,45 @@
 import { QueryResultRow, QueryResult } from "pg";
-import { SuperCall } from "typescript";
 import { ComponentInterface, ComponentInterfaceTableSpecification } from "../../../../nodes/ComponentInterface";
 import { DatabaseManager } from "../../../DatabaseManager";
-import { ConditionSpecification } from "../ConditionSpecification";
 import { QueryPart } from "../QueryPart";
-import { LoadNamedNodesCommand } from "./LoadNamedNodeCommand";
+import { LoadNamedSyncNodesCommand } from "./LoadNamedSyncNode";
 import { createRelationFilterByPrimary, createStringListFilter } from "./RelationFilter";
 
 /**
  * command to load componentInterfaces
  */
-export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<ComponentInterface> {
+export class LoadComponentInterfacesCommand extends LoadNamedSyncNodesCommand<ComponentInterface> {
 
     /**
      * filter for ComponentInterfaces which are on any of the components
      */
-    public onComponents?: string[];
+    public onComponents: string[] | undefined;
 
     /**
      * filter for ComponentInterfaces which are consumed by any of the components
      */
-    public consumedByComponent?: string[];
+    public consumedByComponent: string[] | undefined;
 
     /**
      * filters for IssueLocations where at least one of the issues is located
      */
-    public hasIssueOnLocation?: string[];
+    public hasIssueOnLocation: string[] | undefined;
 
-    
     /**
      * Select only component interfaces which are on any component on one of these projects
      */
-    public onProjects?: string[];
+    public onProjects: string[] | undefined;
+
+    /**
+     * Select only ComponentInterfaces when their interfaceType matches this _POSIX_ RegEx
+     */
+    public interfaceType: string | undefined;
 
     /**
      * creates a new LoadComponentInterfacesCommand
      */
-    public constructor() {
-        super(ComponentInterfaceTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(ComponentInterfaceTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -47,17 +49,15 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      * @returns the parsed componentInterface
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): ComponentInterface {
-        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.host_component_id);
+        return new ComponentInterface(databaseManager, resultRow.id, resultRow.name, resultRow.description, resultRow.interface_type, resultRow.last_updated_at, resultRow.host_component_id, 
+            resultRow.created_by_id, resultRow.created_at, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the queryStart
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM component_interface main `,
-            values: []
-        }
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("component_interface", databaseManager);
     }
 
     /**
@@ -66,7 +66,7 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
      * @param i the first index of query parameter to use
      * @returns the array of conditions and a index for the next value
      */
-    protected generateConditions(i: number): { conditions: ConditionSpecification[], i: number } {
+    protected generateConditions(i: number): { conditions: QueryPart[], i: number } {
         const conditions = super.generateConditions(i);
 
         if (this.onComponents !== undefined) {
@@ -84,17 +84,22 @@ export class LoadComponentInterfacesCommand extends LoadNamedNodesCommand<Compon
         if (this.onProjects !== undefined) {
             if (this.onProjects.length === 1) {
                 conditions.conditions.push({
-                    priority: 2,
                     text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
                     values: [this.onProjects[0]]
                 });
             } else {
                 conditions.conditions.push({
-                    priority: 2,
                     text: `main.host_component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
                     values: [this.onProjects[0]]
                 });
             }
+            conditions.i++;
+        }
+        if (this.interfaceType !== undefined) {
+            conditions.conditions.push({
+                text: `main.interface_type ~* $${conditions.i}`,
+                values: [this.interfaceType],
+            });
             conditions.i++;
         }
 

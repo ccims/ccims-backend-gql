@@ -12,8 +12,8 @@ export class LoadUnlabelledEventCommand extends LoadIssueTimelineItemsCommandBas
     /**
      * creates a new LoadUnlabelledEventCommand
      */
-    public constructor() {
-        super(UnlabelledEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnlabelledEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,18 +24,15 @@ export class LoadUnlabelledEventCommand extends LoadIssueTimelineItemsCommandBas
      * @returns the parsed UnlabelledEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnlabelledEvent {
-        return new UnlabelledEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue, resultRow.label, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new UnlabelledEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id, 
+            resultRow.label_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unlabelled_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("unlabelled_event", databaseManager);
     }
 
 }

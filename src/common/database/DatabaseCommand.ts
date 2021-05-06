@@ -12,13 +12,13 @@ export abstract class DatabaseCommand<T> {
      */
     public subCommands: DatabaseCommand<any>[] = [];
 
-    protected result?: T;
+    protected result: T | undefined;
 
     /**
      * overrite this method to generate the query
      * @returns the query config
      */
-    public abstract getQueryConfig(): QueryConfig;
+    public abstract getQueryConfig(databaseManager: DatabaseManager): QueryConfig;
 
     /**
      * must be overwritten by subclasses
@@ -48,7 +48,7 @@ export abstract class DatabaseCommand<T> {
      * @returns the result
      */
     public getResult(): T {
-        if (!this.result) {
+        if (this.result === undefined) {
             throw new Error("no result currently set");
         }
         return this.result;

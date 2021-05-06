@@ -12,8 +12,8 @@ export class LoadUnmarkedAsDuplicateEventsCommand extends LoadIssueTimelineItems
     /**
      * creates a new LoadUnmarkedAsDuplicateEventsCommand
      */
-    public constructor() {
-        super(UnmarkedAsDuplicateEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(UnmarkedAsDuplicateEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadUnmarkedAsDuplicateEventsCommand extends LoadIssueTimelineItems
      * @returns the parsed UnmarkedAsDuplicateEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): UnmarkedAsDuplicateEvent {
-        return new UnmarkedAsDuplicateEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new UnmarkedAsDuplicateEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_unmarked_as_duplicate_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("unmarked_as_duplicate_event", databaseManager);
     }
 
 }

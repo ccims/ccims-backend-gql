@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLID, GraphQLNonNull } from "graphql";
 import GraphQLIssueCategory from "../../../../enums/GraphQLIssueCategory";
 
 const changeIssueCategoryInputConfig: GraphQLInputObjectTypeConfig = {

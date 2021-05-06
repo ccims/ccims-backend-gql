@@ -5,22 +5,18 @@ import GraphQLUpdateComponentInput from "../../types/mutations/inputs/component/
 import { Component } from "../../../../common/nodes/Component";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
-import { ImsType, ImsSystem } from "../../../../common/nodes/ImsSystem";
-import { log } from "../../../../log";
 
 function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a component in the ccims and adds it to the given users");
+    const base = baseMutation(GraphQLUpdateComponentPayload, GraphQLUpdateComponentInput, "Updates a Component in the ccims. Fields which are not provided are not updated.");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
-            const componentId = PreconditionCheck.checkString(input, "componentId", 32);
-            const imsType = PreconditionCheck.checkNullableEnum<ImsType>(input, "imsType", ImsType);
-            const endpoint = PreconditionCheck.checkNullableString(input, "endpoint");
-            const connectionData = input.connectionData; // TODO: Check that Connection data
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
 
             const name = PreconditionCheck.checkNullableString(input, "name", 256);
-            const description = PreconditionCheck.checkNullableString(input, "description", 65536);            
+            const description = PreconditionCheck.checkNullableString(input, "description", 65536);  
+            const repositoryURL = PreconditionCheck.checkNullableString(input, "repositoryURL", 65536);                      
 
             base.userAllowed(context, permissions => permissions.getComponentPermissions(componentId).componentAdmin);
 
@@ -30,36 +26,16 @@ function updateComponent(): GraphQLFieldConfig<any, ResolverContext> {
             }
 
             if (name !== undefined) {
-                component.name = name;
+                component.setName(name, new Date());
             }
             if (description !== undefined) {
-                component.description = description;
+                component.setDescription(description, new Date());
+            }
+            if (repositoryURL !== undefined) {
+                component.setRepositoryURL(repositoryURL, new Date());
             }
 
-            let imsSystem = await component.ims();
-            if (imsType !== undefined || endpoint !== undefined || connectionData !== undefined) {
-                if (component.imsSystemProperty.getId() === undefined) {
-                    await component.imsSystemProperty.set(ImsSystem.create(context.dbManager, imsType ?? ImsType.CCIMS, endpoint ?? "", connectionData ?? {}));
-                }
-                imsSystem = await component.ims();
-                if (imsSystem === undefined) {
-                    log(2, "imsSystem was still undefined");
-                    throw new Error("Internal server error");
-                }
-                
-                if (imsType !== undefined) {
-                    imsSystem.imsType = imsType;
-                }
-                if (endpoint !== undefined) {
-                    imsSystem.endpoint = endpoint;
-                }
-                if (connectionData !== undefined) {
-                    imsSystem.connectionData = connectionData;
-                }
-            }
-
-            await context.dbManager.save();
-            return base.createResult(args, { component:component, ims:imsSystem });
+            return base.createResult(args, context, { component:component });
         }
     };
 }

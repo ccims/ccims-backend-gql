@@ -17,16 +17,17 @@ export class UpdateNodeCommand<T extends CCIMSNode> extends DatabaseCommand<void
      * @param tableName the table name where to save the node
      * @param rows the list of rows to save
      */
-    public constructor (private readonly node: T, private readonly tableName: string, private readonly rows: RowSpecification<T>[]) {
+    public constructor (private readonly node: T, private readonly tableName: string, private readonly rows: RowSpecification<T>[], ...subCommands: DatabaseCommand<any>[]) {
         super();
         verifyIsAllowedSqlIdent(tableName);
         rows.forEach(row => verifyIsAllowedSqlIdent(row.rowName));
+        this.subCommands = subCommands;
     }
 
     /**
      * generates the command
      */
-    public getQueryConfig(): QueryConfig<any[]> {
+    public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         const rowNames = this.rows.reduce((str, row, index) => `${str}${row.rowName}=$${index + 2}, `, "");
         return {
             text: `UPDATE ${this.tableName} SET ${rowNames.substr(0, rowNames.length - 2)} WHERE id=$1`,

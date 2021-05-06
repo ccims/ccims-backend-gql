@@ -1,16 +1,15 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
+import { GraphQLInputObjectType, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig, GraphQLString } from "graphql";
+import { ComponentInterface } from "../../../../common/nodes/ComponentInterface";
+import { issueLocationFilterFields } from "./GraphQLIssueLocationFilter";
 
 const componentInterfaceFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentInterfaceFilter",
     description: "Filters for an instance of a component's interface",
     fields: () => ({
-        name: {
+        ...issueLocationFilterFields<ComponentInterface>("ComponentInterface"),
+        type: {
             type: GraphQLString,
-            description: "The name the component has to have"
-        },
-        description: {
-            type: GraphQLString,
-            description: "A Regex which the description of the interface needs to match"
+            description: "The __RegEx__ the type of the ComponentInterface needs to match"
         },
         component: {
             type: GraphQLList(GraphQLNonNull(GraphQLID)),

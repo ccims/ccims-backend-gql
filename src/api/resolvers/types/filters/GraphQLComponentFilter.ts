@@ -1,21 +1,16 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLInputObjectTypeConfig } from "graphql";
+import { GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLInputObjectTypeConfig } from "graphql";
+import { Component } from "../../../../common/nodes/Component";
 import GraphQLIMSType from "../../enums/GraphQLIMSType";
+import { issueLocationFilterFields } from "./GraphQLIssueLocationFilter";
 
 const componentFilterConfig: GraphQLInputObjectTypeConfig = {
     name: "ComponentFilter",
     description: "Filters for component matching the given properties",
     fields: () => ({
-        name: {
+        ...issueLocationFilterFields<Component>("Component"),
+        repositoryURL: {
             type: GraphQLString,
-            description: "The name of the component must match the given RegEx"
-        },
-        owner: {
-            type: GraphQLList(GraphQLNonNull(GraphQLID)),
-            description: "The owner of the component must have any of the given ids"
-        },
-        description: {
-            type: GraphQLString,
-            description: "The components description must match the given __RegEx__"
+            description: "The components repositoryURL must match the given __RegEx__"
         },
         imsType: {
             type: GraphQLList(GraphQLNonNull(GraphQLIMSType)),

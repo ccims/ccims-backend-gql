@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLObjectTypeConfig } from "graphql";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig } from "graphql";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLColor from "../../scalars/GraphQLColor";
 import projectsListQuery from "../../listQueries/projectsListQuery";
@@ -7,26 +7,16 @@ import { ResolverContext } from "../../../ResolverContext";
 import componentsListQuery from "../../listQueries/componentsListQuery";
 import { Component } from "../../../../common/nodes/Component";
 import { Project } from "../../../../common/nodes/Project";
+import { namedSyncNodeFields } from "./namedSyncNodeFields";
 
 const labelConfig: GraphQLObjectTypeConfig<Label, ResolverContext> = {
     name: "Label",
-    description: "A label assignable to issues. A label is per-project",
+    description: "A label assignable to issues. A label is per-component",
     interfaces: () => ([GraphQLNode]),
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: "The unique id of this label"
-        },
-        name: {
-            type: GraphQLNonNull(GraphQLString),
-            description: "The name of the label to display.\n\n Max. 256 characters"
-        },
-        description: {
-            type: GraphQLString,
-            description: "A text describing the labels' function\n\nMax. 65536 characters"
-        },
+        ...namedSyncNodeFields<Label>("Label"),
         color: {
-            type: GraphQLColor,
+            type: GraphQLNonNull(GraphQLColor),
             description: "The color of the label in the GUI"
         },
         components: componentsListQuery<Label, Component>("The components this label is available on", label => label.componentsProperty),

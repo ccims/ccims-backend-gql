@@ -12,8 +12,8 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(PinnedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(PinnedEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadPinnedEventsCommand extends LoadIssueTimelineItemsCommandBase<P
      * @returns the parsed AddedToComponentEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): PinnedEvent {
-        return new PinnedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.component, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new PinnedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.component_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_pinned_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("pinned_event", databaseManager);
     }
 
 }

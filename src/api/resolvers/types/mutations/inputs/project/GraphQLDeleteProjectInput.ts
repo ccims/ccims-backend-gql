@@ -1,4 +1,4 @@
-import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLID, GraphQLInputObjectType } from "graphql";
+import { GraphQLInputObjectTypeConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInputObjectType } from "graphql";
 
 const deleteProjectInputConfig: GraphQLInputObjectTypeConfig = {
     name: "DeleteProjectInput",
@@ -8,7 +8,7 @@ const deleteProjectInputConfig: GraphQLInputObjectTypeConfig = {
             type: GraphQLString,
             description: "An arbitraty string to return together with the mutation result"
         },
-        projectId: {
+        project: {
             type: GraphQLNonNull(GraphQLID),
             description: "The id of the project to delete"
         }

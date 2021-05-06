@@ -1,21 +1,20 @@
 CREATE TABLE project
 (
-    name character varying(256) NOT NULL,
-    owner_user_id id NOT NULL,
-    description character varying(65536) NOT NULL,
+    name varchar(256) NOT NULL,
+    description varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE issue_location (
-    name character varying(256) NOT NULL,
-    description character varying(65536) NOT NULL,
+    LIKE named_sync_node INCLUDING DEFAULTS,
+    name varchar(256) NOT NULL,
+    description varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (node);
 
 CREATE TABLE component
 (
-    owner_user_id id NOT NULL,
-    ims_system_id id NOT NULL,
+    repository_url varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
@@ -49,7 +48,9 @@ CREATE TABLE relation_component_label
 
 CREATE TABLE component_interface
 (
-    host_component_id id NOT NULL
+    host_component_id id NOT NULL,
+    interface_type varchar(65536) NOT NULL,
+    PRIMARY KEY (id)
 ) INHERITS (issue_location);
 
 CREATE TABLE relation_issue_location_issue
@@ -65,3 +66,18 @@ CREATE TABLE relation_component_consumed_component_interface
     consumed_component_interface_id id NOT NULL,
     PRIMARY KEY (component_id, consumed_component_interface_id)
 );
+
+CREATE TABLE ims_system
+(
+    type INT NOT NULL,
+    ims_data json NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (node);
+
+CREATE TABLE ims_component
+(
+    component_id id NOT NULL,
+    ims_system_id id NOT NULL,
+    ims_data json NOT NULL,
+    PRIMARY KEY (id)
+) INHERITS (node);

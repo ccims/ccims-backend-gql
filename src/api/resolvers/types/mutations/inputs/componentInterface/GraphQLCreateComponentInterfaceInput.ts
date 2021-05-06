@@ -1,4 +1,4 @@
-import { GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLList, GraphQLID } from "graphql";
+import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, GraphQLNonNull, GraphQLID } from "graphql";
 
 const createComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
     name: "CreateComponentInterfaceInput",
@@ -15,6 +15,10 @@ const createComponentInterfaceInputConfig: GraphQLInputObjectTypeConfig = {
         description: {
             type: GraphQLString,
             description: "The description of the componentInterface\n\nMax. 65536 characters"
+        },
+        type: {
+            type: GraphQLString,
+            description: "The type of the ComponentInterface\n\nMax. 65536 characters"
         },
         component: {
             type: GraphQLNonNull(GraphQLID),

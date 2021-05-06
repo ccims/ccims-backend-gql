@@ -12,8 +12,8 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(PriorityChangedEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(PriorityChangedEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadPriorityChangedEventsCommand extends LoadIssueTimelineItemsComm
      * @returns the parsed PriorityChangedEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): PriorityChangedEvent {
-        return new PriorityChangedEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-           resultRow.old_priority, resultRow.new_priority, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new PriorityChangedEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+           resultRow.old_priority, resultRow.new_priority, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_priority_changed_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("priority_changed_event", databaseManager);
     }
 
 }

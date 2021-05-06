@@ -12,8 +12,8 @@ export class LoadLinkEventsCommand extends LoadIssueTimelineItemsCommandBase<Lin
     /**
      * creates a new LoadBodiesCommand
      */
-    public constructor() {
-        super(LinkEventTableSpecification.rows);
+    public constructor(loadDeleted: boolean = false) {
+        super(LinkEventTableSpecification.rows, loadDeleted);
     }
 
     /**
@@ -24,19 +24,15 @@ export class LoadLinkEventsCommand extends LoadIssueTimelineItemsCommandBase<Lin
      * @returns the parsed AddedToComponentEvent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): LinkEvent {
-        return new LinkEvent(databaseManager, resultRow.id, resultRow.created_by, resultRow.created_at, resultRow.issue,
-            resultRow.linked_issue, resultRow.deleted,
-            this.loadWithMetadata ? resultRow.metadata : undefined);
+        return new LinkEvent(databaseManager, resultRow.id, resultRow.created_by_id, resultRow.created_at, resultRow.issue_id,
+            resultRow.linked_issue_id, resultRow.deleted, resultRow.last_modified_at, resultRow.metadata);
     }
 
     /**
      * generates the start of the query
      */
-    protected generateQueryStart(): QueryPart {
-        return {
-            text: `SELECT ${this.rows} FROM issue_timeline_link_event main `,
-            values: []
-        };
+    protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
+        return this.generateQueryStartFromTableName("link_event", databaseManager);
     }
 
 }

@@ -3,7 +3,6 @@ import { LoadRelationCommand } from "../database/commands/load/LoadRelationComma
 import { LoadComponentsCommand } from "../database/commands/load/nodes/LoadComponentsCommand";
 import { DatabaseManager } from "../database/DatabaseManager";
 import { Component } from "./Component";
-import { NamedNode, NamedNodeTableSpecification } from "./NamedNode";
 import { NodeTableSpecification, RowSpecification } from "./NodeTableSpecification";
 import { NodeType } from "./NodeType";
 import { NodeListProperty } from "./properties/NodeListProperty";
@@ -12,18 +11,28 @@ import { NodeProperty } from "./properties/NodeProperty";
 import { NodePropertySpecification } from "./properties/NodePropertySpecification";
 import { IssueLocation, issuesOnLocationPropertySpecification } from "./IssueLocation";
 import { Issue } from "./Issue";
+import { NamedSyncNode, NamedSyncNodeTableSpecification } from "./NamedSyncNode";
+import { SyncMetadata } from "./SyncMetadata";
+import { User } from "./User";
 
 /**
  * the specification of the table which contains components
  */
 export const ComponentInterfaceTableSpecification: NodeTableSpecification<ComponentInterface>
-    = new NodeTableSpecification<ComponentInterface>("component_interface", NamedNodeTableSpecification,
+    = new NodeTableSpecification<ComponentInterface>("component_interface", NamedSyncNodeTableSpecification,
+        RowSpecification.fromProperty("interface_type", "interfaceType"),
         new RowSpecification("host_component_id", componentInterface => componentInterface.componentProperty.getId()));
 
 /**
  * a component can have interfaces, which can be locations for issues
  */
-export class ComponentInterface extends NamedNode<ComponentInterface> implements IssueLocation {
+export class ComponentInterface extends NamedSyncNode<ComponentInterface> implements IssueLocation {
+
+    /**
+     * the type of the ComponentInterface
+     * for example REST over HTTP
+     */
+    private _interfaceType: string; 
 
     /**
      * property for issues which are located on this component
@@ -38,12 +47,11 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
     private static readonly componentPropertySpecification: NodePropertySpecification<Component, ComponentInterface>
         = new NodePropertySpecification<Component, ComponentInterface>(
             (id, componentInterface) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = [id];
                 return command;
             },
-            componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand()),
-            undefined,
+            componentInterface =>  new GetWithReloadCommand(componentInterface, "host_component_id", new LoadComponentsCommand(true)),
             (component, componentInterface) => component.interfacesProperty
         );
 
@@ -52,7 +60,7 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
      * @returns A promise of the component that offers this component interface
      */
     public async component(): Promise<Component> {
-        return this.componentProperty.get();
+        return this.componentProperty.getPublic();
     }
 
     /**
@@ -66,12 +74,12 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
     private static readonly consumedInterfacesPropertySpecification: NodeListPropertySpecification<Component, ComponentInterface>
         = NodeListPropertySpecification.loadDynamic<Component, ComponentInterface>(LoadRelationCommand.fromSecundary("component", "consumed_component_interface"),
             (ids, componentInterface) => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.ids = ids;
                 return command;
             },
             componentInterface => {
-                const command = new LoadComponentsCommand();
+                const command = new LoadComponentsCommand(true);
                 command.consumesInterface = [componentInterface.id];
                 return command;
             })
@@ -82,45 +90,64 @@ export class ComponentInterface extends NamedNode<ComponentInterface> implements
     /**
      * abstract constructor for subclasses
      * @param databaseManager the databaseManager
-     * @param id the id of the NamedNode
-     * @param name the name of the NamedNode
-     * @param description the description of the NamedNode
+     * @param id the id of the ComponentInterface
+     * @param name the name of the ComponentInterface
+     * @param description the description of the ComponentInterface
+     * @param createdById The creator users ID
+     * @param createdAt The date the ComponentInterface was created
+     * @param isDeleted Weather this ComponentInterface is deleted (needed for sync)
+     * @param metadata The metadate of this labComponentInterfaceel for syncing
      */
-    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, componentId: string) {
-        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description);
+    public constructor(databaseManager: DatabaseManager, id: string, name: string, description: string, interfaceType: string, lastUpdatedAt: Date, componentId: string, 
+        createdById: string | undefined, createdAt: Date, isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
+        super(NodeType.ComponentInterface, databaseManager, ComponentInterfaceTableSpecification, id, name, description, lastUpdatedAt, 
+            createdById, createdAt, isDeleted, lastModifiedAt, metadata);
         this.componentProperty = new NodeProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.componentPropertySpecification, this, componentId);
         this.consumedByProperty = new NodeListProperty<Component, ComponentInterface>(databaseManager, ComponentInterface.consumedInterfacesPropertySpecification, this);
         this.issuesOnLocationProperty = new NodeListProperty<Issue, IssueLocation>(databaseManager, issuesOnLocationPropertySpecification, this);
+        this._interfaceType = interfaceType;
     }
 
-    public static async create(databaseManager: DatabaseManager, name: string, description: string, component: Component): Promise<ComponentInterface> {
+    public static async create(databaseManager: DatabaseManager, name: string, description: string, interfaceType: string, component: Component, 
+        createdBy: User, createdAt: Date): Promise<ComponentInterface> {
         if (name.length > 256) {
             throw new Error("The specified name is too long");
         }
         if (description.length > 65536) {
             throw new Error("The specified description is too long");
         }
+        if (interfaceType.length > 65536) {
+            throw new Error("The specified type is too long");
+        }
 
-        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, component.id);
+        const componentInterface = new ComponentInterface(databaseManager, databaseManager.idGenerator.generateString(), name, description, interfaceType, createdAt, component.id, 
+            createdBy.id, createdAt, false, createdAt, undefined);
         componentInterface.markNew();
         databaseManager.addCachedNode(componentInterface);
         await component.interfacesProperty.add(componentInterface);
-        await Promise.all((await component.projectsProperty.getElements()).map(async project => {
+        await Promise.all((await component.projectsProperty.getPublicElements()).map(async project => {
             await project.interfacesProperty.add(componentInterface);
         }));
         return componentInterface;
     }
 
     /**
-     * marks this node as deleted
-     * this also marks this node as changed
+     * gets the interfaceType
      */
-    public async markDeleted(): Promise<void> {
-        if(!this.isDeleted) {
-            await super.markDeleted();
-            await this.consumedByProperty.clear();
-            await (await this.component()).interfacesProperty.remove(this);
+    public get interfaceType(): string {
+        return this._interfaceType;
+    }
+
+    /**
+     * sets the interfaceType, which must be shorter than 655537 chars
+     */
+    public setInterfaceType(value: string, atDate: Date): void {
+        if (value.length > 65536) {
+            throw new Error("The specified type is too long");
         }
+        this.markChanged();
+        this.lastUpdatedAt = atDate;
+        this._interfaceType = value;
     }
 
 }
