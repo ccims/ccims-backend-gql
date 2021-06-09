@@ -2,11 +2,11 @@ import { GraphQLFieldConfig, GraphQLResolveInfo } from "graphql";
 import { CCIMSNode } from "../../../common/nodes/CCIMSNode";
 import { IssueTimelineItem } from "../../../common/nodes/timelineItems/IssueTimelineItem";
 import { ResolverContext } from "../../ResolverContext";
-import nodeListQuery from "./nodeListQuery";
 import GraphQLIssueTimelineItemPage from "../types/pages/GraphQLIssueTimelineItemPage";
 import GraphQLIssueTimelineItemFilter from "../types/filters/GraphQLIssueTimelineItemFilter";
 import { LoadIssueTimelineItemsCommand } from "../../../common/database/commands/load/nodes/timeline/LoadIssueTimelineItemsCommand";
 import { ListProperty } from "../../../common/nodes/properties/ListProperty";
+import syncNodesListQuery from "./syncNodesListQuery";
 
 
 /**
@@ -20,15 +20,12 @@ function timelineItemsListQuery<TSource extends CCIMSNode, TProperty extends Par
     description: string,
     propertyProvider?: (node: TSource) => ListProperty<TProperty & CCIMSNode>
 ): GraphQLFieldConfig<TSource, ResolverContext> {
-    const baseQuery = nodeListQuery<TSource, IssueTimelineItem>(GraphQLIssueTimelineItemPage, GraphQLIssueTimelineItemFilter, description, "timeline items", propertyProvider);
+    const baseQuery = syncNodesListQuery<TSource, IssueTimelineItem>(GraphQLIssueTimelineItemPage, GraphQLIssueTimelineItemFilter, description, "timeline items", propertyProvider);
     return {
         ...baseQuery,
         resolve: async (src: TSource, args: any, context: ResolverContext, info: GraphQLResolveInfo) => {
             const cmd = new LoadIssueTimelineItemsCommand();
             baseQuery.addParams(cmd, args);
-            cmd.createdBy = args.filterBy?.name;
-            cmd.createdAfter = args.filterBy?.createdAfter;
-            cmd.createdBefore = args.filterBy?.createdBefore;
             cmd.types = args.filterBy?.type;
             return baseQuery.createResult(src, context, cmd);
         }

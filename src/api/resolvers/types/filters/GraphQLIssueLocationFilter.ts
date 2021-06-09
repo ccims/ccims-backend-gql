@@ -1,6 +1,6 @@
 import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLInputFieldConfigMap } from "graphql";
 import { IssueLocation } from "../../../../common/nodes/IssueLocation";
-import { syncNodeFilterFields } from "./syncNodeFilterFields";
+import { namedSyncNodeFilterFields } from "./namedSyncNodeFilterFields";
 
 /**
  * Generates the fields for a IssueLocation filter
@@ -9,7 +9,7 @@ import { syncNodeFilterFields } from "./syncNodeFilterFields";
  * @returns the fields config
  */
 export function issueLocationFilterFields<T extends IssueLocation>(name: string, namePlural: string = name + "s"): GraphQLInputFieldConfigMap {
-    return syncNodeFilterFields<T>(name, namePlural);
+    return namedSyncNodeFilterFields<T>(name, namePlural);
 }
 
 const issueLocationFilterConfig: GraphQLInputObjectTypeConfig = {

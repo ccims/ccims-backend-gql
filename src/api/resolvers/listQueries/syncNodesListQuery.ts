@@ -41,7 +41,7 @@ function syncNodesListQuery<TSource extends CCIMSNode, TNode extends SyncNode>(
         ...baseQuery,
         addParams: (cmd: LoadNodeListCommand<TNode> & SyncNodeCommandFilterFields, args: any) => {
             baseQuery.addParams(cmd, args);
-            cmd.createdBy = args.filterBy?.name;
+            cmd.createdBy = args.filterBy?.createdBy;
             cmd.createdAfter = args.filterBy?.createdAfter;
             cmd.createdBefore = args.filterBy?.createdBefore;
         }
