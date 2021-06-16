@@ -19,6 +19,12 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
     public displayName: string | undefined;
 
     /**
+     * selects only users for which display name or username contains the specified serach text
+     * case insensitive, no regex support
+     */
+    public searchText: string | undefined;
+
+    /**
      * select only users that have an email that matches the given posix RegEx
      */
     public email: string | undefined;
@@ -87,6 +93,15 @@ export class LoadUsersCommand extends LoadMultipleNodeListsCommand<User> {
             conditions.conditions.push({
                 text: `main.displayname ~* $${conditions.i}`,
                 values: [this.displayName],
+            });
+            conditions.i++;
+        }
+
+        if (this.searchText !== undefined) {
+            const search = this.searchText.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+            conditions.conditions.push({
+                text: `(main.username LIKE $${conditions.i} OR main.displayname LIKE $${conditions.i})`,
+                values: [`%${search}%`]
             });
             conditions.i++;
         }

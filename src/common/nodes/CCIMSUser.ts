@@ -67,8 +67,8 @@ export class CCIMSUser extends User {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, passwordHash: string, email?: string) {
-        super(NodeType.CCIMSUser, databaseManager, id, linkedUserId, username, displayName, email);
+    public constructor(databaseManager: DatabaseManager, id: string, username: string, displayName: string, passwordHash: string, email?: string) {
+        super(NodeType.CCIMSUser, databaseManager, CCIMSUserTableSpecification, id, id, username, displayName, email);
         
         this._passwordHash = passwordHash;
         this.permissionsProperty = new NodeListProperty<BasePermission, CCIMSUser>(databaseManager, CCIMSUser.permissionsPropertySpecification, this);
@@ -84,7 +84,7 @@ export class CCIMSUser extends User {
      * @param linkedUserId the id of the linkedUser, if undefined links itself
      * @returns the new created CCIMSUser
      */
-    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string, linkedUserId?: string): Promise<CCIMSUser> {
+    public static async create(databaseManager: DatabaseManager, username: string, displayName: string, password: string, email?: string): Promise<CCIMSUser> {
         if (username.length === 0) {
             throw new Error("The username can't be empty");
         }
@@ -107,10 +107,9 @@ export class CCIMSUser extends User {
         const passwordHash = config.common.passwordAlgorithm + ";" + crypto.createHmac(config.common.passwordAlgorithm, config.common.passwordSecret).update(password).digest("base64");
 
         const id = databaseManager.idGenerator.generateString();
-        const user = new CCIMSUser(databaseManager, id, linkedUserId ?? id, username, displayName, passwordHash, email);
+        const user = new CCIMSUser(databaseManager, id, username, displayName, passwordHash, email);
         user.markNew();
-        const linkedUser = await user.linkedUserProperty.get();
-        await linkedUser.linkedByUsersProperty.add(user);
+        user.linkedByUsersProperty.add(user);
         databaseManager.addCachedNode(user);
         return user;
     }

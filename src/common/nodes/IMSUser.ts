@@ -62,7 +62,7 @@ export class IMSUser extends User {
      * @param description the description of the NamedNode
      */
     public constructor(databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, imsId: string, email: string | undefined, imsData: ImsUserData) {
-        super(NodeType.IMSUser, databaseManager, id, linkedUserId, username, displayName, email);
+        super(NodeType.IMSUser, databaseManager, IMSUserTableSpecification, id, linkedUserId, username, displayName, email);
         this._imsData = imsData;
         this.imsSystemProperty = new NullableNodeProperty<IMSSystem, IMSUser>(databaseManager, IMSUser.imsSystemPropertySpecification, this, imsId);
     }

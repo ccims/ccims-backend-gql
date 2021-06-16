@@ -196,8 +196,8 @@ export class User<T extends User = any> extends CCIMSNode<T> {
      * @param name the name of the NamedNode
      * @param description the description of the NamedNode
      */
-    protected constructor(type: NodeType, databaseManager: DatabaseManager, id: string, linkedUserId: string, username: string, displayName: string, email?: string) {
-        super(type, databaseManager, UserTableSpecification, id);
+    protected constructor(type: NodeType, databaseManager: DatabaseManager, tableSpecification: NodeTableSpecification<T>, id: string, linkedUserId: string, username: string, displayName: string, email?: string) {
+        super(type, databaseManager, tableSpecification, id);
         this._username = username;
         this._displayName = displayName;
         this._email = email;
