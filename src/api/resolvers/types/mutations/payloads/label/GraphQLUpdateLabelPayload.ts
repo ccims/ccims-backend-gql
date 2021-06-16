@@ -10,7 +10,7 @@ const updateLabelPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = 
             type: GraphQLString,
             description: "The string provided by the client on sending the mutation"
         },
-        Label: {
+        label: {
             type: GraphQLLabel,
             description: "The Label updated by this mutation"
         }
