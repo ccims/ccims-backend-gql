@@ -290,14 +290,14 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
         if (this.lastEditedBefore !== undefined) {
             conditions.conditions.push({
-                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND last_edited_at <= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue_id=main.id AND last_edited_at <= $${conditions.i})`,
                 values: [this.lastEditedBefore]
             });
             conditions.i++;
         }
         if (this.lastEditedAfter !== undefined) {
             conditions.conditions.push({
-                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND last_edited_at >= $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue_id=main.id AND last_edited_at >= $${conditions.i})`,
                 values: [this.lastEditedAfter]
             });
             conditions.i++;
@@ -311,7 +311,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         }
         if (this.body !== undefined) {
             conditions.conditions.push({
-                text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND body ~* $${conditions.i})`,
+                text: `EXISTS(SELECT 1 FROM body WHERE issue_id=main.id AND body ~* $${conditions.i})`,
                 values: [this.body],
             });
             conditions.i++;
@@ -324,7 +324,7 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
                     values: [this.fullSearch.text],
                 });
                 orConditions.push({
-                    text: `EXISTS(SELECT 1 FROM body WHERE issue=main.id AND body ~* $${conditions.i + 1})`,
+                    text: `EXISTS(SELECT 1 FROM body WHERE issue_id=main.id AND body ~* $${conditions.i + 1})`,
                     values: [this.fullSearch.text],
                 });
                 conditions.i += 2;
