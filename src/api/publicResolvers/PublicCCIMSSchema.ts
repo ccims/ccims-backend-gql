@@ -4,6 +4,7 @@ import registerUser from "./mutations/registerUser";
 import GraphQLRegisterUserPayload from "./types/mutations/payloads/GraphQLRegisterUserPayload";
 import GraphQLRegisterUserInput from "./types/mutations/inputs/GraphQLRegisterUserInput";
 import checkUsername from "./query/checkUsername";
+import echo from "../resolvers/query/echo";
 
 const publicScimsSchema = new GraphQLSchema({
     types: [GraphQLRegisterUserPayload, GraphQLRegisterUserInput],
@@ -18,7 +19,8 @@ const publicScimsSchema = new GraphQLSchema({
         name: "Query",
         description: "Queries which are public and don't require authentication",
         fields: () => ({
-            checkUsername: checkUsername()
+            checkUsername: checkUsername(),
+            echo
         })
     })
 });
