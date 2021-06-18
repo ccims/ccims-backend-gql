@@ -127,7 +127,7 @@ export class LoadComponentsCommand extends LoadNamedSyncNodesCommand<Component> 
 
         if (this.repositoryURL !== undefined) {
             conditions.conditions.push({
-                text: `main.repositoryURL ~* $${conditions.i}`,
+                text: `main.repository_url ~* $${conditions.i}`,
                 values: [this.repositoryURL],
             });
             conditions.i++;
