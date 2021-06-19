@@ -125,7 +125,7 @@ export class CCIMSUser extends User {
         return result == undefined;
     }
 
-    public static async usernameToId(databaseManager: DatabaseManager, username: string): Promise<string | undefined> {
+    public static async usernameToId(databaseManager: DatabaseManager, username: string): Promise<string | null> {
         if (username.length === 0) {
             throw new Error("The username can't be empty")
         }
@@ -215,7 +215,7 @@ export class CCIMSUser extends User {
 /**
  * Command to check if a specific content issue pair is available
  */
- class UsernameIdCommand extends DatabaseCommand<string | undefined> {
+ class UsernameIdCommand extends DatabaseCommand<string | null> {
 
     /**
      * Creates a new UsernameAvailableCommand
@@ -234,7 +234,7 @@ export class CCIMSUser extends User {
 
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
         if (result.rowCount < 1) {
-            this.result = undefined;
+            this.result = null;
         } else {
             this.result = result.rows[0].id;
         }
