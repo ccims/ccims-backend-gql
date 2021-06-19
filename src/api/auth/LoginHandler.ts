@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { log } from "../../log";
 import { ResolverContextOptional } from "../ResolverContext";
 import { LoadCCIMSUsersCommand } from "../../common/database/commands/load/nodes/LoadCCIMSUsersCommand";
+import { CCIMSUser } from "../../common/nodes/CCIMSUser";
 
 /**
  * Express middleware for generating and returning a JWT
@@ -82,7 +83,7 @@ class LoginHandler {
         log(7, userInfo);
         if (UserCredentials.checkCredentialStructure(userInfo)) {
             const cmd = new LoadCCIMSUsersCommand();
-            cmd.username = "^" + userInfo.username + "$";
+            cmd.ids = [(await CCIMSUser.usernameToId(req.dbManager, userInfo.username)) ?? ""];
             req.dbManager.addCommand(cmd);
             await req.dbManager.executePendingCommands();
             const result = cmd.getResult();

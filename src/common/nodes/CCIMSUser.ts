@@ -120,16 +120,21 @@ export class CCIMSUser extends User {
      * @param databaseManager The database manager to use for checking
      * @param username The username to be checked
      */
-     public static async usernameAvailable(databaseManager: DatabaseManager, username: string): Promise<boolean> {
+    public static async usernameAvailable(databaseManager: DatabaseManager, username: string): Promise<boolean> {
+        const result = await this.usernameToId(databaseManager, username);
+        return result == undefined;
+    }
+
+    public static async usernameToId(databaseManager: DatabaseManager, username: string): Promise<string | undefined> {
         if (username.length === 0) {
             throw new Error("The username can't be empty")
         }
 
-        const checkCmd = new UsernameAvailableCommand(username);
+        const checkCmd = new UsernameIdCommand(username);
         databaseManager.addCommand(checkCmd);
         await databaseManager.executePendingCommands();
         return checkCmd.getResult();
-    }
+    } 
 
 
     /**
@@ -210,7 +215,7 @@ export class CCIMSUser extends User {
 /**
  * Command to check if a specific content issue pair is available
  */
- class UsernameAvailableCommand extends DatabaseCommand<boolean> {
+ class UsernameIdCommand extends DatabaseCommand<string | undefined> {
 
     /**
      * Creates a new UsernameAvailableCommand
@@ -228,7 +233,11 @@ export class CCIMSUser extends User {
     }
 
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.result = result.rowCount < 1;
+        if (result.rowCount < 1) {
+            this.result = undefined;
+        } else {
+            this.result = result.rows[0].id;
+        }
         return [];
     }
 
