@@ -1,6 +1,8 @@
 import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from "graphql";
 import { Artifact } from "../../../../common/nodes/Artifact";
+import { Issue } from "../../../../common/nodes/Issue";
 import { ResolverContext } from "../../../ResolverContext";
+import issuesListQuery from "../../listQueries/issuesListQuery";
 import GraphQLNode from "../GraphQLNode";
 import GraphQLComponent from "./GraphQLComponent";
 import { syncNodeFields } from "./syncNodeFields";
@@ -26,7 +28,8 @@ const artifactConfig: GraphQLObjectTypeConfig<Artifact, ResolverContext> = {
         lineRangeEnd: {
             type: GraphQLInt,
             description: "The end (inclusive) of the lines range the Artifact refers to, optional (can only be applied to text resources)"
-        }
+        },
+        issues: issuesListQuery<Artifact, Issue>("All issues that have the given artifact", artifact => artifact.issuesProperty)
     })
 };
 const GraphQLArtifact = new GraphQLObjectType(artifactConfig);

@@ -91,7 +91,7 @@ export class LoadArtifactsCommand extends LoadSyncNodeListCommand<Artifact> {
 
         if (this.uri !== undefined) {
             conditions.conditions.push({
-                text: `main.name ~* $${conditions.i}`,
+                text: `main.uri ~* $${conditions.i}`,
                 values: [this.uri],
             });
             conditions.i++;
