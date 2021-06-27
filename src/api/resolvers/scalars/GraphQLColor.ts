@@ -4,9 +4,9 @@ import { Color } from "../../../common/Color";
 const color: GraphQLScalarTypeConfig<Color, string> = {
     name: "Color",
     description: "A scalar type representing a colour in RGB colour space.\n" +
-        "The scalar must be a string in CSS Colour Hex format:\n\n" +
-        "`#rrggbb` where `rr`, `gg`, `bb` are the hex values between _0_ and _ff_\n\n" +
-        "Example: `#ffff00` (would be a _beautiful_ yellow)",
+        "Please note: alpha channel is not supported and will be dropped" +
+        "All common CSS formats are supported" + 
+        "For a detailed list of supported values, see https://www.npmjs.com/package/color-string",
     serialize: (value: Color): string => {
         return value.toString();
     },
