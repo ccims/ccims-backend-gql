@@ -25,7 +25,7 @@ export enum NodeType {
     UnpinnedEvent = "UnpinnedEvent",
     RenamedTitleEvent = "RenamedTitleEvent",
     CategoryChangedEvent = "CategoryChangedEvent",
-    AssignedEvent = "AssignEvent",
+    AssignedEvent = "AssignedEvent",
     UnassignedEvent = "UnassignedEvent",
     ClosedEvent = "ClosedEvent",
     ReopenedEvent = "ReopenedEvent",
