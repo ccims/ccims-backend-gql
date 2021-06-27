@@ -1,5 +1,6 @@
 # CCIMS-Backend
 The Backend for the ccims system using nodejs and providing a graphql library
+To get a recent version of the api, please use the branch dev
 
 # Usage / Installation
 
