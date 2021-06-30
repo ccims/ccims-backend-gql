@@ -99,6 +99,14 @@ function createIssue(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("Not all the Artifact ids given were valid Artifact ids");
             }
 
+            if (labels) {
+                for (const label of labels) {
+                    if (!(await Promise.all([...componentIDs].map(comp => label.componentsProperty.hasId(comp)))).some(hasLabel => hasLabel)) {
+                        throw new Error(`The label ${label.id} you are tying to assign is not on at least one of the components the issue is on`);
+                    }
+                }
+            }
+
             const now = new Date();
             const me = context.user;
             const issue = await Issue.create(context.dbManager, me, now, title, body);

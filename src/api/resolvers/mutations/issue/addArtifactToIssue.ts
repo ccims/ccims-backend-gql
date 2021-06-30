@@ -20,9 +20,6 @@ function addArtifactToIssue(): GraphQLFieldConfig<any, ResolverContext> {
             }
             const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
 
-            if (!(await issue.componentsProperty.hasId(artifact.componentProperty.getId() ?? ""))) {
-                throw new Error("The artifact you are tying to assign is not on at least one of the components the issue is on");
-            }
             const event = await issue.addArtifact(artifact, new Date(), context.user);
             return base.createResult(args, context, issue, event, { artifact });
         }
