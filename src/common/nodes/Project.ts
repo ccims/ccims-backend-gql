@@ -325,7 +325,7 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
      */
     public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
-            text: "SELECT DISTINCT ON(artifact_id) id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
+            text: "SELECT id FROM artifact WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$1);",
             values: [this.projectId]
         }
     }
@@ -336,7 +336,7 @@ class LoadLabelsIdsCommand extends DatabaseCommand<string[]> {
      * @param result the query result
      */
     public setDatabaseResult(databaseManager: DatabaseManager, result: QueryResult<any>): DatabaseCommand<any>[] {
-        this.result = result.rows.map(row => row.artifact_id);
+        this.result = result.rows.map(row => row.id);
         return [];
     }
 }
