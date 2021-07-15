@@ -263,12 +263,12 @@ export class LoadIssuesCommand extends LoadSyncNodeListCommand<Issue> {
         if (this.onProjects !== undefined) {
             if (this.onProjects.length === 1) {
                 conditions.conditions.push({
-                    text: `main.component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i})`,
+                    text: `main.id=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=$${conditions.i}))`,
                     values: [this.onProjects[0]]
                 });
             } else {
                 conditions.conditions.push({
-                    text: `main.component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i}))`,
+                    text: `main.id=ANY(SELECT issue_id FROM relation_component_issue WHERE component_id=ANY(SELECT component_id FROM relation_project_component WHERE project_id=ANY($${conditions.i})))`,
                     values: [this.onProjects[0]]
                 });
             }
