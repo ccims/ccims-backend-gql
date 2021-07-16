@@ -17,12 +17,13 @@ export const GitHubAdapter: SyncAdapter = {
         throw new Error("not implemented yet");
     },
     createIMSSystemData: async (data: IMSSystemData) => {
-        throw new Error("not implemented yet");
+        // TODO
+        return {}
     },
     linkUserToIMS: async (user: CCIMSUser, ims: IMSSystem, data: ImsUserData) => {
         throw new Error("not implemented yet");
     },
     linkComponentToIMS: async (component: Component, ims: IMSSystem, data: IMSComponentData) => {
-        throw new Error("not implemented yet");
+        return IMSComponent.create(component.databaseManager, component, ims, data);
     }
 }

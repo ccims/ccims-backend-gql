@@ -2,7 +2,7 @@ import { GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLString, Gr
 import GraphQLJSON from "../../../../scalars/GraphQLJSON";
 
 const createIMSComponentInputConfig: GraphQLInputObjectTypeConfig = {
-    name: "CreateIMSInput",
+    name: "CreateIMSComponentInput",
     description: "The inputs for the createIMS mutation",
     fields: () => ({
         clientMutationID: {

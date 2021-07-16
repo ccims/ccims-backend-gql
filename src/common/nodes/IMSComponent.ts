@@ -84,7 +84,7 @@ export class IMSComponent extends CCIMSNode<IMSComponent> {
      * Async getter function for the imsSystemProperty
      * @returns A promise of the IMSSystem
      */
-    public async imsSystem(): Promise<IMSSystem | undefined> {
+    public async ims(): Promise<IMSSystem | undefined> {
         return this.imsSystemProperty.getPublic();
     }
 

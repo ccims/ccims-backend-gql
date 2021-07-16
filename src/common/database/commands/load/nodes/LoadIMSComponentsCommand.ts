@@ -38,7 +38,7 @@ export class LoadIMSComponentsCommand extends LoadNodeListCommand<IMSComponent> 
      * generates the query start
      */
     protected generateQueryStart(databaseManager: DatabaseManager): QueryPart {
-        return this.generateQueryStartFromTableName("ims_system", databaseManager);
+        return this.generateQueryStartFromTableName("ims_component", databaseManager);
     }
 
     /**

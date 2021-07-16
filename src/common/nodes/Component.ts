@@ -80,7 +80,7 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
      */
     private static readonly imsComponentsPropertySpecification: NodeListPropertySpecification<IMSComponent, Component>
         = NodeListPropertySpecification.loadDynamic<IMSComponent, Component>(
-            LoadRelationCommand.fromManySide("ims_user", "ims_system_id"),
+            LoadRelationCommand.fromManySide("ims_component", "component_id"),
             (ids, ims) => {
                 const command = new LoadIMSComponentsCommand();
                 command.ids = ids;

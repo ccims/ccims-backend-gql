@@ -3,7 +3,7 @@ import { ResolverContext } from "../../../../../ResolverContext";
 import GraphQLIMSComponent from "../../../nodes/GraphQLIMSComponent";
 
 const createIMSComponentPayloadConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
-    name: "CreateIMSPayload",
+    name: "CreateIMSComponentPayload",
     description: "The Payload/Response for the createIMS mutation",
     fields: () => ({
         clientMutationID: {

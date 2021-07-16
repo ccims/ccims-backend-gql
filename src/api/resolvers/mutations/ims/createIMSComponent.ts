@@ -1,15 +1,15 @@
 import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLCreateComponentInput from "../../types/mutations/inputs/component/GraphQLCreateComponentInput";
 import { Component } from "../../../../common/nodes/Component";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
-import GraphQLCreateIMSPayload from "../../types/mutations/payloads/ims/GraphQLCreateIMSPayload";
 import { Adapters } from "../../../../sync/adapter/SyncAdapters";
+import GraphQLCreateIMSComponentPayload from "../../types/mutations/payloads/ims/GraphQLCreateIMSComponentPayload";
+import GraphQLCreateIMSComponentInput from "../../types/mutations/inputs/ims/GraphQLCreateIMSComponentInput";
 
 function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLCreateIMSPayload, GraphQLCreateComponentInput, "Creates a new IMSComponent which links the specified component to the specified IMS");
+    const base = baseMutation(GraphQLCreateIMSComponentPayload, GraphQLCreateIMSComponentInput, "Creates a new IMSComponent which links the specified component to the specified IMS");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
@@ -28,7 +28,7 @@ function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
                 throw new Error("The specified ims id is not the id of a valid IMS");
             }
 
-            const syncAdapter = Adapters.adapterByTag(ims.type);
+            const syncAdapter = Adapters.adapterByTag(ims.imsType);
             const imsComponent = await syncAdapter.linkComponentToIMS(component, ims, apiIMSData);
             
             return base.createResult(args, context, { imsComponent });

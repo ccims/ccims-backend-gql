@@ -1,14 +1,14 @@
 import { GraphQLFieldConfig } from "graphql";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLCreateComponentInput from "../../types/mutations/inputs/component/GraphQLCreateComponentInput";
 import baseMutation from "../baseMutation";
 import PreconditionCheck from "../../utils/PreconditionCheck";
 import { IMSSystem } from "../../../../common/nodes/IMSSystem";
 import GraphQLCreateIMSPayload from "../../types/mutations/payloads/ims/GraphQLCreateIMSPayload";
 import { Adapters } from "../../../../sync/adapter/SyncAdapters";
+import GraphQLCreateIMSInput from "../../types/mutations/inputs/ims/GraphQLCreateIMSInput";
 
 function createIMS(): GraphQLFieldConfig<any, ResolverContext> {
-    const base = baseMutation(GraphQLCreateIMSPayload, GraphQLCreateComponentInput, "Creates a new IMS in the ccims for the specified component");
+    const base = baseMutation(GraphQLCreateIMSPayload, GraphQLCreateIMSInput, "Creates a new IMS in the ccims for the specified component");
     return {
         ...base,
         resolve: async (src, args, context, info) => {
