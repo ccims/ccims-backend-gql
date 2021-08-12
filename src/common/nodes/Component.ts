@@ -328,4 +328,14 @@ export class Component extends NamedSyncNode<Component> implements IssueLocation
         this.markChanged();
         this._repositoryURL = value;
     }
+
+    public async markDeleted(): Promise<void> {
+        if (!this.isDeleted) {
+            await super.markDeleted();
+            const interfaces = await this.interfacesProperty.getElements();
+            await Promise.all(interfaces.map(interfaces => interfaces.markDeleted()));
+            const imsComponents = await this.imsComponentsProperty.getElements();
+            await Promise.all(imsComponents.map(imsComponent => imsComponent.markDeleted()));
+        }
+    }
 }
