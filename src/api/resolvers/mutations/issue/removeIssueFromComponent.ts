@@ -1,21 +1,34 @@
 import { GraphQLFieldConfig } from "graphql";
+import { LoadComponentsCommand } from "../../../../common/database/commands/load/nodes/LoadComponentsCommand";
 import { ResolverContext } from "../../../ResolverContext";
-import GraphQLRemoveIssueFromComponentPayload from "../../types/mutations/payloads/issue/GraphQLRemoveIssueFromComponentPayload";
 import GraphQLRemoveIssueFromComponentInput from "../../types/mutations/inputs/issue/GraphQLRemoveIssueFromComponentInput";
+import GraphQLRemoveIssueFromComponentPayload from "../../types/mutations/payloads/issue/GraphQLRemoveIssueFromComponentPayload";
+import PreconditionCheck from "../../utils/PreconditionCheck";
+import timelineMutation from "./timelineMutation";
 
-let removeIssueFromComponent: GraphQLFieldConfig<any, ResolverContext> | undefined;
-export default () => {
-    if (removeIssueFromComponent === undefined) {
-        removeIssueFromComponent = {
-            type: GraphQLRemoveIssueFromComponentPayload,
-            description: "Removes an issue from a component it is currently assigned to and deletes it from the ims of the component",
-            args: {
-                input: {
-                    type: GraphQLRemoveIssueFromComponentInput,
-                    description: "The data for the mutation"
-                }
+function removeIssueFromComponent(): GraphQLFieldConfig<any, ResolverContext> {
+    const base = timelineMutation(GraphQLRemoveIssueFromComponentPayload, GraphQLRemoveIssueFromComponentInput, "Removes an issue from a component (including creating the issue on the ims of the component)");
+    return {
+        ...base,
+        resolve: async (src, args, context, info) => {
+            const { cmd, input } = base.initTimelineMutation(args, context);
+            const componentId = PreconditionCheck.checkString(input, "component", 32);
+            const componentCmd = new LoadComponentsCommand();
+            componentCmd.ids = [componentId];
+            context.dbManager.addCommand(componentCmd);
+            const issue = await base.getIssue(cmd, context, (perm, issueObj) => perm.componentAdmin || perm.moderate || (perm.editIssues && issueObj.createdByProperty.getId() === context.user.id));
+            if (componentCmd.getResult().length !== 1) {
+                throw new Error("The given id was no valid component id");
             }
-        };
+            const component = componentCmd.getResult()[0];
+            /*
+            if (!context.user.permissions.getComponentPermissions(component.id).editIssueLocation && !context.user.permissions.globalPermissions.globalAdmin) {
+                throw new Error("You are not permitted to remove issues from the given component")
+            }
+            */
+            const event = await issue.removeFromComponent(component, new Date(), context.user);
+            return base.createResult(args, context, issue, event, { component });
+        }
     }
-    return removeIssueFromComponent;
-};
+}
+export default removeIssueFromComponent;
