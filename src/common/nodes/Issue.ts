@@ -687,6 +687,9 @@ export class Issue extends SyncNode<Issue> implements Comment {
         otherLocationsCommand.hasIssueOnLocation = [this.id];
         const interfacesToRemove = await component.interfacesProperty.getFilteredElements(otherLocationsCommand);
         await Promise.all(interfacesToRemove.map(location => this.removeFromLocationInternal(location, atDate, asUser)));
+        if (await this.locationsProperty.hasId(component.id))  {
+            await this.removeFromLocationInternal(component, atDate, asUser);
+        }
         if (await this.pinnedOnProperty.hasId(component.id)) {
             await this.unpinOnComponentInternal(component, atDate, asUser);
         }
