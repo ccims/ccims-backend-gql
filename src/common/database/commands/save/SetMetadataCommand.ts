@@ -20,7 +20,7 @@ export class SetMetadataCommand extends DatabaseCommand<void> {
 
     public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
-            text: "INSERT INTO metadata (node_id, id, metadata) VALUES ($1, $2, $3) ON CONFLICT DO UPDATE SET metadata = $3;",
+            text: "INSERT INTO metadata (node_id, id, metadata) VALUES ($1, $2, $3) ON CONFLICT (node_id, id) DO UPDATE SET metadata = $3;",
             values: [
                 this.nodeId,
                 this.id,

@@ -19,7 +19,7 @@ export class SetSyncLookupTableEntryCommand extends DatabaseCommand<void> {
 
     public getQueryConfig(databaseManager: DatabaseManager): QueryConfig<any[]> {
         return {
-            text: "INSERT INTO sync_lookup_table (id, ims_component_id, ccims_id) VALUES ($1, $2, $3) ON CONFLICT DO UPDATE SET ccims_id = $3;",
+            text: "INSERT INTO sync_lookup_table (id, ims_component_id, ccims_id) VALUES ($1, $2, $3) ON CONFLICT (id, ims_component_id) DO UPDATE SET ccims_id = $3;",
             values: [
                 this.id,
                 this.imsComponentId,

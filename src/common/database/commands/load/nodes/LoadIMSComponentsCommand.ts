@@ -31,7 +31,7 @@ export class LoadIMSComponentsCommand extends LoadNodeListCommand<IMSComponent> 
      * @returns the parsed IMSComponent
      */
     protected getNodeResult(databaseManager: DatabaseManager, resultRow: QueryResultRow, result: QueryResult<any>): IMSComponent {
-        return new IMSComponent(databaseManager, resultRow.id, resultRow.component_id, resultRow.ims_system_id, resultRow.connection_data);
+        return new IMSComponent(databaseManager, resultRow.id, resultRow.component_id, resultRow.ims_system_id, resultRow.ims_data);
     }
 
     /**

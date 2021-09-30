@@ -8,6 +8,7 @@ import checkUsername from "../publicResolvers/query/checkUsername";
 import componentsListQuery from "./listQueries/componentsListQuery";
 import searchUser from "./query/searchUser";
 import imsListQuery from "./listQueries/imsListQuery";
+import sync from "./query/sync";
 
 const queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     name: "Query",
@@ -15,6 +16,7 @@ const queryConfig: GraphQLObjectTypeConfig<any, ResolverContext> = {
     fields: () => ({
         node,
         echo,
+        sync,
         projects: projectsListQuery("Requests all projects within the current ccims instance matching the `filterBy`"),
         components: componentsListQuery("Requests all components within the current ccims instance matching the `filterBy`"),
         imss: imsListQuery("Requests all IMSs within the current ccims instance matching the `filterBy`"),

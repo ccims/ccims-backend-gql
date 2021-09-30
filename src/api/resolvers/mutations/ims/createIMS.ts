@@ -14,7 +14,7 @@ function createIMS(): GraphQLFieldConfig<any, ResolverContext> {
         resolve: async (src, args, context, info) => {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
             const imsType = PreconditionCheck.checkString(input, "imsType");
-            const apiIMSData = input.connectionData ?? {};
+            const apiIMSData = input.imsData ?? {};
 
             const syncAdapter = Adapters.adapterByTag(imsType);
             const imsData = await syncAdapter.createIMSSystemData(apiIMSData);

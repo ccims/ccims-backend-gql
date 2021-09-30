@@ -16,7 +16,7 @@ function createIMSComponent(): GraphQLFieldConfig<any, ResolverContext> {
             const input = base.initMutation(args, context, perm => perm.globalPermissions.addRemoveComponents);
             const componentId = PreconditionCheck.checkString(input, "component", 32);
             const imsId = PreconditionCheck.checkString(input, "ims", 32);
-            const apiIMSData = input.connectionData ?? {};
+            const apiIMSData = input.imsData ?? {};
 
             const component = await context.dbManager.getNode(componentId);
             if (component === undefined || !(component instanceof Component)) {

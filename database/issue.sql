@@ -110,7 +110,7 @@ CREATE TABLE unlink_event (
 CREATE TABLE comment (
     LIKE issue_timeline_item INCLUDING DEFAULTS,
     last_edited_at timestamp NOT NULL,
-    last_edited_by_id id NOT NULL,
+    last_edited_by_id id,
     body varchar(65536) NOT NULL,
     PRIMARY KEY (id)
 ) INHERITS (issue_timeline_item);

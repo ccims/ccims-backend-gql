@@ -44,6 +44,7 @@ import { LoadRemovedNonFunctionalConstraintEventsCommand } from "./timeline/Load
 import { LoadAddedArtifactEventsCommand } from "./timeline/LoadAddedArtifactEventsCommand";
 import { LoadRemovedArtifactEventsCommand } from "./timeline/LoadRemovedArtifactEventsCommand";
 import { LoadReactionGroupsCommand } from "./LoadReactionGroupsCommand";
+import { LoadIMSComponentsCommand } from "./LoadIMSComponentsCommand";
 
 /**
  * map with method to create command for each table name
@@ -92,7 +93,8 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["removed_non_functional_constraint_event", (loadDeleted) => new LoadRemovedNonFunctionalConstraintEventsCommand(loadDeleted)],
     ["added_artifact_event", (loadDeleted) => new LoadAddedArtifactEventsCommand(loadDeleted)],
     ["removed_artifact_event", (loadDeleted) => new LoadRemovedArtifactEventsCommand(loadDeleted)],
-    ["reaction_group", () => new LoadReactionGroupsCommand()]
+    ["reaction_group", () => new LoadReactionGroupsCommand()],
+    ["ims_component", () => new LoadIMSComponentsCommand()]
 ]);
 
 /**

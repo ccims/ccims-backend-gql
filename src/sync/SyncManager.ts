@@ -148,7 +148,7 @@ export class SyncManager extends SyncModifiableContainer {
      * @param id the id used by the ims of the component
      * @param value the ccims id, undefined to remove the entry
      */
-    public setLoopkupTableValue(id: string, value: string | undefined): void {
+    public setLookupTableValue(id: string, value: string | undefined): void {
         this.lookupTableCache.set(id, value);
         this.lookupTableChanges.set(id, value);
     }

@@ -89,7 +89,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
      * returnes true if this SyncNode was created with metadata, otherwise false
      */
     public get isMetadataPresent(): boolean {
-        return this._metadata !== undefined;
+        return this._metadata != undefined;
     }
 
     /**
@@ -122,7 +122,7 @@ export abstract class SyncNode<T extends SyncNode = any> extends CCIMSNode {
 
     /**
      * Get when the node was last modified
-     * this value is not saved and maintained by the database
+     * this value is not saved and only maintained by the database
      */
     public get lastModifiedAt(): Date {
         return this._lastModifiedAt;

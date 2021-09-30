@@ -31,4 +31,8 @@ export class LoadSyncLookupTableEntryCommand extends DatabaseCommand<string | un
         return [];
     }
 
+    public getResult(): string | undefined {
+        return this.result;
+    }
+
 }
