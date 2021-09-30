@@ -11,8 +11,9 @@ import { User } from "../User";
 import { IssueTimelineItem, IssueTimelineItemTableSpecification } from "./IssueTimelineItem";
 
 export const DeletedIssueCommentTableSpecification: NodeTableSpecification<DeletedIssueComment>
-    = new NodeTableSpecification<DeletedIssueComment>("deleted_issue_comment", IssueTimelineItemTableSpecification,
-    new RowSpecification("deleted_by_id", deletedIssueComment => deletedIssueComment.deletedByProperty.getId()));
+    = new NodeTableSpecification<DeletedIssueComment>("deleted_comment", IssueTimelineItemTableSpecification,
+    new RowSpecification("deleted_by_id", deletedIssueComment => deletedIssueComment.deletedByProperty.getId()),
+    RowSpecification.fromProperty("deleted_at", "deletedAt"));
 
 export class DeletedIssueComment extends IssueTimelineItem {
 

@@ -72,7 +72,7 @@ const commandFactories = new Map<string, (loadDeleted: boolean) => LoadNodeListC
     ["pinned_event", (loadDeleted) => new LoadPinnedEventsCommand(loadDeleted)],
     ["unpinned_event", (loadDeleted) => new LoadUnpinnedEventsCommand(loadDeleted)],
     ["renamed_title_event", (loadDeleted) => new LoadRenamedTitleEventsCommand(loadDeleted)],
-    ["deleted_issue_comment", (loadDeleted) => new LoadDeletedIssueCommentsCommand(loadDeleted)],
+    ["deleted_comment", (loadDeleted) => new LoadDeletedIssueCommentsCommand(loadDeleted)],
     ["assigned_event", (loadDeleted) => new LoadAssignedEventsCommand(loadDeleted)],
     ["unassigned_event", (loadDeleted) => new LoadUnassignedEventsCommand(loadDeleted)],
     ["labelled_event", (loadDeleted) => new LoadLabelledEventCommand(loadDeleted)],
