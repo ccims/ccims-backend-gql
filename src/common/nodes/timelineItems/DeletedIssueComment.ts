@@ -68,4 +68,13 @@ export class DeletedIssueComment extends IssueTimelineItem {
             this.markChanged();
         }
     }
+
+    /**
+     * Property getter to get the deletedBy user object
+     * @returns A promise of a user or `undefined` who deleted the original comment
+     */
+    public async deletedBy(): Promise<User | undefined> {
+        return this.deletedByProperty.getPublic()
+    }
+
 }
