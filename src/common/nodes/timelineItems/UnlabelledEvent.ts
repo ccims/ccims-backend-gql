@@ -32,7 +32,7 @@ export class UnlabelledEvent extends IssueTimelineItem {
     public constructor(databaseManager: DatabaseManager, id: string,
         createdById: string | undefined, createdAt: Date, issueId: string, labelId: string,
         isDeleted: boolean, lastModifiedAt: Date, metadata?: SyncMetadata) {
-        super(NodeType.AssignedEvent, databaseManager, UnlabelledEventTableSpecification, id,
+        super(NodeType.UnlabelledEvent, databaseManager, UnlabelledEventTableSpecification, id,
             createdById, createdAt, issueId, isDeleted, lastModifiedAt, metadata);
 
         this.labelProperty = new NullableNodeProperty<Label, UnlabelledEvent>(databaseManager, UnlabelledEvent.labelPropertySpecification, this, labelId);
